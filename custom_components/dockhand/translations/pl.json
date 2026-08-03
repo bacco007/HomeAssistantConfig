@@ -319,6 +319,14 @@
     }
   },
   "issues": {
+    "fetch_failed_top_level": {
+      "title": "Dockhand nie może uzyskać dostępu do części swoich danych",
+      "description": "Ostatnia próba pobrania {resources} nie powiodła się i od tego czasu nie zakończyła się sukcesem. Istniejące urządzenia i encje dla tego pozostają nietknięte — nic nie jest usuwane, dopóki to się nie uda — ale wszystko, co od tego zależy, będzie pokazywać nieaktualne lub niedostępne wartości do czasu przywrócenia. Sprawdź dziennik Home Assistant pod kątem podstawowego błędu (wyszukaj \"Dockhand: error fetching\") i upewnij się, że instancja Dockhand jest dostępna i odpowiada normalnie. To rozwiązuje się automatycznie, gdy tylko pobieranie ponownie się powiedzie."
+    },
+    "fetch_failed_env": {
+      "title": "Dockhand nie może uzyskać dostępu do niektórych danych dla {env_name}",
+      "description": "Ostatnia próba pobrania {resources} dla \"{env_name}\" nie powiodła się i od tego czasu nie zakończyła się sukcesem. Istniejące urządzenia i encje tego środowiska pozostają nietknięte — nic nie jest usuwane, dopóki to się nie uda — ale wszystko, co zależy od dotkniętych danych, będzie pokazywać nieaktualne lub niedostępne wartości do czasu przywrócenia. Sprawdź dziennik Home Assistant pod kątem podstawowego błędu (wyszukaj \"Dockhand: error fetching\") i upewnij się, że to środowisko jest dostępne z Dockhand. To rozwiązuje się automatycznie, gdy tylko pobieranie ponownie się powiedzie."
+    },
     "runtime_update_warning": {
       "title": "Dockhand zgłosił ostrzeżenie podczas aktualizacji {container}",
       "description": "Zmiana {field} w kontenerze \"{container}\" powiodła się, ale bazowe wywołanie Dockhand do silnika Docker zwróciło ostrzeżenie, co może oznaczać, że nie zostało w pełni zastosowane: {warnings}\n\nSprawdź kontener w interfejsie Dockhand, aby potwierdzić bieżącą wartość."

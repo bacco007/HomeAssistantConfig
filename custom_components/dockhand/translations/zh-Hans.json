@@ -319,6 +319,14 @@
     }
   },
   "issues": {
+    "fetch_failed_top_level": {
+      "title": "Dockhand 无法访问部分数据",
+      "description": "上次获取 {resources} 的尝试失败，此后一直未成功。相关的现有设备和实体不受影响——在此故障持续期间不会删除任何内容——但依赖该数据的一切都会显示过期或不可用的值，直到恢复为止。请检查 Home Assistant 日志以查看具体错误（搜索“Dockhand: error fetching”），并确认 Dockhand 实例可访问且响应正常。一旦获取再次成功，此问题会自动清除。"
+    },
+    "fetch_failed_env": {
+      "title": "Dockhand 无法访问 {env_name} 的部分数据",
+      "description": "上次获取“{env_name}”的 {resources} 的尝试失败，此后一直未成功。该环境的现有设备和实体不受影响——在此故障持续期间不会删除任何内容——但依赖受影响数据的一切都会显示过期或不可用的值，直到恢复为止。请检查 Home Assistant 日志以查看具体错误（搜索“Dockhand: error fetching”），并确认 Dockhand 可以访问该环境。一旦获取再次成功，此问题会自动清除。"
+    },
     "runtime_update_warning": {
       "title": "Dockhand 在更新 {container} 时报告了一个警告",
       "description": "在容器 \"{container}\" 上更改 {field} 已成功，但 Dockhand 底层的 Docker Engine 调用返回了警告，这可能意味着更改未完全生效：{warnings}\n\n请在 Dockhand 界面中检查该容器以确认当前值。"

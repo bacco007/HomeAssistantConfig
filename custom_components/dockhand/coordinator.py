@@ -6,6 +6,7 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import DockhandAuthError, DockhandClient
@@ -39,9 +40,35 @@ def _safe_list(value: Any) -> list:
     return value if isinstance(value, list) else []
 
 
-def _unwrap(val: Any, default: Any, label: str) -> Any:
+def _unwrap(
+    val: Any,
+    default: Any,
+    label: str,
+    failures: set[str] | None = None,
+    key: str | None = None,
+) -> Any:
+    """Unwrap a asyncio.gather(..., return_exceptions=True) result,
+    returning `default` and logging a warning if it's an Exception.
+
+    `failures`/`key` are optional so this can still be called the old way
+    for genuinely inconsequential fetches — but every call site that
+    feeds into anything cleanup logic could act on (see __init__.py's
+    _build_live_sets) MUST pass both. Without them, a real fetch failure
+    (DNS resolution failure, timeout, connection reset, a 5xx — anything)
+    silently becomes indistinguishable from "genuinely empty," and
+    downstream cleanup — which exists specifically to remove entities for
+    things that are actually gone — has no way to tell the difference.
+    This was a real, reported bug: a transient schedules-fetch failure
+    here used to just become `schedules: []`, with the coordinator update
+    still reporting success, causing every schedule entity to be wrongly
+    treated as confirmed-deleted. See docs/ARCHITECTURE.md §9 for the
+    full mechanism and how `fetch_failures` closes it for every resource
+    this coordinator fetches, not just schedules.
+    """
     if isinstance(val, Exception):
         _LOGGER.warning("Dockhand: error fetching %s: %s", label, val)
+        if failures is not None and key is not None:
+            failures.add(key)
         return default
     return val
 
@@ -96,7 +123,7 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:
-            return await self._fetch()
+            result = await self._fetch()
         except DockhandAuthError as err:
             # Token is invalid or revoked — surface immediately so HA prompts
             # the user to re-authenticate. No retry is possible without a new token.
@@ -106,6 +133,12 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             ) from err
         except Exception as err:
             raise UpdateFailed(f"Fast data error: {err}") from err
+        # stats_source is this coordinator's own result — unlike the slow
+        # coordinator, which needs the fast coordinator's data to look up
+        # environment names, the fast coordinator's own data already has
+        # them.
+        _sync_fetch_issues(self.hass, self.config_entry, "fast", result, result)
+        return result
 
     async def _fetch(self) -> dict[str, Any]:
         # Fetch stats for all environments in a single API call — this is
@@ -173,6 +206,24 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 )
             )
 
+            # Same tracking, same reasoning, as the slow coordinator's own
+            # per-environment fetches (see docs/ARCHITECTURE.md §9) — the
+            # difference here is that containers/stacks failing has the
+            # highest stakes of any resource in this whole integration:
+            # they're what directly determines container/stack device and
+            # entity existence via _cleanup_stale_registry, the single
+            # most commonly-used entities this integration creates. A
+            # swallowed containers or stacks fetch failure here used to
+            # be indistinguishable from "this environment genuinely has
+            # none anymore," which — for an environment that stayed
+            # online per its own dashboard-stats health check while just
+            # this one specific fetch failed — would wrongly remove every
+            # container and stack device for it. This is the exact same
+            # bug class the schedules incident that prompted this whole
+            # fix surfaced, just in the other coordinator, for the data
+            # that mattered most.
+            failures: set[str] = set()
+
             # Index container stats by name for O(1) lookup from sensor entities.
             # Stopped/exited containers are absent from the stats response — their
             # sensors will return None (unavailable) until the container is running.
@@ -183,7 +234,11 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if "container_stats" in results:
                 raw_stats = _safe_list(
                     _unwrap(
-                        results["container_stats"], [], f"container_stats env={env_id}"
+                        results["container_stats"],
+                        [],
+                        f"container_stats env={env_id}",
+                        failures,
+                        "container_stats",
                     )
                 )
                 container_stats = {
@@ -196,7 +251,11 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if "pending_updates" in results:
                 pending = _safe_list(
                     _unwrap(
-                        results["pending_updates"], [], f"pending_updates env={env_id}"
+                        results["pending_updates"],
+                        [],
+                        f"pending_updates env={env_id}",
+                        failures,
+                        "pending_updates",
                     )
                 )
                 pending_update_container_ids = {
@@ -207,13 +266,31 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             return env_id, {
                 "stats": all_stats.get(env_id, {}),
                 "containers": _safe_list(
-                    _unwrap(results["containers"], [], f"containers env={env_id}")
+                    _unwrap(
+                        results["containers"],
+                        [],
+                        f"containers env={env_id}",
+                        failures,
+                        "containers",
+                    )
                 ),
                 "stacks": _safe_list(
-                    _unwrap(results["stacks"], [], f"stacks env={env_id}")
+                    _unwrap(
+                        results["stacks"],
+                        [],
+                        f"stacks env={env_id}",
+                        failures,
+                        "stacks",
+                    )
                 ),
                 "container_stats": container_stats,
                 "pending_update_container_ids": pending_update_container_ids,
+                # Which of the above failed to fetch this cycle, rather
+                # than genuinely being empty — see _unwrap's own doc
+                # comment. Checked by __init__.py's _build_live_sets
+                # before trusting an empty containers/stacks list as
+                # grounds for device/entity cleanup.
+                "fetch_failures": failures,
             }
 
         out: dict[int, dict] = {}
@@ -288,10 +365,24 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                                     "low", "imagesScanned", "totalImages"},
                 "env_meta": {"imagePruneEnabled": bool, "hawserAgentName": str|None,
                              "hawserAgentId": str|None, "hawserLastSeen": str|None,
-                             "connectionHost": str|None, "connectionPort": int|None}
+                             "connectionHost": str|None, "connectionPort": int|None},
+                # Which of this env's resource fetches failed this cycle
+                # (a subset of the keys above) rather than genuinely being
+                # empty — e.g. {"images"} means the images fetch itself
+                # failed, not that this env has zero images. See _unwrap's
+                # own doc comment; checked by __init__.py's
+                # _build_live_sets before trusting an empty result as
+                # grounds for cleanup. Empty set on a fully successful
+                # fetch, same as every list/dict field above being empty
+                # on a genuinely-empty environment.
+                "fetch_failures": set(),
             }
         },
-        "schedules": []
+        "schedules": [],
+        # Same idea as each environment's own "fetch_failures", for the
+        # two top-level (not per-environment) fetches: {"environments"}
+        # and/or {"schedules"}.
+        "fetch_failures": set(),
     }
     """
 
@@ -326,7 +417,7 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:
-            return await self._fetch()
+            result = await self._fetch()
         except DockhandAuthError as err:
             # Let the fast coordinator own reauth — just surface as transient failure.
             raise UpdateFailed(
@@ -334,6 +425,10 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             ) from err
         except Exception as err:
             raise UpdateFailed(f"Slow data error: {err}") from err
+        _sync_fetch_issues(
+            self.hass, self.config_entry, "slow", result, self._fast_coordinator.data
+        )
+        return result
 
     async def _fetch(self) -> dict[str, Any]:
         # Which environments exist still comes from the fast coordinator's
@@ -364,8 +459,11 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if isinstance(top_results[0], DockhandAuthError):
             raise top_results[0]
 
+        top_failures: set[str] = set()
         env_meta: dict[int, dict] = {}
-        envs_raw = _unwrap(top_results[0], [], "environments")
+        envs_raw = _unwrap(
+            top_results[0], [], "environments", top_failures, "environments"
+        )
         if isinstance(envs_raw, list):
             for e in envs_raw:
                 if isinstance(e, dict) and e.get("id") is not None:
@@ -385,7 +483,9 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     }
 
         schedules = (
-            _safe_list(_unwrap(top_results[1], [], "schedules"))
+            _safe_list(
+                _unwrap(top_results[1], [], "schedules", top_failures, "schedules")
+            )
             if self._enable_schedules and len(top_results) > 1
             else []
         )
@@ -482,29 +582,48 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             named["host"] = self.client.async_get_host_info(env_id)
 
             results: dict[str, Any] = {}
+            failures: set[str] = set()
             if named:
                 keys = list(named)
                 gathered = await asyncio.gather(*named.values(), return_exceptions=True)
                 for key, val in zip(keys, gathered, strict=False):
                     if key == "host":
-                        unwrapped = _unwrap(val, {}, f"host env={env_id}")
+                        unwrapped = _unwrap(
+                            val, {}, f"host env={env_id}", failures, "host"
+                        )
                         results["host"] = (
                             unwrapped if isinstance(unwrapped, dict) else {}
                         )
                     elif key == "runtime_config":
-                        unwrapped = _unwrap(val, {}, f"runtime_config env={env_id}")
+                        unwrapped = _unwrap(
+                            val,
+                            {},
+                            f"runtime_config env={env_id}",
+                            failures,
+                            "runtime_config",
+                        )
                         results["runtime_config"] = (
                             unwrapped if isinstance(unwrapped, dict) else {}
                         )
                     elif key == "auto_update_settings":
                         unwrapped = _unwrap(
-                            val, {}, f"auto_update_settings env={env_id}"
+                            val,
+                            {},
+                            f"auto_update_settings env={env_id}",
+                            failures,
+                            "auto_update_settings",
                         )
                         results["auto_update_settings"] = (
                             unwrapped if isinstance(unwrapped, dict) else {}
                         )
                     elif key == "recent_events":
-                        unwrapped = _unwrap(val, {}, f"recent_events env={env_id}")
+                        unwrapped = _unwrap(
+                            val,
+                            {},
+                            f"recent_events env={env_id}",
+                            failures,
+                            "recent_events",
+                        )
                         events = (
                             unwrapped.get("events")
                             if isinstance(unwrapped, dict)
@@ -514,7 +633,13 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                             events if isinstance(events, list) else []
                         )
                     elif key == "vulnerabilities":
-                        unwrapped = _unwrap(val, {}, f"vulnerabilities env={env_id}")
+                        unwrapped = _unwrap(
+                            val,
+                            {},
+                            f"vulnerabilities env={env_id}",
+                            failures,
+                            "vulnerabilities",
+                        )
                         summary = (
                             unwrapped.get("summary")
                             if isinstance(unwrapped, dict)
@@ -525,7 +650,7 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         )
                     else:
                         results[key] = _safe_list(
-                            _unwrap(val, [], f"{key} env={env_id}")
+                            _unwrap(val, [], f"{key} env={env_id}", failures, key)
                         )
 
             return env_id, {
@@ -539,6 +664,12 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "recent_events": results.get("recent_events", []),
                 "vulnerabilities": results.get("vulnerabilities", {}),
                 "env_meta": env_meta.get(env_id, {}),
+                # Which of the above (if any) failed to fetch this cycle,
+                # rather than genuinely being empty — see _unwrap's own
+                # doc comment for why this matters. Checked by
+                # __init__.py's _build_live_sets before trusting an empty
+                # result here as grounds for entity/device cleanup.
+                "fetch_failures": failures,
             }
 
         environments: dict[int, dict] = {}
@@ -550,7 +681,110 @@ class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             else:
                 env_id, data = result
                 environments[env_id] = data
-        return {"environments": environments, "schedules": schedules}
+        return {
+            "environments": environments,
+            "schedules": schedules,
+            # Which top-level (not per-environment) fetches failed this
+            # cycle — currently just "environments" and "schedules", the
+            # only two fetched via top_coros above. See _unwrap's own doc
+            # comment for why this exists at all.
+            "fetch_failures": top_failures,
+        }
+
+
+def _sync_fetch_issues(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry | None,
+    source: str,
+    result: dict[str, Any],
+    stats_source: dict[str, Any],
+) -> None:
+    """Create or clear a HA repair issue for each fetch failure this
+    cycle — the "place to go" for a real, reported gap: _unwrap()
+    already logs a warning when a fetch fails, but a warning in the
+    log is easy to miss entirely, and gives no indication after the
+    fact that anything's still degraded. An issue in Settings ->
+    System -> Repairs is what actually answers "why is this entity
+    unavailable" — it's there for as long as the problem persists,
+    and clears itself the moment a poll succeeds again, so it never
+    needs cleaning up by hand and never lingers past being useful.
+
+    Shared between DockhandFastCoordinator and DockhandSlowCoordinator
+    (called from each one's own _async_update_data) rather than a
+    method on either — both need the exact same logic, just against
+    their own data shape. `source` ("fast"/"slow") disambiguates issue
+    ids between them so a failure in one doesn't silently overwrite or
+    clear an unrelated one already raised by the other for the same
+    environment. `stats_source` is whichever coordinator's data
+    actually has each environment's display name in its own "stats"
+    key — the fast coordinator's own result for the fast coordinator's
+    calls, or the fast coordinator's already-populated data for the
+    slow coordinator's calls (since slow's own result doesn't carry
+    names at all).
+
+    One issue for top-level failures (schedules/environments — not
+    tied to any one environment; never fires for the fast coordinator,
+    which has no top-level fetch of its own with this problem — see
+    docs/ARCHITECTURE.md §9 on why dashboard-stats already raises
+    correctly instead of needing this), one per environment for the
+    rest — not one issue per resource per environment, which would
+    mean up to 9 issues per environment during a broad outage; a
+    single per-environment issue listing every currently-failing
+    resource in its own description is both less noisy and, if
+    several resources are failing together (e.g. the whole environment
+    briefly unreachable), a clearer picture of what's actually going
+    on than a wall of near-identical individual issues would be.
+
+    No config_entry means this coordinator was constructed without
+    one (only ever true in tests) — skip silently rather than raising
+    on a null config_entry, since issue tracking has nothing
+    meaningful to attach itself to in that case anyway.
+    """
+    if config_entry is None:
+        return
+    entry_id = config_entry.entry_id
+    stats_envs = _all_envs(stats_source)
+
+    top_failures: set[str] = result.get("fetch_failures") or set()
+    top_issue_id = f"{entry_id}_fetch_failed_top_level_{source}"
+    if top_failures:
+        ir.async_create_issue(
+            hass,
+            DOMAIN,
+            top_issue_id,
+            is_fixable=False,
+            is_persistent=False,
+            severity=ir.IssueSeverity.WARNING,
+            translation_key="fetch_failed_top_level",
+            translation_placeholders={"resources": ", ".join(sorted(top_failures))},
+        )
+    else:
+        ir.async_delete_issue(hass, DOMAIN, top_issue_id)
+
+    for env_id, env_data in _all_envs(result).items():
+        env_failures: set[str] = env_data.get("fetch_failures") or set()
+        issue_id = f"{entry_id}_fetch_failed_env_{env_id}_{source}"
+        if env_failures:
+            env_name = (
+                (stats_envs.get(env_id) or {})
+                .get("stats", {})
+                .get("name", f"Environment {env_id}")
+            )
+            ir.async_create_issue(
+                hass,
+                DOMAIN,
+                issue_id,
+                is_fixable=False,
+                is_persistent=False,
+                severity=ir.IssueSeverity.WARNING,
+                translation_key="fetch_failed_env",
+                translation_placeholders={
+                    "env_name": env_name,
+                    "resources": ", ".join(sorted(env_failures)),
+                },
+            )
+        else:
+            ir.async_delete_issue(hass, DOMAIN, issue_id)
 
 
 class DockhandUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):

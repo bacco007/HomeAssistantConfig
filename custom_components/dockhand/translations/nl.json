@@ -319,6 +319,14 @@
     }
   },
   "issues": {
+    "fetch_failed_top_level": {
+      "title": "Dockhand kan een deel van zijn gegevens niet bereiken",
+      "description": "De laatste poging om {resources} op te halen is mislukt en is sindsdien niet meer gelukt. Bestaande apparaten en entiteiten hiervoor blijven ongewijzigd — er wordt niets verwijderd zolang dit blijft mislukken — maar alles wat hiervan afhankelijk is, toont verouderde of niet-beschikbare waarden totdat het hersteld is. Controleer het Home Assistant-logboek voor de onderliggende fout (zoek naar \"Dockhand: error fetching\") en bevestig dat de Dockhand-instantie bereikbaar is en normaal reageert. Dit lost zichzelf automatisch op zodra een ophaalactie weer slaagt."
+    },
+    "fetch_failed_env": {
+      "title": "Dockhand kan sommige gegevens voor {env_name} niet bereiken",
+      "description": "De laatste poging om {resources} voor \"{env_name}\" op te halen is mislukt en is sindsdien niet meer gelukt. Bestaande apparaten en entiteiten van deze omgeving blijven ongewijzigd — er wordt niets verwijderd zolang dit blijft mislukken — maar alles wat afhankelijk is van de betreffende gegevens toont verouderde of niet-beschikbare waarden totdat het hersteld is. Controleer het Home Assistant-logboek voor de onderliggende fout (zoek naar \"Dockhand: error fetching\") en bevestig dat deze omgeving bereikbaar is vanuit Dockhand. Dit lost zichzelf automatisch op zodra een ophaalactie weer slaagt."
+    },
     "runtime_update_warning": {
       "title": "Dockhand meldde een waarschuwing bij het bijwerken van {container}",
       "description": "Het wijzigen van {field} op container \"{container}\" is gelukt, maar de onderliggende Docker Engine-aanroep van Dockhand gaf een waarschuwing terug, wat kan betekenen dat het niet volledig is toegepast: {warnings}\n\nControleer de container in de Dockhand-interface om de huidige waarde te bevestigen."

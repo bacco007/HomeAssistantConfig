@@ -16,8 +16,11 @@ from .helpers import (
     _compose_project,
     _container_device,
     _coordinator_env,
+    _find_container,
+    _find_stack,
     _stack_device,
     _stack_has_system_container,
+    already_registered,
 )
 
 # Coordinator-based platform. 0 = no HA-level parallel update limit;
@@ -35,10 +38,7 @@ async def async_setup_entry(
     client = entry.runtime_data.client
     base_url: str = entry.data.get(CONF_API_URL, "")
 
-    known_container_keys: set[str] = set()
-    known_stack_ids: set[str] = set()
-    known_auto_update_keys: set[str] = set()
-    known_git_stack_ids: set[str] = set()
+    known_ids = entry.runtime_data.known_entity_ids
 
     def _build_entities() -> list[SwitchEntity]:
         new: list[SwitchEntity] = []
@@ -47,40 +47,40 @@ async def async_setup_entry(
             env_name = stats.get("name", f"Environment {env_id}")
 
             for container in env_data.get("containers") or []:
-                key = f"{env_id}_{container.get('name', '')}"
-                if key not in known_container_keys and not container.get(
-                    "systemContainer"
+                if container.get("systemContainer"):
+                    continue
+                running_switch = DockhandContainerRunningSwitch(
+                    fast,
+                    client,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    container,
+                )
+                if already_registered(
+                    hass, known_ids, "switch", running_switch.unique_id
                 ):
-                    known_container_keys.add(key)
-                    new.append(
-                        DockhandContainerRunningSwitch(
-                            fast,
-                            client,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            container,
-                        )
-                    )
+                    continue
+                new.append(running_switch)
 
             for stack in env_data.get("stacks") or []:
-                sid = f"{env_id}_{stack['name']}"
-                if sid not in known_stack_ids and not _stack_has_system_container(
-                    stack, env_data.get("containers")
+                if _stack_has_system_container(stack, env_data.get("containers")):
+                    continue
+                stack_switch = DockhandStackRunningSwitch(
+                    fast,
+                    client,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    stack,
+                )
+                if already_registered(
+                    hass, known_ids, "switch", stack_switch.unique_id
                 ):
-                    known_stack_ids.add(sid)
-                    new.append(
-                        DockhandStackRunningSwitch(
-                            fast,
-                            client,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            stack,
-                        )
-                    )
+                    continue
+                new.append(stack_switch)
 
         return new
 
@@ -102,26 +102,23 @@ async def async_setup_entry(
             env_name = stats.get("name", f"Environment {env_id}")
             for container in env_data.get("containers") or []:
                 name = container.get("name", "")
-                key = f"{env_id}_{name}"
-                if (
-                    not name
-                    or key in known_auto_update_keys
-                    or container.get("systemContainer")
+                if not name or container.get("systemContainer"):
+                    continue
+                auto_update_switch = DockhandContainerAutoUpdateSwitch(
+                    fast,
+                    slow,
+                    client,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    name,
+                )
+                if already_registered(
+                    hass, known_ids, "switch", auto_update_switch.unique_id
                 ):
                     continue
-                known_auto_update_keys.add(key)
-                new.append(
-                    DockhandContainerAutoUpdateSwitch(
-                        fast,
-                        slow,
-                        client,
-                        entry.entry_id,
-                        env_id,
-                        env_name,
-                        base_url,
-                        name,
-                    )
-                )
+                new.append(auto_update_switch)
         return new
 
     def _build_git_stack_entities() -> list[SwitchEntity]:
@@ -132,20 +129,18 @@ async def async_setup_entry(
             fast_stats = (fast_data.get(env_id) or {}).get("stats") or {}
             env_name = fast_stats.get("name", f"Environment {env_id}")
             for git_stack in env_data.get("git_stacks") or []:
-                gsid = f"{env_id}_{git_stack.get('stackName', '')}"
-                if gsid not in known_git_stack_ids:
-                    known_git_stack_ids.add(gsid)
-                    new.append(
-                        DockhandGitStackAutoUpdateSwitch(
-                            slow,
-                            client,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            git_stack,
-                        )
-                    )
+                git_switch = DockhandGitStackAutoUpdateSwitch(
+                    slow,
+                    client,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    git_stack,
+                )
+                if already_registered(hass, known_ids, "switch", git_switch.unique_id):
+                    continue
+                new.append(git_switch)
         return new
 
     def _add_fast_entities() -> None:
@@ -187,13 +182,9 @@ class _BaseFastContainerSwitch(
         self._container_name = container.get("name", "")
 
     def _container(self) -> dict | None:
-        for c in (
-            _coordinator_env(self.coordinator.data, self._env_id).get("containers")
-            or []
-        ):
-            if c.get("name") == self._container_name:
-                return c
-        return None
+        return _find_container(
+            self.coordinator.data, self._env_id, self._container_name
+        )
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -231,12 +222,7 @@ class _BaseFastStackSwitch(CoordinatorEntity[DockhandFastCoordinator], SwitchEnt
         self._stack_name = stack.get("name", "")
 
     def _stack(self) -> dict | None:
-        for s in (
-            _coordinator_env(self.coordinator.data, self._env_id).get("stacks") or []
-        ):
-            if s.get("name") == self._stack_name:
-                return s
-        return None
+        return _find_stack(self.coordinator.data, self._env_id, self._stack_name)
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -420,19 +406,16 @@ class DockhandContainerAutoUpdateSwitch(
         )
 
     def _container(self) -> dict | None:
-        for c in (
-            _coordinator_env(self._fast_coordinator.data, self._env_id).get(
-                "containers"
-            )
-            or []
-        ):
-            if c.get("name") == self._container_name:
-                return c
-        return None
+        return _find_container(
+            self._fast_coordinator.data, self._env_id, self._container_name
+        )
 
     @property
     def available(self) -> bool:
-        return self._container() is not None and super().available
+        if self._container() is None or not super().available:
+            return False
+        env = _coordinator_env(self.coordinator.data, self._env_id)
+        return "auto_update_settings" not in (env.get("fetch_failures") or set())
 
     def _handle_coordinator_update(self) -> None:
         self._optimistic_value = None

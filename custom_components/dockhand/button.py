@@ -27,8 +27,11 @@ from .helpers import (
     _container_device,
     _coordinator_env,
     _env_device,
+    _find_container,
+    _find_stack,
     _stack_device,
     _stack_has_system_container,
+    already_registered,
 )
 
 # Coordinator-based platform. 0 = no HA-level parallel update limit;
@@ -64,12 +67,7 @@ async def async_setup_entry(
         CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES
     )
 
-    known_container_keys: set[str] = set()
-    known_stack_ids: set[str] = set()
-    known_stack_deploy_ids: set[str] = set()
-    known_env_update_ids: set[int] = set()
-    known_env_bulk_update_ids: set[int] = set()
-    known_git_stack_ids: set[str] = set()
+    known_ids = entry.runtime_data.known_entity_ids
 
     def _build_entities() -> list[ButtonEntity]:
         new: list[ButtonEntity] = []
@@ -85,20 +83,20 @@ async def async_setup_entry(
             # needs to gate its existence. What each option controls is
             # only what happens to the *result* — see DockhandCheckUpdatesButton
             # itself.
-            if env_id not in known_env_update_ids:
-                known_env_update_ids.add(env_id)
-                new.append(
-                    DockhandCheckUpdatesButton(
-                        fast,
-                        client,
-                        update_coordinator,
-                        update_entities_enabled,
-                        entry.entry_id,
-                        env_id,
-                        env_name,
-                        base_url,
-                    )
-                )
+            check_updates_button = DockhandCheckUpdatesButton(
+                fast,
+                client,
+                update_coordinator,
+                update_entities_enabled,
+                entry.entry_id,
+                env_id,
+                env_name,
+                base_url,
+            )
+            if not already_registered(
+                hass, known_ids, "button", check_updates_button.unique_id
+            ):
+                new.append(check_updates_button)
 
             # Bulk "Update all" button — conditionally present, not just
             # conditionally enabled: only created while CONF_ENABLE_UPDATE_ENTITIES
@@ -133,47 +131,58 @@ async def async_setup_entry(
                     env_containers, pending, update_env_data
                 )
             )
-            if has_updatable and env_id not in known_env_bulk_update_ids:
-                known_env_bulk_update_ids.add(env_id)
-                new.append(
-                    DockhandEnvBulkUpdateButton(
+            if has_updatable:
+                bulk_button = DockhandEnvBulkUpdateButton(
+                    fast,
+                    update_coordinator,
+                    client,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                )
+                if not already_registered(
+                    hass, known_ids, "button", bulk_button.unique_id
+                ):
+                    new.append(bulk_button)
+
+            for container in env_data.get("containers") or []:
+                if container.get("systemContainer"):
+                    continue
+                restart_button = DockhandContainerRestartButton(
+                    fast,
+                    client,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    container,
+                )
+                if not already_registered(
+                    hass, known_ids, "button", restart_button.unique_id
+                ):
+                    new.append(restart_button)
+
+            for stack in env_data.get("stacks") or []:
+                has_system = _stack_has_system_container(
+                    stack, env_data.get("containers")
+                )
+                if not has_system:
+                    restart_button = DockhandStackRestartButton(
                         fast,
-                        update_coordinator,
                         client,
                         entry.entry_id,
                         env_id,
                         env_name,
                         base_url,
+                        stack,
                     )
-                )
-
-            for container in env_data.get("containers") or []:
-                key = f"{env_id}_{container.get('name', '')}"
-                if key not in known_container_keys and not container.get(
-                    "systemContainer"
-                ):
-                    known_container_keys.add(key)
-                    new.append(
-                        DockhandContainerRestartButton(
-                            fast,
-                            client,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            container,
-                        )
-                    )
-
-            for stack in env_data.get("stacks") or []:
-                sid = f"{env_id}_{stack['name']}"
-                has_system = _stack_has_system_container(
-                    stack, env_data.get("containers")
-                )
-                if sid not in known_stack_ids and not has_system:
-                    known_stack_ids.add(sid)
-                    new.append(
-                        DockhandStackRestartButton(
+                    if not already_registered(
+                        hass, known_ids, "button", restart_button.unique_id
+                    ):
+                        new.append(restart_button)
+                    if stack.get("sourceType") == "internal":
+                        deploy_button = DockhandStackDeployButton(
                             fast,
                             client,
                             entry.entry_id,
@@ -182,24 +191,10 @@ async def async_setup_entry(
                             base_url,
                             stack,
                         )
-                    )
-                if (
-                    sid not in known_stack_deploy_ids
-                    and not has_system
-                    and stack.get("sourceType") == "internal"
-                ):
-                    known_stack_deploy_ids.add(sid)
-                    new.append(
-                        DockhandStackDeployButton(
-                            fast,
-                            client,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            stack,
-                        )
-                    )
+                        if not already_registered(
+                            hass, known_ids, "button", deploy_button.unique_id
+                        ):
+                            new.append(deploy_button)
 
         return new
 
@@ -211,21 +206,20 @@ async def async_setup_entry(
             fast_stats = (fast_data.get(env_id) or {}).get("stats") or {}
             env_name = fast_stats.get("name", f"Environment {env_id}")
             for git_stack in env_data.get("git_stacks") or []:
-                gsid = f"{env_id}_{git_stack.get('stackName', '')}"
-                if gsid not in known_git_stack_ids:
-                    known_git_stack_ids.add(gsid)
-                    new += [
-                        DockhandGitStackDeployButton(
-                            fast,
-                            slow,
-                            client,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            git_stack,
-                        ),
-                    ]
+                git_deploy_button = DockhandGitStackDeployButton(
+                    fast,
+                    slow,
+                    client,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    git_stack,
+                )
+                if not already_registered(
+                    hass, known_ids, "button", git_deploy_button.unique_id
+                ):
+                    new.append(git_deploy_button)
         return new
 
     async_add_entities(_build_entities())
@@ -264,13 +258,9 @@ class _BaseFastContainerButton(
         self._container_name = container.get("name", "")
 
     def _container(self) -> dict | None:
-        for c in (
-            _coordinator_env(self.coordinator.data, self._env_id).get("containers")
-            or []
-        ):
-            if c.get("name") == self._container_name:
-                return c
-        return None
+        return _find_container(
+            self.coordinator.data, self._env_id, self._container_name
+        )
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -308,12 +298,7 @@ class _BaseFastStackButton(CoordinatorEntity[DockhandFastCoordinator], ButtonEnt
         self._stack_name = stack.get("name", "")
 
     def _stack(self) -> dict | None:
-        for s in (
-            _coordinator_env(self.coordinator.data, self._env_id).get("stacks") or []
-        ):
-            if s.get("name") == self._stack_name:
-                return s
-        return None
+        return _find_stack(self.coordinator.data, self._env_id, self._stack_name)
 
     @property
     def device_info(self) -> DeviceInfo:

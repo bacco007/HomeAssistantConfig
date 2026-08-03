@@ -319,6 +319,14 @@
     }
   },
   "issues": {
+    "fetch_failed_top_level": {
+      "title": "Dockhand can't reach part of its data",
+      "description": "The last attempt to fetch {resources} failed and hasn't succeeded since. Existing devices and entities for this are left untouched — nothing is removed while this is failing — but anything depending on it will show stale or unavailable until it recovers. Check the Home Assistant log for the underlying error (search for \"Dockhand: error fetching\"), and confirm the Dockhand instance is reachable and responding normally. This clears itself automatically once a fetch succeeds again."
+    },
+    "fetch_failed_env": {
+      "title": "Dockhand can't reach some data for {env_name}",
+      "description": "The last attempt to fetch {resources} for \"{env_name}\" failed and hasn't succeeded since. Existing devices and entities for this environment are left untouched — nothing is removed while this is failing — but anything depending on the affected data will show stale or unavailable until it recovers. Check the Home Assistant log for the underlying error (search for \"Dockhand: error fetching\"), and confirm this environment is reachable from Dockhand. This clears itself automatically once a fetch succeeds again."
+    },
     "runtime_update_warning": {
       "title": "Dockhand reported a warning updating {container}",
       "description": "Changing {field} on container \"{container}\" succeeded, but Dockhand's underlying Docker Engine call returned a warning, which may mean it wasn't fully applied: {warnings}\n\nCheck the container in the Dockhand UI to confirm the current value."

@@ -86,7 +86,13 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import DockhandConfigEntry
 from .const import CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES, DOMAIN
 from .coordinator import DockhandFastCoordinator, DockhandUpdateCoordinator
-from .helpers import _all_envs, _coordinator_env, _is_update_disabled_by_label
+from .helpers import (
+    _all_envs,
+    _coordinator_env,
+    _find_container,
+    _is_update_disabled_by_label,
+    already_registered,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -170,7 +176,7 @@ async def async_setup_entry(
     fast_coordinator = data.fast_coordinator
     update_coordinator = data.update_coordinator  # Tier 2, may be None
 
-    seen: set[str] = set()
+    known_ids = entry.runtime_data.known_entity_ids
 
     def _add_new_entities() -> None:
         fast_data = _all_envs(fast_coordinator.data)
@@ -186,20 +192,17 @@ async def async_setup_entry(
                 container_name = container.get("name", "")
                 if not container_name:
                     continue
-                uid = f"{entry.entry_id}_{env_id}_update_{container_name}"
-                if uid in seen:
-                    continue
-                seen.add(uid)
-                new_entities.append(
-                    ContainerUpdateEntity(
-                        fast_coordinator=fast_coordinator,
-                        update_coordinator=update_coordinator,
-                        entry_id=entry.entry_id,
-                        env_id=env_id,
-                        env_name=env_name,
-                        container_name=container_name,
-                    )
+                entity = ContainerUpdateEntity(
+                    fast_coordinator=fast_coordinator,
+                    update_coordinator=update_coordinator,
+                    entry_id=entry.entry_id,
+                    env_id=env_id,
+                    env_name=env_name,
+                    container_name=container_name,
                 )
+                if already_registered(hass, known_ids, "update", entity.unique_id):
+                    continue
+                new_entities.append(entity)
 
         if new_entities:
             async_add_entities(new_entities)
@@ -251,13 +254,9 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandFastCoordinator], UpdateEn
         self._update_supported_features()
 
     def _container(self) -> dict | None:
-        """Look up the current container dict by name from the fast
-        coordinator — name is stable across container recreation."""
-        fast_data = _all_envs(self.coordinator.data)
-        for c in (fast_data.get(self._env_id) or {}).get("containers") or []:
-            if c.get("name") == self._container_name:
-                return c
-        return None
+        return _find_container(
+            self.coordinator.data, self._env_id, self._container_name
+        )
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

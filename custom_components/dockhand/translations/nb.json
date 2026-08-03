@@ -319,6 +319,14 @@
     }
   },
   "issues": {
+    "fetch_failed_top_level": {
+      "title": "Dockhand får ikke tak i deler av dataene sine",
+      "description": "Det siste forsøket på å hente {resources} mislyktes og har ikke lyktes siden. Eksisterende enheter og entiteter for dette forblir urørt — ingenting fjernes så lenge dette feiler — men alt som er avhengig av det vil vise utdaterte eller utilgjengelige verdier til det gjenopprettes. Sjekk Home Assistant-loggen for den underliggende feilen (søk etter \"Dockhand: error fetching\"), og bekreft at Dockhand-instansen er tilgjengelig og svarer normalt. Dette løser seg automatisk så snart en henting lykkes igjen."
+    },
+    "fetch_failed_env": {
+      "title": "Dockhand får ikke tak i enkelte data for {env_name}",
+      "description": "Det siste forsøket på å hente {resources} for \"{env_name}\" mislyktes og har ikke lyktes siden. Eksisterende enheter og entiteter for dette miljøet forblir urørt — ingenting fjernes så lenge dette feiler — men alt som er avhengig av de berørte dataene vil vise utdaterte eller utilgjengelige verdier til det gjenopprettes. Sjekk Home Assistant-loggen for den underliggende feilen (søk etter \"Dockhand: error fetching\"), og bekreft at dette miljøet er tilgjengelig fra Dockhand. Dette løser seg automatisk så snart en henting lykkes igjen."
+    },
     "runtime_update_warning": {
       "title": "Dockhand rapporterte en advarsel ved oppdatering av {container}",
       "description": "Endring av {field} på container \"{container}\" var vellykket, men Dockhands underliggende Docker Engine-kall returnerte en advarsel, noe som kan bety at endringen ikke ble fullstendig anvendt: {warnings}\n\nSjekk containeren i Dockhand-grensesnittet for å bekrefte gjeldende verdi."

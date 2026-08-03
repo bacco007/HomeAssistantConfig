@@ -40,6 +40,8 @@ from .helpers import (
     _ensure_env_devices,
     _ensure_hub_devices,
     _env_device,
+    _find_container,
+    _find_stack,
     _image_display_name,
     _image_group_device,
     _network_group_device,
@@ -47,6 +49,7 @@ from .helpers import (
     _sched_key,
     _stack_device,
     _volume_group_device,
+    already_registered,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -102,24 +105,13 @@ async def async_setup_entry(
         CONF_ENABLE_CONTAINER_STATS, DEFAULT_ENABLE_CONTAINER_STATS
     )
 
-    # Track unique_ids already registered so the coordinator listener can
-    # add entities for containers/stacks/images created after initial setup
-    # without duplicating existing ones.
-    known_container_keys: set[str] = set()
-    # Health sensors are tracked separately from the other per-container
-    # sensors: a container can gain a healthcheck after setup (image update
-    # adds a HEALTHCHECK instruction), at which point its key is already in
-    # known_container_keys and the Health sensor would otherwise never be
-    # created until an HA restart.
-    known_health_keys: set[str] = set()
-    known_stack_ids: set[str] = set()
-    known_env_ids: set[int] = set()
-    known_slow_env_ids: set[int] = set()
-    known_image_ids: set[str] = set()
-    known_network_ids: set[str] = set()
-    known_volume_ids: set[str] = set()
-    known_sched_ids: set[str] = set()
-    known_git_stack_ids: set[str] = set()
+    known_ids = entry.runtime_data.known_entity_ids
+
+    def _already_registered(domain: str, unique_id: str) -> bool:
+        # See helpers.py's already_registered() for the full reasoning —
+        # moved there once switch.py/number.py/select.py/button.py/
+        # binary_sensor.py needed the exact same check too.
+        return already_registered(hass, known_ids, domain, unique_id)
 
     def _build_fast_entities() -> list[SensorEntity]:
         """Return new fast-coordinator entities not yet registered."""
@@ -131,12 +123,17 @@ async def async_setup_entry(
             env_name = stats.get("name", f"Environment {env_id}")
 
             # Per-env sensors — created once per environment
-            if env_id not in known_env_ids:
-                known_env_ids.add(env_id)
+            # Per-env sensors — created once per environment. Checked via
+            # the first entity's own unique_id, matching this file's other
+            # multi-entity-per-key groups (schedules, git stacks) — they're
+            # always created/removed together, so one representative check
+            # is enough to gate the whole group.
+            connection_type_sensor = DockhandEnvConnectionTypeSensor(
+                fast, entry.entry_id, env_id, env_name, base_url
+            )
+            if not _already_registered("sensor", connection_type_sensor.unique_id):
                 new += [
-                    DockhandEnvConnectionTypeSensor(
-                        fast, entry.entry_id, env_id, env_name, base_url
-                    ),
+                    connection_type_sensor,
                     DockhandEnvCpuSensor(
                         fast, slow, entry.entry_id, env_id, env_name, base_url
                     ),
@@ -173,47 +170,51 @@ async def async_setup_entry(
 
             # Per-container sensors
             for container in env_data.get("containers") or []:
-                key = f"{env_id}_{container.get('name', '')}"
-                if (
-                    _container_has_healthcheck(container)
-                    and key not in known_health_keys
-                ):
-                    known_health_keys.add(key)
-                    new.append(
-                        DockhandContainerHealthSensor(
-                            fast,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            container,
-                        )
+                if _container_has_healthcheck(container):
+                    health_sensor = DockhandContainerHealthSensor(
+                        fast,
+                        entry.entry_id,
+                        env_id,
+                        env_name,
+                        base_url,
+                        container,
                     )
-                if key not in known_container_keys:
-                    known_container_keys.add(key)
-                    new.append(
-                        DockhandContainerStateSensor(
-                            fast, entry.entry_id, env_id, env_name, base_url, container
-                        )
+                    if not _already_registered("sensor", health_sensor.unique_id):
+                        new.append(health_sensor)
+                state_sensor = DockhandContainerStateSensor(
+                    fast, entry.entry_id, env_id, env_name, base_url, container
+                )
+                if not _already_registered("sensor", state_sensor.unique_id):
+                    new.append(state_sensor)
+
+                # Resource stats sensors — only created at all when "Enable
+                # container stats" is on, same pattern as enable_images/
+                # enable_volumes/enable_networks below: not created-but-
+                # disabled, genuinely not instantiated, so turning the
+                # option off lets the existing central cleanup system
+                # remove any that already exist, the same way it already
+                # does for those other toggles. Checked via its own
+                # representative entity, independent of state_sensor above
+                # — nesting this inside that check (as an earlier version
+                # of this code did) meant turning "Enable container stats"
+                # on for a container that already existed before that
+                # point would never create its stats sensors until an HA
+                # restart, the exact same class of staleness the
+                # known_health_keys comment above already called out for
+                # health sensors specifically, just not caught here too.
+                if enable_container_stats:
+                    cpu_sensor = DockhandContainerCpuSensor(
+                        fast,
+                        entry.entry_id,
+                        env_id,
+                        env_name,
+                        base_url,
+                        container,
+                        enable_container_stats,
                     )
-                    # Resource stats sensors — only created at all when
-                    # "Enable container stats" is on, same pattern as
-                    # enable_images/enable_volumes/enable_networks below:
-                    # not created-but-disabled, genuinely not instantiated,
-                    # so turning the option off lets the existing central
-                    # cleanup system remove any that already exist, the
-                    # same way it already does for those other toggles.
-                    if enable_container_stats:
+                    if not _already_registered("sensor", cpu_sensor.unique_id):
                         new += [
-                            DockhandContainerCpuSensor(
-                                fast,
-                                entry.entry_id,
-                                env_id,
-                                env_name,
-                                base_url,
-                                container,
-                                enable_container_stats,
-                            ),
+                            cpu_sensor,
                             DockhandContainerMemoryUsageSensor(
                                 fast,
                                 entry.entry_id,
@@ -281,13 +282,12 @@ async def async_setup_entry(
 
             # Per-stack sensors
             for stack in env_data.get("stacks") or []:
-                sid = f"{env_id}_{stack['name']}"
-                if sid not in known_stack_ids:
-                    known_stack_ids.add(sid)
+                status_sensor = DockhandStackStatusSensor(
+                    fast, entry.entry_id, env_id, env_name, base_url, stack
+                )
+                if not _already_registered("sensor", status_sensor.unique_id):
                     new += [
-                        DockhandStackStatusSensor(
-                            fast, entry.entry_id, env_id, env_name, base_url, stack
-                        ),
+                        status_sensor,
                         DockhandStackContainerCountSensor(
                             fast, entry.entry_id, env_id, env_name, base_url, stack
                         ),
@@ -327,10 +327,14 @@ async def async_setup_entry(
         """
         slow_envs = _all_envs(slow.data)
         fast_data = _all_envs(fast.data)
+        all_schedules = (slow.data or {}).get("schedules") or []
 
         for env_id, env_data in slow_envs.items():
             fast_stats = (fast_data.get(env_id) or {}).get("stats") or {}
             env_name = fast_stats.get("name", f"Environment {env_id}")
+            env_schedules = [
+                s for s in all_schedules if s.get("environmentId") == env_id
+            ]
             _ensure_env_devices(
                 hass,
                 entry.entry_id,
@@ -340,9 +344,11 @@ async def async_setup_entry(
                 networks=env_data.get("networks"),
                 images=env_data.get("images"),
                 volumes=env_data.get("volumes"),
+                schedules=env_schedules,
                 enable_networks=enable_networks,
                 enable_images=enable_images,
                 enable_volumes=enable_volumes,
+                enable_schedules=enable_schedules,
             )
 
     def _build_slow_entities() -> list[SensorEntity]:
@@ -363,12 +369,12 @@ async def async_setup_entry(
             fast_stats = (fast_data.get(env_id) or {}).get("stats") or {}
             env_name = fast_stats.get("name", f"Environment {env_id}")
 
-            if env_id not in known_slow_env_ids:
-                known_slow_env_ids.add(env_id)
+            hawser_version_sensor = DockhandEnvHawserVersionSensor(
+                slow, entry.entry_id, env_id, env_name, base_url
+            )
+            if not _already_registered("sensor", hawser_version_sensor.unique_id):
                 new += [
-                    DockhandEnvHawserVersionSensor(
-                        slow, entry.entry_id, env_id, env_name, base_url
-                    ),
+                    hawser_version_sensor,
                     DockhandEnvPlatformSensor(
                         slow, entry.entry_id, env_id, env_name, base_url
                     ),
@@ -404,62 +410,48 @@ async def async_setup_entry(
                     tag = _image_display_name(image)
                     tag_counts[tag] = tag_counts.get(tag, 0) + 1
                 for image in images_list:
-                    raw_id = image.get("id") or ""
-                    iid = f"{env_id}_{raw_id.split(':')[-1]}"
-                    if iid in known_image_ids:
+                    image_sensor = DockhandImageSensor(
+                        slow, entry.entry_id, env_id, env_name, base_url, image
+                    )
+                    if _already_registered("sensor", image_sensor.unique_id):
                         continue
                     if tag_counts.get(_image_display_name(image), 0) > 1:
                         continue
-                    known_image_ids.add(iid)
-                    new.append(
-                        DockhandImageSensor(
-                            slow, entry.entry_id, env_id, env_name, base_url, image
-                        )
-                    )
+                    new.append(image_sensor)
 
             if enable_networks:
                 for network in env_data.get("networks") or []:
-                    # Env-scoped like images/volumes: two environments pointing
-                    # at the same Docker host report identical network IDs, and
-                    # each env needs its own entity.
-                    nid = f"{env_id}_{network.get('id', '')}"
-                    if nid not in known_network_ids:
-                        known_network_ids.add(nid)
-                        new.append(
-                            DockhandNetworkSensor(
-                                slow,
-                                entry.entry_id,
-                                env_id,
-                                env_name,
-                                base_url,
-                                network,
-                            )
-                        )
+                    network_sensor = DockhandNetworkSensor(
+                        slow,
+                        entry.entry_id,
+                        env_id,
+                        env_name,
+                        base_url,
+                        network,
+                    )
+                    if not _already_registered("sensor", network_sensor.unique_id):
+                        new.append(network_sensor)
 
             if enable_volumes:
                 for volume in env_data.get("volumes") or []:
-                    vid = f"{env_id}_{volume.get('name') or volume.get('Name', '')}"
-                    if vid not in known_volume_ids:
-                        known_volume_ids.add(vid)
-                        new.append(
-                            DockhandVolumeSensor(
-                                slow, entry.entry_id, env_id, env_name, base_url, volume
-                            )
-                        )
+                    volume_sensor = DockhandVolumeSensor(
+                        slow, entry.entry_id, env_id, env_name, base_url, volume
+                    )
+                    if not _already_registered("sensor", volume_sensor.unique_id):
+                        new.append(volume_sensor)
 
             for git_stack in env_data.get("git_stacks") or []:
-                gsid = f"{env_id}_{git_stack.get('stackName', '')}"
-                if gsid not in known_git_stack_ids:
-                    known_git_stack_ids.add(gsid)
+                git_sync_sensor = DockhandGitStackSyncStatusSensor(
+                    slow,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    git_stack,
+                )
+                if not _already_registered("sensor", git_sync_sensor.unique_id):
                     new += [
-                        DockhandGitStackSyncStatusSensor(
-                            slow,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            git_stack,
-                        ),
+                        git_sync_sensor,
                         DockhandGitStackLastSyncSensor(
                             slow,
                             entry.entry_id,
@@ -472,13 +464,12 @@ async def async_setup_entry(
 
         if enable_schedules:
             for sched in (slow.data or {}).get("schedules") or []:
-                skid = _sched_key(sched)
-                if skid not in known_sched_ids:
-                    known_sched_ids.add(skid)
+                next_run_sensor = DockhandScheduleNextRunSensor(
+                    slow, entry.entry_id, sched, base_url
+                )
+                if not _already_registered("sensor", next_run_sensor.unique_id):
                     new += [
-                        DockhandScheduleNextRunSensor(
-                            slow, entry.entry_id, sched, base_url
-                        ),
+                        next_run_sensor,
                         DockhandScheduleLastStatusSensor(
                             slow, entry.entry_id, sched, base_url
                         ),
@@ -551,13 +542,9 @@ class BaseFastContainerSensor(CoordinatorEntity[DockhandFastCoordinator], Sensor
         self._container_name = container.get("name", "")
 
     def _container(self) -> dict | None:
-        for c in (
-            _coordinator_env(self.coordinator.data, self._env_id).get("containers")
-            or []
-        ):
-            if c.get("name") == self._container_name:
-                return c
-        return None
+        return _find_container(
+            self.coordinator.data, self._env_id, self._container_name
+        )
 
     def _container_stats(self) -> dict | None:
         """Return the latest stats snapshot for this container, or None.
@@ -659,12 +646,7 @@ class BaseFastStackSensor(CoordinatorEntity[DockhandFastCoordinator], SensorEnti
         self._stack_name = stack.get("name", "")
 
     def _stack(self) -> dict | None:
-        for s in (
-            _coordinator_env(self.coordinator.data, self._env_id).get("stacks") or []
-        ):
-            if s.get("name") == self._stack_name:
-                return s
-        return None
+        return _find_stack(self.coordinator.data, self._env_id, self._stack_name)
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -1133,16 +1115,26 @@ class DockhandEnvActivityEventsSensor(BaseFastEnvSensor):
         e = self._stats().get("events") or {}
         slow_data = self._slow_coordinator.data or {}
         env = _coordinator_env(slow_data, self._env_id)
-        raw_events = env.get("recent_events") or []
-        recent_events = [
-            {
-                "container_name": ev.get("containerName"),
-                "action": ev.get("action"),
-                "timestamp": ev.get("timestamp"),
-            }
-            for ev in raw_events
-            if isinstance(ev, dict)
-        ][:10]
+        # None (not []) when this specific fetch failed — distinguishes
+        # "we don't know" from "genuinely zero recent events," same
+        # reasoning as BaseSlowEnvSensor's _fetch_failure_key, just
+        # applied to one attribute instead of the whole entity, since
+        # native_value above is fast-data-derived and unaffected by this
+        # failure — marking the whole entity unavailable would wrongly
+        # hide a still-valid state along with the one stale attribute.
+        if "recent_events" in (env.get("fetch_failures") or set()):
+            recent_events = None
+        else:
+            raw_events = env.get("recent_events") or []
+            recent_events = [
+                {
+                    "container_name": ev.get("containerName"),
+                    "action": ev.get("action"),
+                    "timestamp": ev.get("timestamp"),
+                }
+                for ev in raw_events
+                if isinstance(ev, dict)
+            ][:10]
         return {"today": e.get("today"), "recent_events": recent_events}
 
 
@@ -1638,6 +1630,14 @@ class DockhandStackContainerCountSensor(BaseFastStackSensor):
 
 class BaseSlowEnvSensor(CoordinatorEntity[DockhandSlowCoordinator], SensorEntity):
     _attr_has_entity_name = True
+    # Overridden by subclasses whose *value* (existence is handled
+    # entirely by cleanup — see __init__.py's _build_live_sets, not this)
+    # depends on a resource fetch that can fail independently of the
+    # overall slow poll succeeding — see coordinator.py's _unwrap and
+    # docs/ARCHITECTURE.md §9. None (the default) means "not gated on any
+    # single resource," which covers most subclasses; only host- and
+    # vulnerabilities-derived ones need to set this.
+    _fetch_failure_key: str | None = None
 
     def __init__(
         self,
@@ -1655,6 +1655,15 @@ class BaseSlowEnvSensor(CoordinatorEntity[DockhandSlowCoordinator], SensorEntity
 
     def _env_data(self) -> dict:
         return _coordinator_env(self.coordinator.data, self._env_id)
+
+    @property
+    def available(self) -> bool:
+        if not super().available:
+            return False
+        if self._fetch_failure_key is None:
+            return True
+        failures = self._env_data().get("fetch_failures") or set()
+        return self._fetch_failure_key not in failures
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -1686,6 +1695,7 @@ class DockhandEnvHawserVersionSensor(BaseSlowEnvSensor):
     _attr_translation_key = "hawser_agent_version"
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_entity_registry_enabled_default = False
+    _fetch_failure_key = "host"
 
     def __init__(
         self,
@@ -1733,6 +1743,7 @@ class DockhandEnvVulnerabilitiesSensor(BaseSlowEnvSensor):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_entity_registry_enabled_default = False
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _fetch_failure_key = "vulnerabilities"
 
     def __init__(
         self,
@@ -1782,6 +1793,7 @@ class BaseSlowEnvHostSensor(BaseSlowEnvSensor):
 
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_entity_registry_enabled_default = False
+    _fetch_failure_key = "host"
 
     def _host(self) -> dict:
         return self._env_data().get("host") or {}
@@ -2196,6 +2208,8 @@ class _BaseScheduleSensor(CoordinatorEntity[DockhandSlowCoordinator], SensorEnti
         self._sched_id = sched["id"]
         self._sched_type = sched["type"]
         self._sched_name = sched["name"]
+        self._sched_env_id = sched.get("environmentId")
+        self._sched_env_name = sched.get("environmentName")
         self._base_url = base_url
 
     def _find(self) -> dict | None:
@@ -2207,7 +2221,12 @@ class _BaseScheduleSensor(CoordinatorEntity[DockhandSlowCoordinator], SensorEnti
     @property
     def device_info(self) -> DeviceInfo:
         return _sched_device(
-            self._sched_id, self._sched_type, self._sched_name, self._base_url
+            self._sched_id,
+            self._sched_type,
+            self._sched_name,
+            self._base_url,
+            environment_id=self._sched_env_id,
+            environment_name=self._sched_env_name,
         )
 
 
@@ -2259,10 +2278,23 @@ class DockhandScheduleLastStatusSensor(_BaseScheduleSensor):
             entity_id: sensor.auto_update_last_status
             to: "failed"
     Template triggers on attributes are fragile and hard to read.
+
+    Not diagnostic — "current known status" is core, everyday-relevant
+    information about a schedule, not technical/troubleshooting trivia,
+    matching this codebase's own precedent (DockhandStackStatusSensor,
+    DockhandGitStackSyncStatusSensor — the closest existing analogs — are
+    both primary, not diagnostic). This is the primary/comprehensive entity
+    for a schedule device: it carries the identity attributes (name,
+    description, is_system) alongside the scheduling ones already on
+    Next run (cron_expression, enabled, environment, schedule_type) —
+    duplicated rather than moved, since those shipped on Next run in an
+    earlier release and removing them could break an existing automation
+    or template depending on them; duplication here is safe (both read
+    fresh from the same coordinator dict every update, unlike DeviceInfo
+    fields, which is why that duplication was a bug and this one isn't).
     """
 
     _attr_translation_key = "last_status"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(
         self,
@@ -2287,18 +2319,24 @@ class DockhandScheduleLastStatusSensor(_BaseScheduleSensor):
         s = self._find()
         if not s:
             return {}
-        last = s.get("lastExecution")
-        if not last:
-            return {}
         attrs: dict[str, Any] = {
-            "triggered_by": last.get("triggeredBy"),
-            "triggered_at": last.get("triggeredAt"),
-            "duration_ms": last.get("duration"),
-            "error_message": last.get("errorMessage"),
+            "name": s.get("name"),
+            "description": s.get("description"),
+            "is_system": s.get("isSystem"),
+            "cron_expression": s.get("cronExpression"),
+            "enabled": s.get("enabled"),
+            "environment": s.get("environmentName"),
+            "schedule_type": s.get("type"),
         }
-        details = last.get("details") or {}
-        if "updatesFound" in details:
-            attrs["updates_found"] = details["updatesFound"]
+        last = s.get("lastExecution")
+        if last:
+            attrs["triggered_by"] = last.get("triggeredBy")
+            attrs["triggered_at"] = last.get("triggeredAt")
+            attrs["duration_ms"] = last.get("duration")
+            attrs["error_message"] = last.get("errorMessage")
+            details = last.get("details") or {}
+            if "updatesFound" in details:
+                attrs["updates_found"] = details["updatesFound"]
         return attrs
 
 

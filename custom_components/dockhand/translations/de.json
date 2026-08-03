@@ -319,6 +319,14 @@
     }
   },
   "issues": {
+    "fetch_failed_top_level": {
+      "title": "Dockhand kann einen Teil seiner Daten nicht erreichen",
+      "description": "Der letzte Versuch, {resources} abzurufen, ist fehlgeschlagen und seitdem nicht mehr erfolgreich gewesen. Vorhandene Geräte und Entitäten dafür bleiben unberührt — solange dies fehlschlägt, wird nichts entfernt — aber alles, was davon abhängt, zeigt bis zur Wiederherstellung veraltete oder nicht verfügbare Werte an. Prüfen Sie das Home-Assistant-Protokoll auf den zugrunde liegenden Fehler (suchen Sie nach \"Dockhand: error fetching\") und stellen Sie sicher, dass die Dockhand-Instanz erreichbar ist und normal reagiert. Dies wird automatisch behoben, sobald ein Abruf wieder erfolgreich ist."
+    },
+    "fetch_failed_env": {
+      "title": "Dockhand kann einige Daten für {env_name} nicht erreichen",
+      "description": "Der letzte Versuch, {resources} für \"{env_name}\" abzurufen, ist fehlgeschlagen und seitdem nicht mehr erfolgreich gewesen. Vorhandene Geräte und Entitäten dieser Umgebung bleiben unberührt — solange dies fehlschlägt, wird nichts entfernt — aber alles, was von den betroffenen Daten abhängt, zeigt bis zur Wiederherstellung veraltete oder nicht verfügbare Werte an. Prüfen Sie das Home-Assistant-Protokoll auf den zugrunde liegenden Fehler (suchen Sie nach \"Dockhand: error fetching\") und stellen Sie sicher, dass diese Umgebung von Dockhand aus erreichbar ist. Dies wird automatisch behoben, sobald ein Abruf wieder erfolgreich ist."
+    },
     "runtime_update_warning": {
       "title": "Dockhand meldete eine Warnung beim Aktualisieren von {container}",
       "description": "Das Ändern von {field} am Container \"{container}\" war erfolgreich, aber der zugrunde liegende Docker-Engine-Aufruf von Dockhand gab eine Warnung zurück, was bedeuten könnte, dass die Änderung nicht vollständig übernommen wurde: {warnings}\n\nÜberprüfen Sie den Container in der Dockhand-Oberfläche, um den aktuellen Wert zu bestätigen."

@@ -1,5 +1,5 @@
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -109,6 +109,16 @@ class DockhandData:
     fast_coordinator: DockhandFastCoordinator
     slow_coordinator: DockhandSlowCoordinator
     update_coordinator: DockhandUpdateCoordinator | None
+    # Which entities (domain-prefixed unique_ids) have been added to HA
+    # during *this* setup's lifetime — reset fresh every time
+    # async_setup_entry runs (fresh instance created below), which is
+    # exactly the point: this must NOT survive a reload or restart, unlike
+    # the entity registry, which does. See helpers.py's already_registered()
+    # for why checking the registry itself was wrong — it answers "did
+    # this unique_id ever exist," not "is a live object backing it right
+    # now," and after any reload the answer to the second question is
+    # "no" for everything, regardless of what the registry remembers.
+    known_entity_ids: set[str] = field(default_factory=set)
 
 
 # Typed config entry alias — used throughout all platform setup functions
@@ -339,10 +349,13 @@ def _register_devices(
     enable_volumes = bool(config.get(CONF_ENABLE_VOLUMES, False))
     enable_networks = bool(config.get(CONF_ENABLE_NETWORKS, False))
 
+    all_schedules = (slow_coordinator.data or {}).get("schedules") or []
+
     for env_id, env_data in _all_envs(fast_coordinator.data).items():
         stats = env_data.get("stats") or {}
         env_name = stats.get("name", f"Environment {env_id}")
         slow_env = _coordinator_env(slow_coordinator.data, env_id)
+        env_schedules = [s for s in all_schedules if s.get("environmentId") == env_id]
         _ensure_env_devices(
             hass,
             entry.entry_id,
@@ -354,9 +367,11 @@ def _register_devices(
             networks=slow_env.get("networks"),
             images=slow_env.get("images"),
             volumes=slow_env.get("volumes"),
+            schedules=env_schedules,
             enable_networks=enable_networks,
             enable_images=enable_images,
             enable_volumes=enable_volumes,
+            enable_schedules=enable_schedules,
         )
 
     if enable_schedules:
@@ -364,7 +379,7 @@ def _register_devices(
             hass,
             entry.entry_id,
             base_url,
-            (slow_coordinator.data or {}).get("schedules") or [],
+            all_schedules,
         )
 
 
@@ -381,10 +396,74 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
         containers_group_env_ids set[int]   — env_ids with ≥1 freestanding
                                               container; the Containers group
                                               device is only valid for these
+        stacks_group_env_ids     set[int]   — env_ids with ≥1 stack; the
+                                              Stacks group device is only
+                                              valid for these
+        containers_fetch_ok_env_ids set[int] — env_ids whose containers fetch
+                                              specifically succeeded this
+                                              cycle (regardless of result).
+                                              Gates every container-derived
+                                              set above (containers, update_uids,
+                                              bulk_update_uids, runtime_control_uids,
+                                              container_stats_uids,
+                                              container_action_uids, health_uids)
+                                              — see images_fetch_ok_env_ids below
+                                              for the general pattern this follows.
+        stacks_fetch_ok_env_ids set[int]    — same as containers_fetch_ok_env_ids,
+                                              for stacks (stacks, stack_action_uids,
+                                              stack_deploy_uids,
+                                              stack_updates_available_uids).
         schedules                set[str]   — live device identifiers (schedule_<id>)
+        schedule_env_group_ids   set[int]   — env_ids with ≥1 live env-scoped
+                                              schedule (environmentId == env_id);
+                                              that env's Schedules group device
+                                              is only valid for these
+        images_group_env_ids     set[int]   — env_ids with ≥1 live image;
+                                              that env's Images group device
+                                              is only valid for these
+        networks_group_env_ids   set[int]   — env_ids with ≥1 live network;
+                                              that env's Networks group device
+                                              is only valid for these
+        volumes_group_env_ids    set[int]   — env_ids with ≥1 live volume;
+                                              that env's Volumes group device
+                                              is only valid for these
+        images_fetch_ok_env_ids  set[int]   — env_ids whose images fetch
+                                              specifically succeeded this
+                                              cycle (regardless of result).
+                                              An env's absence from
+                                              images_group_env_ids only means
+                                              "confirmed empty" if it's ALSO
+                                              present here — otherwise the
+                                              fetch itself failed and got
+                                              silently defaulted to empty
+                                              (see coordinator.py's _unwrap),
+                                              which must not be mistaken for
+                                              "genuinely has none."
+        networks_fetch_ok_env_ids set[int]  — see images_fetch_ok_env_ids.
+        volumes_fetch_ok_env_ids  set[int]  — see images_fetch_ok_env_ids.
+        git_stacks_fetch_ok_env_ids set[int] — see images_fetch_ok_env_ids.
+        enable_images            bool       — raw config flag, poll-independent.
+                                              Used only to decide "feature is
+                                              off entirely, remove the group
+                                              device unconditionally" — NOT
+                                              for the "confirmed empty" case,
+                                              which needs slow_valid/online
+                                              gating instead (see enable_networks/
+                                              enable_volumes/schedules_feature_enabled).
+        enable_networks           bool      — see enable_images.
+        enable_volumes            bool      — see enable_images.
+        schedules_feature_enabled bool      — raw CONF_ENABLE_SCHEDULES flag,
+                                              poll-independent (unlike
+                                              schedules_enabled below, which is
+                                              also gated on a successful slow
+                                              poll and therefore unsafe to use
+                                              for "feature is off, remove
+                                              unconditionally" — that would
+                                              wrongly fire during a transient
+                                              slow-coordinator failure too).
         image_uids               set[str]   — live entity unique_ids
         network_uids             set[str]   — live entity unique_ids
-        volume_uids              set[str]   — live entity unique_ids
+        volume_uids               set[str]  — live entity unique_ids
         update_uids              set[str]   — live entity unique_ids (Tier 1 — from
                                               fast data's updateCheckEnabled, not the
                                               optional Tier 2 update_coordinator)
@@ -431,6 +510,14 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
     container_stats_enabled = bool(
         entry_config.get(CONF_ENABLE_CONTAINER_STATS, DEFAULT_ENABLE_CONTAINER_STATS)
     )
+    # Raw config flags, poll-independent — used only for the "feature is off
+    # entirely, remove the group device unconditionally" cleanup case. Do not
+    # use these for detecting "confirmed empty while enabled" — that needs
+    # slow_valid/online gating (see images_group_env_ids etc. below).
+    enable_images = bool(entry_config.get(CONF_ENABLE_IMAGES, False))
+    enable_networks = bool(entry_config.get(CONF_ENABLE_NETWORKS, False))
+    enable_volumes = bool(entry_config.get(CONF_ENABLE_VOLUMES, False))
+    schedules_feature_enabled = bool(entry_config.get(CONF_ENABLE_SCHEDULES, False))
 
     env_ids: set[int] = set(fast_data.keys())
     containers: set[str] = set()
@@ -438,6 +525,10 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
     # Env IDs that have at least one freestanding (non-Compose) container.
     # The Containers group device is only valid when this set includes the env_id.
     containers_group_env_ids: set[int] = set()
+    # Env IDs that have at least one stack, period — no freestanding-only
+    # distinction the way containers has, since every stack counts. The
+    # Stacks group device is only valid when this set includes the env_id.
+    stacks_group_env_ids: set[int] = set()
     # Runtime control number/select entities (memory/cpu/pids/restart-policy) —
     # live on the container's own device, but only exist for stack-less,
     # non-system containers when the feature is enabled, so (unlike other
@@ -505,10 +596,23 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
         CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES
     )
 
+    # Which envs' containers/stacks fetch specifically succeeded this cycle
+    # (see coordinator.py's DockhandFastCoordinator._fetch and _unwrap's own
+    # doc comment) — the highest-stakes version of the fetch_failures
+    # pattern in this whole file, since containers/stacks are what
+    # determines the single most commonly-used entities this integration
+    # creates. An env absent from containers_fetch_ok_env_ids means don't
+    # trust this env's absence from `containers`/`containers_group_env_ids`/
+    # every container-derived uid set below as confirmed-empty — same for
+    # stacks_fetch_ok_env_ids and `stacks`/every stack-derived uid set.
+    containers_fetch_ok_env_ids: set[int] = set()
+    stacks_fetch_ok_env_ids: set[int] = set()
+
     for env_id, env_data in fast_data.items():
         has_freestanding = False
         stats = env_data.get("stats") or {}
         update_check_enabled = bool(stats.get("updateCheckEnabled"))
+        env_failures: set[str] = env_data.get("fetch_failures") or set()
         env_containers = env_data.get("containers") or []
         pending_updates = env_data.get("pending_update_container_ids") or set()
         system_ids = {
@@ -517,59 +621,68 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
             if c.get("systemContainer") and c.get("id")
         }
         update_env_data = update_data.get(env_id)
-        if update_entities_enabled and any(
-            _container_has_pending_update(c, pending_updates, update_env_data)
-            for c in env_containers
-            if c.get("id") not in system_ids
-        ):
-            bulk_update_uids.add(f"{entry.entry_id}_{env_id}_bulk_update")
-        for c in env_containers:
-            name = c.get("name", "")
-            if name:
-                containers.add(f"container_{env_id}_{name}")
-                if update_entities_enabled and update_check_enabled:
-                    update_uids.add(f"{entry.entry_id}_{env_id}_update_{name}")
-                if not c.get("systemContainer"):
-                    for suffix in _CONTAINER_ACTION_SUFFIXES:
-                        container_action_uids.add(
-                            f"{entry.entry_id}_{env_id}_container_{name}_{suffix}"
+        if "containers" not in env_failures:
+            containers_fetch_ok_env_ids.add(env_id)
+            if update_entities_enabled and any(
+                _container_has_pending_update(c, pending_updates, update_env_data)
+                for c in env_containers
+                if c.get("id") not in system_ids
+            ):
+                bulk_update_uids.add(f"{entry.entry_id}_{env_id}_bulk_update")
+            for c in env_containers:
+                name = c.get("name", "")
+                if name:
+                    containers.add(f"container_{env_id}_{name}")
+                    if update_entities_enabled and update_check_enabled:
+                        update_uids.add(f"{entry.entry_id}_{env_id}_update_{name}")
+                    if not c.get("systemContainer"):
+                        for suffix in _CONTAINER_ACTION_SUFFIXES:
+                            container_action_uids.add(
+                                f"{entry.entry_id}_{env_id}_container_{name}_{suffix}"
+                            )
+                    if _container_has_healthcheck(c):
+                        health_uids.add(
+                            f"{entry.entry_id}_{env_id}_container_{name}_health"
                         )
-                if _container_has_healthcheck(c):
-                    health_uids.add(
-                        f"{entry.entry_id}_{env_id}_container_{name}_health"
+                    if container_stats_enabled:
+                        for suffix in CONTAINER_STATS_SUFFIXES:
+                            container_stats_uids.add(
+                                f"{entry.entry_id}_{env_id}_container_{name}{suffix}"
+                            )
+                is_stackless = not _compose_project(c)
+                if is_stackless:
+                    has_freestanding = True
+                    if (
+                        runtime_controls_enabled
+                        and name
+                        and not c.get("systemContainer")
+                    ):
+                        for suffix in _RUNTIME_CONTROL_SUFFIXES:
+                            runtime_control_uids.add(
+                                f"{entry.entry_id}_{env_id}_container_{name}_{suffix}"
+                            )
+            if has_freestanding:
+                containers_group_env_ids.add(env_id)
+        if "stacks" not in env_failures:
+            stacks_fetch_ok_env_ids.add(env_id)
+            for s in env_data.get("stacks") or []:
+                stack_name = s["name"]
+                stacks.add(f"stack_{env_id}_{stack_name}")
+                stacks_group_env_ids.add(env_id)
+                has_system = _stack_has_system_container(s, env_containers)
+                if not has_system:
+                    for suffix in _STACK_ACTION_SUFFIXES:
+                        stack_action_uids.add(
+                            f"{entry.entry_id}_{env_id}_stack_{stack_name}_{suffix}"
+                        )
+                if not has_system and s.get("sourceType") == "internal":
+                    stack_deploy_uids.add(
+                        f"{entry.entry_id}_{env_id}_stack_{stack_name}_deploy"
                     )
-                if container_stats_enabled:
-                    for suffix in CONTAINER_STATS_SUFFIXES:
-                        container_stats_uids.add(
-                            f"{entry.entry_id}_{env_id}_container_{name}{suffix}"
-                        )
-            is_stackless = not _compose_project(c)
-            if is_stackless:
-                has_freestanding = True
-                if runtime_controls_enabled and name and not c.get("systemContainer"):
-                    for suffix in _RUNTIME_CONTROL_SUFFIXES:
-                        runtime_control_uids.add(
-                            f"{entry.entry_id}_{env_id}_container_{name}_{suffix}"
-                        )
-        if has_freestanding:
-            containers_group_env_ids.add(env_id)
-        for s in env_data.get("stacks") or []:
-            stack_name = s["name"]
-            stacks.add(f"stack_{env_id}_{stack_name}")
-            has_system = _stack_has_system_container(s, env_containers)
-            if not has_system:
-                for suffix in _STACK_ACTION_SUFFIXES:
-                    stack_action_uids.add(
-                        f"{entry.entry_id}_{env_id}_stack_{stack_name}_{suffix}"
+                if "updatesAvailable" in s:
+                    stack_updates_available_uids.add(
+                        f"{entry.entry_id}_{env_id}_stack_{stack_name}_updates_available"
                     )
-            if not has_system and s.get("sourceType") == "internal":
-                stack_deploy_uids.add(
-                    f"{entry.entry_id}_{env_id}_stack_{stack_name}_deploy"
-                )
-            if "updatesAvailable" in s:
-                stack_updates_available_uids.add(
-                    f"{entry.entry_id}_{env_id}_stack_{stack_name}_updates_available"
-                )
 
     # Environments that are offline have unreachable Docker daemons — their
     # container and stack lists will be empty but that is not ground truth.
@@ -585,18 +698,51 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
     slow_valid = slow.last_update_success and bool(slow_data)
     slow_env_map = _all_envs(slow_data)
     slow_env_ids: set[int] = set(slow_env_map.keys())
+    # Top-level fetch failures (environments/schedules — see coordinator.py's
+    # DockhandSlowCoordinator._fetch and _unwrap's own doc comment for why
+    # this exists): a poll can report last_update_success=True while one of
+    # its own sub-fetches actually failed and got silently defaulted to
+    # empty. Without checking this too, "schedules" ending up empty because
+    # its own fetch failed looks identical to "genuinely zero schedules,"
+    # and downstream cleanup would wrongly treat every existing schedule as
+    # confirmed-deleted — a real, reported incident this closes.
+    top_failures: set[str] = slow_data.get("fetch_failures") or set()
 
-    # Only populate schedule live set when schedules are enabled.
-    # When disabled, slow_data has schedules=[] — treat as "not loaded", not "deleted".
-    schedules_enabled = slow.last_update_success and bool(
-        entry_config.get(CONF_ENABLE_SCHEDULES, False)
+    # Only populate schedule live set when schedules are enabled AND their
+    # own fetch actually succeeded this cycle — not just when the overall
+    # slow poll did. When disabled, slow_data has schedules=[] — treat as
+    # "not loaded", not "deleted"; same treatment now applies when enabled
+    # but the schedules fetch itself specifically failed.
+    schedules_enabled = (
+        slow.last_update_success
+        and "schedules" not in top_failures
+        and bool(entry_config.get(CONF_ENABLE_SCHEDULES, False))
     )
 
     schedules: set[str] = set()
+    schedule_env_group_ids: set[int] = set()
     image_uids: set[str] = set()
     network_uids: set[str] = set()
     volume_uids: set[str] = set()
+    images_group_env_ids: set[int] = set()
+    networks_group_env_ids: set[int] = set()
+    volumes_group_env_ids: set[int] = set()
     git_stack_uids: set[str] = set()
+    # Which envs' fetch for each of these four resources specifically
+    # succeeded this cycle, regardless of whether the result was empty or
+    # not — the same "did this genuinely happen, not just look empty"
+    # distinction schedules_enabled now makes above, but per-environment
+    # and per-resource, since images/networks/volumes/git_stacks are
+    # fetched independently for each environment and any one of them can
+    # fail while the others succeed. An env absent from one of these sets
+    # means "don't trust this resource's absence from the corresponding
+    # *_group_env_ids/uids set below as confirmed-empty" — same as if the
+    # whole env fetch had failed, just scoped to the one resource that
+    # actually did.
+    images_fetch_ok_env_ids: set[int] = set()
+    networks_fetch_ok_env_ids: set[int] = set()
+    volumes_fetch_ok_env_ids: set[int] = set()
+    git_stacks_fetch_ok_env_ids: set[int] = set()
 
     if slow_valid:
         # Only populate when enabled — empty list when disabled is not "deleted".
@@ -604,31 +750,47 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
             for sched in slow_data.get("schedules") or []:
                 if sched.get("id") is not None:
                     schedules.add(f"schedule_{_sched_key(sched)}")
+                    sched_env_id = sched.get("environmentId")
+                    if sched_env_id is not None:
+                        schedule_env_group_ids.add(sched_env_id)
 
         for env_id, env_data in slow_env_map.items():
-            for img in env_data.get("images") or []:
-                raw_id = img.get("id") or ""
-                short_id = raw_id.split(":")[-1] if ":" in raw_id else raw_id
-                image_uids.add(f"{entry.entry_id}_{env_id}_image_{short_id}")
-            for net in env_data.get("networks") or []:
-                net_id = net.get("id", "")
-                network_uids.add(f"{entry.entry_id}_{env_id}_network_{net_id}")
-            for vol in env_data.get("volumes") or []:
-                vname = vol.get("name") or vol.get("Name", "")
-                volume_uids.add(f"{entry.entry_id}_{env_id}_volume_{vname}")
+            env_failures: set[str] = env_data.get("fetch_failures") or set()
+
+            if "images" not in env_failures:
+                images_fetch_ok_env_ids.add(env_id)
+                for img in env_data.get("images") or []:
+                    raw_id = img.get("id") or ""
+                    short_id = raw_id.split(":")[-1] if ":" in raw_id else raw_id
+                    image_uids.add(f"{entry.entry_id}_{env_id}_image_{short_id}")
+                    images_group_env_ids.add(env_id)
+            if "networks" not in env_failures:
+                networks_fetch_ok_env_ids.add(env_id)
+                for net in env_data.get("networks") or []:
+                    net_id = net.get("id", "")
+                    network_uids.add(f"{entry.entry_id}_{env_id}_network_{net_id}")
+                    networks_group_env_ids.add(env_id)
+            if "volumes" not in env_failures:
+                volumes_fetch_ok_env_ids.add(env_id)
+                for vol in env_data.get("volumes") or []:
+                    vname = vol.get("name") or vol.get("Name", "")
+                    volume_uids.add(f"{entry.entry_id}_{env_id}_volume_{vname}")
+                    volumes_group_env_ids.add(env_id)
             # Git stack entities — always fetched (not config-gated), live
             # on the stack's own device, but only exist while Dockhand
             # still classifies that stack as git-tracked, so (like runtime
             # controls) they need explicit tracking rather than relying
             # purely on device-removal cascade.
-            for gs in env_data.get("git_stacks") or []:
-                gs_name = gs.get("stackName", "")
-                if not gs_name:
-                    continue
-                for suffix in _GIT_STACK_SUFFIXES:
-                    git_stack_uids.add(
-                        f"{entry.entry_id}_{env_id}_stack_{gs_name}_{suffix}"
-                    )
+            if "git_stacks" not in env_failures:
+                git_stacks_fetch_ok_env_ids.add(env_id)
+                for gs in env_data.get("git_stacks") or []:
+                    gs_name = gs.get("stackName", "")
+                    if not gs_name:
+                        continue
+                    for suffix in _GIT_STACK_SUFFIXES:
+                        git_stack_uids.add(
+                            f"{entry.entry_id}_{env_id}_stack_{gs_name}_{suffix}"
+                        )
 
     return {
         "env_ids": env_ids,
@@ -636,8 +798,23 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
         "containers": containers,
         "stacks": stacks,
         "containers_group_env_ids": containers_group_env_ids,
+        "stacks_group_env_ids": stacks_group_env_ids,
+        "containers_fetch_ok_env_ids": containers_fetch_ok_env_ids,
+        "stacks_fetch_ok_env_ids": stacks_fetch_ok_env_ids,
         "schedules": schedules,
         "schedules_enabled": schedules_enabled,
+        "schedules_feature_enabled": schedules_feature_enabled,
+        "schedule_env_group_ids": schedule_env_group_ids,
+        "enable_images": enable_images,
+        "enable_networks": enable_networks,
+        "enable_volumes": enable_volumes,
+        "images_group_env_ids": images_group_env_ids,
+        "networks_group_env_ids": networks_group_env_ids,
+        "volumes_group_env_ids": volumes_group_env_ids,
+        "images_fetch_ok_env_ids": images_fetch_ok_env_ids,
+        "networks_fetch_ok_env_ids": networks_fetch_ok_env_ids,
+        "volumes_fetch_ok_env_ids": volumes_fetch_ok_env_ids,
+        "git_stacks_fetch_ok_env_ids": git_stacks_fetch_ok_env_ids,
         "image_uids": image_uids,
         "network_uids": network_uids,
         "volume_uids": volume_uids,
@@ -698,8 +875,17 @@ def _cleanup_stale_registry(
       sensor), not by suffix alone; see the comment at that branch.
     - Env hub and group device removal is driven by env_ids — a deleted
       environment disappears from env_ids and all its devices cascade away.
-    - Schedule cleanup is gated on schedules being enabled and slow coordinator
-      validity.
+    - Images/Networks/Volumes/Schedules group devices are each removed either
+      when their feature toggle is off entirely (checked via the raw config
+      flag, poll-independent) or when the feature is on but confirmed empty
+      (checked via slow_valid + online_env_ids, same two-case safety rule as
+      everything else in this function). The Containers group has no toggle
+      of its own, so only the "confirmed empty" case applies to it.
+    - Schedule device cleanup (schedules_hub, each env's Schedules group, and
+      every individual schedule device) uses the same feature-toggle-off vs.
+      confirmed-gone split. Toggling "Enable schedules" off removes all three
+      layers unconditionally — via_device parenting does not cascade removal
+      in HA's device registry, so each layer needs its own explicit check.
     - Entities with config_entry_id=None (orphaned by HA when their device was
       removed) are outside the scope of async_entries_for_config_entry and are
       left to HA's periodic 30-day purge cycle. Our primary cleanup prevents
@@ -737,15 +923,21 @@ def _cleanup_stale_registry(
                             identifier,
                         )
                         dev_registry.async_remove_device(device.id)
-                    elif env_id in live["online_env_ids"]:
-                        # Env exists and is online — container was removed.
+                    elif (
+                        env_id in live["online_env_ids"]
+                        and env_id in live["containers_fetch_ok_env_ids"]
+                    ):
+                        # Env exists, is online, and its containers fetch
+                        # actually succeeded this cycle — container was
+                        # removed.
                         _LOGGER.debug(
                             "Dockhand: removing stale container device %s", identifier
                         )
                         dev_registry.async_remove_device(device.id)
                     else:
                         _LOGGER.debug(
-                            "Dockhand: env offline, skipping container cleanup: %s",
+                            "Dockhand: env offline or containers fetch failed, "
+                            "skipping container cleanup: %s",
                             identifier,
                         )
 
@@ -764,60 +956,146 @@ def _cleanup_stale_registry(
                             identifier,
                         )
                         dev_registry.async_remove_device(device.id)
-                    elif env_id in live["online_env_ids"]:
-                        # Env exists and is online — stack was removed.
+                    elif (
+                        env_id in live["online_env_ids"]
+                        and env_id in live["stacks_fetch_ok_env_ids"]
+                    ):
+                        # Env exists, is online, and its stacks fetch
+                        # actually succeeded this cycle — stack was removed.
                         _LOGGER.debug(
                             "Dockhand: removing stale stack device %s", identifier
                         )
                         dev_registry.async_remove_device(device.id)
                     else:
                         _LOGGER.debug(
-                            "Dockhand: env offline, skipping stack cleanup: %s",
+                            "Dockhand: env offline or stacks fetch failed, "
+                            "skipping stack cleanup: %s",
                             identifier,
                         )
 
             elif identifier.startswith("env_"):
                 # Covers both env hub devices ("env_5") and group devices
-                # ("env_5_Containers", "env_5_Stacks", etc.) — all keyed to
-                # the same env_id in position [1] after splitting on "_".
+                # ("env_5_Containers", "env_5_Stacks", "env_5_Schedules",
+                # etc.) — all keyed to the same env_id in position [1] after
+                # splitting on "_".
                 try:
                     env_id = int(identifier.split("_")[1])
                 except ValueError:
                     continue
                 if env_id not in live["env_ids"]:
+                    # Environment deleted from Dockhand — remove unconditionally.
+                    # This also covers every group device parented to it
+                    # (Containers/Images/Networks/Volumes/Schedules), since
+                    # they all share this same "env_{env_id}_*" identifier
+                    # prefix and this branch doesn't distinguish further once
+                    # the environment itself is gone.
                     _LOGGER.debug(
                         "Dockhand: removing stale env/group device %s", identifier
                     )
                     dev_registry.async_remove_device(device.id)
-                elif (
-                    identifier == f"env_{env_id}_Containers"
-                    and env_id in live["online_env_ids"]
-                    and env_id not in live["containers_group_env_ids"]
-                ):
-                    # The environment exists and is online but has no freestanding
-                    # containers — the Containers group device is now empty and
-                    # should be removed. Guarded by online_env_ids to avoid
-                    # removing the device when the host is temporarily unreachable
-                    # and the container list came back empty.
-                    _LOGGER.debug(
-                        "Dockhand: removing empty Containers group device for env %s",
-                        env_id,
-                    )
-                    dev_registry.async_remove_device(device.id)
+                    continue
+
+                # Environment still exists — check each group device for
+                # either "feature toggled off entirely" (poll-independent,
+                # safe to check unconditionally) or "feature on but confirmed
+                # empty" (needs the online/slow_valid two-case safety rule,
+                # since a temporarily unreachable host or a failed slow poll
+                # must not be mistaken for "actually empty now").
+                if identifier == f"env_{env_id}_Containers":
+                    if (
+                        env_id in live["online_env_ids"]
+                        and env_id in live["containers_fetch_ok_env_ids"]
+                        and env_id not in live["containers_group_env_ids"]
+                    ):
+                        _LOGGER.debug(
+                            "Dockhand: removing empty Containers group for env %s",
+                            env_id,
+                        )
+                        dev_registry.async_remove_device(device.id)
+                elif identifier == f"env_{env_id}_Stacks":
+                    if (
+                        env_id in live["online_env_ids"]
+                        and env_id in live["stacks_fetch_ok_env_ids"]
+                        and env_id not in live["stacks_group_env_ids"]
+                    ):
+                        _LOGGER.debug(
+                            "Dockhand: removing empty Stacks group for env %s",
+                            env_id,
+                        )
+                        dev_registry.async_remove_device(device.id)
+                elif identifier == f"env_{env_id}_Images":
+                    if not live["enable_images"] or (
+                        live["slow_valid"]
+                        and env_id in live["online_env_ids"]
+                        and env_id in live["images_fetch_ok_env_ids"]
+                        and env_id not in live["images_group_env_ids"]
+                    ):
+                        _LOGGER.debug(
+                            "Dockhand: removing stale/empty Images group for env %s",
+                            env_id,
+                        )
+                        dev_registry.async_remove_device(device.id)
+                elif identifier == f"env_{env_id}_Networks":
+                    if not live["enable_networks"] or (
+                        live["slow_valid"]
+                        and env_id in live["online_env_ids"]
+                        and env_id in live["networks_fetch_ok_env_ids"]
+                        and env_id not in live["networks_group_env_ids"]
+                    ):
+                        _LOGGER.debug(
+                            "Dockhand: removing stale/empty Networks group for env %s",
+                            env_id,
+                        )
+                        dev_registry.async_remove_device(device.id)
+                elif identifier == f"env_{env_id}_Volumes":
+                    if not live["enable_volumes"] or (
+                        live["slow_valid"]
+                        and env_id in live["online_env_ids"]
+                        and env_id in live["volumes_fetch_ok_env_ids"]
+                        and env_id not in live["volumes_group_env_ids"]
+                    ):
+                        _LOGGER.debug(
+                            "Dockhand: removing stale/empty Volumes group for env %s",
+                            env_id,
+                        )
+                        dev_registry.async_remove_device(device.id)
+                elif identifier == f"env_{env_id}_Schedules":
+                    if not live["schedules_feature_enabled"] or (
+                        live["schedules_enabled"]
+                        and env_id in live["online_env_ids"]
+                        and env_id not in live["schedule_env_group_ids"]
+                    ):
+                        _LOGGER.debug(
+                            "Dockhand: removing stale/empty Schedules group for env %s",
+                            env_id,
+                        )
+                        dev_registry.async_remove_device(device.id)
 
             elif identifier == "schedules_hub":
                 # Remove the schedules hub device when schedules are disabled
                 # in the config. It has no cleanup path otherwise since it has
-                # no env_id and is not in any live set.
-                if not live["schedules_enabled"]:
+                # no env_id and is not in any live set. Uses the raw config
+                # flag (poll-independent), not schedules_enabled, since the
+                # latter is also gated on a successful slow poll and would
+                # wrongly fire during a transient slow-coordinator failure.
+                if not live["schedules_feature_enabled"]:
                     _LOGGER.debug("Dockhand: removing stale schedules_hub device")
                     dev_registry.async_remove_device(device.id)
 
             elif identifier.startswith("schedule_"):
-                # Only clean up schedule devices when schedules are enabled and
-                # the slow coordinator has valid data. When disabled, the live
-                # set is empty but that means "not loaded", not "deleted".
-                if live["schedules_enabled"] and identifier not in live["schedules"]:
+                # Two removal cases: the feature is off entirely (poll-
+                # independent — remove unconditionally, same as schedules_hub
+                # above), or the feature is on, the slow coordinator has valid
+                # data, and this specific schedule is confirmed gone. Fixes a
+                # real gap: previously this branch only checked the second
+                # case, so disabling "Enable schedules" removed schedules_hub
+                # but left every individual schedule device un-parented (HA's
+                # device registry clears via_device_id on removal, it does
+                # not cascade-remove — confirmed against HA core's
+                # device_registry.py) and never actually removed.
+                if not live["schedules_feature_enabled"] or (
+                    live["schedules_enabled"] and identifier not in live["schedules"]
+                ):
                     _LOGGER.debug(
                         "Dockhand: removing stale schedule device %s", identifier
                     )
@@ -859,6 +1137,7 @@ def _cleanup_stale_registry(
             elif live["slow_valid"] and (
                 env_id in live["slow_env_ids"]
                 and env_id in live["online_env_ids"]
+                and env_id in live["images_fetch_ok_env_ids"]
                 and uid not in live["image_uids"]
             ):
                 # Env exists, is online, slow data is fresh — entity is gone.
@@ -873,6 +1152,7 @@ def _cleanup_stale_registry(
             elif live["slow_valid"] and (
                 env_id in live["slow_env_ids"]
                 and env_id in live["online_env_ids"]
+                and env_id in live["networks_fetch_ok_env_ids"]
                 and uid not in live["network_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale network entity %s", uid)
@@ -886,6 +1166,7 @@ def _cleanup_stale_registry(
             elif live["slow_valid"] and (
                 env_id in live["slow_env_ids"]
                 and env_id in live["online_env_ids"]
+                and env_id in live["volumes_fetch_ok_env_ids"]
                 and uid not in live["volume_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale volume entity %s", uid)
@@ -893,12 +1174,16 @@ def _cleanup_stale_registry(
 
         elif uid_type == "update":
             env_id = uid_env_id
-            # Tier 1 is entirely fast-data-derived (same reliability as
-            # containers/stacks — no separate validity flag needed beyond
-            # the top-level "if not fast_data: return" guard).
-            # Remove if env deleted, or if env is online and update entity is gone.
+            # Tier 1 is entirely fast-data-derived, specifically from the
+            # same containers fetch as `containers` itself — needs the
+            # same containers_fetch_ok_env_ids gating as everything else
+            # derived from that fetch (see docs/ARCHITECTURE.md §9).
+            # Remove if env deleted, or if env is online, its containers
+            # fetch actually succeeded, and the update entity is gone.
             if env_id not in live["env_ids"] or (
-                env_id in live["online_env_ids"] and uid not in live["update_uids"]
+                env_id in live["online_env_ids"]
+                and env_id in live["containers_fetch_ok_env_ids"]
+                and uid not in live["update_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale update entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
@@ -907,11 +1192,13 @@ def _cleanup_stale_registry(
             # Env-level "Update all" button. Conditionally present, not
             # just conditionally enabled — mirrors Dockhand's own button
             # disappearing entirely once there's nothing left to update,
-            # rather than going idle/disabled. Same fast-data reliability
-            # as the Tier 1 update entities above.
+            # rather than going idle/disabled. Same containers-fetch
+            # reliability as the Tier 1 update entities above.
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
-                env_id in live["online_env_ids"] and uid not in live["bulk_update_uids"]
+                env_id in live["online_env_ids"]
+                and env_id in live["containers_fetch_ok_env_ids"]
+                and uid not in live["bulk_update_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale bulk update entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
@@ -945,6 +1232,7 @@ def _cleanup_stale_registry(
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
                 env_id in live["online_env_ids"]
+                and env_id in live["containers_fetch_ok_env_ids"]
                 and uid not in live["runtime_control_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale runtime control entity %s", uid)
@@ -964,6 +1252,7 @@ def _cleanup_stale_registry(
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
                 env_id in live["online_env_ids"]
+                and env_id in live["containers_fetch_ok_env_ids"]
                 and uid not in live["container_stats_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale container stats entity %s", uid)
@@ -981,6 +1270,7 @@ def _cleanup_stale_registry(
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
                 env_id in live["online_env_ids"]
+                and env_id in live["containers_fetch_ok_env_ids"]
                 and uid not in live["container_action_uids"]
             ):
                 _LOGGER.debug(
@@ -998,7 +1288,9 @@ def _cleanup_stale_registry(
             # device-removal cascade.
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
-                env_id in live["online_env_ids"] and uid not in live["health_uids"]
+                env_id in live["online_env_ids"]
+                and env_id in live["containers_fetch_ok_env_ids"]
+                and uid not in live["health_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale health entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
@@ -1024,6 +1316,7 @@ def _cleanup_stale_registry(
             elif live["slow_valid"] and (
                 env_id in live["slow_env_ids"]
                 and env_id in live["online_env_ids"]
+                and env_id in live["git_stacks_fetch_ok_env_ids"]
                 and uid not in live["git_stack_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale git stack entity %s", uid)
@@ -1038,6 +1331,7 @@ def _cleanup_stale_registry(
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
                 env_id in live["online_env_ids"]
+                and env_id in live["stacks_fetch_ok_env_ids"]
                 and uid not in live["stack_action_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale stack action entity %s", uid)
@@ -1052,6 +1346,7 @@ def _cleanup_stale_registry(
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
                 env_id in live["online_env_ids"]
+                and env_id in live["stacks_fetch_ok_env_ids"]
                 and uid not in live["stack_updates_available_uids"]
             ):
                 _LOGGER.debug(
@@ -1076,6 +1371,7 @@ def _cleanup_stale_registry(
             env_id = uid_env_id
             if env_id not in live["env_ids"] or (
                 env_id in live["online_env_ids"]
+                and env_id in live["stacks_fetch_ok_env_ids"]
                 and uid not in live["stack_deploy_uids"]
             ):
                 _LOGGER.debug("Dockhand: removing stale stack deploy entity %s", uid)

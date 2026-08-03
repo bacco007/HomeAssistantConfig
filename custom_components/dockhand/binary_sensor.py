@@ -13,7 +13,14 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import DockhandConfigEntry
 from .const import CONF_API_URL
 from .coordinator import DockhandFastCoordinator, DockhandSlowCoordinator
-from .helpers import _all_envs, _coordinator_env, _env_device, _stack_device
+from .helpers import (
+    _all_envs,
+    _coordinator_env,
+    _env_device,
+    _find_stack,
+    _stack_device,
+    already_registered,
+)
 
 # Coordinator-based read-only platform.
 PARALLEL_UPDATES = 0
@@ -28,22 +35,21 @@ async def async_setup_entry(
     slow: DockhandSlowCoordinator = entry.runtime_data.slow_coordinator
     base_url: str = entry.data.get(CONF_API_URL, "")
 
-    known_fast_env_ids: set[int] = set()
-    known_stack_ids: set[str] = set()
-    known_slow_env_ids: set[int] = set()
-    known_git_stack_ids: set[str] = set()
+    known_ids = entry.runtime_data.known_entity_ids
 
     def _build_fast_entities() -> list[BinarySensorEntity]:
         new: list[BinarySensorEntity] = []
         for env_id, env_data in _all_envs(fast.data).items():
             stats = env_data.get("stats") or {}
             env_name = stats.get("name", f"Environment {env_id}")
-            if env_id not in known_fast_env_ids:
-                known_fast_env_ids.add(env_id)
+            online_sensor = DockhandEnvOnlineSensor(
+                fast, slow, entry.entry_id, env_id, base_url
+            )
+            if not already_registered(
+                hass, known_ids, "binary_sensor", online_sensor.unique_id
+            ):
                 new += [
-                    DockhandEnvOnlineSensor(
-                        fast, slow, entry.entry_id, env_id, base_url
-                    ),
+                    online_sensor,
                     DockhandEnvCollectActivitySensor(
                         fast, entry.entry_id, env_id, base_url
                     ),
@@ -59,14 +65,15 @@ async def async_setup_entry(
                     DockhandEnvAutoUpdateSensor(fast, entry.entry_id, env_id, base_url),
                 ]
             for stack in env_data.get("stacks") or []:
-                sid = f"{env_id}_{stack.get('name', '')}"
-                if sid not in known_stack_ids and "updatesAvailable" in stack:
-                    known_stack_ids.add(sid)
-                    new.append(
-                        DockhandStackUpdatesAvailableBinarySensor(
-                            fast, entry.entry_id, env_id, env_name, base_url, stack
-                        )
-                    )
+                if "updatesAvailable" not in stack:
+                    continue
+                stack_sensor = DockhandStackUpdatesAvailableBinarySensor(
+                    fast, entry.entry_id, env_id, env_name, base_url, stack
+                )
+                if not already_registered(
+                    hass, known_ids, "binary_sensor", stack_sensor.unique_id
+                ):
+                    new.append(stack_sensor)
         return new
 
     def _build_slow_entities() -> list[BinarySensorEntity]:
@@ -77,28 +84,27 @@ async def async_setup_entry(
             fast_stats = (fast_data.get(env_id) or {}).get("stats") or {}
             env_name = fast_stats.get("name", f"Environment {env_id}")
 
-            if env_id not in known_slow_env_ids:
-                known_slow_env_ids.add(env_id)
-                new.append(
-                    DockhandEnvImagePruneBinarySensor(
-                        slow, entry.entry_id, env_id, env_name, base_url
-                    )
-                )
+            image_prune_sensor = DockhandEnvImagePruneBinarySensor(
+                slow, entry.entry_id, env_id, env_name, base_url
+            )
+            if not already_registered(
+                hass, known_ids, "binary_sensor", image_prune_sensor.unique_id
+            ):
+                new.append(image_prune_sensor)
 
             for git_stack in env_data.get("git_stacks") or []:
-                gsid = f"{env_id}_{git_stack.get('stackName', '')}"
-                if gsid not in known_git_stack_ids:
-                    known_git_stack_ids.add(gsid)
-                    new.append(
-                        DockhandGitStackSyncErrorBinarySensor(
-                            slow,
-                            entry.entry_id,
-                            env_id,
-                            env_name,
-                            base_url,
-                            git_stack,
-                        )
-                    )
+                git_sensor = DockhandGitStackSyncErrorBinarySensor(
+                    slow,
+                    entry.entry_id,
+                    env_id,
+                    env_name,
+                    base_url,
+                    git_stack,
+                )
+                if not already_registered(
+                    hass, known_ids, "binary_sensor", git_sensor.unique_id
+                ):
+                    new.append(git_sensor)
         return new
 
     async_add_entities(_build_fast_entities())
@@ -396,12 +402,7 @@ class DockhandStackUpdatesAvailableBinarySensor(
         )
 
     def _stack(self) -> dict | None:
-        for s in (
-            _coordinator_env(self.coordinator.data, self._env_id).get("stacks") or []
-        ):
-            if s.get("name") == self._stack_name:
-                return s
-        return None
+        return _find_stack(self.coordinator.data, self._env_id, self._stack_name)
 
     @property
     def is_on(self) -> bool | None:

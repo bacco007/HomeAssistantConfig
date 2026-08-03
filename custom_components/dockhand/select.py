@@ -24,7 +24,13 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import DockhandConfigEntry
 from .const import CONF_ENABLE_RUNTIME_CONTROLS, DOMAIN
 from .coordinator import DockhandFastCoordinator, DockhandSlowCoordinator
-from .helpers import _all_envs, _compose_project, _coordinator_env
+from .helpers import (
+    _all_envs,
+    _compose_project,
+    _coordinator_env,
+    _find_container,
+    already_registered,
+)
 
 PARALLEL_UPDATES = 0
 
@@ -47,7 +53,7 @@ async def async_setup_entry(
     fast = data.fast_coordinator
     slow = data.slow_coordinator
 
-    known: set[str] = set()
+    known_ids = entry.runtime_data.known_entity_ids
 
     def _build_entities() -> list[SelectEntity]:
         new: list[SelectEntity] = []
@@ -62,15 +68,14 @@ async def async_setup_entry(
                     # infrastructure could prevent it recovering from a
                     # crash.
                 name = container.get("name", "")
-                key = f"{env_id}_{name}"
-                if not name or key in known:
+                if not name:
                     continue
-                known.add(key)
-                new.append(
-                    DockhandContainerRestartPolicySelect(
-                        fast, slow, entry.entry_id, env_id, name
-                    )
+                entity = DockhandContainerRestartPolicySelect(
+                    fast, slow, entry.entry_id, env_id, name
                 )
+                if already_registered(hass, known_ids, "select", entity.unique_id):
+                    continue
+                new.append(entity)
         return new
 
     async_add_entities(_build_entities())
@@ -115,15 +120,9 @@ class DockhandContainerRestartPolicySelect(
         )
 
     def _container(self) -> dict | None:
-        for c in (
-            _coordinator_env(self._fast_coordinator.data, self._env_id).get(
-                "containers"
-            )
-            or []
-        ):
-            if c.get("name") == self._container_name:
-                return c
-        return None
+        return _find_container(
+            self._fast_coordinator.data, self._env_id, self._container_name
+        )
 
     def _runtime_config(self) -> dict:
         slow_data = self.coordinator.data or {}
@@ -132,7 +131,10 @@ class DockhandContainerRestartPolicySelect(
 
     @property
     def available(self) -> bool:
-        return self._container() is not None and super().available
+        if self._container() is None or not super().available:
+            return False
+        env = _coordinator_env(self.coordinator.data, self._env_id)
+        return "runtime_config" not in (env.get("fetch_failures") or set())
 
     def _handle_coordinator_update(self) -> None:
         self._optimistic_value = None

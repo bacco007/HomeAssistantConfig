@@ -8,11 +8,71 @@ must never be imported by __init__.py or by each other.
 
 from typing import Any
 
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import DeviceInfo
 
 from .const import DOMAIN
+
+
+def already_registered(
+    hass: HomeAssistant, known_ids: set[str], entity_domain: str, unique_id: str
+) -> bool:
+    """Whether an entity with this unique_id has already been added to HA
+    during *this* setup's lifetime — checks (and, on a miss, marks)
+    `known_ids`, expected to be `entry.runtime_data.known_entity_ids`,
+    a plain in-memory set created fresh every time async_setup_entry
+    runs. That freshness is the whole point: it must reset on every
+    reload and restart, the same way local `known_*_ids` variables inside
+    each platform's own async_setup_entry always did before this existed
+    (sensor.py alone had ten separate copies; binary_sensor.py, button.py,
+    number.py, select.py, and switch.py each had their own too) — this
+    just consolidates that instead of duplicating it, exactly as
+    `_coordinator_env()` already did once before for a different
+    duplicated pattern (see that function's own docstring).
+
+    On a cache *hit* (this session already added it), also confirms the
+    entity is still actually in the real registry before trusting that —
+    `_cleanup_stale_registry` can remove something mid-session (correctly,
+    for a container genuinely deleted, or incorrectly, if a bug like the
+    one `fetch_failures` fixes ever recurs) without `known_ids` finding
+    out, so a bare cache hit alone can't be trusted to still be true. On a
+    miss, no registry lookup happens at all — nothing to confirm for
+    something we're about to create anyway, and the common case (genuinely
+    new entity) stays exactly as cheap as it was.
+
+    This is deliberately *not* the same mistake an earlier version of this
+    function made, which checked the registry as the *primary* signal —
+    see docs/ARCHITECTURE.md §9 for the full incident: that answered "did
+    this unique_id ever exist in *any* session," which persists across
+    reloads and restarts by design, and made every entity in the
+    integration look permanently registered after the first setup call.
+    Checking the registry here only ever confirms something *this specific
+    session* already added to `known_ids` itself — never used to decide
+    whether something is new, only to catch when something we already
+    consider live has stopped being live since we last checked. That
+    keeps `known_ids` self-correcting within a session (closing the
+    narrower gap the registry-based rewrite was originally trying to
+    solve) without reintroducing the cross-session mistake that rewrite
+    actually caused.
+    """
+    key = f"{entity_domain}:{unique_id}"
+    if key in known_ids:
+        ent_registry = er.async_get(hass)
+        if (
+            ent_registry.async_get_entity_id(entity_domain, DOMAIN, unique_id)
+            is not None
+        ):
+            return True
+        # Cleanup removed it since we added it this session — forget it
+        # so the caller creates it fresh, same as if we'd never seen it.
+        known_ids.discard(key)
+        return False
+    known_ids.add(key)
+    return False
+
 
 # Unique_id suffixes for the 8 container-stat sensors (CPU/memory/network/
 # block-I/O), matching how each builds self._attr_unique_id in sensor.py.
@@ -81,6 +141,45 @@ def _coordinator_env(data: dict[str, Any] | None, env_id: int) -> dict[str, Any]
     convention right.)
     """
     return _all_envs(data).get(env_id) or {}
+
+
+def _find_container(
+    coordinator_data: dict[str, Any] | None, env_id: int, container_name: str
+) -> dict | None:
+    """Look up one container's current dict by name, from a coordinator's
+    data — name-based since Docker enforces unique container names per
+    host, stable across container recreation (image updates).
+
+    Was seven near-identical copies of this exact loop across
+    button.py/number.py/select.py/sensor.py/switch.py (×2)/update.py —
+    six equivalent, one (update.py's) already drifted to bypass
+    _coordinator_env() above and reimplement its equivalent manually via
+    _all_envs(...).get(env_id), found on a review specifically looking
+    for this pattern after a bug slipped through because two copies of a
+    different repeated pattern (this file's own already_registered()) had
+    drifted to different local variable names. Same lesson _coordinator_env's
+    own docstring already documents from _fast_env/_slow_env's history:
+    consolidating removes the "did every copy of this stay in sync"
+    question entirely, rather than relying on it.
+    """
+    for c in _coordinator_env(coordinator_data, env_id).get("containers") or []:
+        if c.get("name") == container_name:
+            return c
+    return None
+
+
+def _find_stack(
+    coordinator_data: dict[str, Any] | None, env_id: int, stack_name: str
+) -> dict | None:
+    """Look up one stack's current dict by name, from a coordinator's
+    data — same reasoning as _find_container() above, four duplicated
+    copies instead of seven (binary_sensor.py/button.py/sensor.py/
+    switch.py), otherwise identical.
+    """
+    for s in _coordinator_env(coordinator_data, env_id).get("stacks") or []:
+        if s.get("name") == stack_name:
+            return s
+    return None
 
 
 # --------------------------------------------------------------------------- #
@@ -310,26 +409,78 @@ def _sched_key(sched: dict) -> str:
     return f"{sched['id']}_{sched['type']}"
 
 
+def _schedule_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+    """DeviceInfo for an environment's Schedules group — parents every
+    schedule device whose `environmentId` matches this environment.
+
+    Same shape as `_stacks_group_device`: a group-of-devices, not a
+    group-of-entities, since individual schedule devices (via `_sched_device`)
+    need to exist as their own devices regardless of this grouping.
+    """
+    return DeviceInfo(
+        identifiers={(DOMAIN, f"env_{env_id}_Schedules")},
+        name=f"{env_name} – Schedules",
+        manufacturer="Dockhand",
+        model="Environment Group",
+        configuration_url=_schedules_url(base_url),
+        via_device=(DOMAIN, f"env_{env_id}"),
+        entry_type=DeviceEntryType.SERVICE,
+    )
+
+
 def _sched_device(
     sched_id: Any,
     sched_type: str,
     sched_name: str,
     base_url: str,
+    environment_id: int | None = None,
+    environment_name: str | None = None,
 ) -> DeviceInfo:
     """DeviceInfo for an individual schedule device.
 
-    Named "Dockhand – Schedules – {name}" so all schedule devices group
-    together visually in the HA device list and entity_ids are prefixed
-    with dockhand_schedules_{name}.
+    Named "{prefix} – Schedules – {name}" where prefix is "Dockhand" for
+    genuinely global schedules, or the owning environment's own name for
+    env-scoped ones — matching `_schedule_group_device`'s own naming
+    ("{env_name} – Schedules") rather than leaving every schedule device
+    misleadingly prefixed "Dockhand" regardless of which environment (if
+    any) it actually belongs to. This was a real, shipped bug in the
+    initial 1.9.0 device-hierarchy work: `via_device` was made conditional
+    on `environment_id`, but `name` was never updated to match — every
+    env-scoped schedule kept showing "Dockhand – Schedules – …" even
+    though it was correctly parented under its own environment's group.
+    Caught after release via real device names in a live instance, not
+    caught by tests (none asserted on the name string, only identifiers/
+    via_device — see test_helpers.py for the regression coverage added
+    alongside this fix).
+
+    `environment_id`/`environment_name` (from the schedule's own
+    `environmentId`/`environmentName` fields, confirmed from Dockhand's
+    actual `/api/schedules` source — null for genuinely global schedules
+    like system_cleanup and repo_prune/check/verify) determine both the
+    prefix and the parent: env-scoped schedules parent to that
+    environment's Schedules group (`_schedule_group_device`) and take its
+    name as their own prefix; global ones keep parenting to the flat
+    `schedules_hub` and the "Dockhand" prefix. The device's own
+    `identifiers` stay content-addressed by schedule id/type regardless of
+    environment, so both this and the via_device change are safe without a
+    migration (see ARCHITECTURE.md §0 — both call sites must use this
+    factory, never inline fields, or the two can silently drift apart on
+    the next coordinator update).
     """
     key = _sched_key({"id": sched_id, "type": sched_type})
+    if environment_id is not None:
+        via_device = (DOMAIN, f"env_{environment_id}_Schedules")
+        prefix = environment_name or f"Environment {environment_id}"
+    else:
+        via_device = (DOMAIN, "schedules_hub")
+        prefix = "Dockhand"
     return DeviceInfo(
         identifiers={(DOMAIN, f"schedule_{key}")},
-        name=f"Dockhand – Schedules – {sched_name}",
+        name=f"{prefix} – Schedules – {sched_name}",
         manufacturer="Dockhand",
         model="Schedule",
         configuration_url=_schedules_url(base_url),
-        via_device=(DOMAIN, "schedules_hub"),
+        via_device=via_device,
         entry_type=DeviceEntryType.SERVICE,
     )
 
@@ -563,14 +714,20 @@ def _ensure_hub_devices(
     """Create or update hub-level devices — those that exist once per Dockhand
     instance rather than once per environment.
 
-    Currently manages the Schedules hub and individual schedule devices.
+    Currently manages the Schedules hub and individual devices for genuinely
+    global schedules only (`environmentId is None` — system_cleanup jobs and
+    destination-scoped repo_prune/check/verify). Env-scoped schedules
+    (container_update, git_stack_sync, env_update_check, image_prune, backup)
+    are handled by _ensure_env_devices instead, parented to that environment's
+    own Schedules group — see that function and `_schedule_group_device`.
     As Dockhand adds other instance-level features (global settings, system
     health, multi-host config, etc.) their device registration belongs here
     alongside schedules, not in _ensure_env_devices.
 
     Called from _register_devices (initial setup) and _build_slow_entities
     (live updates). async_get_or_create is idempotent — safe to call on every
-    coordinator update.
+    coordinator update. `schedules` may be the full unfiltered list from
+    /api/schedules — filtering to global-only happens here.
     """
     registry = dr.async_get(hass)
     registry.async_get_or_create(
@@ -583,19 +740,14 @@ def _ensure_hub_devices(
         entry_type=DeviceEntryType.SERVICE,
     )
     for sched in schedules:
-        if sched.get("id") is None:
+        if sched.get("id") is None or sched.get("environmentId") is not None:
             continue
-        key = _sched_key(sched)
-        sched_name = sched.get("name", f"Schedule {key}")
+        sched_name = sched.get("name", f"Schedule {_sched_key(sched)}")
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            identifiers={(DOMAIN, f"schedule_{key}")},
-            name=f"Dockhand – Schedules – {sched_name}",
-            manufacturer="Dockhand",
-            model="Schedule",
-            configuration_url=_schedules_url(base_url),
-            via_device=(DOMAIN, "schedules_hub"),
-            entry_type=DeviceEntryType.SERVICE,
+            **_sched_device(
+                sched["id"], sched["type"], sched_name, base_url, environment_id=None
+            ),
         )
 
 
@@ -611,9 +763,11 @@ def _ensure_env_devices(
     networks: list[dict] | None = None,
     images: list[dict] | None = None,
     volumes: list[dict] | None = None,
+    schedules: list[dict] | None = None,
     enable_networks: bool = False,
     enable_images: bool = False,
     enable_volumes: bool = False,
+    enable_schedules: bool = False,
 ) -> None:
     """Create or update all device registry entries for a single environment.
 
@@ -651,6 +805,11 @@ def _ensure_env_devices(
         networks / images / volumes: Slow coordinator resource lists. Each group
             device is only created when the corresponding enable_* flag is True
             AND the list is non-empty.
+        schedules: Schedules for this env only (caller filters the full
+            /api/schedules list by `environmentId == env_id` before passing
+            it in — genuinely global schedules, `environmentId is None`, are
+            handled by `_ensure_hub_devices` instead, not here). Group + child
+            devices only created when enable_schedules is True AND non-empty.
     """
     registry = dr.async_get(hass)
 
@@ -712,3 +871,27 @@ def _ensure_env_devices(
             config_entry_id=entry_id,
             **_volume_group_device(env_id, env_name, base_url),
         )
+
+    # ── Schedules group + individual schedule devices (env-scoped only) ──────
+    # Global schedules (environmentId is None) are handled by
+    # _ensure_hub_devices under the flat schedules_hub, not here.
+    if enable_schedules and schedules:
+        registry.async_get_or_create(
+            config_entry_id=entry_id,
+            **_schedule_group_device(env_id, env_name, base_url),
+        )
+        for sched in schedules:
+            if sched.get("id") is None:
+                continue
+            sched_name = sched.get("name", f"Schedule {_sched_key(sched)}")
+            registry.async_get_or_create(
+                config_entry_id=entry_id,
+                **_sched_device(
+                    sched["id"],
+                    sched["type"],
+                    sched_name,
+                    base_url,
+                    environment_id=env_id,
+                    environment_name=env_name,
+                ),
+            )

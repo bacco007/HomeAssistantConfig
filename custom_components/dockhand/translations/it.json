@@ -319,6 +319,14 @@
     }
   },
   "issues": {
+    "fetch_failed_top_level": {
+      "title": "Dockhand non riesce a raggiungere parte dei suoi dati",
+      "description": "L'ultimo tentativo di recuperare {resources} non è riuscito e non ha più avuto successo da allora. I dispositivi e le entità esistenti per questo rimangono invariati — nulla viene rimosso finché questo continua a fallire — ma tutto ciò che ne dipende mostrerà valori obsoleti o non disponibili finché non si ripristina. Controlla il log di Home Assistant per l'errore sottostante (cerca \"Dockhand: error fetching\") e verifica che l'istanza Dockhand sia raggiungibile e risponda normalmente. Questo si risolve automaticamente non appena un recupero ha di nuovo successo."
+    },
+    "fetch_failed_env": {
+      "title": "Dockhand non riesce a raggiungere alcuni dati per {env_name}",
+      "description": "L'ultimo tentativo di recuperare {resources} per \"{env_name}\" non è riuscito e non ha più avuto successo da allora. I dispositivi e le entità esistenti di questo ambiente rimangono invariati — nulla viene rimosso finché questo continua a fallire — ma tutto ciò che dipende dai dati interessati mostrerà valori obsoleti o non disponibili finché non si ripristina. Controlla il log di Home Assistant per l'errore sottostante (cerca \"Dockhand: error fetching\") e verifica che questo ambiente sia raggiungibile da Dockhand. Questo si risolve automaticamente non appena un recupero ha di nuovo successo."
+    },
     "runtime_update_warning": {
       "title": "Dockhand ha segnalato un avviso durante l'aggiornamento di {container}",
       "description": "La modifica di {field} sul container \"{container}\" è riuscita, ma la chiamata sottostante di Dockhand al motore Docker ha restituito un avviso, il che potrebbe significare che non è stata applicata completamente: {warnings}\n\nControlla il container nell'interfaccia di Dockhand per confermare il valore attuale."

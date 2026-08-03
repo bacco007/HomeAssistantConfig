@@ -58,7 +58,13 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import DockhandConfigEntry
 from .const import CONF_API_URL, CONF_ENABLE_RUNTIME_CONTROLS, DOMAIN
 from .coordinator import DockhandFastCoordinator, DockhandSlowCoordinator
-from .helpers import _all_envs, _compose_project, _coordinator_env
+from .helpers import (
+    _all_envs,
+    _compose_project,
+    _coordinator_env,
+    _find_container,
+    already_registered,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -87,7 +93,7 @@ async def async_setup_entry(
     slow = data.slow_coordinator
     base_url: str = entry.data.get(CONF_API_URL, "")
 
-    known: set[str] = set()
+    known_ids = entry.runtime_data.known_entity_ids
 
     def _build_entities() -> list[NumberEntity]:
         new: list[NumberEntity] = []
@@ -108,15 +114,16 @@ async def async_setup_entry(
                     # carries the identical risk (e.g. an over-tight
                     # memory limit OOM-killing Dockhand itself).
                 name = container.get("name", "")
-                key = f"{env_id}_{name}"
-                if not name or key in known:
+                if not name:
                     continue
-                known.add(key)
-                new.append(
-                    DockhandContainerMemoryLimitNumber(
-                        fast, slow, entry.entry_id, env_id, env_name, base_url, name
-                    )
+                memory_number = DockhandContainerMemoryLimitNumber(
+                    fast, slow, entry.entry_id, env_id, env_name, base_url, name
                 )
+                if already_registered(
+                    hass, known_ids, "number", memory_number.unique_id
+                ):
+                    continue
+                new.append(memory_number)
                 new.append(
                     DockhandContainerCpuLimitNumber(
                         fast,
@@ -181,15 +188,9 @@ class _BaseRuntimeControlNumber(
         )
 
     def _container(self) -> dict | None:
-        for c in (
-            _coordinator_env(self._fast_coordinator.data, self._env_id).get(
-                "containers"
-            )
-            or []
-        ):
-            if c.get("name") == self._container_name:
-                return c
-        return None
+        return _find_container(
+            self._fast_coordinator.data, self._env_id, self._container_name
+        )
 
     def _runtime_config(self) -> dict:
         slow_data = self.coordinator.data or {}
@@ -198,7 +199,10 @@ class _BaseRuntimeControlNumber(
 
     @property
     def available(self) -> bool:
-        return self._container() is not None and super().available
+        if self._container() is None or not super().available:
+            return False
+        env = _coordinator_env(self.coordinator.data, self._env_id)
+        return "runtime_config" not in (env.get("fetch_failures") or set())
 
     def _handle_coordinator_update(self) -> None:
         # A real poll result supersedes any optimistic value we set locally.
