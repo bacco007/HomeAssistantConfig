@@ -20,7 +20,7 @@ from homeassistant.components.light import (
     ATTR_RGB_COLOR,
     ATTR_SUPPORTED_COLOR_MODES,
 )
-from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
+from homeassistant.const import STATE_ON, STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers import device_registry as dr
@@ -203,6 +203,29 @@ def _reported_payload(state) -> dict:
     return payload
 
 
+def _group_status(
+    hass: HomeAssistant, coordinator: SundialCoordinator, entity_id: str
+) -> dict:
+    """Whether this entity is a light group, and how many members are lit.
+
+    Turning a group on lights every member, so adapting one that is only
+    partly on would switch on lights the user left off — :meth:`_write_targets`
+    narrows the write to the lit ones. Only groups that publish a member list
+    can be recognised (and narrowed); Zigbee groups look like ordinary lights
+    from here, so they are reported as such rather than guessed at.
+    """
+    members = coordinator.group_members(entity_id)
+    if members is None:
+        return {"kind": "light", "members": None, "members_on": None}
+    lit = sum(
+        1
+        for member in members
+        if (state := hass.states.get(member)) is not None
+        and state.state == STATE_ON
+    )
+    return {"kind": "group", "members": len(members), "members_on": lit}
+
+
 def _light_status(
     hass: HomeAssistant, coordinator: SundialCoordinator, entity_id: str, now: datetime
 ) -> dict:
@@ -224,6 +247,7 @@ def _light_status(
         "last_evaluated_at": _iso(rt.last_evaluated_at if rt else None),
         "last_outcome": rt.last_outcome if rt else None,
         "settling": coordinator.is_settling(entity_id),
+        "group": _group_status(hass, coordinator, entity_id),
         "supports": {
             "brightness": brightness,
             "color_temp": color_temp,
