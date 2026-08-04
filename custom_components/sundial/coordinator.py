@@ -488,37 +488,17 @@ class SundialCoordinator:
         """Member entity ids of a light group, or None if it isn't one.
 
         Home Assistant's own light groups publish their members in the
-        ``entity_id`` attribute. Zigbee groups do not — they are a radio-level
-        construct with no member list to read — so they come back as None and
-        can't be narrowed by :meth:`_write_targets`.
+        ``entity_id`` attribute; Zigbee groups, being a radio-level construct,
+        do not. Used only to report a group as such in the panel — writes are
+        never narrowed to a subset of members, because per-member state is not
+        reliable enough to decide who to skip (a Zigbee bulb lit by an earlier
+        groupcast often still reads as off).
         """
         state = self.hass.states.get(entity_id)
         members = state.attributes.get(ATTR_ENTITY_ID) if state else None
         if isinstance(members, (list, tuple)) and members:
             return [str(member) for member in members]
         return None
-
-    def _write_targets(self, entity_id: str) -> str | list[str]:
-        """Who to actually address when writing values for ``entity_id``.
-
-        A light group reports "on" as soon as *any* member is on, and turning
-        it on lights every member — so adapting a partially-on group switches
-        on lights the user deliberately left off. Address only the members that
-        are already on instead. Nothing to narrow (all members on, or not an
-        introspectable group) falls back to the entity itself.
-        """
-        members = self.group_members(entity_id)
-        if members is None:
-            return entity_id
-        lit = [
-            member
-            for member in members
-            if (state := self.hass.states.get(member)) is not None
-            and state.state == STATE_ON
-        ]
-        if not lit or len(lit) == len(members):
-            return entity_id
-        return lit
 
     async def _apply_light(
         self, entity_id: str, light_cfg: LightConfig, target: Target, transition: float
@@ -549,10 +529,7 @@ class SundialCoordinator:
         if brightness is None and not color:
             return  # nothing this light can accept
 
-        base = {
-            ATTR_ENTITY_ID: self._write_targets(entity_id),
-            ATTR_TRANSITION: transition,
-        }
+        base = {ATTR_ENTITY_ID: entity_id, ATTR_TRANSITION: transition}
         if light_cfg.separate_turn_on_commands and brightness is not None and color:
             # IKEA-style: brightness and colour in two separate calls, always
             # with a slight gap between them.
