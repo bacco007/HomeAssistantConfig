@@ -5,7 +5,7 @@ import asyncio
 import json
 import logging
 import os
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Any
 
 import aiohttp
@@ -21,6 +21,7 @@ from .const import (
     CONF_DISTANCE_LIMIT,
     DEFAULT_ADSB_PORT,
     DEFAULT_DISTANCE_LIMIT,
+    MILITARY_DB_URL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,19 +38,24 @@ class ADSBDataUpdateCoordinator(DataUpdateCoordinator):
     ) -> None:
         """Initialize coordinator."""
         self.config_entry = config_entry
-        self.adsb_host = config_entry.data[CONF_ADSB_HOST]
-        self.adsb_port = config_entry.data.get(CONF_ADSB_PORT, DEFAULT_ADSB_PORT)
-        self.distance_limit = config_entry.data.get(CONF_DISTANCE_LIMIT, DEFAULT_DISTANCE_LIMIT)
-        
+        # Options (UI-editable) override the original setup data
+        config = {**config_entry.data, **config_entry.options}
+        self.adsb_host = config[CONF_ADSB_HOST]
+        self.adsb_port = config.get(CONF_ADSB_PORT, DEFAULT_ADSB_PORT)
+        self.distance_limit = config.get(CONF_DISTANCE_LIMIT, DEFAULT_DISTANCE_LIMIT)
+
         # Build ADSB URL
         self.adsb_url = f"http://{self.adsb_host}:{self.adsb_port}/data/aircraft.json"
-        
+
         # Load aircraft types database (will be loaded async after init)
         self.aircraft_types_db = {}
-        
-        # Reference to military sensor for database status
-        self.military_sensor = None
-        
+
+        # Military aircraft database (tar1090-db / Mictronics), owned by the
+        # coordinator — all consumers (sensors, notify, intents) share it.
+        self._military_database: dict[str, dict[str, str]] | None = None
+        self._db_last_updated: datetime | None = None
+        self._db_loading = False
+
         super().__init__(
             hass,
             _LOGGER,
@@ -59,8 +65,8 @@ class ADSBDataUpdateCoordinator(DataUpdateCoordinator):
         
         # Schedule async loading of aircraft types database
         self.hass.async_create_task(self._async_load_aircraft_types_db())
-        
-        # Also load military database here for reliability
+
+        # Initial military database load (refreshed daily by a timer in __init__)
         self.hass.async_create_task(self._async_load_military_database())
 
     async def _async_load_aircraft_types_db(self) -> None:
@@ -227,67 +233,75 @@ class ADSBDataUpdateCoordinator(DataUpdateCoordinator):
         """Fetch aircraft data from ADSB source."""
         try:
             session = async_get_clientsession(self.hass)
-            
+
             async with asyncio.timeout(10):
                 async with session.get(self.adsb_url) as response:
                     if response.status != 200:
                         raise UpdateFailed(
                             f"Error fetching ADSB data: HTTP {response.status}"
                         )
-                    
                     data = await response.json()
-                    
-                    # Validate data structure
-                    if "aircraft" not in data:
-                        raise UpdateFailed("Invalid ADSB data: missing aircraft array")
-                    
-                    # Filter aircraft by distance if limit is set
-                    aircraft = data["aircraft"]
-                    if self.distance_limit > 0:
-                        aircraft = [
-                            plane for plane in aircraft 
-                            if plane.get("r_dst") is not None and plane["r_dst"] <= self.distance_limit
-                        ]
-                    
-                    # Process and enrich aircraft data
-                    processed_aircraft = []
-                    for plane in aircraft:
-                        # Include all aircraft, even without position data (important for military detection)
-                        processed_aircraft.append(self._process_aircraft(plane))
-                    
-                    # Sort by distance (closest first), putting aircraft without distance at end
-                    processed_aircraft.sort(key=lambda x: x.get("distance_mi") if x.get("distance_mi") is not None else 999)
-                    
-                    result = {
-                        "aircraft": processed_aircraft,
-                        "aircraft_count": len(processed_aircraft),
-                        "last_update": data.get("now"),
-                        "total_messages": data.get("messages", 0),
-                    }
-                    
-                    # Check for notifications after data update
-                    if hasattr(self, 'notification_manager') and self.notification_manager:
-                        try:
-                            await self.notification_manager.check_and_notify()
-                        except Exception as err:
-                            _LOGGER.error("Error checking notifications: %s", err)
-                    
-                    return result
-                    
+
+        except UpdateFailed:
+            raise
         except asyncio.TimeoutError as err:
             raise UpdateFailed(f"Timeout fetching ADSB data from {self.adsb_url}") from err
         except aiohttp.ClientError as err:
             raise UpdateFailed(f"Error fetching ADSB data: {err}") from err
-        except json.JSONDecodeError as err:
+        except (json.JSONDecodeError, ValueError) as err:
             raise UpdateFailed(f"Invalid JSON from ADSB source: {err}") from err
-        except Exception as err:
-            raise UpdateFailed(f"Unexpected error fetching ADSB data: {err}") from err
+
+        # Validate data structure
+        if "aircraft" not in data:
+            raise UpdateFailed("Invalid ADSB data: missing aircraft array")
+
+        # Filter aircraft by distance if limit is set
+        aircraft = data["aircraft"]
+        if self.distance_limit > 0:
+            aircraft = [
+                plane for plane in aircraft
+                if plane.get("r_dst") is not None and plane["r_dst"] <= self.distance_limit
+            ]
+
+        # Process and enrich aircraft data. Include all aircraft, even without
+        # position data (important for military detection).
+        processed_aircraft = [self._process_aircraft(plane) for plane in aircraft]
+
+        # Sort by distance (closest first), putting aircraft without distance at end
+        processed_aircraft.sort(key=lambda x: x.get("distance_mi") if x.get("distance_mi") is not None else 999)
+
+        result = {
+            "aircraft": processed_aircraft,
+            "aircraft_count": len(processed_aircraft),
+            "last_update": data.get("now"),
+            "total_messages": data.get("messages", 0),
+        }
+
+        # Check for notifications against the fresh data
+        if getattr(self, "notification_manager", None):
+            try:
+                await self.notification_manager.check_and_notify(processed_aircraft)
+            except Exception as err:
+                _LOGGER.error("Error checking notifications: %s", err)
+
+        return result
 
     def _process_aircraft(self, plane: dict[str, Any]) -> dict[str, Any]:
         """Process and enrich individual aircraft data."""
         # Get enhanced aircraft type information
         aircraft_type = plane.get("t")
         type_info = self.get_aircraft_type_info(aircraft_type)
+
+        # readsb reports alt_baro as the string "ground" for taxiing aircraft —
+        # normalize so every consumer can rely on altitude_ft being numeric
+        # (0 = on ground or unknown; the on_ground flag disambiguates).
+        alt_baro = plane.get("alt_baro")
+        on_ground = alt_baro == "ground"
+        altitude_ft = alt_baro if isinstance(alt_baro, (int, float)) else 0
+        gs = plane.get("gs")
+        speed_kts = round(gs, 0) if isinstance(gs, (int, float)) else 0
+        baro_rate = plane.get("baro_rate")
+        vertical_rate_fpm = baro_rate if isinstance(baro_rate, (int, float)) else 0
         
         # Use enhanced description if available, fallback to original
         enhanced_description = type_info.get("description", "Unknown aircraft")
@@ -318,18 +332,22 @@ class ADSBDataUpdateCoordinator(DataUpdateCoordinator):
             "direction": plane.get("r_dir"),
             
             # Flight data
-            "altitude_ft": plane.get("alt_baro", 0),
+            "altitude_ft": altitude_ft,
+            "on_ground": on_ground,
             "altitude_geom": plane.get("alt_geom"),
-            "speed_kts": round(plane.get("gs", 0), 0),
+            "speed_kts": speed_kts,
             "heading": plane.get("track"),
-            "vertical_rate_fpm": plane.get("baro_rate", 0),
+            "vertical_rate_fpm": vertical_rate_fpm,
             
             # Navigation
             "squawk": plane.get("squawk"),
             "emergency": plane.get("emergency", "none"),
             "nav_altitude": plane.get("nav_altitude_mcp"),
             "nav_heading": plane.get("nav_heading"),
-            
+            "nav_qnh": plane.get("nav_qnh"),
+            "nac_p": plane.get("nac_p"),
+            "adsb_version": plane.get("version"),
+
             # Technical
             "icao_category": plane.get("category"),  # Original ICAO category
             "messages": plane.get("messages", 0),
@@ -342,66 +360,80 @@ class ADSBDataUpdateCoordinator(DataUpdateCoordinator):
         }
     
     async def _async_load_military_database(self) -> None:
-        """Load military aircraft database directly in coordinator."""
+        """Download and parse the military aircraft database.
+
+        Safe to call repeatedly (concurrent calls are dropped). Called at
+        startup, by the daily refresh timer, and by the manual reload service.
+        """
+        if self._db_loading:
+            _LOGGER.debug("Military database load already in progress, skipping")
+            return
+        self._db_loading = True
         try:
-            _LOGGER.info("Loading military database from coordinator...")
-            import aiohttp
-            import json
-            from datetime import datetime
-            
-            from homeassistant.helpers.aiohttp_client import async_get_clientsession
             session = async_get_clientsession(self.hass)
-            
-            async with asyncio.timeout(30):
-                async with session.get("https://raw.githubusercontent.com/Mictronics/readsb-protobuf/dev/webapp/src/db/aircrafts.json") as response:
-                    if response.status == 200:
-                        content = await response.text()
-                        db_data = json.loads(content)
-                        
-                        # Extract only military aircraft (flag "10")
-                        military_db = {}
-                        for icao_hex, aircraft_info in db_data.items():
-                            if len(aircraft_info) >= 3 and aircraft_info[2] == "10":
-                                military_db[icao_hex.upper()] = {
-                                    "tail": aircraft_info[0],
-                                    "type": aircraft_info[1],
-                                    "flag": aircraft_info[2],
-                                    "description": aircraft_info[3] if len(aircraft_info) > 3 else ""
-                                }
-                        
-                        # Store in coordinator for sensors to access
-                        self._military_database = military_db
-                        self._db_last_updated = datetime.now()
-                        
-                        _LOGGER.info("Successfully loaded %d military aircraft from coordinator", len(military_db))
-                        
-                        # Also update military sensor if available
-                        if self.military_sensor:
-                            self.military_sensor._military_database = military_db
-                            self.military_sensor._db_last_updated = datetime.now()
-                        
-                    else:
-                        _LOGGER.warning("Failed to load military database from coordinator: HTTP %d", response.status)
-                        
+            async with asyncio.timeout(60):
+                async with session.get(MILITARY_DB_URL) as response:
+                    if response.status != 200:
+                        _LOGGER.warning(
+                            "Failed to load military database: HTTP %d", response.status
+                        )
+                        return
+                    content = await response.text()
+
+            # ~700k entries — parse and filter off the event loop
+            military_db = await self.hass.async_add_executor_job(
+                _parse_military_db, content
+            )
+            self._military_database = military_db
+            self._db_last_updated = datetime.now()
+            _LOGGER.info(
+                "Loaded %d military aircraft from tar1090-db", len(military_db)
+            )
         except Exception as err:
-            _LOGGER.error("Error loading military database from coordinator: %s", err)
+            _LOGGER.error("Error loading military database: %s", err)
+        finally:
+            self._db_loading = False
+
+    def detect_military_aircraft(
+        self, aircraft_list: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """Return the subset of aircraft found in the military database.
+
+        Database-only detection — no pattern-matching fallback. Returns an
+        empty list until the database has loaded.
+        """
+        if not self._military_database:
+            return []
+        military = []
+        for aircraft in aircraft_list:
+            hex_code = (aircraft.get("hex") or "").upper()
+            db_info = self._military_database.get(hex_code)
+            if db_info:
+                aircraft["_db_info"] = db_info
+                aircraft["_detection_reasons"] = ["DATABASE_MATCH"]
+                military.append(aircraft)
+        return military
 
     def get_military_database_status(self) -> dict[str, Any]:
-        """Get military database status from the military sensor."""
-        # Check coordinator first, then fallback to sensor
-        if hasattr(self, '_military_database') and self._military_database:
-            return {
-                "database_loaded": True,
-                "database_size": len(self._military_database),
-                "last_updated": self._db_last_updated.isoformat() if hasattr(self, '_db_last_updated') and self._db_last_updated else None,
-                "last_updated_friendly": self._db_last_updated.strftime("%Y-%m-%d %H:%M:%S UTC") if hasattr(self, '_db_last_updated') and self._db_last_updated else "Unknown",
+        """Get military database status for monitoring."""
+        return {
+            "database_loaded": self._military_database is not None,
+            "database_size": len(self._military_database) if self._military_database else 0,
+            "last_updated": self._db_last_updated.isoformat() if self._db_last_updated else None,
+            "last_updated_friendly": self._db_last_updated.strftime("%Y-%m-%d %H:%M:%S") if self._db_last_updated else "Never",
+        }
+
+
+def _parse_military_db(content: str) -> dict[str, dict[str, str]]:
+    """Parse the Mictronics aircraft DB, keeping only military (flag "10")."""
+    db_data = json.loads(content)
+    military_db = {}
+    for icao_hex, aircraft_info in db_data.items():
+        if len(aircraft_info) >= 3 and aircraft_info[2] == "10":
+            military_db[icao_hex.upper()] = {
+                "tail": aircraft_info[0],
+                "type": aircraft_info[1],
+                "flag": aircraft_info[2],
+                "description": aircraft_info[3] if len(aircraft_info) > 3 else "",
             }
-        elif self.military_sensor:
-            return self.military_sensor.get_database_status()
-        else:
-            return {
-                "database_loaded": False,
-                "database_size": 0,
-                "last_updated": None,
-                "last_updated_friendly": "Database not loaded",
-            }
+    return military_db

@@ -5,8 +5,6 @@ refresh_data:
 test_military_detection:
   name: Test Military Detection
   description: Test military aircraft detection logic with current data
-  response:
-    optional: true
 
 get_aircraft_details:
   name: Get Aircraft Details
@@ -18,14 +16,10 @@ get_aircraft_details:
       required: true
       selector:
         text:
-  response:
-    optional: true
 
 load_military_database:
   name: Load Military Database
   description: Manually load the military aircraft database from tar1090-db
-  response:
-    optional: true
 
 install_sentences:
   name: Install Voice Sentences
@@ -33,5 +27,3 @@ install_sentences:
     Write the custom sentences YAML file to config/custom_sentences/en/ so
     Home Assistant Assist can recognize aircraft queries like "what plane is that?"
     Restart Home Assistant after running this service for sentences to take effect.
-  response:
-    optional: true

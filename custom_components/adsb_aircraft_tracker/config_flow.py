@@ -321,10 +321,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             if self.hass.config.units.length == "km" and user_input.get(CONF_DISTANCE_LIMIT, 0) > 0:
                 user_input[CONF_DISTANCE_LIMIT] = int(user_input[CONF_DISTANCE_LIMIT] / 1.60934)
 
-            # Update config entry with new options
+            # Merge over existing options — each step only edits its own
+            # fields, so replacing wholesale would wipe the other step's
             return self.async_create_entry(
                 title="",
-                data=user_input,
+                data={**self.config_entry.options, **user_input},
             )
 
         # Get current values from config entry
@@ -369,10 +370,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             if self.hass.config.units.length == "km" and user_input.get(CONF_CLOSE_AIRCRAFT_DISTANCE, 0) > 0:
                 user_input[CONF_CLOSE_AIRCRAFT_DISTANCE] = user_input[CONF_CLOSE_AIRCRAFT_DISTANCE] / 1.60934
 
-            # Update config entry with new options
+            # Merge over existing options — each step only edits its own
+            # fields, so replacing wholesale would wipe the other step's
             return self.async_create_entry(
                 title="",
-                data=user_input,
+                data={**self.config_entry.options, **user_input},
             )
 
         # Get current values from config entry

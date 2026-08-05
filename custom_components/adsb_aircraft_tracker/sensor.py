@@ -11,7 +11,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, INTEGRATION_VERSION
 from .coordinator import ADSBDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ class ADSBSensorBase(CoordinatorEntity, SensorEntity):
             name=f"ADSB Tracker ({coordinator.adsb_host})",
             manufacturer="ADSB Aircraft Tracker",
             model="Aircraft Tracker",
-            sw_version="1.0.0",
+            sw_version=INTEGRATION_VERSION,
             configuration_url=coordinator.adsb_url,
         )
 
@@ -208,32 +208,23 @@ class ADSBMilitaryDetailsSensor(ADSBSensorBase):
         """Return summary of military aircraft detection."""
         if not self.coordinator.data or not self.coordinator.data.get("aircraft"):
             return "No aircraft data available"
-        
-        # Get military aircraft from binary sensor logic
-        from .binary_sensor import ADSBMilitaryAircraftSensor
-        
-        # Create temporary military sensor instance to use detection logic
-        temp_sensor = ADSBMilitaryAircraftSensor(self.coordinator, self.config_entry)
+
         aircraft_list = self.coordinator.data["aircraft"]
-        military_aircraft = temp_sensor._detect_military_aircraft(aircraft_list)
-        
+        military_aircraft = self.coordinator.detect_military_aircraft(aircraft_list)
+
         if not military_aircraft:
             return f"No military aircraft detected (scanned {len(aircraft_list)} aircraft)"
-        
+
         return f"Military aircraft detected: {len(military_aircraft)} aircraft"
-    
+
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
         """Return military aircraft details as attributes."""
         if not self.coordinator.data or not self.coordinator.data.get("aircraft"):
             return {"status": "No aircraft data"}
-        
-        # Get military aircraft from binary sensor logic
-        from .binary_sensor import ADSBMilitaryAircraftSensor
-        
-        temp_sensor = ADSBMilitaryAircraftSensor(self.coordinator, self.config_entry)
+
         aircraft_list = self.coordinator.data["aircraft"]
-        military_aircraft = temp_sensor._detect_military_aircraft(aircraft_list)
+        military_aircraft = self.coordinator.detect_military_aircraft(aircraft_list)
         
         attributes = {
             "total_aircraft": len(aircraft_list),

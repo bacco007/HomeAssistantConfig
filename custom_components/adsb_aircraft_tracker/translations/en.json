@@ -36,7 +36,7 @@
         },
         "data_description": {
           "notification_device": "Select your mobile device to receive aircraft alerts. Leave empty to disable notifications. Only shows devices with the Home Assistant mobile app installed.",
-          "external_url": "Website URL to open when tapping notification alerts. Default uses your local ADSB feeder. Popular options: https://globe.adsb.fi or https://tar1090.adsbexchange.com for global aircraft tracking.",
+          "external_url": "Website URL to open when tapping notification alerts. Defaults to your local ADSB feeder; a public tracking site can be used instead.",
           "military_notifications": "Get notified when military aircraft are detected nearby. Uses verified database with 16,000+ confirmed military aircraft to prevent false positives. Perfect for aviation enthusiasts and plane spotters.",
           "emergency_notifications": "Receive immediate alerts for aviation emergency codes: 7700 (general emergency), 7600 (radio failure), 7500 (hijack). These are critical aviation safety signals that are rare but important to monitor.",
           "close_aircraft_enabled": "Receive alerts when aircraft pass very close overhead or at low altitude. Great for spotting interesting aircraft in your immediate area and monitoring air traffic patterns."
@@ -68,7 +68,7 @@
           "update_interval": "How frequently to refresh aircraft data, in seconds. Current: every {update_interval}s. Recommended: 10 seconds for balance of real-time data vs system performance.",
           "distance_limit": "Maximum tracking range. Units (miles/kilometers) depend on your Home Assistant unit system. Set to 0 for unlimited (all aircraft your feeder detects). Current range captures aircraft within your feeder's coverage area.",
           "notification_device": "Select your mobile device to receive aircraft alerts. Leave empty to disable notifications. Only shows devices with the Home Assistant mobile app installed.",
-          "external_url": "Website URL to open when tapping notification alerts. Default uses your local ADSB feeder. Popular option: https://adsb.hook.technology or similar public ADSB site."
+          "external_url": "Website URL to open when tapping notification alerts. Defaults to your local ADSB feeder; a public tracking site can be used instead."
         }
       }
     }

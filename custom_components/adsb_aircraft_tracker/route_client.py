@@ -51,7 +51,14 @@ class RouteClient:
                 return cached_route
 
         route = await self._async_fetch_route(normalized)
-        self._cache[normalized] = (route, dt_util.utcnow())
+        now = dt_util.utcnow()
+        # Drop expired entries so the cache can't grow without bound
+        self._cache = {
+            key: value
+            for key, value in self._cache.items()
+            if now - value[1] < ROUTE_CACHE_TTL
+        }
+        self._cache[normalized] = (route, now)
         return route
 
     async def _async_fetch_route(self, callsign: str) -> RouteInfo:

@@ -65,12 +65,77 @@ _MODEL_COLLOQUIAL = {
 }
 
 
+# Military airframe hints: deduce specific model from generic ICAO type + USAF
+# serial-number pattern. Local feeds usually only show the generic type code
+# (e.g. B762 for both 767-200 and KC-46) and a military registration; combining
+# them lets us name the specific airframe without an external lookup.
+# Tuples: (type_code, registration_regex, enriched_description)
+# Type codes are matched exactly (not by prefix), so C5 and C5M are distinct.
+MIL_AIRFRAME_HINTS: list[tuple[str, str, str]] = [
+    # KC-46A Pegasus — USAF FY15+ in the 46xxx serial block, airframe is 767-2C
+    ("B762", r"^\d{2}-46\d{3}$", "Boeing KC-46 Pegasus"),
+    # KC-135 Stratotanker — already typed K35R, but enrich for spoken name
+    ("K35R", r"^\d{2}-\d{4,5}$", "Boeing KC-135 Stratotanker"),
+    # C-17 Globemaster III
+    ("C17",  r"^\d{2}-\d{4,5}$", "Boeing C-17 Globemaster"),
+    # C-5 Galaxy/Super Galaxy
+    ("C5",   r"^\d{2}-\d{4,5}$", "Lockheed C-5 Galaxy"),
+    ("C5M",  r"^\d{2}-\d{4,5}$", "Lockheed C-5M Super Galaxy"),
+    # C-130 Hercules family
+    ("C30J", r"^\d{2}-\d{4,5}$", "Lockheed C-130J Super Hercules"),
+    ("C130", r"^\d{2}-\d{4,5}$", "Lockheed C-130 Hercules"),
+    # B-52 Stratofortress
+    ("B52",  r"^\d{2}-\d{4,5}$", "Boeing B-52 Stratofortress"),
+    # E-3 Sentry (AWACS) — 707 airframe
+    ("E3TF", r"^\d{2}-\d{4,5}$", "Boeing E-3 Sentry"),
+    # E-6 Mercury — 707 airframe
+    ("E6",   r"^\d{2}-\d{4,5}$", "Boeing E-6 Mercury"),
+    # P-8 Poseidon — 737-800 airframe
+    ("P8",   r"^\d{3}\d*$",      "Boeing P-8 Poseidon"),
+    # RC-135 family
+    ("R135", r"^\d{2}-\d{4,5}$", "Boeing RC-135"),
+]
+
+
+def enrich_military_description(aircraft: dict[str, Any]) -> str | None:
+    """Return a more specific airframe description for known military patterns.
+
+    Returns the original description unchanged if no hint matches.
+    """
+    # Coordinator renames raw tar1090 fields, so accept both shapes.
+    type_code = (aircraft.get("aircraft_type") or aircraft.get("t") or "").upper()
+    reg = (aircraft.get("tail") or aircraft.get("r") or "").strip()
+    original = aircraft.get("description")
+
+    # Called for any aircraft about to be spoken (not just military) — safe
+    # because civilian registrations (N123AB etc.) don't match the USAF
+    # serial-number patterns below. We can't re-check dbFlags here anyway;
+    # the post-processed dict drops that field.
+    if not type_code or not reg or reg == "Unknown":
+        return original
+
+    for tc, reg_pattern, enriched in MIL_AIRFRAME_HINTS:
+        if type_code == tc and re.match(reg_pattern, reg):
+            return enriched
+
+    return original
+
+
+# Letter tokens spoken as real words — never spelled letter-by-letter
+_SPOKEN_AS_WORDS = {"MAX"}
+
+# Roman numerals in model names → spoken numbers ("Citation II" → "Citation 2";
+# spelling them out would produce "I I", and TTS reads "II" as "ee")
+_ROMAN_NUMERALS = {"II": "2", "III": "3", "IV": "4"}
+
+
 def format_description_for_tts(description: str | None) -> str | None:
     """Convert aircraft descriptions to TTS-friendly text.
 
-    Handles ALL CAPS → Title Case, colloquial model names, and
-    strips hyphens from numeric model designators so TTS doesn't
-    say "minus".
+    Handles ALL CAPS → Title Case, colloquial model names, strips
+    hyphens from numeric model designators so TTS doesn't say
+    "minus", and spells out short letter groups so TTS doesn't
+    invent words ("PA" → "P A", not "pah"; "ER" → "E R", not "err").
 
     Examples:
         "BOEING 737-800"          -> "Boeing 738"
@@ -78,8 +143,9 @@ def format_description_for_tts(description: str | None) -> str | None:
         "EMBRAER ERJ-190"         -> "Embraer E190"
         "CESSNA 172 SKYHAWK"      -> "Cessna 172 Skyhawk"
         "AIRBUS A320-214"         -> "Airbus A320"
-        "Boeing 777-300ER"        -> "Boeing triple seven ER"
-        "Piper PA-28 Cherokee"    -> "Piper PA 28 Cherokee"
+        "Boeing 777-300ER"        -> "Boeing triple seven E R"
+        "Piper PA-28 Cherokee"    -> "Piper P A 28 Cherokee"
+        "Cessna Citation II"      -> "Cessna Citation 2"
     """
     if not description:
         return description
@@ -121,6 +187,25 @@ def format_description_for_tts(description: str | None) -> str | None:
     # says "minus". Covers "PA-28", "C-130", "F-16", "2-engine", etc.
     text = text.replace("-", " ")
 
+    # Fourth pass: spell out short all-letter tokens so TTS says
+    # "P A 28" / "triple seven E R" instead of "pah" / "err".
+    # MAX stays a word; roman numerals become numbers; mixed
+    # alphanumerics (A320, E190, 135R/T) are left alone.
+    tokens = []
+    for token in text.split():
+        if token in _ROMAN_NUMERALS:
+            tokens.append(_ROMAN_NUMERALS[token])
+        elif (
+            token.isalpha()
+            and token.isupper()
+            and 2 <= len(token) <= 3
+            and token not in _SPOKEN_AS_WORDS
+        ):
+            tokens.append(" ".join(token))
+        else:
+            tokens.append(token)
+    text = " ".join(tokens)
+
     return text
 
 
@@ -133,7 +218,8 @@ def format_callsign_for_tts(
         "UAL123"  -> "United 1 2 3"
         "DAL45"   -> "Delta 4 5"
         "N172SP"  -> "N172SP"  (GA tail, leave as-is)
-        "REACH99" -> "REACH 9 9" (military, no airline match)
+        "REACH99" -> "REACH99" (word callsigns pass through, operator
+                     prepended if known — only 2-4 letter prefixes split)
     """
     if not callsign:
         return "an unidentified aircraft"

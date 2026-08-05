@@ -8,6 +8,7 @@ from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.helpers.service import async_set_service_schema
 import voluptuous as vol
@@ -16,11 +17,13 @@ from .const import (
     DOMAIN,
     CONF_UPDATE_INTERVAL,
     DEFAULT_UPDATE_INTERVAL,
+    MILITARY_DB_REFRESH_INTERVAL,
 )
 from .coordinator import ADSBDataUpdateCoordinator
 from .notify import ADSBNotificationManager
 from .database_updater import async_setup_database_services
 from .route_client import RouteClient
+from .state_client import StateClient
 from .intent import async_setup_intents
 
 _LOGGER = logging.getLogger(__name__)
@@ -31,9 +34,12 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR]
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up ADSB Aircraft Tracker from a config entry."""
     
-    # Create data coordinator
+    # Create data coordinator (options override the original setup data)
     update_interval = timedelta(
-        seconds=entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+        seconds=entry.options.get(
+            CONF_UPDATE_INTERVAL,
+            entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
+        )
     )
     
     coordinator = ADSBDataUpdateCoordinator(
@@ -48,13 +54,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Create notification manager and route client
     notification_manager = ADSBNotificationManager(hass, coordinator, entry)
     route_client = RouteClient(hass)
+    state_client = StateClient(hass)
 
-    # Store coordinator, notification manager, and route client in hass data
+    # Store coordinator, notification manager, route client, state client in hass data
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = {
         "coordinator": coordinator,
         "notification_manager": notification_manager,
         "route_client": route_client,
+        "state_client": state_client,
     }
     
     # Setup platforms
@@ -73,7 +81,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Set up notification monitoring
     coordinator.notification_manager = notification_manager
 
+    # Reload this entry when options change so new settings take effect
+    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
+
+    # Refresh the military database daily (it only loads once at startup
+    # otherwise)
+    async def _async_refresh_military_db(now) -> None:
+        await coordinator._async_load_military_database()
+
+    entry.async_on_unload(
+        async_track_time_interval(
+            hass, _async_refresh_military_db, MILITARY_DB_REFRESH_INTERVAL
+        )
+    )
+
     return True
+
+
+async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload the config entry when options change."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def _async_setup_services(hass: HomeAssistant, entry: ConfigEntry, coordinator: ADSBDataUpdateCoordinator) -> None:
@@ -88,12 +115,9 @@ async def _async_setup_services(hass: HomeAssistant, entry: ConfigEntry, coordin
         """Handle test military detection service call."""
         if not coordinator.data or not coordinator.data.get("aircraft"):
             return {"error": "No aircraft data available"}
-        
-        from .binary_sensor import ADSBMilitaryAircraftSensor
-        
-        temp_sensor = ADSBMilitaryAircraftSensor(coordinator, entry)
+
         aircraft_list = coordinator.data["aircraft"]
-        military_aircraft = temp_sensor._detect_military_aircraft(aircraft_list)
+        military_aircraft = coordinator.detect_military_aircraft(aircraft_list)
         
         result = {
             "total_aircraft": len(aircraft_list),
@@ -148,17 +172,15 @@ async def _async_setup_services(hass: HomeAssistant, entry: ConfigEntry, coordin
     
     async def load_military_database_service(call: ServiceCall) -> dict:
         """Handle manual military database loading service call."""
-        military_sensor = coordinator.military_sensor
-        if military_sensor:
-            _LOGGER.info("Manual military database load requested")
-            result = await military_sensor._load_military_database()
-            return {
-                "success": result,
-                "database_size": len(military_sensor._military_database) if military_sensor._military_database else 0,
-                "message": "Database loaded successfully" if result else "Database load failed"
-            }
-        else:
-            return {"error": "Military sensor not available"}
+        _LOGGER.info("Manual military database load requested")
+        await coordinator._async_load_military_database()
+        status = coordinator.get_military_database_status()
+        success = status["database_loaded"] and status["database_size"] > 0
+        return {
+            "success": success,
+            "database_size": status["database_size"],
+            "message": "Database loaded successfully" if success else "Database load failed",
+        }
     
     # Register services with the integration domain
     hass.services.async_register(
@@ -268,15 +290,35 @@ intents:
   ADSBAircraftByType:
     data:
       - sentences:
-          - "are there any {type} nearby"
-          - "any {type} overhead"
-          - "do you see any {type}"
-          - "are there {type} around"
-          - "any {type} flying"
-          - "can you see any {type}"
-          - "are there any {type}"
+          - "are there any {type} aircraft nearby"
+          - "are there any {type} planes nearby"
+          - "any {type} aircraft overhead"
+          - "any {type} planes overhead"
+          - "do you see any {type} aircraft"
+          - "do you see any {type} planes"
+          - "are there {type} aircraft around"
+          - "are there {type} planes around"
+          - "any {type} aircraft flying"
+          - "any {type} planes flying"
+          - "can you see any {type} aircraft"
+          - "can you see any {type} planes"
+  ADSBAircraftSuperlative:
+    data:
+      - sentences:
+          - "what is the {query} aircraft"
+          - "what is the {query} plane"
+          - "what's the {query} plane"
+          - "what's the {query} aircraft"
+          - "which plane is the {query}"
+          - "which aircraft is the {query}"
+          - "what plane is {query}"
+          - "what aircraft is {query}"
+          - "show me the {query} aircraft"
+          - "find the {query} plane"
 lists:
   type:
+    wildcard: true
+  query:
     wildcard: true
 """
 
@@ -318,11 +360,5 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
-    
+
     return unload_ok
-
-
-async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Reload config entry."""
-    await async_unload_entry(hass, entry)
-    await async_setup_entry(hass, entry)

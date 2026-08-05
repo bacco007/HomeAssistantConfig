@@ -1,6 +1,17 @@
 """Constants for ADSB Aircraft Tracker integration."""
+from datetime import timedelta
 
 DOMAIN = "adsb_aircraft_tracker"
+
+# Keep in sync with manifest.json
+INTEGRATION_VERSION = "1.4.2"
+
+# tar1090-db (Mictronics) military aircraft database
+MILITARY_DB_URL = (
+    "https://raw.githubusercontent.com/Mictronics/readsb-protobuf"
+    "/dev/webapp/src/db/aircrafts.json"
+)
+MILITARY_DB_REFRESH_INTERVAL = timedelta(hours=24)
 
 # Configuration keys
 CONF_ADSB_HOST = "adsb_host"

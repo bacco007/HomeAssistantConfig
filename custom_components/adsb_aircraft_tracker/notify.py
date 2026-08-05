@@ -41,8 +41,9 @@ class ADSBNotificationManager:
         self.hass = hass
         self.coordinator = coordinator
         self.config_entry = config_entry
-        self._last_military_aircraft = set()
-        self._last_close_aircraft = None
+        self._last_military_aircraft: set[str] = set()
+        self._last_close_aircraft: str | None = None
+        self._last_emergency_aircraft: set[tuple[str, str]] = set()
         
     @property
     def notification_device(self) -> str | None:
@@ -80,20 +81,20 @@ class ADSBNotificationManager:
     @property
     def close_aircraft_distance(self) -> float:
         """Get close aircraft distance threshold in miles."""
-        return (
-            self.config_entry.options.get(CONF_CLOSE_AIRCRAFT_DISTANCE) or
-            self.config_entry.data.get(CONF_CLOSE_AIRCRAFT_DISTANCE) or
-            DEFAULT_CLOSE_AIRCRAFT_DISTANCE
+        value = self.config_entry.options.get(
+            CONF_CLOSE_AIRCRAFT_DISTANCE,
+            self.config_entry.data.get(CONF_CLOSE_AIRCRAFT_DISTANCE),
         )
-    
+        return DEFAULT_CLOSE_AIRCRAFT_DISTANCE if value is None else value
+
     @property
     def close_aircraft_altitude(self) -> int:
         """Get close aircraft altitude threshold in feet."""
-        return (
-            self.config_entry.options.get(CONF_CLOSE_AIRCRAFT_ALTITUDE) or
-            self.config_entry.data.get(CONF_CLOSE_AIRCRAFT_ALTITUDE) or
-            DEFAULT_CLOSE_AIRCRAFT_ALTITUDE
+        value = self.config_entry.options.get(
+            CONF_CLOSE_AIRCRAFT_ALTITUDE,
+            self.config_entry.data.get(CONF_CLOSE_AIRCRAFT_ALTITUDE),
         )
+        return DEFAULT_CLOSE_AIRCRAFT_ALTITUDE if value is None else value
     
     @property
     def emergency_notifications_enabled(self) -> bool:
@@ -103,13 +104,21 @@ class ADSBNotificationManager:
             self.config_entry.data.get(CONF_EMERGENCY_NOTIFICATIONS, DEFAULT_EMERGENCY_NOTIFICATIONS))
         )
     
-    async def check_and_notify(self) -> None:
-        """Check for notification conditions and send alerts."""
-        if not self.notification_device or not self.coordinator.data:
+    async def check_and_notify(
+        self, aircraft_list: list[dict[str, Any]] | None = None
+    ) -> None:
+        """Check for notification conditions and send alerts.
+
+        The coordinator passes the just-fetched aircraft list; falls back to
+        the last stored data if called without one.
+        """
+        if not self.notification_device:
             return
-            
-        aircraft_list = self.coordinator.data.get("aircraft", [])
-        
+        if aircraft_list is None:
+            if not self.coordinator.data:
+                return
+            aircraft_list = self.coordinator.data.get("aircraft", [])
+
         # Check for military aircraft notifications
         if self.military_notifications_enabled:
             await self._check_military_aircraft(aircraft_list)
@@ -124,11 +133,8 @@ class ADSBNotificationManager:
     
     async def _check_military_aircraft(self, aircraft_list: list[dict[str, Any]]) -> None:
         """Check and notify about military aircraft."""
-        from .binary_sensor import ADSBMilitaryAircraftSensor
-        
-        temp_sensor = ADSBMilitaryAircraftSensor(self.coordinator, self.config_entry)
-        military_aircraft = temp_sensor._detect_military_aircraft(aircraft_list)
-        
+        military_aircraft = self.coordinator.detect_military_aircraft(aircraft_list)
+
         current_military = {aircraft.get("hex") for aircraft in military_aircraft if aircraft.get("hex")}
         new_military = current_military - self._last_military_aircraft
         
@@ -169,18 +175,29 @@ class ADSBNotificationManager:
             self._last_close_aircraft = closest_hex
     
     async def _check_emergency_squawks(self, aircraft_list: list[dict[str, Any]]) -> None:
-        """Check and notify about emergency squawk codes."""
-        emergency_squawks = ["7700", "7600", "7500"]
-        
+        """Check and notify about emergency squawk codes.
+
+        Notifies once per (aircraft, squawk) — not every update cycle. A new
+        emergency from the same aircraft, or the same code after it clears,
+        notifies again.
+        """
+        emergency_squawks = {"7700", "7600", "7500"}
+        current: set[tuple[str, str]] = set()
+
         for aircraft in aircraft_list:
-            squawk = aircraft.get("squawk", "")
+            squawk = aircraft.get("squawk") or ""
             if squawk in emergency_squawks:
-                await self._send_emergency_notification(aircraft)
+                key = (aircraft.get("hex") or "", squawk)
+                current.add(key)
+                if key not in self._last_emergency_aircraft:
+                    await self._send_emergency_notification(aircraft)
+
+        self._last_emergency_aircraft = current
     
     async def _send_military_notification(self, aircraft: dict[str, Any]) -> None:
         """Send military aircraft notification."""
         tail = aircraft.get("tail", "Unknown")
-        flight = aircraft.get("flight", "").strip()
+        flight = (aircraft.get("flight") or "").strip()
         distance = aircraft.get("distance_mi", 0)
         altitude = aircraft.get("altitude_ft", 0)
         description = aircraft.get("description", "Unknown aircraft")
@@ -216,7 +233,7 @@ class ADSBNotificationManager:
     async def _send_close_aircraft_notification(self, aircraft: dict[str, Any]) -> None:
         """Send close aircraft notification."""
         tail = aircraft.get("tail", "Unknown")
-        flight = aircraft.get("flight", "").strip()
+        flight = (aircraft.get("flight") or "").strip()
         distance = aircraft.get("distance_mi", 0)
         altitude = aircraft.get("altitude_ft", 0)
         speed = aircraft.get("speed_kts", 0)
@@ -264,7 +281,7 @@ class ADSBNotificationManager:
     async def _send_emergency_notification(self, aircraft: dict[str, Any]) -> None:
         """Send emergency squawk notification."""
         tail = aircraft.get("tail", "Unknown")
-        flight = aircraft.get("flight", "").strip()
+        flight = (aircraft.get("flight") or "").strip()
         squawk = aircraft.get("squawk", "")
         distance = aircraft.get("distance_mi", 0)
         

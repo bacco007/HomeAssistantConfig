@@ -12,7 +12,9 @@ from homeassistant.helpers import intent
 from .const import DOMAIN, AIRCRAFT_TYPE_KEYWORDS
 from .coordinator import ADSBDataUpdateCoordinator
 from .route_client import RouteClient, RouteInfo
+from .state_client import StateClient
 from .tts_format import (
+    enrich_military_description,
     format_altitude_with_trend,
     format_callsign_for_tts,
     format_description_for_tts,
@@ -30,6 +32,21 @@ INTENT_MILITARY_STATUS = "ADSBMilitaryStatus"
 INTENT_AIRCRAFT_COUNT = "ADSBAircraftCount"
 INTENT_AIRCRAFT_ROUTE = "ADSBAircraftRoute"
 INTENT_AIRCRAFT_BY_TYPE = "ADSBAircraftByType"
+INTENT_AIRCRAFT_SUPERLATIVE = "ADSBAircraftSuperlative"
+
+# Maps spoken superlative words to (attribute_key, reverse_sort, label)
+_SUPERLATIVE_MAP = {
+    "fastest": ("speed_kts", True, "fastest"),
+    "quickest": ("speed_kts", True, "fastest"),
+    "speediest": ("speed_kts", True, "fastest"),
+    "slowest": ("speed_kts", False, "slowest"),
+    "highest": ("altitude_ft", True, "highest"),
+    "lowest": ("altitude_ft", False, "lowest"),
+    "closest": ("distance_mi", False, "closest"),
+    "nearest": ("distance_mi", False, "closest"),
+    "farthest": ("distance_mi", True, "farthest"),
+    "furthest": ("distance_mi", True, "farthest"),
+}
 
 
 async def async_setup_intents(hass: HomeAssistant) -> None:
@@ -40,6 +57,7 @@ async def async_setup_intents(hass: HomeAssistant) -> None:
     intent.async_register(hass, AircraftCountIntentHandler())
     intent.async_register(hass, AircraftRouteIntentHandler())
     intent.async_register(hass, AircraftByTypeIntentHandler())
+    intent.async_register(hass, AircraftSuperlativeIntentHandler())
     _LOGGER.info("Registered ADSB voice intent handlers")
 
 
@@ -69,6 +87,7 @@ class WhatPlaneIntentHandler(intent.IntentHandler):
             return response
 
         aircraft = dict(aircraft_list[0])
+        await _enrich_from_network(hass, aircraft)
         route = await _fetch_route_for_aircraft(aircraft, route_client)
 
         speech = _format_aircraft_response(aircraft, route, coordinator)
@@ -148,10 +167,17 @@ class MilitaryStatusIntentHandler(intent.IntentHandler):
             )
             return response
 
+        # Backfill callsign/description from networked feeders for the closest
+        # military aircraft (the one we're about to describe out loud).
+        # Copy first — enrichment mutates the dict, and military[] holds
+        # references into coordinator.data.
+        military[0] = dict(military[0])
+        await _enrich_from_network(hass, military[0])
+
         if len(military) == 1:
             ac = military[0]
             identity = get_identity_for_tts(ac)
-            desc = format_description_for_tts(ac.get("description"))
+            desc = format_description_for_tts(enrich_military_description(ac) or ac.get("description"))
             dist = coordinator.format_distance(ac.get("distance_mi"))
             alt_str = format_altitude_with_trend(
                 ac.get("altitude_ft"), ac.get("vertical_rate_fpm")
@@ -168,7 +194,7 @@ class MilitaryStatusIntentHandler(intent.IntentHandler):
             # Multiple military aircraft — describe closest, mention count
             ac = military[0]
             identity = get_identity_for_tts(ac)
-            desc = format_description_for_tts(ac.get("description"))
+            desc = format_description_for_tts(enrich_military_description(ac) or ac.get("description"))
             dist = coordinator.format_distance(ac.get("distance_mi"))
             alt_str = format_altitude_with_trend(
                 ac.get("altitude_ft"), ac.get("vertical_rate_fpm")
@@ -240,6 +266,7 @@ class AircraftRouteIntentHandler(intent.IntentHandler):
             return response
 
         aircraft = dict(aircraft_list[0])
+        await _enrich_from_network(hass, aircraft)
         identity = get_identity_for_tts(aircraft)
         route = await _fetch_route_for_aircraft(aircraft, route_client)
 
@@ -380,6 +407,120 @@ class AircraftByTypeIntentHandler(intent.IntentHandler):
         return response
 
 
+class AircraftSuperlativeIntentHandler(intent.IntentHandler):
+    """Handler for superlative queries (fastest, highest, lowest, etc.)."""
+
+    intent_type = INTENT_AIRCRAFT_SUPERLATIVE
+    description = "Finds the fastest, highest, lowest, closest, or farthest aircraft"
+    slot_schema = {"query": vol.Any(str)}
+
+    async def async_handle(self, intent_obj: intent.Intent) -> intent.IntentResponse:
+        hass = intent_obj.hass
+        response = intent_obj.create_response()
+
+        coordinator, route_client = _get_best_coordinator(hass)
+        if coordinator is None:
+            response.async_set_speech("I don't have any aircraft data right now.")
+            return response
+
+        aircraft_list = coordinator.data.get("aircraft", [])
+        if not aircraft_list:
+            response.async_set_speech("No aircraft are being tracked right now.")
+            return response
+
+        raw_query = (
+            intent_obj.slots.get("query", {}).get("value", "") or ""
+        ).strip().lower()
+
+        # Find the superlative keyword in the query
+        matched = None
+        for word, config in _SUPERLATIVE_MAP.items():
+            if word in raw_query:
+                matched = config
+                break
+
+        if matched is None:
+            response.async_set_speech(
+                f"I'm not sure what you're asking. Try asking about the fastest, "
+                f"highest, lowest, closest, or farthest aircraft. "
+                f"I'm tracking {len(aircraft_list)} aircraft."
+            )
+            return response
+
+        attr_key, reverse, label = matched
+
+        # Filter to aircraft that have the required attribute
+        candidates = [
+            ac for ac in aircraft_list
+            if ac.get(attr_key) is not None and ac.get(attr_key) != 0
+        ]
+
+        # For "lowest", also exclude ground-level (altitude 0 or negative)
+        if attr_key == "altitude_ft" and not reverse:
+            candidates = [ac for ac in candidates if (ac.get("altitude_ft") or 0) > 0]
+
+        if not candidates:
+            response.async_set_speech(
+                f"I don't have enough data to determine the {label} aircraft right now."
+            )
+            return response
+
+        # Sort: reverse=True means we want the max (fastest, highest, farthest)
+        candidates.sort(key=lambda ac: ac.get(attr_key, 0), reverse=reverse)
+        # Copy — enrichment mutates the dict, and candidates hold references
+        # into coordinator.data.
+        winner = dict(candidates[0])
+        await _enrich_from_network(hass, winner)
+
+        identity = get_identity_for_tts(winner)
+        desc = format_description_for_tts(enrich_military_description(winner) or winner.get("description"))
+
+        # Build the response with the relevant stat emphasized
+        parts = [f"The {label} aircraft is {identity}"]
+        if desc and desc != "Unknown aircraft":
+            parts[0] += f", a {desc}"
+
+        # Add the superlative stat prominently
+        value = winner.get(attr_key)
+        if attr_key == "speed_kts":
+            parts.append(f"at {int(value)} knots")
+        elif attr_key == "altitude_ft":
+            alt_str = format_altitude_with_trend(
+                value, winner.get("vertical_rate_fpm")
+            )
+            if alt_str:
+                parts.append(alt_str)
+        elif attr_key == "distance_mi":
+            dist_str = coordinator.format_distance(value)
+            if dist_str and dist_str != "Unknown":
+                parts.append(f"{dist_str} away")
+
+        # Add complementary info (not the superlative stat again)
+        if attr_key != "distance_mi":
+            dist = coordinator.format_distance(winner.get("distance_mi"))
+            if dist and dist != "Unknown":
+                parts.append(f"{dist} away")
+
+        if attr_key != "altitude_ft":
+            alt_str = format_altitude_with_trend(
+                winner.get("altitude_ft"), winner.get("vertical_rate_fpm")
+            )
+            if alt_str:
+                parts.append(alt_str)
+
+        if attr_key != "speed_kts":
+            speed = format_speed_for_tts(winner.get("speed_kts"))
+            if speed:
+                parts.append(speed)
+
+        heading = heading_to_cardinal(winner.get("heading"))
+        if heading:
+            parts.append(f"heading {heading}")
+
+        response.async_set_speech(", ".join(parts) + ".")
+        return response
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -415,6 +556,57 @@ def _get_best_coordinator(
     return best_coordinator, best_route_client
 
 
+def _get_state_client(hass: HomeAssistant) -> StateClient | None:
+    """Return any registered StateClient (only one per integration)."""
+    if DOMAIN not in hass.data:
+        return None
+    for entry_data in hass.data[DOMAIN].values():
+        if isinstance(entry_data, dict):
+            sc = entry_data.get("state_client")
+            if sc is not None:
+                return sc
+    return None
+
+
+async def _enrich_from_network(hass: HomeAssistant, aircraft: dict[str, Any]) -> None:
+    """Backfill missing callsign/description/operator from networked feeders.
+
+    Mutates the aircraft dict in place. Silent on failure — local data is still
+    returned. Generic 767/707 descriptions are treated as missing because they
+    hide specific military variants (KC-46, E-3, E-6, RC-135, etc.).
+    """
+    if not aircraft:
+        return
+    has_callsign = bool(aircraft.get("flight"))
+    has_operator = bool(aircraft.get("operator"))
+    desc = (aircraft.get("description") or "").strip().lower()
+    desc_is_generic = (
+        not desc
+        or desc == "unknown aircraft"
+        or desc.startswith("boeing 76")
+        or desc.startswith("boeing 70")
+    )
+
+    if has_callsign and has_operator and not desc_is_generic:
+        return
+
+    client = _get_state_client(hass)
+    hex_code = aircraft.get("hex")
+    if not client or not hex_code:
+        return
+
+    state = await client.async_get_state(hex_code)
+    if not state.valid:
+        return
+
+    if state.callsign and not has_callsign:
+        aircraft["flight"] = state.callsign
+    if state.operator and not has_operator:
+        aircraft["operator"] = state.operator
+    if state.description and desc_is_generic:
+        aircraft["description"] = state.description
+
+
 async def _fetch_route_for_aircraft(
     aircraft: dict[str, Any],
     route_client: RouteClient | None,
@@ -430,11 +622,8 @@ def _detect_military(
     coordinator: ADSBDataUpdateCoordinator,
     aircraft_list: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Detect military aircraft using the binary sensor's logic."""
-    from .binary_sensor import ADSBMilitaryAircraftSensor
-
-    temp_sensor = ADSBMilitaryAircraftSensor(coordinator, coordinator.config_entry)
-    return temp_sensor._detect_military_aircraft(aircraft_list)
+    """Detect military aircraft using the coordinator's database."""
+    return coordinator.detect_military_aircraft(aircraft_list)
 
 
 def _filter_aircraft_by_type(
@@ -501,7 +690,7 @@ def _format_aircraft_response(
 ) -> str:
     """Build a natural language TTS-friendly description of an aircraft."""
     identity = get_identity_for_tts(aircraft)
-    description = format_description_for_tts(aircraft.get("description"))
+    description = format_description_for_tts(enrich_military_description(aircraft) or aircraft.get("description"))
     distance_mi = aircraft.get("distance_mi")
     altitude_ft = aircraft.get("altitude_ft")
     vertical_rate = aircraft.get("vertical_rate_fpm")
