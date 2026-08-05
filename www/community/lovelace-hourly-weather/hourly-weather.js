@@ -1,112 +1,4895 @@
-var e=function(t,i){return e=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(e,t){e.__proto__=t}||function(e,t){for(var i in t)Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i])},e(t,i)};function t(t,i){if("function"!=typeof i&&null!==i)throw new TypeError("Class extends value "+String(i)+" is not a constructor or null");function n(){this.constructor=t}e(t,i),t.prototype=null===i?Object.create(i):(n.prototype=i.prototype,new n)}var i=function(){return i=Object.assign||function(e){for(var t,i=1,n=arguments.length;i<n;i++)for(var o in t=arguments[i])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},i.apply(this,arguments)};function n(e,t,i,n){var o,r=arguments.length,s=r<3?t:null===n?n=Object.getOwnPropertyDescriptor(t,i):n;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,i,n);else for(var a=e.length-1;a>=0;a--)(o=e[a])&&(s=(r<3?o(s):r>3?o(t,i,s):o(t,i))||s);return r>3&&s&&Object.defineProperty(t,i,s),s}function o(e){var t="function"==typeof Symbol&&Symbol.iterator,i=t&&e[t],n=0;if(i)return i.call(e);if(e&&"number"==typeof e.length)return{next:function(){return e&&n>=e.length&&(e=void 0),{value:e&&e[n++],done:!e}}};throw new TypeError(t?"Object is not iterable.":"Symbol.iterator is not defined.")}"function"==typeof SuppressedError&&SuppressedError;var r,s,a=function(e,t){return l(t).format(e)},l=function(e){return new Intl.DateTimeFormat(e.language,{day:"numeric",month:"short"})};!function(e){e.language="language",e.system="system",e.comma_decimal="comma_decimal",e.decimal_comma="decimal_comma",e.space_comma="space_comma",e.none="none"}(r||(r={})),function(e){e.language="language",e.system="system",e.am_pm="12",e.twenty_four="24"}(s||(s={}));var d=function(e){if(e.time_format===s.language||e.time_format===s.system){var t=e.time_format===s.language?e.language:void 0,i=(new Date).toLocaleString(t);return i.includes("AM")||i.includes("PM")}return e.time_format===s.am_pm},c=function(e){return new Intl.DateTimeFormat(e.language,{hour:"numeric",minute:"2-digit",hour12:d(e)})};function h(){return(h=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var i=arguments[t];for(var n in i)Object.prototype.hasOwnProperty.call(i,n)&&(e[n]=i[n])}return e}).apply(this,arguments)}var p=function(e,t,i){var n=t?function(e){switch(e.number_format){case r.comma_decimal:return["en-US","en"];case r.decimal_comma:return["de","es","it"];case r.space_comma:return["fr","sv","cs"];case r.system:return;default:return e.language}}(t):void 0;if(Number.isNaN=Number.isNaN||function e(t){return"number"==typeof t&&e(t)},(null==t?void 0:t.number_format)!==r.none&&!Number.isNaN(Number(e))&&Intl)try{return new Intl.NumberFormat(n,u(e,i)).format(Number(e))}catch(t){return console.error(t),new Intl.NumberFormat(void 0,u(e,i)).format(Number(e))}return"string"==typeof e?e:function(e,t){return void 0===t&&(t=2),Math.round(e*Math.pow(10,t))/Math.pow(10,t)}(e,null==i?void 0:i.maximumFractionDigits).toString()+("currency"===(null==i?void 0:i.style)?" "+i.currency:"")},u=function(e,t){var i=h({maximumFractionDigits:2},t);if("string"!=typeof e)return i;if(!t||!t.minimumFractionDigits&&!t.maximumFractionDigits){var n=e.indexOf(".")>-1?e.split(".")[1].length:0;i.minimumFractionDigits=n,i.maximumFractionDigits=n}return i},m=["closed","locked","off"],f=function(e,t,i,n){n=n||{},i=null==i?{}:i;var o=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return o.detail=i,e.dispatchEvent(o),o},g=function(e){f(window,"haptic",e)},v=function(e,t,i,n){if(n||(n={action:"more-info"}),!n.confirmation||n.confirmation.exemptions&&n.confirmation.exemptions.some(function(e){return e.user===t.user.id})||(g("warning"),confirm(n.confirmation.text||"Are you sure you want to "+n.action+"?")))switch(n.action){case"more-info":(i.entity||i.camera_image)&&f(e,"hass-more-info",{entityId:i.entity?i.entity:i.camera_image});break;case"navigate":n.navigation_path&&function(e,t,i){void 0===i&&(i=!1),i?history.replaceState(null,"",t):history.pushState(null,"",t),f(window,"location-changed",{replace:i})}(0,n.navigation_path);break;case"url":n.url_path&&window.open(n.url_path);break;case"toggle":i.entity&&(function(e,t){(function(e,t,i){void 0===i&&(i=!0);var n,o=function(e){return e.substr(0,e.indexOf("."))}(t),r="group"===o?"homeassistant":o;switch(o){case"lock":n=i?"unlock":"lock";break;case"cover":n=i?"open_cover":"close_cover";break;default:n=i?"turn_on":"turn_off"}e.callService(r,n,{entity_id:t})})(e,t,m.includes(e.states[t].state))}(t,i.entity),g("success"));break;case"call-service":if(!n.service)return void g("failure");var o=n.service.split(".",2);t.callService(o[0],o[1],n.service_data,n.target),g("success");break;case"fire-dom-event":f(e,"ll-custom",n)}};function _(e){return void 0!==e&&"none"!==e.action}var b,y,x={},w={},A={},$={};function E(){if(y)return A;y=1,Object.defineProperty(A,"__esModule",{value:!0}),A.validateFunctionalRGB=void 0;var e=function(){if(b)return $;b=1;var e=$&&$.__read||function(e,t){var i="function"==typeof Symbol&&e[Symbol.iterator];if(!i)return e;var n,o,r=i.call(e),s=[];try{for(;(void 0===t||t-- >0)&&!(n=r.next()).done;)s.push(n.value)}catch(e){o={error:e}}finally{try{n&&!n.done&&(i=r.return)&&i.call(r)}finally{if(o)throw o.error}}return s};return Object.defineProperty($,"__esModule",{value:!0}),$.parseRGB=void 0,$.parseRGB=function(t){var i=t.replace(/((rgba)|(rgb))|\(|\)|\s/g,""),n=e(i.split(","),4),o=n[0],r=n[1],s=n[2],a=n[3];return{red:o,green:r,blue:s,alpha:null!=a?a:""}},$}();return A.validateFunctionalRGB=function(t){var i,n,o=t.replace(/((rgba)|(rgb))|\(|\)|\s/g,"").split(",").length,r=t.startsWith("rgba("),s=3===o||4===o;if(!t.startsWith(r?"rgba(":"rgb(")||!t.endsWith(")")||!s)return!1;var a=e.parseRGB(t),l=parseFloat(a.red),d=parseFloat(a.green),c=parseFloat(a.blue),h=[a.red,a.green,a.blue],p=h.every(function(e){return e.endsWith("%")}),u=h.every(function(e){var t;return(null===(t=e.match(/[0-9]|\./g))||void 0===t?void 0:t.length)===e.length});if(!u&&!p)return!1;if(p){var m=!isNaN(l)&&l>=0&&l<=100,f=!isNaN(d)&&d>=0&&d<=100,g=!isNaN(c)&&c>=0&&c<=100;if(!m||!f||!g)return!1}else{if(!u)return!1;m=!isNaN(l)&&l>=0&&l<=255,f=!isNaN(d)&&d>=0&&d<=255,g=!isNaN(c)&&c>=0&&c<=255;if(!m||!f||!g)return!1}if(r&&a.alpha){var v=parseFloat(a.alpha);if(isNaN(v))return!1;if((null===(i=a.alpha)||void 0===i?void 0:i.endsWith("%"))&&(v<0||v>100))return!1;if(!(null===(n=a.alpha)||void 0===n?void 0:n.endsWith("%"))&&(v>1||v<0))return!1}return!0},A}var C,S,k={};function T(){if(S)return w;S=1,Object.defineProperty(w,"__esModule",{value:!0}),w.isValidRGB=void 0;var e=E(),t=function(){if(C)return k;C=1;var e=k&&k.__read||function(e,t){var i="function"==typeof Symbol&&e[Symbol.iterator];if(!i)return e;var n,o,r=i.call(e),s=[];try{for(;(void 0===t||t-- >0)&&!(n=r.next()).done;)s.push(n.value)}catch(e){o={error:e}}finally{try{n&&!n.done&&(i=r.return)&&i.call(r)}finally{if(o)throw o.error}}return s},t=k&&k.__spread||function(){for(var t=[],i=0;i<arguments.length;i++)t=t.concat(e(arguments[i]));return t};return Object.defineProperty(k,"__esModule",{value:!0}),k.validateHexRGB=void 0,k.validateHexRGB=function(e){if(!e.startsWith("#"))return!1;if(6!==(e=e.toUpperCase().slice(1)).length&&3!==e.length)return!1;var i=t(e).every(function(e){return-1!==e.search(/[0-9A-F]/g)});return!!i},k}();return w.isValidRGB=function(i){if("string"!=typeof i)throw new Error("'rgbString' must be a string");return i.startsWith("#")?t.validateHexRGB(i):e.validateFunctionalRGB(i)},w}var I,O,M={},N={};function R(){if(O)return M;O=1,Object.defineProperty(M,"__esModule",{value:!0}),M.isValidHSL=void 0;var e=function(){if(I)return N;I=1;var e=N&&N.__read||function(e,t){var i="function"==typeof Symbol&&e[Symbol.iterator];if(!i)return e;var n,o,r=i.call(e),s=[];try{for(;(void 0===t||t-- >0)&&!(n=r.next()).done;)s.push(n.value)}catch(e){o={error:e}}finally{try{n&&!n.done&&(i=r.return)&&i.call(r)}finally{if(o)throw o.error}}return s};return Object.defineProperty(N,"__esModule",{value:!0}),N.parseHSL=void 0,N.parseHSL=function(t){var i=t.replace(/((hsla)|(hsl))|\(|\)|\s/g,""),n=e(i.split(","),4),o=n[0],r=n[1],s=n[2],a=n[3];return{hue:o,saturation:r,lightness:s,alpha:null!=a?a:""}},N}();return M.isValidHSL=function(t){if("string"!=typeof t)throw new Error("'hslString' must be a string");var i=t.replace(/((hsla)|(hsl))|\(|\)|\s/g,"").split(",").length,n=t.startsWith("hsla("),o=3===i||4===i;if(!t.startsWith(n?"hsla(":"hsl(")||!t.endsWith(")")||!o)return!1;var r=e.parseHSL(t),s=r.hue,a=r.saturation,l=r.lightness,d=r.alpha,c=parseFloat(s);if(c>360||c<0)return!1;var h=parseFloat(a);if(h>100||h<0)return!1;var p=parseFloat(l);if(p>100||p<0)return!1;if(isNaN(parseFloat(s.replace(/(deg|rad|grad|turn)$/,""))))return!1;if(!a.endsWith("%")&&0!==h)return!1;if(isNaN(parseFloat(a.replace(/%$/,""))))return!1;if(!l.endsWith("%")&&0!==p)return!1;if(isNaN(parseFloat(l.replace(/%$/,""))))return!1;if(n&&d){var u=d,m=parseFloat(d);if(u.endsWith("%")){if(m>100||m<0)return!1}else if(m>1||m<0)return!1}return!0},M}var z,L,H,P={},D={};function V(){if(L)return P;L=1,Object.defineProperty(P,"__esModule",{value:!0}),P.isValidColorName=void 0;var e=(z||(z=1,Object.defineProperty(D,"__esModule",{value:!0}),D.validCSSColorNames=void 0,D.validCSSColorNames=["black","silver","gray","white","maroon","red","purple","green","lime","olive","yellow","navy","blue","teal","aqua","orange","aliceblue","antiquewhite","aquamarine","azure","beige","bisque","blanchedalmond","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkgrey","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkslategrey","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dimgrey","dodgerblue","firebrick","floralwhite","forestgreen","gainsboro","ghostwhite","gold","goldenrod","greenyellow","grey","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgray","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightslategrey","lightsteelblue","lightyellow","limegreen","linen","magenta","fuchsia","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","oldlace","olivedrab","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","skyblue","slateblue","slategray","slategrey","snow","springgreen","steelblue","tan","thistle","tomato","turquoise","violet","wheat","whitesmoke","yellowgreen","rebeccapurple"]),D);return P.isValidColorName=function(t){if("string"!=typeof t)throw new Error("'colorName' must be a string");return!!t&&e.validCSSColorNames.includes(t.toLowerCase())},P}var F,B,U,j=(H||(H=1,F=x,B=x&&x.__createBinding||(Object.create?function(e,t,i,n){void 0===n&&(n=i),Object.defineProperty(e,n,{enumerable:!0,get:function(){return t[i]}})}:function(e,t,i,n){void 0===n&&(n=i),e[n]=t[i]}),U=x&&x.__exportStar||function(e,t){for(var i in e)"default"===i||Object.prototype.hasOwnProperty.call(t,i)||B(t,e,i)},Object.defineProperty(F,"__esModule",{value:!0}),U(T(),F),U(R(),F),U(V(),F)),x);
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const W=globalThis,q=W.ShadowRoot&&(void 0===W.ShadyCSS||W.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,G=Symbol(),X=new WeakMap;class K{constructor(e,t,i){if(this._$cssResult$=!0,i!==G)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(q&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=X.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&X.set(t,e))}return e}toString(){return this.cssText}}const Y=q?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new K("string"==typeof e?e:e+"",void 0,G))(t)})(e):e,{is:Z,defineProperty:J,getOwnPropertyDescriptor:Q,getOwnPropertyNames:ee,getOwnPropertySymbols:te,getPrototypeOf:ie}=Object,ne=globalThis,oe=ne.trustedTypes,re=oe?oe.emptyScript:"",se=ne.reactiveElementPolyfillSupport,ae=(e,t)=>e,le={toAttribute(e,t){switch(t){case Boolean:e=e?re:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},de=(e,t)=>!Z(e,t),ce={attribute:!0,type:String,converter:le,reflect:!1,useDefault:!1,hasChanged:de};
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */Symbol.metadata??=Symbol("metadata"),ne.litPropertyMetadata??=new WeakMap;class he extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=ce){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),n=this.getPropertyDescriptor(e,i,t);void 0!==n&&J(this.prototype,e,n)}}static getPropertyDescriptor(e,t,i){const{get:n,set:o}=Q(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:n,set(t){const r=n?.call(this);o?.call(this,t),this.requestUpdate(e,r,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??ce}static _$Ei(){if(this.hasOwnProperty(ae("elementProperties")))return;const e=ie(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(ae("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(ae("properties"))){const e=this.properties,t=[...ee(e),...te(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(Y(e))}else void 0!==e&&t.push(Y(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,t)=>{if(q)e.adoptedStyleSheets=t.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of t){const t=document.createElement("style"),n=W.litNonce;void 0!==n&&t.setAttribute("nonce",n),t.textContent=i.cssText,e.appendChild(t)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),n=this.constructor._$Eu(e,i);if(void 0!==n&&!0===i.reflect){const o=(void 0!==i.converter?.toAttribute?i.converter:le).toAttribute(t,i.type);this._$Em=e,null==o?this.removeAttribute(n):this.setAttribute(n,o),this._$Em=null}}_$AK(e,t){const i=this.constructor,n=i._$Eh.get(e);if(void 0!==n&&this._$Em!==n){const e=i.getPropertyOptions(n),o="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:le;this._$Em=n;const r=o.fromAttribute(t,e.type);this[n]=r??this._$Ej?.get(n)??r,this._$Em=null}}requestUpdate(e,t,i){if(void 0!==e){const n=this.constructor,o=this[e];if(i??=n.getPropertyOptions(e),!((i.hasChanged??de)(o,t)||i.useDefault&&i.reflect&&o===this._$Ej?.get(e)&&!this.hasAttribute(n._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:n,wrapped:o},r){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,r??t??this[e]),!0!==o||void 0!==r)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===n&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,n=this[t];!0!==e||this._$AL.has(t)||void 0===n||this.C(t,void 0,i,n)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}}he.elementStyles=[],he.shadowRootOptions={mode:"open"},he[ae("elementProperties")]=new Map,he[ae("finalized")]=new Map,se?.({ReactiveElement:he}),(ne.reactiveElementVersions??=[]).push("2.1.1");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const pe=globalThis,ue=pe.trustedTypes,me=ue?ue.createPolicy("lit-html",{createHTML:e=>e}):void 0,fe="$lit$",ge=`lit$${Math.random().toFixed(9).slice(2)}$`,ve="?"+ge,_e=`<${ve}>`,be=document,ye=()=>be.createComment(""),xe=e=>null===e||"object"!=typeof e&&"function"!=typeof e,we=Array.isArray,Ae="[ \t\n\f\r]",$e=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Ee=/-->/g,Ce=/>/g,Se=RegExp(`>|${Ae}(?:([^\\s"'>=/]+)(${Ae}*=${Ae}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),ke=/'/g,Te=/"/g,Ie=/^(?:script|style|textarea|title)$/i,Oe=e=>(t,...i)=>({_$litType$:e,strings:t,values:i}),Me=Oe(1),Ne=Oe(2),Re=Symbol.for("lit-noChange"),ze=Symbol.for("lit-nothing"),Le=new WeakMap,He=be.createTreeWalker(be,129);function Pe(e,t){if(!we(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==me?me.createHTML(t):t}class De{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":3===t?"<math>":"",s=$e;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===$e?"!--"===l[1]?s=Ee:void 0!==l[1]?s=Ce:void 0!==l[2]?(Ie.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=Se):void 0!==l[3]&&(s=Se):s===Se?">"===l[0]?(s=o??$e,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?Se:'"'===l[3]?Te:ke):s===Te||s===ke?s=Se:s===Ee||s===Ce?s=$e:(s=Se,o=void 0);const h=s===Se&&e[t+1].startsWith("/>")?" ":"";r+=s===$e?i+_e:d>=0?(n.push(a),i.slice(0,d)+fe+i.slice(d)+ge+h):i+ge+(-2===d?t:h)}return[Pe(e,r+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),n]})(e,t);if(this.el=De.createElement(l,i),He.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(n=He.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes())for(const e of n.getAttributeNames())if(e.endsWith(fe)){const t=d[r++],i=n.getAttribute(e).split(ge),s=/([.?@])?(.*)/.exec(t);a.push({type:1,index:o,name:s[2],strings:i,ctor:"."===s[1]?je:"?"===s[1]?We:"@"===s[1]?qe:Ue}),n.removeAttribute(e)}else e.startsWith(ge)&&(a.push({type:6,index:o}),n.removeAttribute(e));if(Ie.test(n.tagName)){const e=n.textContent.split(ge),t=e.length-1;if(t>0){n.textContent=ue?ue.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],ye()),He.nextNode(),a.push({type:2,index:++o});n.append(e[t],ye())}}}else if(8===n.nodeType)if(n.data===ve)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(ge,e+1));)a.push({type:7,index:o}),e+=ge.length-1}o++}}static createElement(e,t){const i=be.createElement("template");return i.innerHTML=e,i}}function Ve(e,t,i=e,n){if(t===Re)return t;let o=void 0!==n?i._$Co?.[n]:i._$Cl;const r=xe(t)?void 0:t._$litDirective$;return o?.constructor!==r&&(o?._$AO?.(!1),void 0===r?o=void 0:(o=new r(e),o._$AT(e,i,n)),void 0!==n?(i._$Co??=[])[n]=o:i._$Cl=o),void 0!==o&&(t=Ve(e,o._$AS(e,t.values),o,n)),t}class Fe{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,n=(e?.creationScope??be).importNode(t,!0);He.currentNode=n;let o=He.nextNode(),r=0,s=0,a=i[0];for(;void 0!==a;){if(r===a.index){let t;2===a.type?t=new Be(o,o.nextSibling,this,e):1===a.type?t=new a.ctor(o,a.name,a.strings,this,e):6===a.type&&(t=new Ge(o,this,e)),this._$AV.push(t),a=i[++s]}r!==a?.index&&(o=He.nextNode(),r++)}return He.currentNode=be,n}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Be{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,n){this.type=2,this._$AH=ze,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cv=n?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Ve(this,e,t),xe(e)?e===ze||null==e||""===e?(this._$AH!==ze&&this._$AR(),this._$AH=ze):e!==this._$AH&&e!==Re&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>we(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==ze&&xe(this._$AH)?this._$AA.nextSibling.data=e:this.T(be.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,n="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=De.createElement(Pe(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===n)this._$AH.p(t);else{const e=new Fe(n,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=Le.get(e.strings);return void 0===t&&Le.set(e.strings,t=new De(e)),t}k(e){we(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Be(this.O(ye()),this.O(ye()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}class Ue{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,n,o){this.type=1,this._$AH=ze,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=ze}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=Ve(this,e,t,0),r=!xe(e)||e!==this._$AH&&e!==Re,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=Ve(this,n[i+s],t,s),a===Re&&(a=this._$AH[s]),r||=!xe(a)||a!==this._$AH[s],a===ze?e=ze:e!==ze&&(e+=(a??"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===ze?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class je extends Ue{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===ze?void 0:e}}class We extends Ue{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==ze)}}class qe extends Ue{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){if((e=Ve(this,e,t,0)??ze)===Re)return;const i=this._$AH,n=e===ze&&i!==ze||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,o=e!==ze&&(i===ze||n);n&&this.element.removeEventListener(this.name,this,i),o&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class Ge{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Ve(this,e)}}const Xe=pe.litHtmlPolyfillSupport;Xe?.(De,Be),(pe.litHtmlVersions??=[]).push("3.3.1");const Ke=globalThis,Ye=Ke.ShadowRoot&&(void 0===Ke.ShadyCSS||Ke.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,Ze=Symbol(),Je=new WeakMap;
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class Qe{constructor(e,t,i){if(this._$cssResult$=!0,i!==Ze)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(Ye&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=Je.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&Je.set(t,e))}return e}toString(){return this.cssText}}const et=e=>new Qe("string"==typeof e?e:e+"",void 0,Ze),tt=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,n)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[n+1],e[0]);return new Qe(i,e,Ze)},it=Ye?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return et(t)})(e):e,{is:nt,defineProperty:ot,getOwnPropertyDescriptor:rt,getOwnPropertyNames:st,getOwnPropertySymbols:at,getPrototypeOf:lt}=Object,dt=globalThis,ct=dt.trustedTypes,ht=ct?ct.emptyScript:"",pt=dt.reactiveElementPolyfillSupport,ut=(e,t)=>e,mt={toAttribute(e,t){switch(t){case Boolean:e=e?ht:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},ft=(e,t)=>!nt(e,t),gt={attribute:!0,type:String,converter:mt,reflect:!1,useDefault:!1,hasChanged:ft};
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */Symbol.metadata??=Symbol("metadata"),dt.litPropertyMetadata??=new WeakMap;class vt extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=gt){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),n=this.getPropertyDescriptor(e,i,t);void 0!==n&&ot(this.prototype,e,n)}}static getPropertyDescriptor(e,t,i){const{get:n,set:o}=rt(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:n,set(t){const r=n?.call(this);o?.call(this,t),this.requestUpdate(e,r,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??gt}static _$Ei(){if(this.hasOwnProperty(ut("elementProperties")))return;const e=lt(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(ut("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(ut("properties"))){const e=this.properties,t=[...st(e),...at(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(it(e))}else void 0!==e&&t.push(it(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,t)=>{if(Ye)e.adoptedStyleSheets=t.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of t){const t=document.createElement("style"),n=Ke.litNonce;void 0!==n&&t.setAttribute("nonce",n),t.textContent=i.cssText,e.appendChild(t)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),n=this.constructor._$Eu(e,i);if(void 0!==n&&!0===i.reflect){const o=(void 0!==i.converter?.toAttribute?i.converter:mt).toAttribute(t,i.type);this._$Em=e,null==o?this.removeAttribute(n):this.setAttribute(n,o),this._$Em=null}}_$AK(e,t){const i=this.constructor,n=i._$Eh.get(e);if(void 0!==n&&this._$Em!==n){const e=i.getPropertyOptions(n),o="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:mt;this._$Em=n;const r=o.fromAttribute(t,e.type);this[n]=r??this._$Ej?.get(n)??r,this._$Em=null}}requestUpdate(e,t,i){if(void 0!==e){const n=this.constructor,o=this[e];if(i??=n.getPropertyOptions(e),!((i.hasChanged??ft)(o,t)||i.useDefault&&i.reflect&&o===this._$Ej?.get(e)&&!this.hasAttribute(n._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:n,wrapped:o},r){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,r??t??this[e]),!0!==o||void 0!==r)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===n&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,n=this[t];!0!==e||this._$AL.has(t)||void 0===n||this.C(t,void 0,i,n)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}}vt.elementStyles=[],vt.shadowRootOptions={mode:"open"},vt[ut("elementProperties")]=new Map,vt[ut("finalized")]=new Map,pt?.({ReactiveElement:vt}),(dt.reactiveElementVersions??=[]).push("2.1.1");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const _t=globalThis;class bt extends vt{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const n=i?.renderBefore??t;let o=n._$litPart$;if(void 0===o){const e=i?.renderBefore??null;n._$litPart$=o=new Be(t.insertBefore(ye(),e),e,void 0,i??{})}return o._$AI(e),o})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return Re}}bt._$litElement$=!0,bt.finalized=!0,_t.litElementHydrateSupport?.({LitElement:bt});const yt=_t.litElementPolyfillSupport;yt?.({LitElement:bt}),(_t.litElementVersions??=[]).push("4.2.1");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const xt=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}):customElements.define(e,t)},wt={attribute:!0,type:String,converter:le,reflect:!1,hasChanged:de},At=(e=wt,t,i)=>{const{kind:n,metadata:o}=i;let r=globalThis.litPropertyMetadata.get(o);if(void 0===r&&globalThis.litPropertyMetadata.set(o,r=new Map),"setter"===n&&((e=Object.create(e)).wrapped=!0),r.set(i.name,e),"accessor"===n){const{name:n}=i;return{set(i){const o=t.get.call(this);t.set.call(this,i),this.requestUpdate(n,o,e)},init(t){return void 0!==t&&this.C(n,void 0,e,t),t}}}if("setter"===n){const{name:n}=i;return function(i){const o=this[n];t.call(this,i),this.requestUpdate(n,o,e)}}throw Error("Unsupported decorator location: "+n)};
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function $t(e){return(t,i)=>"object"==typeof i?At(e,t,i):((e,t,i)=>{const n=t.hasOwnProperty(i);return t.constructor.createProperty(i,e),n?Object.getOwnPropertyDescriptor(t,i):void 0})(e,t,i)}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function Et(e){return $t({...e,state:!0,attribute:!1})}
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const Ct=1,St=2,kt=e=>(...t)=>({_$litDirective$:e,values:t});
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class Tt{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const It=(e,t)=>{const i=e._$AN;if(void 0===i)return!1;for(const e of i)e._$AO?.(t,!1),It(e,t);return!0},Ot=e=>{let t,i;do{if(void 0===(t=e._$AM))break;i=t._$AN,i.delete(e),e=t}while(0===i?.size)},Mt=e=>{for(let t;t=e._$AM;e=t){let i=t._$AN;if(void 0===i)t._$AN=i=new Set;else if(i.has(e))break;i.add(e),zt(t)}};function Nt(e){void 0!==this._$AN?(Ot(this),this._$AM=e,Mt(this)):this._$AM=e}function Rt(e,t=!1,i=0){const n=this._$AH,o=this._$AN;if(void 0!==o&&0!==o.size)if(t)if(Array.isArray(n))for(let e=i;e<n.length;e++)It(n[e],!1),Ot(n[e]);else null!=n&&(It(n,!1),Ot(n));else It(this,e)}const zt=e=>{e.type==St&&(e._$AP??=Rt,e._$AQ??=Nt)};class Lt extends Tt{constructor(){super(...arguments),this._$AN=void 0}_$AT(e,t,i){super._$AT(e,t,i),Mt(this),this.isConnected=e._$AU}_$AO(e,t=!0){e!==this.isConnected&&(this.isConnected=e,e?this.reconnected?.():this.disconnected?.()),t&&(It(this,e),Ot(this))}setValue(e){if((e=>void 0===e.strings)(this._$Ct))this._$Ct._$AI(e,this);else{const t=[...this._$Ct._$AH];t[this._$Ci]=e,this._$Ct._$AI(t,this,0)}}disconnected(){}reconnected(){}}
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class Ht{constructor(e){this.G=e}disconnect(){this.G=void 0}reconnect(e){this.G=e}deref(){return this.G}}class Pt{constructor(){this.Y=void 0,this.Z=void 0}get(){return this.Y}pause(){this.Y??=new Promise(e=>this.Z=e)}resume(){this.Z?.(),this.Y=this.Z=void 0}}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const Dt=e=>!(e=>null===e||"object"!=typeof e&&"function"!=typeof e)(e)&&"function"==typeof e.then,Vt=1073741823;const Ft=kt(class extends Lt{constructor(){super(...arguments),this._$Cwt=Vt,this._$Cbt=[],this._$CK=new Ht(this),this._$CX=new Pt}render(...e){return e.find(e=>!Dt(e))??Re}update(e,t){const i=this._$Cbt;let n=i.length;this._$Cbt=t;const o=this._$CK,r=this._$CX;this.isConnected||this.disconnected();for(let e=0;e<t.length&&!(e>this._$Cwt);e++){const s=t[e];if(!Dt(s))return this._$Cwt=e,s;e<n&&s===i[e]||(this._$Cwt=Vt,n=0,Promise.resolve(s).then(async e=>{for(;r.get();)await r.get();const t=o.deref();if(void 0!==t){const i=t._$Cbt.indexOf(s);i>-1&&i<t._$Cwt&&(t._$Cwt=i,t.setValue(e))}}))}return Re}disconnected(){this._$CK.disconnect(),this._$CX.pause()}reconnected(){this._$CK.reconnect(this),this._$CX.resume()}});const Bt="ontouchstart"in window||navigator.maxTouchPoints>0||navigator.maxTouchPoints>0;class Ut extends HTMLElement{constructor(){super(),this.holdTime=500,this.held=!1,this.ripple=document.createElement("mwc-ripple")}connectedCallback(){Object.assign(this.style,{position:"absolute",width:Bt?"100px":"50px",height:Bt?"100px":"50px",transform:"translate(-50%, -50%)",pointerEvents:"none",zIndex:"999"}),this.appendChild(this.ripple),this.ripple.primary=!0,["touchcancel","mouseout","mouseup","touchmove","mousewheel","wheel","scroll"].forEach(e=>{document.addEventListener(e,()=>{clearTimeout(this.timer),this.stopAnimation(),this.timer=void 0},{passive:!0})})}bind(e,t){if(e.actionHandler)return;e.actionHandler=!0,e.addEventListener("contextmenu",e=>{const t=e||window.event;return t.preventDefault&&t.preventDefault(),t.stopPropagation&&t.stopPropagation(),t.cancelBubble=!0,t.returnValue=!1,!1});const i=e=>{let t,i;this.held=!1,e.touches?(t=e.touches[0].pageX,i=e.touches[0].pageY):(t=e.pageX,i=e.pageY),this.timer=window.setTimeout(()=>{this.startAnimation(t,i),this.held=!0},this.holdTime)},n=i=>{i.preventDefault(),["touchend","touchcancel"].includes(i.type)&&void 0===this.timer||(clearTimeout(this.timer),this.stopAnimation(),this.timer=void 0,this.held?f(e,"action",{action:"hold"}):t.hasDoubleClick?"click"===i.type&&i.detail<2||!this.dblClickTimeout?this.dblClickTimeout=window.setTimeout(()=>{this.dblClickTimeout=void 0,f(e,"action",{action:"tap"})},250):(clearTimeout(this.dblClickTimeout),this.dblClickTimeout=void 0,f(e,"action",{action:"double_tap"})):f(e,"action",{action:"tap"}))};e.addEventListener("touchstart",i,{passive:!0}),e.addEventListener("touchend",n),e.addEventListener("touchcancel",n),e.addEventListener("mousedown",i,{passive:!0}),e.addEventListener("click",n),e.addEventListener("keyup",e=>{13===e.keyCode&&n(e)})}startAnimation(e,t){Object.assign(this.style,{left:`${e}px`,top:`${t}px`,display:null}),this.ripple.disabled=!1,this.ripple.active=!0,this.ripple.unbounded=!0}stopAnimation(){this.ripple.active=!1,this.ripple.disabled=!0,this.style.display="none"}}customElements.define("action-handler-hourly-weather",Ut);const jt=(e,t)=>{const i=(()=>{const e=document.body;if(e.querySelector("action-handler-hourly-weather"))return e.querySelector("action-handler-hourly-weather");const t=document.createElement("action-handler-hourly-weather");return e.appendChild(t),t})();i&&i.bind(e,t)},Wt=kt(class extends Tt{update(e,[t]){return jt(e.element,t),Re}render(e){}}),qt={"clear-night":"conditions.clear",cloudy:"conditions.cloudy",fog:"conditions.fog",hail:"conditions.hail",lightning:"conditions.thunderstorm","lightning-rainy":"conditions.thunderstorm",partlycloudy:"conditions.partlyCloudy",pouring:"conditions.heavyRain",rainy:"conditions.rain",snowy:"conditions.snow","snowy-rainy":"conditions.mixedPrecip",sunny:"conditions.sunny",windy:"conditions.windy","windy-variant":"conditions.windy",exceptional:"conditions.clear"},Gt={"clear-night":"weather-night",cloudy:"cloudy",fog:"fog",hail:"hail",lightning:"lightning","lightning-rainy":"lightning-rainy",partlycloudy:"weather-partly-cloudy",pouring:"pouring",rainy:"rainy",snowy:"snowy","snowy-rainy":"snowy-rainy",sunny:"sunny",windy:"windy","windy-variant":"windy-variant",exceptional:"alert-outline"},Xt={n:"direction.n",nne:"direction.nne",ne:"direction.ne",ene:"direction.ene",e:"direction.e",ese:"direction.ese",se:"direction.se",sse:"direction.sse",s:"direction.s",ssw:"direction.ssw",sw:"direction.sw",wsw:"direction.wsw",w:"direction.w",wnw:"direction.wnw",nw:"direction.nw",nnw:"direction.nnw"},Kt={n:0,nne:22.5,ne:45,ene:67.5,e:90,ese:112.5,se:135,sse:157.5,s:180,ssw:202.5,sw:225,wsw:247.5,w:270,wnw:292.5,nw:315,nnw:337.5};var Yt={version:"Версия",title:"Времето по часове",title_card:"Карта с времето по часове",description:"Карта, която визуализира почасово метеорологичните условия във вид на лента.",invalid_configuration:"Невалидна конфигурация"},Zt={entity:"Entity (Задължително)",name:"Име (Опционално)",segments_to_show:"Брой сегменти за визуализиране (Опционално)",offset:"Брой сегменти с които да се отмести началото (Опционално)",icons:"Показвай икони вместо текст",label_spacing:"Брой сегменти между етикетите за час и температура (Опционално)",show_wind:"Показвай посока и скорост на вятъра",show_date:"Показвай дати",show_precipitation_amounts:"Покажи количеството валежи",show_precipitation_probability:"Покажи вероятноста за валежи",none:"Няма",speed_and_direction:"Скорост и посока",speed_only:"Само скорост",direction_only:"Само посока",barb:"Като wind barb",barb_and_speed:"Като wind barb и скорост",barb_and_direction:"Като wind barb и посока",barb_speed_and_direction:"Като wind barb, скорост и посока",all:"Всички",on_day_boundaries:"На границите между дните"},Jt={missing_entity:"entity липсва в конфигурацията",too_many_segments_requested:"Задали сте твърде много сегменти с прогнози в num_segments. Трябва да бъдат <= от броя сегменти във forecast entity.",must_be_int:"Трябва да бъде четно число по-голямо или равно на 2",invalid_colors:"Следните цветове в конфигурацията Ви са невалидни:",must_be_positive_int:"Трябва да е положително число",offset_must_be_positive_int:"Отместването трябва да е положително число",forecast_not_available:"Не е налична прогноза",check_entity:"Проверете конфигурираното forecast entity.",invalid_value_icon_fill:"icon_fill трябва да бъде или положително цяло число, или едно от 'single' или 'full'"},Qt={clear:"Ясно",cloudy:"Облачно",fog:"Мъгла",hail:"Градушка",thunderstorm:"Гръмотевична буря",partlyCloudy:"Частична облачност",heavyRain:"Проливен дъжд",rain:"Дъжд",snow:"Сняг",mixedPrecip:"Смесен валеж",sunny:"Слънчево",windy:"Ветровито"},ei={n:"С",nne:"ССИ",ne:"СИ",ene:"ИСИ",e:"И",ese:"ИЮИ",se:"ЮИ",sse:"ЮЮИ",s:"Ю",ssw:"ЮЮЗ",sw:"ЮЗ",wsw:"ЗЮЗ",w:"З",wnw:"ЗСЗ",nw:"СЗ",nnw:"ССЗ"},ti={chance_of_precipitation:"{0}% вероятност за валежи"},ii={common:Yt,editor:Zt,errors:Jt,conditions:Qt,direction:ei,card:ti},ni={version:"Verze",title:"Hodinnová předpověď",title_card:"Karta Hodinnová předpověď",description:"Karta zobrazující hodinovou předpověď v řádku.",invalid_configuration:"Neplatná konfigurace"},oi={entity:"Entita (Povinné)",name:"Název (Nepovinné)",segments_to_show:"Počet dílků předpovědi k vykreslení (Nepovinné)",offset:"Počet dílků, které se přeskočí před začátkem (Nepovinné)",icons:"Zobrazit ikony namísto textových popisků",label_spacing:"Po kolika dílcích se vykreslí čas a teplota (Nepovinné)",show_wind:"Zobrazit rychlost a směr větru",show_date:"Zobrazit datumy",show_precipitation_amounts:"Zobrazit množství srážek",show_precipitation_probability:"Zobrazit pravdědpodobnost srážek",none:"Žádné",speed_and_direction:"Rychlost a směr",speed_only:"Jen rychlost",direction_only:"Jen směr",barb:"Jako šipku větru",barb_and_speed:"Jako šipku větru a rychlost",barb_and_direction:"Jako šipku větru a směr",barb_speed_and_direction:"Jako šipku větru, rychlost a směr",all:"Všechny",on_day_boundaries:"Při změně dne"},ri={missing_entity:"Hodnota 'entity' nebyla zadána",too_many_segments_requested:"Je nastaveno příliš mnoho dílků předpovědi v 'num_segments'. Hodnota musí být <= počtu hodnot v zadané entitě.",must_be_int:"Hodnota musí být kladné sudé celé číslo",invalid_colors:"Následující hodnoty v konfiguraci jsou neplatné:",must_be_positive_int:"Hodnota musí být kladné celé číslo",offset_must_be_positive_int:"Hodnota 'offset' musí být kladné celé číslo",forecast_not_available:"Předpověď není dostupná",check_entity:"Zkontrolujte zadanou entity předpovědi.",invalid_value_icon_fill:"icon_fill musí být buď kladné celé číslo, nebo jedno z 'single'; nebo 'full';"},si={clear:"Jasno",cloudy:"Oblačno",fog:"Mlha",hail:"Kroupy",thunderstorm:"Bouřka",partlyCloudy:"Polojasno",heavyRain:"Silný déšť",rain:"Déšť",snow:"Sníh",mixedPrecip:"Smíšené srážky",sunny:"Slunečno",windy:"Větrno"},ai={n:"S",nne:"SSV",ne:"SV",ene:"VSV",e:"V",ese:"VJV",se:"JV",sse:"JJV",s:"J",ssw:"JJZ",sw:"JZ",wsw:"ZJZ",w:"Z",wnw:"ZSZ",nw:"SZ",nnw:"SSZ"},li={chance_of_precipitation:"{0}% šance srážek"},di={common:ni,editor:oi,errors:ri,conditions:si,direction:ai,card:li},ci={version:"Version",title:"Time Vejr",title_card:"Time Vejr Kort",description:"Et kort som viser vejret hver time som en linje.",invalid_configuration:"Ugyldig konfiguration"},hi={entity:"Entitet (Påkrævet)",name:"Navn (Valgfri)",segments_to_show:"Antal udsigtssegmenter der skal vises (Valgfri)",offset:"Antal udsigtssegmenter starten skal forskydes (Valgfri)",icons:"Vis ikoner i stedet for tekst",label_spacing:"Antal segmenter imellem tid og temperatur labels (Valgfri)",show_wind:"Vis vindhastighed og retning",show_precipitation_amounts:"Vis nedbørsmængde",show_precipitation_probability:"Vis nedbørssandsynlighed",none:"Ingen",speed_and_direction:"Hastighed og retning",speed_only:"Kun hastighed",direction_only:"Kun retning",barb:"Som vindrose",barb_and_speed:"Som vindrose og hastighed",barb_and_direction:"Som vindrose og retning",barb_speed_and_direction:"Som vindrose, hastighed, og retning",show_date:"Vis datoer",all:"Alle",on_day_boundaries:"På dagsgrænser"},pi={missing_entity:"entitet mangler i konfiguration",too_many_segments_requested:"For mange segmenter forespurgt i num_segments. Skal være mindre eller lig antal segmenter i vejrudsigtsentiteten.",must_be_int:"Skal være et heltal størrere end eller lig 2",invalid_colors:"Føglende farver i din konfiguration er ugyldige:",must_be_positive_int:"Skal være et positivt heltal",offset_must_be_positive_int:"offset skal være et positivt heltal",forecast_not_available:"Vejrudsigt ikke tilgængelig",check_entity:"Kontroller den definerede vejrudsigtsentitet.",invalid_value_icon_fill:"icon_fill skal enten være et positivt heltal eller et af 'single' eller 'full'"},ui={clear:"Klart",cloudy:"Skyet",fog:"Tåge",hail:"Hagl",thunderstorm:"Torden",partlyCloudy:"Delvist overskyet",heavyRain:"Kraftig regn",rain:"Regn",snow:"Sne",mixedPrecip:"Blandet nedbør",sunny:"Sol",windy:"Blæsende"},mi={n:"N",nne:"NNØ",ne:"NØ",ene:"ØNØ",e:"Ø",ese:"ØSØ",se:"SØ",sse:"SSØ",s:"S",ssw:"SSV",sw:"SV",wsw:"VSV",w:"V",wnw:"VNV",nw:"NV",nnw:"NNV"},fi={chance_of_precipitation:"{0}% risiko for nedbør"},gi={common:ci,editor:hi,errors:pi,conditions:ui,direction:mi,card:fi},vi={version:"Version",title:"Stündliches Wetterbedingungen",title_card:"Stündliche Wetterbedingungen",description:"Diese Karte stellt stündliche Wetterbedingungen als Balken dar.",invalid_configuration:"Ungültige Konfiguration"},_i={entity:"Entität",name:"Bezeichnung (optional)",icons:"Zeigen Sie Symbole anstelle von Textbeschriftungen an",offset:"Anzahl der Prognosesegmente zum Versetzen beginnen um (optional)",segments_to_show:"Anzahl der anzuzeigenden Prognosesegmente (optional)",label_spacing:"Anzahl der Vorhersagesegmente für Raumzeit- und Temperaturbeschriftungen nach (optional)",show_wind:"Zeigt Windgeschwindigkeit und -richtung an",show_precipitation_amounts:"Niederschlagsmenge anzeigen",speed_only:"Nur Geschwindigkeit",direction_only:"Nur Richtung",barb:"Als Windbarbe",show_precipitation_probability:"Niederschlagswahrscheinlichkeit anzeigen",none:"Keiner",speed_and_direction:"Geschwindigkeit und Richtung",barb_and_speed:"Als Windwiderhaken und Geschwindigkeit",barb_and_direction:"Als Windwiderhaken und Richtung",barb_speed_and_direction:"Als Windwiderstand, Geschwindigkeit und Richtung",show_date:"Termine anzeigen",all:"Alle",on_day_boundaries:"An Tagesgrenzen"},bi={missing_entity:"Keine Wetter-Entität festgelegt",must_be_int:"Muss eine gerade ganze Zahl größer oder gleich 2 sein.",invalid_colors:"Die folgenden Farben in Ihrer Konfiguration sind ungültig:",must_be_positive_int:"Muss eine positive Ganzzahl sein",too_many_segments_requested:"Zu viele Prognosesegmente in num_segments angefordert. Muss <= Anzahl der Segmente in der Prognoseentität sein.",offset_must_be_positive_int:"offset muss eine positive Ganzzahl sein",forecast_not_available:"Prognose nicht verfügbar",check_entity:"Überprüfen Sie die konfigurierte Prognoseentität.",invalid_value_icon_fill:"icon_fill muss entweder eine positive Ganzzahl oder einer der Werte 'single' oder 'full' sein."},yi={clear:"Klar",cloudy:"Bewölkt",fog:"Nebel",hail:"Hagel",thunderstorm:"Gewitter",partlyCloudy:"Teilweise bewölkt",heavyRain:"Platzregen",rain:"Regen",snow:"Schnee",mixedPrecip:"Gemischter Niederschlag",sunny:"Sonnig",windy:"Windig"},xi={n:"N",nne:"NNO",ne:"NO",ene:"ONO",e:"O",ese:"OSO",se:"SO",sse:"SSO",s:"S",ssw:"SSW",sw:"SW",wsw:"WSW",w:"W",wnw:"WNW",nw:"NW",nnw:"NNW"},wi={chance_of_precipitation:"{0}% Niederschlagswahrscheinlichkeit"},Ai={common:vi,editor:_i,errors:bi,conditions:yi,direction:xi,card:wi},$i={version:"Version",title:"Hourly Weather",title_card:"Hourly Weather Card",description:"A card to render hourly weather conditions as a bar.",invalid_configuration:"Invalid configuration"},Ei={entity:"Entity (Required)",name:"Name (Optional)",segments_to_show:"Number of forecast segments to show (Optional)",offset:"Number of forecast segments to offset start by (Optional)",icons:"Show icons instead of text labels",label_spacing:"Number of forecast segments to space time and temperature labels by (Optional)",show_wind:"Show wind speed and direction",show_date:"Show dates",show_precipitation_amounts:"Show precipitation amount",show_precipitation_probability:"Show precipitation probability",none:"None",speed_and_direction:"Speed and direction",speed_only:"Speed only",direction_only:"Direction only",barb:"As wind barb",barb_and_speed:"As wind barb and speed",barb_and_direction:"As wind barb and direction",barb_speed_and_direction:"As wind barb, speed, and direction",all:"All",on_day_boundaries:"On day boundaries"},Ci={missing_entity:"entity is missing in configuration",too_many_segments_requested:"Too many forecast segments requested in num_segments. Must be <= number of segments in forecast entity.",must_be_int:"Must be an even integer greater than or equal to 2",invalid_colors:"The following colors in your configuration are invalid:",must_be_positive_int:"Must be a positive integer",offset_must_be_positive_int:"offset must be a positive integer",forecast_not_available:"Forecast not available",check_entity:"Check the configured forecast entity.",invalid_value_icon_fill:"icon_fill must be either a positive integer or one of 'single' or 'full'"},Si={clear:"Clear",cloudy:"Cloudy",fog:"Fog",hail:"Hail",thunderstorm:"Thunderstorm",partlyCloudy:"Partly cloudy",heavyRain:"Heavy rain",rain:"Rain",snow:"Snow",mixedPrecip:"Mixed precip",sunny:"Sunny",windy:"Windy"},ki={n:"N",nne:"NNE",ne:"NE",ene:"ENE",e:"E",ese:"ESE",se:"SE",sse:"SSE",s:"S",ssw:"SSW",sw:"SW",wsw:"WSW",w:"W",wnw:"WNW",nw:"NW",nnw:"NNW"},Ti={chance_of_precipitation:"{0}% chance of precipitation"},Ii={common:$i,editor:Ei,errors:Ci,conditions:Si,direction:ki,card:Ti},Oi={version:"Versión",title:"Tiempo por hora",title_card:"Tarjeta de Tiempo por hora",description:"Una tarjeta para mostrar las condiciones climáticas cada hora en una barra.",invalid_configuration:"Configuración inválida"},Mi={entity:"Entidad (Requerida)",name:"Nombre (Opcional)",icons:"Mostrar iconos en vez de texto",offset:"Número de segmentos de pronóstico para compensar el inicio por (Opcional)",segments_to_show:"Número de segmentos de pronóstico para mostrar (Opcional)",label_spacing:"Número de segmentos de pronóstico para etiquetas de temperatura y tiempo espacial por (Opcional)",show_wind:"Mostrar la velocidad y dirección del viento",show_precipitation_amounts:"Mostrar cantidad de precipitación",speed_only:"Solo velocidad",direction_only:"Solo dirección",barb:"Como púa de viento",show_precipitation_probability:"Mostrar probabilidad de precipitación",none:"Ninguno",speed_and_direction:"Velocidad y dirección",barb_and_speed:"Como púas de viento y velocidad",barb_and_direction:"Como púa de viento y dirección",barb_speed_and_direction:"Como púa de viento, velocidad y dirección",show_date:"Mostrar fechas",all:"Todo",on_day_boundaries:"En los límites del día"},Ni={missing_entity:"falta la entidad en la configuración",must_be_int:"Debe ser un entero mayor o igual a 2",invalid_colors:"Los siguientes colores en su configuración no son válidos:",must_be_positive_int:"Debe ser un entero positivo",too_many_segments_requested:"Se solicitaron demasiados segmentos de pronóstico en num_segments. Debe ser <= número de segmentos en la entidad de pronóstico.",offset_must_be_positive_int:"offset debe ser un número entero positivo",forecast_not_available:"Pronóstico no disponible",check_entity:"Verifique la entidad de pronóstico configurada.",invalid_value_icon_fill:"icon_fill debe ser un número entero positivo o uno de los valores 'single' o 'full'"},Ri={clear:"Despejado",cloudy:"Nublado",fog:"Niebla",hail:"Granizo",thunderstorm:"Tormenta electrica",partlyCloudy:"Parcialmente nublado",heavyRain:"Tormenta",rain:"Lluvia",snow:"Nieve",mixedPrecip:"Chaparrones dispersos",sunny:"Soleado",windy:"Ventoso"},zi={n:"N",nne:"NNE",ne:"NE",ene:"ENE",e:"E",ese:"ESE",se:"SE",sse:"SSE",s:"S",ssw:"SSO",sw:"SO",wsw:"OSO",w:"O",wnw:"ONO",nw:"NO",nnw:"NNO"},Li={chance_of_precipitation:"{0}% probabilidad de precipitación"},Hi={common:Oi,editor:Mi,errors:Ni,conditions:Ri,direction:zi,card:Li},Pi={version:"Version",title:"Prévisions météo par heure",title_card:"Prévisions météo par heure",description:"Une carte pour afficher les prévisions météo par heure sur une ligne.",invalid_configuration:"Configuration invalide"},Di={entity:"Entité (requis)",name:"Nom (facultatif)",icons:"Afficher des icônes à la place du texte",offset:"Décalage initial de segments de prévision (facultatif)",segments_to_show:"Nombre de segments de prévision à afficher (facultatif)",label_spacing:"Segments d'espacement entre les étiquettes d'heure et de température (facultatif)",show_wind:"Afficher la vitesse et la direction du vent",show_precipitation_amounts:"Afficher la quantité de précipitations",speed_only:"Vitesse uniquement",direction_only:"Sens uniquement",barb:"Comme barbillon de vent",show_precipitation_probability:"Afficher la probabilité de précipitation",none:"Aucun",speed_and_direction:"Vitesse et orientation",barb_and_speed:"Comme barbe de vent et vitesse",barb_and_direction:"Comme barbillon de vent et direction",barb_speed_and_direction:"Comme barbillon de vent, vitesse et direction",show_date:"Afficher les dates",all:"Tous",on_day_boundaries:"Aux limites du jour"},Vi={missing_entity:"Entité manquante dans la configuration",must_be_int:"Doit être un nombre entier pair supérieur ou égal à 2",invalid_colors:"Les couleurs suivantes dans votre configuration ne sont pas valides :",must_be_positive_int:"Doit être un entier positif",too_many_segments_requested:"Trop de segments de prévision demandés dans num_segments. Doit être <= au nombre de segments de l'entité de prévision.",offset_must_be_positive_int:"offset doit être un entier positif",forecast_not_available:"Prévision non disponible",check_entity:"Vérifiez l'entité de prévision configurée.",invalid_value_icon_fill:"icon_fill doit être soit un entier positif, soit l'un des nombres 'single' ou 'full'"},Fi={clear:"Dégagé",cloudy:"Nuageux",fog:"Brouillard",hail:"Grêle",thunderstorm:"Orage",partlyCloudy:"Éclaircies",heavyRain:"Averses",rain:"Pluie",snow:"Neige",mixedPrecip:"Neigeux, pluvieux",sunny:"Ensoleillé",windy:"Venteux"},Bi={n:"N",nne:"NNE",ne:"NE",ene:"ENE",e:"E",ese:"ESE",se:"SE",sse:"SSE",s:"S",ssw:"SSO",sw:"SO",wsw:"OSO",w:"O",wnw:"ONO",nw:"NO",nnw:"NNO"},Ui={chance_of_precipitation:"{0}% probabilité de précipitations"},ji={common:Pi,editor:Di,errors:Vi,conditions:Fi,direction:Bi,card:Ui},Wi={version:"Verzió",title:"Óránkénti időjárás",title_card:"Óránkénti időjárás kártya",description:"Egy kártya, amely az óránkénti időjárási viszonyokat egy sávban jeleníti meg",invalid_configuration:"Érvénytelen konfiguráció"},qi={entity:"Entitás (Kötelező)",name:"Név (Opcionális)",segments_to_show:"Megjelenítendő előrejelzési órák száma (Opcionális)",offset:"Az előrejelzett órák kezdő értékének eltolása (Opcionális)",icons:"Ikonok megjelenítése szövegek helyett",label_spacing:"Az idő- és hőmérsékleti címkékhez tartozó előrejelzési órák időköze (Opcionális)",show_wind:"Szélsebesség és irány megjelenítése",show_precipitation_amounts:"Csapadékmennyiség megjelenítése",show_precipitation_probability:"Csapadék valószínűségének megjelenítése",speed_only:"Sebesség",direction_only:"Irány",barb:"Irány nyílként",none:"Egyik sem",speed_and_direction:"Sebesség és irány",barb_and_speed:"Szélfogóként és sebességként",barb_and_direction:"Szellőként és irányként",barb_speed_and_direction:"Szélfogként, sebességként és irányként",show_date:"Dátumok megjelenítése",all:"Minden",on_day_boundaries:"A napok határain"},Gi={missing_entity:"az entitás hiányzik a konfigurációból",too_many_segments_requested:"Túl sok előrejelzési órát adtak meg a num_segments-ben. <= az előrejelző egységben lévő órák száma.",must_be_int:"Páros egész számnak kell lennie, amely nagyobb vagy egyenlő 2-nél.",invalid_colors:"A konfigurációdban a következő színek érvénytelenek:",must_be_positive_int:"Pozitív egész szám kell legyen",offset_must_be_positive_int:"offset pozitív egész számnak kell lennie",forecast_not_available:"Előrejelzés nem elérhető",check_entity:"Ellenőrizze a beállított előrejelző egységet.",invalid_value_icon_fill:"Az ikon_kitöltésének pozitív egésznek vagy az 'single' vagy 'full'"},Xi={clear:"Tiszta",cloudy:"Felhős",fog:"Ködös",hail:"Jégeső",thunderstorm:"Vihar",partlyCloudy:"Részben felhős",heavyRain:"Heves eső",rain:"Esős",snow:"Havazás",mixedPrecip:"Havas eső",sunny:"Napos",windy:"Szeles"},Ki={n:"É",nne:"ÉÉK",ne:"ÉK",ene:"KÉK",e:"K",ese:"KDK",se:"DK",sse:"DDK",s:"D",ssw:"DDNy",sw:"DNy",wsw:"NyDNy",w:"Ny",wnw:"NyÉNy",nw:"ÉNy",nnw:"ÉÉNy"},Yi={chance_of_precipitation:"{0}% a csapadék valószínűsége"},Zi={common:Wi,editor:qi,errors:Gi,conditions:Xi,direction:Ki,card:Yi},Ji={version:"Versione",title:"Previsione Meteo Oraria",title_card:"Scheda Meteo Oraria",description:"Una scheda per rappresentare le condizioni meteorologiche orarie come una barra.",invalid_configuration:"Configurazione Non Valida"},Qi={entity:"Entità (Richiesta)",name:"Nome (Facoltativo)",icons:"Mostra le icone invece delle etichette di testo",offset:"Numero di segmenti di previsione di cui compensare l'inizio (Facoltativo)",segments_to_show:"Numero di segmenti di previsione da mostrare (facoltativo)",label_spacing:"Numero di segmenti di previsione per spazio etichette tempo e temperatura per (facoltativo)",show_wind:"Mostra la velocità e la direzione del vento",show_precipitation_amounts:"Mostra la quantità di precipitazioni",speed_only:"Solo velocità",direction_only:"Solo direzione",barb:"Come una punta di vento",show_precipitation_probability:"Mostra la probabilità di precipitazioni",none:"Nessuno",speed_and_direction:"Velocità e direzione",barb_and_speed:"Come il vento tagliente e la velocità",barb_and_direction:"Come il vento e la direzione",barb_speed_and_direction:"Come la punta del vento, la velocità e la direzione",show_date:"Mostra date",all:"Tutto",on_day_boundaries:"Sui confini del giorno"},en={missing_entity:"entità mancante nella configurazione",must_be_int:"Deve essere un numero intero pari, maggiore o uguale a 2",invalid_colors:"I seguenti colori nella tua configurazione non sono validi:",must_be_positive_int:"Deve essere un numero intero positivo",too_many_segments_requested:"Troppi segmenti di previsione richiesti in num_segments. Deve essere <= numero di segmenti nell'entità di previsione.",offset_must_be_positive_int:"offset deve essere un numero intero positivo",forecast_not_available:"Previsione non disponibile",check_entity:"Controllare l'entità di previsione configurata.",invalid_value_icon_fill:"icon_fill deve essere un numero intero positivo o uno dei valori 'single' o 'full'"},tn={clear:"Limpido",cloudy:"Nuvoloso",fog:"Nebbia",hail:"Grandine",thunderstorm:"Temporale",partlyCloudy:"Parzialmente Nuvoloso",heavyRain:"Acquazzone",rain:"Pioggia",snow:"Neve",mixedPrecip:"Precipitazioni Miste",sunny:"Soleggiato",windy:"Ventoso"},nn={n:"N",nne:"NNE",ne:"NE",ene:"ENE",e:"E",ese:"ESE",se:"SE",sse:"SSE",s:"S",ssw:"SSO",sw:"SO",wsw:"OSO",w:"O",wnw:"ONO",nw:"NO",nnw:"NNO"},on={chance_of_precipitation:"{0}% possibilità di precipitazioni"},rn={common:Ji,editor:Qi,errors:en,conditions:tn,direction:nn,card:on},sn={version:"Versjon",invalid_configuration:"Ikke gyldig konfiguration",title:"Timelig vær",title_card:"Timevis værkort",description:"Et kort for å gjengi værforhold hver time som en bar."},an={icons:"Vis ikoner i stedet for tekstetiketter",entity:"Entitet (obligatorisk)",name:"Navn (valgfritt)",offset:"Antall prognosesegmenter å utligne start med (valgfritt)",segments_to_show:"Antall prognosesegmenter som skal vises (valgfritt)",label_spacing:"Antall prognosesegmenter til romtid og temperaturetiketter etter (valgfritt)",show_wind:"Vis vindhastighet og retning",show_precipitation_amounts:"Vis nedbørsmengde",speed_only:"Kun hastighet",direction_only:"Kun retning",barb:"Som vindmothak",show_precipitation_probability:"Vis nedbørssannsynlighet",none:"Ingen",speed_and_direction:"Fart og retning",barb_and_speed:"Som vindmottak og fart",barb_and_direction:"Som vindmottak og retning",barb_speed_and_direction:"Som vindmothak, hastighet og retning",show_date:"Vis datoer",all:"Alle",on_day_boundaries:"På dagsgrenser"},ln={missing_entity:"entity mangler i konfigurasjonen",must_be_int:"Må være et jevnt heltall større enn eller lik 2",invalid_colors:"Følgende farger i konfigurasjonen din er ugyldige:",must_be_positive_int:"Må være et positivt heltall",too_many_segments_requested:"For mange prognosesegmenter er forespurt i num_segments. Må være <= antall segmenter i prognoseenheten.",offset_must_be_positive_int:"offset må være et positivt heltall",forecast_not_available:"Værvarsel er ikke tilgjengelig",check_entity:"Sjekk den konfigurerte prognoseenheten.",invalid_value_icon_fill:"icon_fill må enten være et positivt heltall eller et av 'single' eller 'full'"},dn={clear:"Klar",cloudy:"Skyet",fog:"Tåke",hail:"Hagl",thunderstorm:"Tordenvær",partlyCloudy:"Delvis skyet",heavyRain:"Mye regn",rain:"Regn",snow:"Snø",mixedPrecip:"Blandet nedbør",sunny:"Solfylt",windy:"Vindfullt"},cn={n:"N",nne:"NNØ",ne:"NE",ene:"ØNØ",e:"Ø",ese:"ØSØ",se:"SØ",sse:"SSØ",s:"S",ssw:"SSV",sw:"SV",wsw:"VSV",w:"V",wnw:"VNV",nw:"NV",nnw:"NNV"},hn={chance_of_precipitation:"{0}% sjanse for nedbør"},pn={common:sn,editor:an,errors:ln,conditions:dn,direction:cn,card:hn},un={version:"Versjon",invalid_configuration:"Ikkje gyldeg konfiguasjon",title:"Timelig vær",title_card:"Timevis værkort",description:"Eit kort for å gjengje verforhold kvar time som ein bar."},mn={icons:"Vis ikon i staden for tekstetikettar",entity:"Entitet (obligatorisk)",name:"Namn (valfritt)",offset:"Antall prognosesegment å utligne start med (valfritt)",segments_to_show:"Antall prognosesegment som skal synast (valfritt)",label_spacing:"Antall prognosesegment til romtid og temperaturetikettar etter (valfritt)",show_wind:"Vis vindhastigheit og retning",show_precipitation_amounts:"Vis nedbørsmengde",neither:"Ingen",both:"Både",speed_only:"Kun hastigheit",direction_only:"Kun retning",barb:"Som vindmothak",show_precipitation_probability:"Vis nedbørssannsyn",none:"Ingen",speed_and_direction:"Fart og retning",barb_and_speed:"Som vindmottak og fart",barb_and_direction:"Som vindmottak og retning",barb_speed_and_direction:"Som vindmothak, hastighet og retning",show_date:"Vis datoer",all:"Alle",on_day_boundaries:"På dagsgrenser"},fn={missing_entity:"entity manglar i konfigurasjonen",must_be_int:"Må være et jevnt heiltal større enn eller lik 2",invalid_colors:"Følgande fargar i konfigurasjonen din er ugyldege:",must_be_positive_int:"Må vere eit positivt heiltal",too_many_segments_requested:"For mange prognosesegment er førespurt i num_segments. Må vere <= antall segment i prognoseeininga.",offset_must_be_positive_int:"offset må vere eit positivt heiltal",forecast_not_available:"Vervarsel er ikkje tilgjengeleg",check_entity:"Sjekk den konfigurerte prognoseeininga.",invalid_value_icon_fill:"icon_fill må enten være et positivt heltall eller et av 'single' eller 'full'"},gn={clear:"Klart",cloudy:"Skya",fog:"Tåke",hail:"Hagl",thunderstorm:"Tordenvær",partlyCloudy:"Delvis skya",heavyRain:"Mykje regn",rain:"Regn",snow:"Snø",mixedPrecip:"Blanda nedbør",sunny:"Sol",windy:"Vindfullt"},vn={n:"N",nne:"NNØ",ne:"NE",ene:"ØNØ",e:"Ø",ese:"ØSØ",se:"SØ",sse:"SSØ",s:"S",ssw:"SSV",sw:"SV",wsw:"VSV",w:"V",wnw:"VNV",nw:"NV",nnw:"NNV"},_n={chance_of_precipitation:"{0}% sjanse for nedbør"},bn={common:un,editor:mn,errors:fn,conditions:gn,direction:vn,card:_n},yn={version:"Versie",title:"Weer per uur",title_card:"Weerkaart per uur",description:"Een kaart om de weersomstandigheden per uur weer te geven als een bar.",invalid_configuration:"Ongeldige configuratie"},xn={entity:"Entiteit (Verplicht)",name:"Naam: (Optioneel)",segments_to_show:"Aantal weer te geven prognosesegmenten (Optioneel)",offset:"Aantal prognosesegmenten om mee te compenseren (Optioneel)",icons:"Pictogrammen weergeven in plaats van tekstlabels",label_spacing:"Aantal prognosesegmenten naar ruimtetijd- en temperatuurlabels per (Optioneel)",show_wind:"Toon windsnelheid en richting",show_precipitation_amounts:"Toon hoeveelheid neerslag",speed_only:"Alleen snelheid",direction_only:"Alleen richting (tekst)",barb:"Alleen richting (pijl)",show_precipitation_probability:"Neerslagkans weergeven",none:"Geen",speed_and_direction:"Snelheid en richting",barb_and_speed:"Zoals wind weerhaak en snelheid",barb_and_direction:"Als windhaak en richting",barb_speed_and_direction:"Zoals wind weerhaak, snelheid en richting",show_date:"Datums weergeven",all:"Alle",on_day_boundaries:"Op daggrenzen"},wn={missing_entity:"entiteit ontbreekt in configuratie",too_many_segments_requested:"Te veel prognosesegmenten aangevraagd in num_segments. Moet <= aantal segmenten in prognose-entiteit zijn.",must_be_int:"Moet een even geheel getal zijn groter of gelijk aan 2",invalid_colors:"De volgende kleuren in uw configuratie zijn ongeldig:",must_be_positive_int:"Moet een positief geheel getal zijn",offset_must_be_positive_int:"offset moet een positief geheel getal zijn",forecast_not_available:"Prognose niet beschikbaar",check_entity:"Controleer de geconfigureerde prognose-entiteit.",invalid_value_icon_fill:"icon_fill moet een positief geheel getal zijn of een van de 'single'; of 'full'"},An={clear:"Helder",cloudy:"Bewolkt",fog:"Mist",hail:"Hagel",thunderstorm:"Onweersbui",partlyCloudy:"Half bewolkt",heavyRain:"Zware regen",rain:"Regen",snow:"Sneeuw",mixedPrecip:"Gemengde neerslag",sunny:"Zonnig",windy:"Winderig"},$n={n:"N",nne:"NNO",ne:"NO",ene:"ONO",e:"O",ese:"OZO",se:"ZO",sse:"ZZO",s:"Z",ssw:"ZZW",sw:"ZW",wsw:"WZW",w:"W",wnw:"WNW",nw:"NW",nnw:"NNW"},En={chance_of_precipitation:"{0}% kans op neerslag"},Cn={common:yn,editor:xn,errors:wn,conditions:An,direction:$n,card:En},Sn={version:"Wersja",title:"Pogoda godzinowa",title_card:"Pogoda godzinowa",description:"Karta w formie wykresu słupkowego dla pogody godzinowej",invalid_configuration:"Nieprawiłowa konfiguracja"},kn={entity:"Encja",name:"Nazwa (opcjonalnie)",icons:"Pokaż ikony zamiast etykiet tekstowych",offset:"Liczba segmentów prognozy, o które należy skompensować początek (opcjonalnie)",segments_to_show:"Liczba segmentów prognozy do wyświetlenia (opcjonalnie)",label_spacing:"Liczba segmentów prognozy do etykiet czasoprzestrzeni i temperatury według (opcjonalnie)",show_wind:"Pokaż prędkość i kierunek wiatru",show_precipitation_amounts:"Pokaż ilość opadów",speed_only:"Tylko prędkość",direction_only:"Tylko kierunek",barb:"Jak kolce wiatru",show_precipitation_probability:"Pokaż prawdopodobieństwo opadów",none:"Nic",speed_and_direction:"Szybkość i kierunek",barb_and_speed:"Jak kolce wiatru i prędkość",barb_and_direction:"Jako zadzior i kierunek wiatru",barb_speed_and_direction:"Jak kolce wiatru, prędkość i kierunek",show_date:"Pokaż daty",all:"Wszystko",on_day_boundaries:"Na granicach dnia"},Tn={missing_entity:"encja nie istnieje",must_be_int:"Musi być parzystą liczbą całkowitą większą lub równą 2",invalid_colors:"Następujące kolory w Twojej konfiguracji są nieprawidłowe:",must_be_positive_int:"Musi być dodatnią liczbą całkowitą",too_many_segments_requested:"Zażądano zbyt wielu segmentów prognozy w num_segments. Musi wynosić <= liczba segmentów w elemencie prognozy.",offset_must_be_positive_int:"offset musi być dodatnią liczbą całkowitą",forecast_not_available:"Prognoza niedostępna",check_entity:"Sprawdź skonfigurowaną encję prognozy.",invalid_value_icon_fill:"icon_fill musi być dodatnią liczbą całkowitą lub jedną z wartości 'single' lub 'full'"},In={clear:"Bezchmurnie",cloudy:"Pochmurnie",fog:"Mgła",hail:"Grad",thunderstorm:"Burza",partlyCloudy:"Częściowe zachmurzenie",heavyRain:"Ulewa",rain:"Deszcz",snow:"Śnieg",mixedPrecip:"Mieszane opady",sunny:"Słonecznie",windy:"Wietrznie"},On={n:"P",nne:"PPW",ne:"PW",ene:"WPW",e:"W",ese:"WPdW",se:"PdW",sse:"PdPdW",s:"Pd",ssw:"PdPdZ",sw:"PdZ",wsw:"ZPdZ",w:"Z",wnw:"ZPZ",nw:"PZ",nnw:"PPZ"},Mn={chance_of_precipitation:"{0}% szans na opady"},Nn={common:Sn,editor:kn,errors:Tn,conditions:In,direction:On,card:Mn},Rn={version:"Versão",title:"Tempo de hora em hora",title_card:"Tempo de hora em hora",description:"Um cartão para mostrar as condições meteorológicas de hora em hora como uma barra.",invalid_configuration:"Configuração Inválida"},zn={entity:"Entidade",name:"Nome (opcional)",icons:"Mostrar ícones em vez de rótulos de texto",offset:"Número de segmentos de previsão para começar a compensar (opcional)",segments_to_show:"Número de segmentos de previsão a serem exibidos (opcional)",label_spacing:"Número de segmentos de previsão para rótulos de tempo e temperatura de espaço por (opcional)",show_wind:"Mostrar velocidade e direção do vento",show_precipitation_amounts:"Mostrar quantidade de precipitação",speed_only:"Apenas velocidade",direction_only:"Apenas direção",barb:"Como farpa de vento",show_precipitation_probability:"Mostrar probabilidade de precipitação",none:"Nenhum",speed_and_direction:"Velocidade e direção",barb_and_speed:"Como farpa de vento e velocidade",barb_and_direction:"Como farpa de vento e direção",barb_speed_and_direction:"Como farpa de vento, velocidade e direção",show_date:"Mostrar datas",all:"Todos",on_day_boundaries:"Nos limites do dia"},Ln={missing_entity:"A entidade não existe na configuração",must_be_int:"Deve ser um número inteiro par maior ou igual a 2",invalid_colors:"As seguintes cores em sua configuração são inválidas:",must_be_positive_int:"Deve ser um número inteiro positivo",too_many_segments_requested:"Muitos segmentos de previsão solicitados em num_segments. Deve ser <= número de segmentos na entidade de previsão.",offset_must_be_positive_int:"offset deve ser um número inteiro positivo",forecast_not_available:"Previsão não disponível",check_entity:"Verifique a entidade de previsão configurada.",invalid_value_icon_fill:"icon_fill deve ser um número inteiro positivo ou um dos valores 'single' ou 'full'"},Hn={clear:"Limpo",cloudy:"Nublado",fog:"Nevoeiro",hail:"Granizo",thunderstorm:"Trovoada",partlyCloudy:"Pouco nublado",heavyRain:"Chuva forte",rain:"Chuva",snow:"Neve",mixedPrecip:"Precipitação mista",sunny:"Sol",windy:"Vento"},Pn={n:"N",nne:"NNE",ne:"NE",ene:"ENE",e:"E",ese:"ESE",se:"SE",sse:"SSE",s:"S",ssw:"SSO",sw:"SO",wsw:"OSO",w:"O",wnw:"ONO",nw:"NO",nnw:"NNO"},Dn={chance_of_precipitation:"{0}% chance de chuva"},Vn={common:Rn,editor:zn,errors:Ln,conditions:Hn,direction:Pn,card:Dn},Fn={version:"Versão",title:"Tempo de hora em hora",title_card:"Cartão meteorológico por hora",description:"Um cartão para renderizar as condições climáticas horárias como uma barra.",invalid_configuration:"Configuração inválida"},Bn={entity:"Entidade (obrigatório)",name:"Nome (opcional)",segments_to_show:"Número de segmentos de previsão a serem exibidos (opcional)",offset:"Número de segmentos de previsão para começar a compensar (opcional)",icons:"Mostrar ícones em vez de rótulos de texto",label_spacing:"Número de segmentos de previsão para rótulos de tempo e temperatura de espaço por (opcional)",show_wind:"Mostrar velocidade e direção do vento",show_precipitation_amounts:"Mostrar quantidade de precipitação",neither:"Nenhum",both:"Ambos",speed_only:"Apenas velocidade",direction_only:"Apenas direção",barb:"Como farpa de vento",show_precipitation_probability:"Mostrar probabilidade de precipitação",none:"Nenhum",speed_and_direction:"Velocidade e direção",barb_and_speed:"Como farpa de vento e velocidade",barb_and_direction:"Como farpa de vento e direção",barb_speed_and_direction:"Como farpa de vento, velocidade e direção",show_date:"Mostrar datas",all:"Todos",on_day_boundaries:"Nos limites do dia"},Un={missing_entity:"entidade está faltando na configuração",too_many_segments_requested:"Muitos segmentos de previsão solicitados em num_segments. Deve ser <= número de segmentos na entidade de previsão.",must_be_int:"Deve ser um número inteiro par maior ou igual a 2",invalid_colors:"As seguintes cores em sua configuração são inválidas:",must_be_positive_int:"Deve ser um número inteiro positivo",offset_must_be_positive_int:"offset deve ser um número inteiro positivo",forecast_not_available:"Previsão não disponível",check_entity:"Verifique a entidade de previsão configurada.",invalid_value_icon_fill:"icon_fill deve ser um número inteiro positivo ou um dos valores 'single' ou 'full'"},jn={clear:"Claro",cloudy:"Nublado",fog:"Névoa",hail:"Granizo",thunderstorm:"Tempestade",partlyCloudy:"Parcialmente nublado",heavyRain:"Chuva pesada",rain:"Chuva",snow:"Neve",mixedPrecip:"Precipitação mista",sunny:"Ensolarado",windy:"Ventania"},Wn={n:"N",nne:"NNE",ne:"NE",ene:"ENE",e:"E",ese:"ESE",se:"SE",sse:"SSE",s:"S",ssw:"SSO",sw:"SO",wsw:"OSO",w:"O",wnw:"ONO",nw:"NO",nnw:"NNO"},qn={chance_of_precipitation:"{0}% chance de precipitação"},Gn={common:Fn,editor:Bn,errors:Un,conditions:jn,direction:Wn,card:qn},Xn={version:"Версия",title:"Почасовая погода",title_card:"Карточка почасовой погоды",description:"Карточка для отображения почасовых условий погоды в виде полосы.",invalid_configuration:"Недопустимая конфигурация"},Kn={entity:"Сущность (Обязательно)",name:"Название (По желанию)",segments_to_show:"Количество отображаемых сегментов (По желанию)",offset:"Количество сегментов для смещения (По желанию)",icons:"Отображать значки вместо текстовых меток",label_spacing:"Количество сегментов для размещения временных и температурных меток (По желанию)",show_wind:"Отображать скорость и направление ветра",show_date:"Отображать даты",show_precipitation_amounts:"Отображать количество осадков",show_precipitation_probability:"Отображать вероятность осадков",none:"Нет",speed_and_direction:"Скорость и направление",speed_only:"Только скорость",direction_only:"Только направление",barb:"Как ветровой флажок",barb_and_speed:"Как ветровой флажок и скорость",barb_and_direction:"Как ветровой флажок и направление",barb_speed_and_direction:"Как ветровой флажок, скорость и направление",all:"Все",on_day_boundaries:"На границах дня"},Yn={missing_entity:"Отсутствует сущность в конфигурации",too_many_segments_requested:"Запрошено слишком много сегментов в num_segments. Должно быть <= количества сегментов в сущности прогноза.",must_be_int:"Должно быть четным целым числом, большим или равным 2",invalid_colors:"Следующие цвета в вашей конфигурации недопустимы:",must_be_positive_int:"Должно быть положительным целым числом",offset_must_be_positive_int:"Смещение должно быть положительным целым числом",forecast_not_available:"Прогноз недоступен",check_entity:"Проверьте настроенную сущность прогноза.",invalid_value_icon_fill:"icon_fill должен быть либо положительным целым числом, либо одним из значений 'single' или 'full'"},Zn={clear:"Ясно",cloudy:"Облачно",fog:"Туман",hail:"Град",thunderstorm:"Гроза",partlyCloudy:"Частичная облачность",heavyRain:"Сильный дождь",rain:"Дождь",snow:"Снег",mixedPrecip:"Смешанные осадки",sunny:"Солнечно",windy:"Ветрено"},Jn={n:"С",nne:"ССВ",ne:"СВ",ene:"ВСВ",e:"В",ese:"ВЮВ",se:"ЮВ",sse:"ЮЮВ",s:"Ю",ssw:"ЮЮЗ",sw:"ЮЗ",wsw:"ЗЮЗ",w:"З",wnw:"ЗСЗ",nw:"СЗ",nnw:"ССЗ"},Qn={chance_of_precipitation:"Вероятность осадков: {0}%"},eo={common:Xn,editor:Kn,errors:Yn,conditions:Zn,direction:Jn,card:Qn},to={version:"Verzia",title:"Hodinové počasie",title_card:"Hodinové Weather Card",description:"Karta na vykreslenie hodinových poveternostných podmienok ako pruh.",invalid_configuration:"Neplatná konfigurácia"},io={entity:"Entita (požadovaná)",name:"Názov (voliteľné)",segments_to_show:"Počet segmentov prognózy, ktoré sa majú zobraziť (voliteľné)",offset:"Počet segmentov prognózy, o ktoré sa má začať kompenzácia (voliteľné)",icons:"Zobrazovať ikony namiesto textových štítkov",label_spacing:"Počet segmentov predpovede na štítky časopriestoru a teploty podľa (voliteľné)",show_wind:"Zobraziť rýchlosť a smer vetra",show_precipitation_amounts:"Zobraziť množstvo zrážok",show_precipitation_probability:"Zobraziť pravdepodobnosť zrážok",none:"Nič",speed_and_direction:"Rýchlosť a smer",speed_only:"Len rýchlosť",direction_only:"Len smer",barb:"Ako veterný osteň",barb_and_speed:"Ako veterný osteň a rýchlosť",barb_and_direction:"Ako veterný osteň a smer",barb_speed_and_direction:"Ako veterný osteň, rýchlosť a smer",show_date:"Zobraziť dátumy",all:"Všetky",on_day_boundaries:"Na hraniciach dňa"},no={missing_entity:"v konfigurácii chýba entita",too_many_segments_requested:"Príliš veľa segmentov prognózy požadovaných v num_segments. Musí byť <= počet segmentov v entite prognózy.",must_be_int:"Musí byť párne celé číslo väčšie alebo rovné 2",invalid_colors:"Nasledujúce farby vo vašej konfigurácii sú neplatné:",must_be_positive_int:"Musí to byť kladné celé číslo",offset_must_be_positive_int:"offset musí byť kladné celé číslo",forecast_not_available:"Predpoveď nie je k dispozícii",check_entity:"Skontrolujte nakonfigurovanú entitu predpovede.",invalid_value_icon_fill:"icon_fill musí byť buď kladné celé číslo alebo jedno z 'single'; alebo 'full';"},oo={clear:"Čisté",cloudy:"Zamračené",fog:"Hmla",hail:"Ľadovec",thunderstorm:"Búrka",partlyCloudy:"Čiastočne zamračené",heavyRain:"Hustý dážď",rain:"Dážď",snow:"Sneh",mixedPrecip:"Zmiešené",sunny:"Slnečno",windy:"Veterno"},ro={n:"S",nne:"SSV",ne:"SV",ene:"VSV",e:"V",ese:"VJV",se:"JV",sse:"JJV",s:"J",ssw:"JJZ",sw:"JZ",wsw:"ZJZ",w:"Z",wnw:"ZSZ",nw:"SZ",nnw:"SSZ"},so={chance_of_precipitation:"{0}% možnosť zrážok"},ao={common:to,editor:io,errors:no,conditions:oo,direction:ro,card:so},lo={version:"Sürüm",title:"Saatlik Hava Durumu",title_card:"Saatlik Hava Durumu Kartı",description:"Saatlik hava koşullarını çubuk grafik olarak gösteren bir kart.",invalid_configuration:"Geçersiz yapılandırma"},co={entity:"Varlık (Zorunlu)",name:"Ad (İsteğe bağlı)",segments_to_show:"Gösterilecek tahmin dilimi sayısı (İsteğe bağlı)",offset:"Başlangıcı öteleme sayısı (İsteğe bağlı)",icons:"Metin etiketleri yerine simgeleri göster",label_spacing:"Zaman ve sıcaklık etiketlerinin aralık sayısı (İsteğe bağlı)",show_wind:"Rüzgar hızı ve yönünü göster",show_date:"Tarihleri göster",show_precipitation_amounts:"Yağış miktarını göster",show_precipitation_probability:"Yağış olasılığını göster",none:"Yok",speed_and_direction:"Hız ve yön",speed_only:"Sadece hız",direction_only:"Sadece yön",barb:"Rüzgar oku olarak",barb_and_speed:"Rüzgar oku ve hız olarak",barb_and_direction:"Rüzgar oku ve yön olarak",barb_speed_and_direction:"Rüzgar oku, hız ve yön olarak",all:"Tümü",on_day_boundaries:"Gün sınırlarında"},ho={missing_entity:"Yapılandırmada varlık eksik",too_many_segments_requested:"İstenen tahmin dilimi sayısı çok fazla. num_segments değeri, tahmin varlığındaki dilim sayısından fazla olamaz.",must_be_int:"2 veya daha büyük çift bir tam sayı olmalı",invalid_colors:"Yapılandırmanızdaki geçersiz renkler:",must_be_positive_int:"Pozitif bir tam sayı olmalı",offset_must_be_positive_int:"offset pozitif bir tam sayı olmalı",forecast_not_available:"Tahmin mevcut değil",check_entity:"Yapılandırılmış tahmin varlığını kontrol edin.",invalid_value_icon_fill:"icon_fill değeri pozitif bir tam sayı ya da 'single' veya 'full' olmalıdır"},po={clear:"Açık",cloudy:"Bulutlu",fog:"Sisli",hail:"Dolu",thunderstorm:"Gök gürültülü fırtına",partlyCloudy:"Parçalı bulutlu",heavyRain:"Şiddetli yağmur",rain:"Yağmur",snow:"Kar",mixedPrecip:"Karışık yağış",sunny:"Güneşli",windy:"Rüzgarlı"},uo={n:"K",nne:"KKB",ne:"KB",ene:"DKB",e:"D",ese:"DGD",se:"GD",sse:"GGB",s:"G",ssw:"GGB",sw:"GB",wsw:"BGB",w:"B",wnw:"BKB",nw:"KB",nnw:"KKB"},mo={chance_of_precipitation:"%{0} yağış olasılığı"},fo={common:lo,editor:co,errors:ho,conditions:po,direction:uo,card:mo},go={version:"Версія",title:"Погодинний прогноз погоди",title_card:"Картка погодинного прогнозу погоди",description:"Картка для відображення погодинних умов погоди у вигляді діаграми.",invalid_configuration:"Недійсна конфігурація"},vo={entity:"Сутність (Обов'язково)",name:"Назва (Необов'язково)",segments_to_show:"Кількість сегментів прогнозу для показу (Необов'язково)",offset:"Кількість сегментів прогнозу для зміщення початку (Необов'язково)",icons:"Показувати іконки замість текстових міток",label_spacing:"Кількість сегментів прогнозу для інтервалу між мітками часу та температури (Необов'язково)",show_wind:"Показувати швидкість та напрямок вітру",show_date:"Показувати дати",show_precipitation_amounts:"Показувати кількість опадів",show_precipitation_probability:"Показувати ймовірність опадів",none:"Нічого",speed_and_direction:"Швидкість та напрямок",speed_only:"Тільки швидкість",direction_only:"Тільки напрямок",barb:"Як вітровий вимпел",barb_and_speed:"Як вітровий вимпел та швидкість",barb_and_direction:"Як вітровий вимпел та напрямок",barb_speed_and_direction:"Як вітровий вимпел, швидкість та напрямок",all:"Все",on_day_boundaries:"На межах днів"},_o={missing_entity:"відсутня сутність в конфігурації",too_many_segments_requested:"Запитано забагато сегментів прогнозу в num_segments. Має бути <= кількості сегментів в сутності прогнозу.",must_be_int:"Має бути парним цілим числом більшим або рівним 2",invalid_colors:"Наступні кольори у вашій конфігурації недійсні:",must_be_positive_int:"Має бути додатнім цілим числом",offset_must_be_positive_int:"offset має бути додатнім цілим числом",forecast_not_available:"Прогноз недоступний",check_entity:"Перевірте налаштовану сутність прогнозу.",invalid_value_icon_fill:"icon_fill має бути додатнім цілим числом або одним з 'single' чи 'full'"},bo={clear:"Ясно",cloudy:"Хмарно",fog:"Туман",hail:"Град",thunderstorm:"Гроза",partlyCloudy:"Частково хмарно",heavyRain:"Сильний дощ",rain:"Дощ",snow:"Сніг",mixedPrecip:"Змішані опади",sunny:"Сонячно",windy:"Вітряно"},yo={n:"Пн",nne:"ПнПнСх",ne:"ПнСх",ene:"СхПнСх",e:"Сх",ese:"СхПдСх",se:"ПдСх",sse:"ПдПдСх",s:"Пд",ssw:"ПдПдЗх",sw:"ПдЗх",wsw:"ЗхПдЗх",w:"Зх",wnw:"ЗхПнЗх",nw:"ПнЗх",nnw:"ПнПнЗх"},xo={chance_of_precipitation:"{0}% ймовірність опадів"},wo={common:go,editor:vo,errors:_o,conditions:bo,direction:yo,card:xo},Ao={version:"版本",title:"逐小时天气",title_card:"逐小时天气卡片",description:"一个用于显示逐小时天气状况的卡片。",invalid_configuration:"无效的配置"},$o={entity:"实体（必需）",name:"名称（可选）",segments_to_show:"显示的预测段数（可选）",offset:"开始的预测段偏移数（可选）",icons:"显示图标而非文字标签",label_spacing:"时间和温度标签的预测段间距数（可选）",show_wind:"显示风速和风向",show_date:"显示日期",show_precipitation_amounts:"显示降雨量",show_precipitation_probability:"显示降雨概率",none:"无",speed_and_direction:"速度和方向",speed_only:"仅速度",direction_only:"仅方向",barb:"风向图标",barb_and_speed:"风向图标和速度",barb_and_direction:"风向图标和方向",barb_speed_and_direction:"风向图标，速度和方向",all:"全部",on_day_boundaries:"在日边界上"},Eo={missing_entity:"配置中缺少实体",too_many_segments_requested:"在num_segments中请求的预测段过多。必须 <= 预测实体中的段数。",must_be_int:"必须是大于或等于2的偶数",invalid_colors:"配置中的以下颜色无效：",must_be_positive_int:"必须是正整数",offset_must_be_positive_int:"偏移必须是正整数",forecast_not_available:"预测不可用",check_entity:"检查配置的预测实体。",invalid_value_icon_fill:"icon_fill 必须是正整数,或者是'single'或'full'之一"},Co={clear:"晴朗",cloudy:"多云",fog:"雾",hail:"冰雹",thunderstorm:"雷暴",partlyCloudy:"局部多云",heavyRain:"大雨",rain:"雨",snow:"雪",mixedPrecip:"雨夹雪",sunny:"晴天",windy:"有风"},So={n:"北",nne:"北偏东",ne:"东北",ene:"东偏北",e:"东",ese:"东偏南",se:"东南",sse:"南偏东",s:"南",ssw:"南偏西",sw:"西南",wsw:"西偏南",w:"西",wnw:"西偏北",nw:"西北",nnw:"北偏西"},ko={chance_of_precipitation:"{0}%的降雨概率"},To={common:Ao,editor:$o,errors:Eo,conditions:Co,direction:So,card:ko};const Io={bg:Object.freeze({__proto__:null,common:Yt,editor:Zt,errors:Jt,conditions:Qt,direction:ei,card:ti,default:ii}),cs:Object.freeze({__proto__:null,common:ni,editor:oi,errors:ri,conditions:si,direction:ai,card:li,default:di}),da:Object.freeze({__proto__:null,common:ci,editor:hi,errors:pi,conditions:ui,direction:mi,card:fi,default:gi}),de:Object.freeze({__proto__:null,common:vi,editor:_i,errors:bi,conditions:yi,direction:xi,card:wi,default:Ai}),en:Object.freeze({__proto__:null,common:$i,editor:Ei,errors:Ci,conditions:Si,direction:ki,card:Ti,default:Ii}),es:Object.freeze({__proto__:null,common:Oi,editor:Mi,errors:Ni,conditions:Ri,direction:zi,card:Li,default:Hi}),fr:Object.freeze({__proto__:null,common:Pi,editor:Di,errors:Vi,conditions:Fi,direction:Bi,card:Ui,default:ji}),hu:Object.freeze({__proto__:null,common:Wi,editor:qi,errors:Gi,conditions:Xi,direction:Ki,card:Yi,default:Zi}),it:Object.freeze({__proto__:null,common:Ji,editor:Qi,errors:en,conditions:tn,direction:nn,card:on,default:rn}),nb:Object.freeze({__proto__:null,common:sn,editor:an,errors:ln,conditions:dn,direction:cn,card:hn,default:pn}),nn_NO:Object.freeze({__proto__:null,common:un,editor:mn,errors:fn,conditions:gn,direction:vn,card:_n,default:bn}),nl:Object.freeze({__proto__:null,common:yn,editor:xn,errors:wn,conditions:An,direction:$n,card:En,default:Cn}),pl:Object.freeze({__proto__:null,common:Sn,editor:kn,errors:Tn,conditions:In,direction:On,card:Mn,default:Nn}),pt:Object.freeze({__proto__:null,common:Rn,editor:zn,errors:Ln,conditions:Hn,direction:Pn,card:Dn,default:Vn}),pt_BR:Object.freeze({__proto__:null,common:Fn,editor:Bn,errors:Un,conditions:jn,direction:Wn,card:qn,default:Gn}),ru:Object.freeze({__proto__:null,common:Xn,editor:Kn,errors:Yn,conditions:Zn,direction:Jn,card:Qn,default:eo}),sk:Object.freeze({__proto__:null,common:to,editor:io,errors:no,conditions:oo,direction:ro,card:so,default:ao}),tr:Object.freeze({__proto__:null,common:lo,editor:co,errors:ho,conditions:po,direction:uo,card:mo,default:fo}),uk:Object.freeze({__proto__:null,common:go,editor:vo,errors:_o,conditions:bo,direction:yo,card:xo,default:wo}),zh:Object.freeze({__proto__:null,common:Ao,editor:$o,errors:Eo,conditions:Co,direction:So,card:ko,default:To})};function Oo(e,t){return function(i,n="",o=""){const r=(e||localStorage.getItem("selectedLanguage")||t||"en").replace(/['"]+/g,"").replace("-","_");let s;try{s=i.split(".").reduce((e,t)=>e[t],Io[r])}catch(e){s=i.split(".").reduce((e,t)=>e[t],Io.en)}return void 0===s&&(s=i.split(".").reduce((e,t)=>e[t],Io.en)),""!==n&&""!==o&&(s=s.replace(n,o)),s}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const Mo="important",No=" !"+Mo,Ro=kt(class extends Tt{constructor(e){if(super(e),e.type!==Ct||"style"!==e.name||e.strings?.length>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((t,i)=>{const n=e[i];return null==n?t:t+`${i=i.includes("-")?i:i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${n};`},"")}update(e,[t]){const{style:i}=e.element;if(void 0===this.ft)return this.ft=new Set(Object.keys(t)),this.render(t);for(const e of this.ft)null==t[e]&&(this.ft.delete(e),e.includes("-")?i.removeProperty(e):i[e]=null);for(const e in t){const n=t[e];if(null!=n){this.ft.add(e);const t="string"==typeof n&&n.endsWith(No);e.includes("-")||t?i.setProperty(e,t?n.slice(0,-11):n,t?Mo:""):i[e]=n}}return Re}});var zo="top",Lo="bottom",Ho="right",Po="left",Do="auto",Vo=[zo,Lo,Ho,Po],Fo="start",Bo="end",Uo="viewport",jo="popper",Wo=Vo.reduce(function(e,t){return e.concat([t+"-"+Fo,t+"-"+Bo])},[]),qo=[].concat(Vo,[Do]).reduce(function(e,t){return e.concat([t,t+"-"+Fo,t+"-"+Bo])},[]),Go=["beforeRead","read","afterRead","beforeMain","main","afterMain","beforeWrite","write","afterWrite"];function Xo(e){return e?(e.nodeName||"").toLowerCase():null}function Ko(e){if(null==e)return window;if("[object Window]"!==e.toString()){var t=e.ownerDocument;return t&&t.defaultView||window}return e}function Yo(e){return e instanceof Ko(e).Element||e instanceof Element}function Zo(e){return e instanceof Ko(e).HTMLElement||e instanceof HTMLElement}function Jo(e){return"undefined"!=typeof ShadowRoot&&(e instanceof Ko(e).ShadowRoot||e instanceof ShadowRoot)}var Qo={name:"applyStyles",enabled:!0,phase:"write",fn:function(e){var t=e.state;Object.keys(t.elements).forEach(function(e){var i=t.styles[e]||{},n=t.attributes[e]||{},o=t.elements[e];Zo(o)&&Xo(o)&&(Object.assign(o.style,i),Object.keys(n).forEach(function(e){var t=n[e];!1===t?o.removeAttribute(e):o.setAttribute(e,!0===t?"":t)}))})},effect:function(e){var t=e.state,i={popper:{position:t.options.strategy,left:"0",top:"0",margin:"0"},arrow:{position:"absolute"},reference:{}};return Object.assign(t.elements.popper.style,i.popper),t.styles=i,t.elements.arrow&&Object.assign(t.elements.arrow.style,i.arrow),function(){Object.keys(t.elements).forEach(function(e){var n=t.elements[e],o=t.attributes[e]||{},r=Object.keys(t.styles.hasOwnProperty(e)?t.styles[e]:i[e]).reduce(function(e,t){return e[t]="",e},{});Zo(n)&&Xo(n)&&(Object.assign(n.style,r),Object.keys(o).forEach(function(e){n.removeAttribute(e)}))})}},requires:["computeStyles"]};function er(e){return e.split("-")[0]}var tr=Math.max,ir=Math.min,nr=Math.round;function or(){var e=navigator.userAgentData;return null!=e&&e.brands&&Array.isArray(e.brands)?e.brands.map(function(e){return e.brand+"/"+e.version}).join(" "):navigator.userAgent}function rr(){return!/^((?!chrome|android).)*safari/i.test(or())}function sr(e,t,i){void 0===t&&(t=!1),void 0===i&&(i=!1);var n=e.getBoundingClientRect(),o=1,r=1;t&&Zo(e)&&(o=e.offsetWidth>0&&nr(n.width)/e.offsetWidth||1,r=e.offsetHeight>0&&nr(n.height)/e.offsetHeight||1);var s=(Yo(e)?Ko(e):window).visualViewport,a=!rr()&&i,l=(n.left+(a&&s?s.offsetLeft:0))/o,d=(n.top+(a&&s?s.offsetTop:0))/r,c=n.width/o,h=n.height/r;return{width:c,height:h,top:d,right:l+c,bottom:d+h,left:l,x:l,y:d}}function ar(e){var t=sr(e),i=e.offsetWidth,n=e.offsetHeight;return Math.abs(t.width-i)<=1&&(i=t.width),Math.abs(t.height-n)<=1&&(n=t.height),{x:e.offsetLeft,y:e.offsetTop,width:i,height:n}}function lr(e,t){var i=t.getRootNode&&t.getRootNode();if(e.contains(t))return!0;if(i&&Jo(i)){var n=t;do{if(n&&e.isSameNode(n))return!0;n=n.parentNode||n.host}while(n)}return!1}function dr(e){return Ko(e).getComputedStyle(e)}function cr(e){return["table","td","th"].indexOf(Xo(e))>=0}function hr(e){return((Yo(e)?e.ownerDocument:e.document)||window.document).documentElement}function pr(e){return"html"===Xo(e)?e:e.assignedSlot||e.parentNode||(Jo(e)?e.host:null)||hr(e)}function ur(e){return Zo(e)&&"fixed"!==dr(e).position?e.offsetParent:null}function mr(e){for(var t=Ko(e),i=ur(e);i&&cr(i)&&"static"===dr(i).position;)i=ur(i);return i&&("html"===Xo(i)||"body"===Xo(i)&&"static"===dr(i).position)?t:i||function(e){var t=/firefox/i.test(or());if(/Trident/i.test(or())&&Zo(e)&&"fixed"===dr(e).position)return null;var i=pr(e);for(Jo(i)&&(i=i.host);Zo(i)&&["html","body"].indexOf(Xo(i))<0;){var n=dr(i);if("none"!==n.transform||"none"!==n.perspective||"paint"===n.contain||-1!==["transform","perspective"].indexOf(n.willChange)||t&&"filter"===n.willChange||t&&n.filter&&"none"!==n.filter)return i;i=i.parentNode}return null}(e)||t}function fr(e){return["top","bottom"].indexOf(e)>=0?"x":"y"}function gr(e,t,i){return tr(e,ir(t,i))}function vr(e){return Object.assign({},{top:0,right:0,bottom:0,left:0},e)}function _r(e,t){return t.reduce(function(t,i){return t[i]=e,t},{})}var br={name:"arrow",enabled:!0,phase:"main",fn:function(e){var t,i=e.state,n=e.name,o=e.options,r=i.elements.arrow,s=i.modifiersData.popperOffsets,a=er(i.placement),l=fr(a),d=[Po,Ho].indexOf(a)>=0?"height":"width";if(r&&s){var c=function(e,t){return vr("number"!=typeof(e="function"==typeof e?e(Object.assign({},t.rects,{placement:t.placement})):e)?e:_r(e,Vo))}(o.padding,i),h=ar(r),p="y"===l?zo:Po,u="y"===l?Lo:Ho,m=i.rects.reference[d]+i.rects.reference[l]-s[l]-i.rects.popper[d],f=s[l]-i.rects.reference[l],g=mr(r),v=g?"y"===l?g.clientHeight||0:g.clientWidth||0:0,_=m/2-f/2,b=c[p],y=v-h[d]-c[u],x=v/2-h[d]/2+_,w=gr(b,x,y),A=l;i.modifiersData[n]=((t={})[A]=w,t.centerOffset=w-x,t)}},effect:function(e){var t=e.state,i=e.options.element,n=void 0===i?"[data-popper-arrow]":i;null!=n&&("string"!=typeof n||(n=t.elements.popper.querySelector(n)))&&lr(t.elements.popper,n)&&(t.elements.arrow=n)},requires:["popperOffsets"],requiresIfExists:["preventOverflow"]};function yr(e){return e.split("-")[1]}var xr={top:"auto",right:"auto",bottom:"auto",left:"auto"};function wr(e){var t,i=e.popper,n=e.popperRect,o=e.placement,r=e.variation,s=e.offsets,a=e.position,l=e.gpuAcceleration,d=e.adaptive,c=e.roundOffsets,h=e.isFixed,p=s.x,u=void 0===p?0:p,m=s.y,f=void 0===m?0:m,g="function"==typeof c?c({x:u,y:f}):{x:u,y:f};u=g.x,f=g.y;var v=s.hasOwnProperty("x"),_=s.hasOwnProperty("y"),b=Po,y=zo,x=window;if(d){var w=mr(i),A="clientHeight",$="clientWidth";if(w===Ko(i)&&"static"!==dr(w=hr(i)).position&&"absolute"===a&&(A="scrollHeight",$="scrollWidth"),o===zo||(o===Po||o===Ho)&&r===Bo)y=Lo,f-=(h&&w===x&&x.visualViewport?x.visualViewport.height:w[A])-n.height,f*=l?1:-1;if(o===Po||(o===zo||o===Lo)&&r===Bo)b=Ho,u-=(h&&w===x&&x.visualViewport?x.visualViewport.width:w[$])-n.width,u*=l?1:-1}var E,C=Object.assign({position:a},d&&xr),S=!0===c?function(e,t){var i=e.x,n=e.y,o=t.devicePixelRatio||1;return{x:nr(i*o)/o||0,y:nr(n*o)/o||0}}({x:u,y:f},Ko(i)):{x:u,y:f};return u=S.x,f=S.y,l?Object.assign({},C,((E={})[y]=_?"0":"",E[b]=v?"0":"",E.transform=(x.devicePixelRatio||1)<=1?"translate("+u+"px, "+f+"px)":"translate3d("+u+"px, "+f+"px, 0)",E)):Object.assign({},C,((t={})[y]=_?f+"px":"",t[b]=v?u+"px":"",t.transform="",t))}var Ar={passive:!0};var $r={left:"right",right:"left",bottom:"top",top:"bottom"};function Er(e){return e.replace(/left|right|bottom|top/g,function(e){return $r[e]})}var Cr={start:"end",end:"start"};function Sr(e){return e.replace(/start|end/g,function(e){return Cr[e]})}function kr(e){var t=Ko(e);return{scrollLeft:t.pageXOffset,scrollTop:t.pageYOffset}}function Tr(e){return sr(hr(e)).left+kr(e).scrollLeft}function Ir(e){var t=dr(e),i=t.overflow,n=t.overflowX,o=t.overflowY;return/auto|scroll|overlay|hidden/.test(i+o+n)}function Or(e){return["html","body","#document"].indexOf(Xo(e))>=0?e.ownerDocument.body:Zo(e)&&Ir(e)?e:Or(pr(e))}function Mr(e,t){var i;void 0===t&&(t=[]);var n=Or(e),o=n===(null==(i=e.ownerDocument)?void 0:i.body),r=Ko(n),s=o?[r].concat(r.visualViewport||[],Ir(n)?n:[]):n,a=t.concat(s);return o?a:a.concat(Mr(pr(s)))}function Nr(e){return Object.assign({},e,{left:e.x,top:e.y,right:e.x+e.width,bottom:e.y+e.height})}function Rr(e,t,i){return t===Uo?Nr(function(e,t){var i=Ko(e),n=hr(e),o=i.visualViewport,r=n.clientWidth,s=n.clientHeight,a=0,l=0;if(o){r=o.width,s=o.height;var d=rr();(d||!d&&"fixed"===t)&&(a=o.offsetLeft,l=o.offsetTop)}return{width:r,height:s,x:a+Tr(e),y:l}}(e,i)):Yo(t)?function(e,t){var i=sr(e,!1,"fixed"===t);return i.top=i.top+e.clientTop,i.left=i.left+e.clientLeft,i.bottom=i.top+e.clientHeight,i.right=i.left+e.clientWidth,i.width=e.clientWidth,i.height=e.clientHeight,i.x=i.left,i.y=i.top,i}(t,i):Nr(function(e){var t,i=hr(e),n=kr(e),o=null==(t=e.ownerDocument)?void 0:t.body,r=tr(i.scrollWidth,i.clientWidth,o?o.scrollWidth:0,o?o.clientWidth:0),s=tr(i.scrollHeight,i.clientHeight,o?o.scrollHeight:0,o?o.clientHeight:0),a=-n.scrollLeft+Tr(e),l=-n.scrollTop;return"rtl"===dr(o||i).direction&&(a+=tr(i.clientWidth,o?o.clientWidth:0)-r),{width:r,height:s,x:a,y:l}}(hr(e)))}function zr(e,t,i,n){var o="clippingParents"===t?function(e){var t=Mr(pr(e)),i=["absolute","fixed"].indexOf(dr(e).position)>=0&&Zo(e)?mr(e):e;return Yo(i)?t.filter(function(e){return Yo(e)&&lr(e,i)&&"body"!==Xo(e)}):[]}(e):[].concat(t),r=[].concat(o,[i]),s=r[0],a=r.reduce(function(t,i){var o=Rr(e,i,n);return t.top=tr(o.top,t.top),t.right=ir(o.right,t.right),t.bottom=ir(o.bottom,t.bottom),t.left=tr(o.left,t.left),t},Rr(e,s,n));return a.width=a.right-a.left,a.height=a.bottom-a.top,a.x=a.left,a.y=a.top,a}function Lr(e){var t,i=e.reference,n=e.element,o=e.placement,r=o?er(o):null,s=o?yr(o):null,a=i.x+i.width/2-n.width/2,l=i.y+i.height/2-n.height/2;switch(r){case zo:t={x:a,y:i.y-n.height};break;case Lo:t={x:a,y:i.y+i.height};break;case Ho:t={x:i.x+i.width,y:l};break;case Po:t={x:i.x-n.width,y:l};break;default:t={x:i.x,y:i.y}}var d=r?fr(r):null;if(null!=d){var c="y"===d?"height":"width";switch(s){case Fo:t[d]=t[d]-(i[c]/2-n[c]/2);break;case Bo:t[d]=t[d]+(i[c]/2-n[c]/2)}}return t}function Hr(e,t){void 0===t&&(t={});var i=t,n=i.placement,o=void 0===n?e.placement:n,r=i.strategy,s=void 0===r?e.strategy:r,a=i.boundary,l=void 0===a?"clippingParents":a,d=i.rootBoundary,c=void 0===d?Uo:d,h=i.elementContext,p=void 0===h?jo:h,u=i.altBoundary,m=void 0!==u&&u,f=i.padding,g=void 0===f?0:f,v=vr("number"!=typeof g?g:_r(g,Vo)),_=p===jo?"reference":jo,b=e.rects.popper,y=e.elements[m?_:p],x=zr(Yo(y)?y:y.contextElement||hr(e.elements.popper),l,c,s),w=sr(e.elements.reference),A=Lr({reference:w,element:b,strategy:"absolute",placement:o}),$=Nr(Object.assign({},b,A)),E=p===jo?$:w,C={top:x.top-E.top+v.top,bottom:E.bottom-x.bottom+v.bottom,left:x.left-E.left+v.left,right:E.right-x.right+v.right},S=e.modifiersData.offset;if(p===jo&&S){var k=S[o];Object.keys(C).forEach(function(e){var t=[Ho,Lo].indexOf(e)>=0?1:-1,i=[zo,Lo].indexOf(e)>=0?"y":"x";C[e]+=k[i]*t})}return C}function Pr(e,t){void 0===t&&(t={});var i=t,n=i.placement,o=i.boundary,r=i.rootBoundary,s=i.padding,a=i.flipVariations,l=i.allowedAutoPlacements,d=void 0===l?qo:l,c=yr(n),h=c?a?Wo:Wo.filter(function(e){return yr(e)===c}):Vo,p=h.filter(function(e){return d.indexOf(e)>=0});0===p.length&&(p=h);var u=p.reduce(function(t,i){return t[i]=Hr(e,{placement:i,boundary:o,rootBoundary:r,padding:s})[er(i)],t},{});return Object.keys(u).sort(function(e,t){return u[e]-u[t]})}var Dr={name:"flip",enabled:!0,phase:"main",fn:function(e){var t=e.state,i=e.options,n=e.name;if(!t.modifiersData[n]._skip){for(var o=i.mainAxis,r=void 0===o||o,s=i.altAxis,a=void 0===s||s,l=i.fallbackPlacements,d=i.padding,c=i.boundary,h=i.rootBoundary,p=i.altBoundary,u=i.flipVariations,m=void 0===u||u,f=i.allowedAutoPlacements,g=t.options.placement,v=er(g),_=l||(v===g||!m?[Er(g)]:function(e){if(er(e)===Do)return[];var t=Er(e);return[Sr(e),t,Sr(t)]}(g)),b=[g].concat(_).reduce(function(e,i){return e.concat(er(i)===Do?Pr(t,{placement:i,boundary:c,rootBoundary:h,padding:d,flipVariations:m,allowedAutoPlacements:f}):i)},[]),y=t.rects.reference,x=t.rects.popper,w=new Map,A=!0,$=b[0],E=0;E<b.length;E++){var C=b[E],S=er(C),k=yr(C)===Fo,T=[zo,Lo].indexOf(S)>=0,I=T?"width":"height",O=Hr(t,{placement:C,boundary:c,rootBoundary:h,altBoundary:p,padding:d}),M=T?k?Ho:Po:k?Lo:zo;y[I]>x[I]&&(M=Er(M));var N=Er(M),R=[];if(r&&R.push(O[S]<=0),a&&R.push(O[M]<=0,O[N]<=0),R.every(function(e){return e})){$=C,A=!1;break}w.set(C,R)}if(A)for(var z=function(e){var t=b.find(function(t){var i=w.get(t);if(i)return i.slice(0,e).every(function(e){return e})});if(t)return $=t,"break"},L=m?3:1;L>0;L--){if("break"===z(L))break}t.placement!==$&&(t.modifiersData[n]._skip=!0,t.placement=$,t.reset=!0)}},requiresIfExists:["offset"],data:{_skip:!1}};function Vr(e,t,i){return void 0===i&&(i={x:0,y:0}),{top:e.top-t.height-i.y,right:e.right-t.width+i.x,bottom:e.bottom-t.height+i.y,left:e.left-t.width-i.x}}function Fr(e){return[zo,Ho,Lo,Po].some(function(t){return e[t]>=0})}var Br={name:"offset",enabled:!0,phase:"main",requires:["popperOffsets"],fn:function(e){var t=e.state,i=e.options,n=e.name,o=i.offset,r=void 0===o?[0,0]:o,s=qo.reduce(function(e,i){return e[i]=function(e,t,i){var n=er(e),o=[Po,zo].indexOf(n)>=0?-1:1,r="function"==typeof i?i(Object.assign({},t,{placement:e})):i,s=r[0],a=r[1];return s=s||0,a=(a||0)*o,[Po,Ho].indexOf(n)>=0?{x:a,y:s}:{x:s,y:a}}(i,t.rects,r),e},{}),a=s[t.placement],l=a.x,d=a.y;null!=t.modifiersData.popperOffsets&&(t.modifiersData.popperOffsets.x+=l,t.modifiersData.popperOffsets.y+=d),t.modifiersData[n]=s}};var Ur={name:"preventOverflow",enabled:!0,phase:"main",fn:function(e){var t=e.state,i=e.options,n=e.name,o=i.mainAxis,r=void 0===o||o,s=i.altAxis,a=void 0!==s&&s,l=i.boundary,d=i.rootBoundary,c=i.altBoundary,h=i.padding,p=i.tether,u=void 0===p||p,m=i.tetherOffset,f=void 0===m?0:m,g=Hr(t,{boundary:l,rootBoundary:d,padding:h,altBoundary:c}),v=er(t.placement),_=yr(t.placement),b=!_,y=fr(v),x="x"===y?"y":"x",w=t.modifiersData.popperOffsets,A=t.rects.reference,$=t.rects.popper,E="function"==typeof f?f(Object.assign({},t.rects,{placement:t.placement})):f,C="number"==typeof E?{mainAxis:E,altAxis:E}:Object.assign({mainAxis:0,altAxis:0},E),S=t.modifiersData.offset?t.modifiersData.offset[t.placement]:null,k={x:0,y:0};if(w){if(r){var T,I="y"===y?zo:Po,O="y"===y?Lo:Ho,M="y"===y?"height":"width",N=w[y],R=N+g[I],z=N-g[O],L=u?-$[M]/2:0,H=_===Fo?A[M]:$[M],P=_===Fo?-$[M]:-A[M],D=t.elements.arrow,V=u&&D?ar(D):{width:0,height:0},F=t.modifiersData["arrow#persistent"]?t.modifiersData["arrow#persistent"].padding:{top:0,right:0,bottom:0,left:0},B=F[I],U=F[O],j=gr(0,A[M],V[M]),W=b?A[M]/2-L-j-B-C.mainAxis:H-j-B-C.mainAxis,q=b?-A[M]/2+L+j+U+C.mainAxis:P+j+U+C.mainAxis,G=t.elements.arrow&&mr(t.elements.arrow),X=G?"y"===y?G.clientTop||0:G.clientLeft||0:0,K=null!=(T=null==S?void 0:S[y])?T:0,Y=N+q-K,Z=gr(u?ir(R,N+W-K-X):R,N,u?tr(z,Y):z);w[y]=Z,k[y]=Z-N}if(a){var J,Q="x"===y?zo:Po,ee="x"===y?Lo:Ho,te=w[x],ie="y"===x?"height":"width",ne=te+g[Q],oe=te-g[ee],re=-1!==[zo,Po].indexOf(v),se=null!=(J=null==S?void 0:S[x])?J:0,ae=re?ne:te-A[ie]-$[ie]-se+C.altAxis,le=re?te+A[ie]+$[ie]-se-C.altAxis:oe,de=u&&re?function(e,t,i){var n=gr(e,t,i);return n>i?i:n}(ae,te,le):gr(u?ae:ne,te,u?le:oe);w[x]=de,k[x]=de-te}t.modifiersData[n]=k}},requiresIfExists:["offset"]};function jr(e,t,i){void 0===i&&(i=!1);var n,o,r=Zo(t),s=Zo(t)&&function(e){var t=e.getBoundingClientRect(),i=nr(t.width)/e.offsetWidth||1,n=nr(t.height)/e.offsetHeight||1;return 1!==i||1!==n}(t),a=hr(t),l=sr(e,s,i),d={scrollLeft:0,scrollTop:0},c={x:0,y:0};return(r||!r&&!i)&&(("body"!==Xo(t)||Ir(a))&&(d=(n=t)!==Ko(n)&&Zo(n)?{scrollLeft:(o=n).scrollLeft,scrollTop:o.scrollTop}:kr(n)),Zo(t)?((c=sr(t,!0)).x+=t.clientLeft,c.y+=t.clientTop):a&&(c.x=Tr(a))),{x:l.left+d.scrollLeft-c.x,y:l.top+d.scrollTop-c.y,width:l.width,height:l.height}}function Wr(e){var t=new Map,i=new Set,n=[];function o(e){i.add(e.name),[].concat(e.requires||[],e.requiresIfExists||[]).forEach(function(e){if(!i.has(e)){var n=t.get(e);n&&o(n)}}),n.push(e)}return e.forEach(function(e){t.set(e.name,e)}),e.forEach(function(e){i.has(e.name)||o(e)}),n}function qr(e){var t;return function(){return t||(t=new Promise(function(i){Promise.resolve().then(function(){t=void 0,i(e())})})),t}}var Gr={placement:"bottom",modifiers:[],strategy:"absolute"};function Xr(){for(var e=arguments.length,t=new Array(e),i=0;i<e;i++)t[i]=arguments[i];return!t.some(function(e){return!(e&&"function"==typeof e.getBoundingClientRect)})}function Kr(e){void 0===e&&(e={});var t=e,i=t.defaultModifiers,n=void 0===i?[]:i,o=t.defaultOptions,r=void 0===o?Gr:o;return function(e,t,i){void 0===i&&(i=r);var o={placement:"bottom",orderedModifiers:[],options:Object.assign({},Gr,r),modifiersData:{},elements:{reference:e,popper:t},attributes:{},styles:{}},s=[],a=!1,l={state:o,setOptions:function(i){var a="function"==typeof i?i(o.options):i;d(),o.options=Object.assign({},r,o.options,a),o.scrollParents={reference:Yo(e)?Mr(e):e.contextElement?Mr(e.contextElement):[],popper:Mr(t)};var c,h,p=function(e){var t=Wr(e);return Go.reduce(function(e,i){return e.concat(t.filter(function(e){return e.phase===i}))},[])}((c=[].concat(n,o.options.modifiers),h=c.reduce(function(e,t){var i=e[t.name];return e[t.name]=i?Object.assign({},i,t,{options:Object.assign({},i.options,t.options),data:Object.assign({},i.data,t.data)}):t,e},{}),Object.keys(h).map(function(e){return h[e]})));return o.orderedModifiers=p.filter(function(e){return e.enabled}),o.orderedModifiers.forEach(function(e){var t=e.name,i=e.options,n=void 0===i?{}:i,r=e.effect;if("function"==typeof r){var a=r({state:o,name:t,instance:l,options:n}),d=function(){};s.push(a||d)}}),l.update()},forceUpdate:function(){if(!a){var e=o.elements,t=e.reference,i=e.popper;if(Xr(t,i)){o.rects={reference:jr(t,mr(i),"fixed"===o.options.strategy),popper:ar(i)},o.reset=!1,o.placement=o.options.placement,o.orderedModifiers.forEach(function(e){return o.modifiersData[e.name]=Object.assign({},e.data)});for(var n=0;n<o.orderedModifiers.length;n++)if(!0!==o.reset){var r=o.orderedModifiers[n],s=r.fn,d=r.options,c=void 0===d?{}:d,h=r.name;"function"==typeof s&&(o=s({state:o,options:c,name:h,instance:l})||o)}else o.reset=!1,n=-1}}},update:qr(function(){return new Promise(function(e){l.forceUpdate(),e(o)})}),destroy:function(){d(),a=!0}};if(!Xr(e,t))return l;function d(){s.forEach(function(e){return e()}),s=[]}return l.setOptions(i).then(function(e){!a&&i.onFirstUpdate&&i.onFirstUpdate(e)}),l}}var Yr=Kr({defaultModifiers:[{name:"eventListeners",enabled:!0,phase:"write",fn:function(){},effect:function(e){var t=e.state,i=e.instance,n=e.options,o=n.scroll,r=void 0===o||o,s=n.resize,a=void 0===s||s,l=Ko(t.elements.popper),d=[].concat(t.scrollParents.reference,t.scrollParents.popper);return r&&d.forEach(function(e){e.addEventListener("scroll",i.update,Ar)}),a&&l.addEventListener("resize",i.update,Ar),function(){r&&d.forEach(function(e){e.removeEventListener("scroll",i.update,Ar)}),a&&l.removeEventListener("resize",i.update,Ar)}},data:{}},{name:"popperOffsets",enabled:!0,phase:"read",fn:function(e){var t=e.state,i=e.name;t.modifiersData[i]=Lr({reference:t.rects.reference,element:t.rects.popper,strategy:"absolute",placement:t.placement})},data:{}},{name:"computeStyles",enabled:!0,phase:"beforeWrite",fn:function(e){var t=e.state,i=e.options,n=i.gpuAcceleration,o=void 0===n||n,r=i.adaptive,s=void 0===r||r,a=i.roundOffsets,l=void 0===a||a,d={placement:er(t.placement),variation:yr(t.placement),popper:t.elements.popper,popperRect:t.rects.popper,gpuAcceleration:o,isFixed:"fixed"===t.options.strategy};null!=t.modifiersData.popperOffsets&&(t.styles.popper=Object.assign({},t.styles.popper,wr(Object.assign({},d,{offsets:t.modifiersData.popperOffsets,position:t.options.strategy,adaptive:s,roundOffsets:l})))),null!=t.modifiersData.arrow&&(t.styles.arrow=Object.assign({},t.styles.arrow,wr(Object.assign({},d,{offsets:t.modifiersData.arrow,position:"absolute",adaptive:!1,roundOffsets:l})))),t.attributes.popper=Object.assign({},t.attributes.popper,{"data-popper-placement":t.placement})},data:{}},Qo,Br,Dr,Ur,br,{name:"hide",enabled:!0,phase:"main",requiresIfExists:["preventOverflow"],fn:function(e){var t=e.state,i=e.name,n=t.rects.reference,o=t.rects.popper,r=t.modifiersData.preventOverflow,s=Hr(t,{elementContext:"reference"}),a=Hr(t,{altBoundary:!0}),l=Vr(s,n),d=Vr(a,o,r),c=Fr(l),h=Fr(d);t.modifiersData[i]={referenceClippingOffsets:l,popperEscapeOffsets:d,isReferenceHidden:c,hasPopperEscaped:h},t.attributes.popper=Object.assign({},t.attributes.popper,{"data-popper-reference-hidden":c,"data-popper-escaped":h})}}]}),Zr="tippy-content",Jr="tippy-arrow",Qr="tippy-svg-arrow",es={passive:!0,capture:!0},ts=function(){return document.body};function is(e,t,i){if(Array.isArray(e)){var n=e[t];return null==n?Array.isArray(i)?i[t]:i:n}return e}function ns(e,t){var i={}.toString.call(e);return 0===i.indexOf("[object")&&i.indexOf(t+"]")>-1}function os(e,t){return"function"==typeof e?e.apply(void 0,t):e}function rs(e,t){return 0===t?e:function(n){clearTimeout(i),i=setTimeout(function(){e(n)},t)};var i}function ss(e){return[].concat(e)}function as(e,t){-1===e.indexOf(t)&&e.push(t)}function ls(e){return[].slice.call(e)}function ds(e){return Object.keys(e).reduce(function(t,i){return void 0!==e[i]&&(t[i]=e[i]),t},{})}function cs(){return document.createElement("div")}function hs(e){return["Element","Fragment"].some(function(t){return ns(e,t)})}function ps(e){return hs(e)?[e]:function(e){return ns(e,"NodeList")}(e)?ls(e):Array.isArray(e)?e:ls(document.querySelectorAll(e))}function us(e,t){e.forEach(function(e){e&&(e.style.transitionDuration=t+"ms")})}function ms(e,t){e.forEach(function(e){e&&e.setAttribute("data-state",t)})}function fs(e,t,i){var n=t+"EventListener";["transitionend","webkitTransitionEnd"].forEach(function(t){e[n](t,i)})}function gs(e,t){for(var i=t;i;){var n;if(e.contains(i))return!0;i=null==i.getRootNode||null==(n=i.getRootNode())?void 0:n.host}return!1}var vs={isTouch:!1},_s=0;function bs(){vs.isTouch||(vs.isTouch=!0,window.performance&&document.addEventListener("mousemove",ys))}function ys(){var e=performance.now();e-_s<20&&(vs.isTouch=!1,document.removeEventListener("mousemove",ys)),_s=e}function xs(){var e,t=document.activeElement;if((e=t)&&e._tippy&&e._tippy.reference===e){var i=t._tippy;t.blur&&!i.state.isVisible&&t.blur()}}var ws=!!("undefined"!=typeof window&&"undefined"!=typeof document)&&!!window.msCrypto,As=Object.assign({appendTo:ts,aria:{content:"auto",expanded:"auto"},delay:0,duration:[300,250],getReferenceClientRect:null,hideOnClick:!0,ignoreAttributes:!1,interactive:!1,interactiveBorder:2,interactiveDebounce:0,moveTransition:"",offset:[0,10],onAfterUpdate:function(){},onBeforeUpdate:function(){},onCreate:function(){},onDestroy:function(){},onHidden:function(){},onHide:function(){},onMount:function(){},onShow:function(){},onShown:function(){},onTrigger:function(){},onUntrigger:function(){},onClickOutside:function(){},placement:"top",plugins:[],popperOptions:{},render:null,showOnCreate:!1,touch:!0,trigger:"mouseenter focus",triggerTarget:null},{animateFill:!1,followCursor:!1,inlinePositioning:!1,sticky:!1},{allowHTML:!1,animation:"fade",arrow:!0,content:"",inertia:!1,maxWidth:350,role:"tooltip",theme:"",zIndex:9999}),$s=Object.keys(As);function Es(e){var t=(e.plugins||[]).reduce(function(t,i){var n,o=i.name,r=i.defaultValue;o&&(t[o]=void 0!==e[o]?e[o]:null!=(n=As[o])?n:r);return t},{});return Object.assign({},e,t)}function Cs(e,t){var i=Object.assign({},t,{content:os(t.content,[e])},t.ignoreAttributes?{}:function(e,t){return(t?Object.keys(Es(Object.assign({},As,{plugins:t}))):$s).reduce(function(t,i){var n=(e.getAttribute("data-tippy-"+i)||"").trim();if(!n)return t;if("content"===i)t[i]=n;else try{t[i]=JSON.parse(n)}catch(e){t[i]=n}return t},{})}(e,t.plugins));return i.aria=Object.assign({},As.aria,i.aria),i.aria={expanded:"auto"===i.aria.expanded?t.interactive:i.aria.expanded,content:"auto"===i.aria.content?t.interactive?null:"describedby":i.aria.content},i}function Ss(e,t){e.innerHTML=t}function ks(e){var t=cs();return!0===e?t.className=Jr:(t.className=Qr,hs(e)?t.appendChild(e):Ss(t,e)),t}function Ts(e,t){hs(t.content)?(Ss(e,""),e.appendChild(t.content)):"function"!=typeof t.content&&(t.allowHTML?Ss(e,t.content):e.textContent=t.content)}function Is(e){var t=e.firstElementChild,i=ls(t.children);return{box:t,content:i.find(function(e){return e.classList.contains(Zr)}),arrow:i.find(function(e){return e.classList.contains(Jr)||e.classList.contains(Qr)}),backdrop:i.find(function(e){return e.classList.contains("tippy-backdrop")})}}function Os(e){var t=cs(),i=cs();i.className="tippy-box",i.setAttribute("data-state","hidden"),i.setAttribute("tabindex","-1");var n=cs();function o(i,n){var o=Is(t),r=o.box,s=o.content,a=o.arrow;n.theme?r.setAttribute("data-theme",n.theme):r.removeAttribute("data-theme"),"string"==typeof n.animation?r.setAttribute("data-animation",n.animation):r.removeAttribute("data-animation"),n.inertia?r.setAttribute("data-inertia",""):r.removeAttribute("data-inertia"),r.style.maxWidth="number"==typeof n.maxWidth?n.maxWidth+"px":n.maxWidth,n.role?r.setAttribute("role",n.role):r.removeAttribute("role"),i.content===n.content&&i.allowHTML===n.allowHTML||Ts(s,e.props),n.arrow?a?i.arrow!==n.arrow&&(r.removeChild(a),r.appendChild(ks(n.arrow))):r.appendChild(ks(n.arrow)):a&&r.removeChild(a)}return n.className=Zr,n.setAttribute("data-state","hidden"),Ts(n,e.props),t.appendChild(i),i.appendChild(n),o(e.props,e.props),{popper:t,onUpdate:o}}Os.$$tippy=!0;var Ms=1,Ns=[],Rs=[];function zs(e,t){var i,n,o,r,s,a,l,d,c=Cs(e,Object.assign({},As,Es(ds(t)))),h=!1,p=!1,u=!1,m=!1,f=[],g=rs(G,c.interactiveDebounce),v=Ms++,_=(d=c.plugins).filter(function(e,t){return d.indexOf(e)===t}),b={id:v,reference:e,popper:cs(),popperInstance:null,props:c,state:{isEnabled:!0,isVisible:!1,isDestroyed:!1,isMounted:!1,isShown:!1},plugins:_,clearDelayTimeouts:function(){clearTimeout(i),clearTimeout(n),cancelAnimationFrame(o)},setProps:function(t){if(b.state.isDestroyed)return;N("onBeforeUpdate",[b,t]),W();var i=b.props,n=Cs(e,Object.assign({},i,ds(t),{ignoreAttributes:!0}));b.props=n,j(),i.interactiveDebounce!==n.interactiveDebounce&&(L(),g=rs(G,n.interactiveDebounce));i.triggerTarget&&!n.triggerTarget?ss(i.triggerTarget).forEach(function(e){e.removeAttribute("aria-expanded")}):n.triggerTarget&&e.removeAttribute("aria-expanded");z(),M(),w&&w(i,n);b.popperInstance&&(Z(),Q().forEach(function(e){requestAnimationFrame(e._tippy.popperInstance.forceUpdate)}));N("onAfterUpdate",[b,t])},setContent:function(e){b.setProps({content:e})},show:function(){var e=b.state.isVisible,t=b.state.isDestroyed,i=!b.state.isEnabled,n=vs.isTouch&&!b.props.touch,o=is(b.props.duration,0,As.duration);if(e||t||i||n)return;if(k().hasAttribute("disabled"))return;if(N("onShow",[b],!1),!1===b.props.onShow(b))return;b.state.isVisible=!0,S()&&(x.style.visibility="visible");M(),V(),b.state.isMounted||(x.style.transition="none");if(S()){var r=I();us([r.box,r.content],0)}a=function(){var e;if(b.state.isVisible&&!m){if(m=!0,x.offsetHeight,x.style.transition=b.props.moveTransition,S()&&b.props.animation){var t=I(),i=t.box,n=t.content;us([i,n],o),ms([i,n],"visible")}R(),z(),as(Rs,b),null==(e=b.popperInstance)||e.forceUpdate(),N("onMount",[b]),b.props.animation&&S()&&function(e,t){B(e,t)}(o,function(){b.state.isShown=!0,N("onShown",[b])})}},function(){var e,t=b.props.appendTo,i=k();e=b.props.interactive&&t===ts||"parent"===t?i.parentNode:os(t,[i]);e.contains(x)||e.appendChild(x);b.state.isMounted=!0,Z()}()},hide:function(){var e=!b.state.isVisible,t=b.state.isDestroyed,i=!b.state.isEnabled,n=is(b.props.duration,1,As.duration);if(e||t||i)return;if(N("onHide",[b],!1),!1===b.props.onHide(b))return;b.state.isVisible=!1,b.state.isShown=!1,m=!1,h=!1,S()&&(x.style.visibility="hidden");if(L(),F(),M(!0),S()){var o=I(),r=o.box,s=o.content;b.props.animation&&(us([r,s],n),ms([r,s],"hidden"))}R(),z(),b.props.animation?S()&&function(e,t){B(e,function(){!b.state.isVisible&&x.parentNode&&x.parentNode.contains(x)&&t()})}(n,b.unmount):b.unmount()},hideWithInteractivity:function(e){T().addEventListener("mousemove",g),as(Ns,g),g(e)},enable:function(){b.state.isEnabled=!0},disable:function(){b.hide(),b.state.isEnabled=!1},unmount:function(){b.state.isVisible&&b.hide();if(!b.state.isMounted)return;J(),Q().forEach(function(e){e._tippy.unmount()}),x.parentNode&&x.parentNode.removeChild(x);Rs=Rs.filter(function(e){return e!==b}),b.state.isMounted=!1,N("onHidden",[b])},destroy:function(){if(b.state.isDestroyed)return;b.clearDelayTimeouts(),b.unmount(),W(),delete e._tippy,b.state.isDestroyed=!0,N("onDestroy",[b])}};if(!c.render)return b;var y=c.render(b),x=y.popper,w=y.onUpdate;x.setAttribute("data-tippy-root",""),x.id="tippy-"+b.id,b.popper=x,e._tippy=b,x._tippy=b;var A=_.map(function(e){return e.fn(b)}),$=e.hasAttribute("aria-expanded");return j(),z(),M(),N("onCreate",[b]),c.showOnCreate&&ee(),x.addEventListener("mouseenter",function(){b.props.interactive&&b.state.isVisible&&b.clearDelayTimeouts()}),x.addEventListener("mouseleave",function(){b.props.interactive&&b.props.trigger.indexOf("mouseenter")>=0&&T().addEventListener("mousemove",g)}),b;function E(){var e=b.props.touch;return Array.isArray(e)?e:[e,0]}function C(){return"hold"===E()[0]}function S(){var e;return!(null==(e=b.props.render)||!e.$$tippy)}function k(){return l||e}function T(){var e,t,i=k().parentNode;return i?null!=(t=ss(i)[0])&&null!=(e=t.ownerDocument)&&e.body?t.ownerDocument:document:document}function I(){return Is(x)}function O(e){return b.state.isMounted&&!b.state.isVisible||vs.isTouch||r&&"focus"===r.type?0:is(b.props.delay,e?0:1,As.delay)}function M(e){void 0===e&&(e=!1),x.style.pointerEvents=b.props.interactive&&!e?"":"none",x.style.zIndex=""+b.props.zIndex}function N(e,t,i){var n;(void 0===i&&(i=!0),A.forEach(function(i){i[e]&&i[e].apply(i,t)}),i)&&(n=b.props)[e].apply(n,t)}function R(){var t=b.props.aria;if(t.content){var i="aria-"+t.content,n=x.id;ss(b.props.triggerTarget||e).forEach(function(e){var t=e.getAttribute(i);if(b.state.isVisible)e.setAttribute(i,t?t+" "+n:n);else{var o=t&&t.replace(n,"").trim();o?e.setAttribute(i,o):e.removeAttribute(i)}})}}function z(){!$&&b.props.aria.expanded&&ss(b.props.triggerTarget||e).forEach(function(e){b.props.interactive?e.setAttribute("aria-expanded",b.state.isVisible&&e===k()?"true":"false"):e.removeAttribute("aria-expanded")})}function L(){T().removeEventListener("mousemove",g),Ns=Ns.filter(function(e){return e!==g})}function H(t){if(!vs.isTouch||!u&&"mousedown"!==t.type){var i=t.composedPath&&t.composedPath()[0]||t.target;if(!b.props.interactive||!gs(x,i)){if(ss(b.props.triggerTarget||e).some(function(e){return gs(e,i)})){if(vs.isTouch)return;if(b.state.isVisible&&b.props.trigger.indexOf("click")>=0)return}else N("onClickOutside",[b,t]);!0===b.props.hideOnClick&&(b.clearDelayTimeouts(),b.hide(),p=!0,setTimeout(function(){p=!1}),b.state.isMounted||F())}}}function P(){u=!0}function D(){u=!1}function V(){var e=T();e.addEventListener("mousedown",H,!0),e.addEventListener("touchend",H,es),e.addEventListener("touchstart",D,es),e.addEventListener("touchmove",P,es)}function F(){var e=T();e.removeEventListener("mousedown",H,!0),e.removeEventListener("touchend",H,es),e.removeEventListener("touchstart",D,es),e.removeEventListener("touchmove",P,es)}function B(e,t){var i=I().box;function n(e){e.target===i&&(fs(i,"remove",n),t())}if(0===e)return t();fs(i,"remove",s),fs(i,"add",n),s=n}function U(t,i,n){void 0===n&&(n=!1),ss(b.props.triggerTarget||e).forEach(function(e){e.addEventListener(t,i,n),f.push({node:e,eventType:t,handler:i,options:n})})}function j(){var e;C()&&(U("touchstart",q,{passive:!0}),U("touchend",X,{passive:!0})),(e=b.props.trigger,e.split(/\s+/).filter(Boolean)).forEach(function(e){if("manual"!==e)switch(U(e,q),e){case"mouseenter":U("mouseleave",X);break;case"focus":U(ws?"focusout":"blur",K);break;case"focusin":U("focusout",K)}})}function W(){f.forEach(function(e){var t=e.node,i=e.eventType,n=e.handler,o=e.options;t.removeEventListener(i,n,o)}),f=[]}function q(e){var t,i=!1;if(b.state.isEnabled&&!Y(e)&&!p){var n="focus"===(null==(t=r)?void 0:t.type);r=e,l=e.currentTarget,z(),!b.state.isVisible&&ns(e,"MouseEvent")&&Ns.forEach(function(t){return t(e)}),"click"===e.type&&(b.props.trigger.indexOf("mouseenter")<0||h)&&!1!==b.props.hideOnClick&&b.state.isVisible?i=!0:ee(e),"click"===e.type&&(h=!i),i&&!n&&te(e)}}function G(e){var t=e.target,i=k().contains(t)||x.contains(t);if("mousemove"!==e.type||!i){var n=Q().concat(x).map(function(e){var t,i=null==(t=e._tippy.popperInstance)?void 0:t.state;return i?{popperRect:e.getBoundingClientRect(),popperState:i,props:c}:null}).filter(Boolean);(function(e,t){var i=t.clientX,n=t.clientY;return e.every(function(e){var t=e.popperRect,o=e.popperState,r=e.props.interactiveBorder,s=o.placement.split("-")[0],a=o.modifiersData.offset;if(!a)return!0;var l="bottom"===s?a.top.y:0,d="top"===s?a.bottom.y:0,c="right"===s?a.left.x:0,h="left"===s?a.right.x:0,p=t.top-n+l>r,u=n-t.bottom-d>r,m=t.left-i+c>r,f=i-t.right-h>r;return p||u||m||f})})(n,e)&&(L(),te(e))}}function X(e){Y(e)||b.props.trigger.indexOf("click")>=0&&h||(b.props.interactive?b.hideWithInteractivity(e):te(e))}function K(e){b.props.trigger.indexOf("focusin")<0&&e.target!==k()||b.props.interactive&&e.relatedTarget&&x.contains(e.relatedTarget)||te(e)}function Y(e){return!!vs.isTouch&&C()!==e.type.indexOf("touch")>=0}function Z(){J();var t=b.props,i=t.popperOptions,n=t.placement,o=t.offset,r=t.getReferenceClientRect,s=t.moveTransition,l=S()?Is(x).arrow:null,d=r?{getBoundingClientRect:r,contextElement:r.contextElement||k()}:e,c={name:"$$tippy",enabled:!0,phase:"beforeWrite",requires:["computeStyles"],fn:function(e){var t=e.state;if(S()){var i=I().box;["placement","reference-hidden","escaped"].forEach(function(e){"placement"===e?i.setAttribute("data-placement",t.placement):t.attributes.popper["data-popper-"+e]?i.setAttribute("data-"+e,""):i.removeAttribute("data-"+e)}),t.attributes.popper={}}}},h=[{name:"offset",options:{offset:o}},{name:"preventOverflow",options:{padding:{top:2,bottom:2,left:5,right:5}}},{name:"flip",options:{padding:5}},{name:"computeStyles",options:{adaptive:!s}},c];S()&&l&&h.push({name:"arrow",options:{element:l,padding:3}}),h.push.apply(h,(null==i?void 0:i.modifiers)||[]),b.popperInstance=Yr(d,x,Object.assign({},i,{placement:n,onFirstUpdate:a,modifiers:h}))}function J(){b.popperInstance&&(b.popperInstance.destroy(),b.popperInstance=null)}function Q(){return ls(x.querySelectorAll("[data-tippy-root]"))}function ee(e){b.clearDelayTimeouts(),e&&N("onTrigger",[b,e]),V();var t=O(!0),n=E(),o=n[0],r=n[1];vs.isTouch&&"hold"===o&&r&&(t=r),t?i=setTimeout(function(){b.show()},t):b.show()}function te(e){if(b.clearDelayTimeouts(),N("onUntrigger",[b,e]),b.state.isVisible){if(!(b.props.trigger.indexOf("mouseenter")>=0&&b.props.trigger.indexOf("click")>=0&&["mouseleave","mousemove"].indexOf(e.type)>=0&&h)){var t=O(!1);t?n=setTimeout(function(){b.state.isVisible&&b.hide()},t):o=requestAnimationFrame(function(){b.hide()})}}else F()}}function Ls(e,t){void 0===t&&(t={});var i=As.plugins.concat(t.plugins||[]);document.addEventListener("touchstart",bs,es),window.addEventListener("blur",xs);var n=Object.assign({},t,{plugins:i}),o=ps(e).reduce(function(e,t){var i=t&&zs(t,n);return i&&e.push(i),e},[]);return hs(e)?o[0]:o}Ls.defaultProps=As,Ls.setDefaultProps=function(e){Object.keys(e).forEach(function(t){As[t]=e[t]})},Ls.currentInput=vs,Object.assign({},Qo,{effect:function(e){var t=e.state,i={popper:{position:t.options.strategy,left:"0",top:"0",margin:"0"},arrow:{position:"absolute"},reference:{}};Object.assign(t.elements.popper.style,i.popper),t.styles=i,t.elements.arrow&&Object.assign(t.elements.arrow.style,i.arrow)}}),Ls.setDefaultProps({render:Os});const Hs=Ne`<path class="svg-wb-fill" d="M125,120c2.762,0,5,2.239,5,5c0,2.762-2.238,5-5,5c-2.761,0-5-2.238-5-5C120,122.239,122.239,120,125,120z"/><path fill="none" class="svg-wb-stroke" stroke-width="2" d="M125,115c5.523,0,10,4.477,10,10c0,5.523-4.477,10-10,10 c-5.523,0-10-4.477-10-10C115,119.477,119.477,115,125,115z "/>`,Ps=Ne`<path class="svg-wb" d="M125,112V76 M125,125l7-12.1h-14L125,125z"/>`,Ds=Ne`<path class="svg-wb" d="M125,112V76 M125,89l7-7 M125,125l7-12.1h-14L125,125z"/>`,Vs=Ne`<path class="svg-wb" d="M125,112V89 M125,89l14-14 M125,125l7-12.1h-14L125,125z"/>`,Fs=Ne`<path class="svg-wb" d="M125,112V89 M125,89l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,Bs=Ne`<path class="svg-wb" d="M125,112V89 M125,89l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,Us=Ne`<path class="svg-wb" d="M125,112V79 M125,79l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,js=Ne`<path class="svg-wb" d="M125,112V79 M125,79l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,Ws=Ne`<path class="svg-wb" d="M125,112V69 M125,69l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,qs=Ne`<path class="svg-wb" d="M125,112V69 M125,69l14-14 M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,Gs=Ne`<path class="svg-wb" d="M125,112V59 M125,59l14-14 M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14 L125,125z"/>`,Xs=Ne`<path class="svg-wb" d="M125,112V76 M125,76h14l-14,14V76z M125,125l7-12.1h-14L125,125z"/>`,Ks=Ne`<path class="svg-wb" d="M125,112V76 M125,76h14l-14,14V76z M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,Ys=Ne`<path class="svg-wb" d="M125,112V76 M125,76h14l-14,14V76z M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,Zs=Ne`<path class="svg-wb" d="M125,112V66 M125,66h14l-14,14V66z M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,Js=Ne`<path class="svg-wb" d="M125,112V66 M125,66h14l-14,14V66z M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,Qs=Ne`<path class="svg-wb" d="M125,112V56 M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,ea=Ne`<path class="svg-wb" d="M125,112V56 M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,ta=Ne`<path class="svg-wb" d="M125,112V46 M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1 h-14L125,125z"/>`,ia=Ne`<path class="svg-wb" d="M125,112V46 M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1 h-14L125,125z"/>`,na=Ne`<path class="svg-wb" d="M125,112V36 M125,36h14l-14,14V36z M125,60l14-14 M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,oa=Ne`<path class="svg-wb" d="M125,112V62 M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,125l7-12.1h-14L125,125z"/>`,ra=Ne`<path class="svg-wb" d="M125,112V62 M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,sa=Ne`<path class="svg-wb" d="M125,112V62 M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,aa=Ne`<path class="svg-wb" d="M125,112V52 M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14 L125,125z"/>`,la=Ne`<path class="svg-wb" d="M125,112V52 M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14 L125,125z"/>`,da=Ne`<path class="svg-wb" d="M125,112V42 M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125 l7-12.1h-14L125,125z"/>`,ca=Ne`<path class="svg-wb" d="M125,112V42 M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125 l7-12.1h-14L125,125z"/>`,ha=Ne`<path class="svg-wb" d="M125,112V32 M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100 l7-7 M125,125l7-12.1h-14L125,125z"/>`,pa=Ne`<path class="svg-wb" d="M125,112V32 M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100 l14-14 M125,125l7-12.1h-14L125,125z"/>`,ua=Ne`<path class="svg-wb" d="M125,112V22 M125,22h14l-14,14V22z M125,36h14l-14,14V36z M125,60l14-14 M125,70l14-14 M125,80l14-14 M125,90 l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,ma=Ne`<path class="svg-wb" d="M125,112V48 M125,48h14l-14,14V48z M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,125l7-12.1h-14L125,125z"/>`,fa=Ne`<path class="svg-wb" d="M125,112V48 M125,48h14l-14,14V48z M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l7-7 M125,125l7-12.1 h-14L125,125z"/>`,ga=Ne`<path class="svg-wb" d="M125,112V48 M125,48h14l-14,14V48z M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l14-14 M125,125 l7-12.1h-14L125,125z"/>`,va=Ne`<path class="svg-wb" d="M125,112V38 M125,38h14l-14,14V38z M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,_a=Ne`<path class="svg-wb" d="M125,112V38 M125,38h14l-14,14V38z M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,ba=Ne`<path class="svg-wb" d="M125,112V28 M125,28h14l-14,14V28z M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,ya=Ne`<path class="svg-wb" d="M125,112V28 M125,28h14l-14,14V28z M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`,xa=Ne`<path class="svg-wb" d="M125,112V18 M125,18h14l-14,14V18z M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`,wa=Ne`<path class="svg-wb" d="M125,112V18 M125,18h14l-14,14V18z M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`;class Aa extends bt{constructor(){super(...arguments),this.conditions=[],this.temperatures=[],this.wind=[],this.precipitation=[],this.icons=!1,this.icon_map=void 0,this.colors=void 0,this.hide_hours=!1,this.hide_temperatures=!1,this.hide_bar=!1,this.icon_fill="single",this.show_wind="false",this.show_precipitation_amounts=!1,this.show_precipitation_probability=!1,this.show_date="false",this.label_spacing=2,this.labels=qt,this.tips=[]}render(){var e,t;const i=[];let n=1;if(!this.hide_bar)for(const t of this.conditions){const o=this.labels[t[0]];let r=null===(e=this.icon_map)||void 0===e?void 0:e[t[0]];r||(r=Gt[t[0]],r=r===t[0]?"mdi:weather-"+r:"mdi:"+r);const s=[];if(this.icons){let e;e=this.icon_fill&&"single"!==this.icon_fill?"full"===this.icon_fill?1:Math.max(Number(this.icon_fill)||0,1):t[1];let i=1;for(let n=0;n<t[1];n+=e){const t={gridColumnStart:String(i),gridColumnEnd:String(i+=2*e)};s.push(Me`<span class="condition-icon" style=${Ro(t)}><ha-icon icon=${r}></ha-icon></span>`)}}else s.push(Me`<span class="condition-label">${o}</span>`);const a={gridColumnStart:String(n),gridColumnEnd:String(n+=2*t[1])};i.push(Me`
-          <div class=${t[0]} style=${Ro(a)} data-tippy-content=${o}>
-            ${s}
+//#region \0rolldown/runtime.js
+var e = Object.defineProperty, t = (e, t, n) => () => {
+	if (n) throw n[0];
+	try {
+		return e && (t = e(e = 0)), t;
+	} catch (e) {
+		throw n = [e], e;
+	}
+}, n = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), r = (t, n) => {
+	let r = {};
+	for (var i in t) e(r, i, {
+		get: t[i],
+		enumerable: !0
+	});
+	return n || e(r, Symbol.toStringTag, { value: "Module" }), r;
+};
+//#endregion
+//#region node_modules/custom-card-helpers/dist/index.m.js
+function i() {
+	return (i = Object.assign || function(e) {
+		for (var t = 1; t < arguments.length; t++) {
+			var n = arguments[t];
+			for (var r in n) Object.prototype.hasOwnProperty.call(n, r) && (e[r] = n[r]);
+		}
+		return e;
+	}).apply(this, arguments);
+}
+function a(e) {
+	return e.substr(0, e.indexOf("."));
+}
+function o(e) {
+	return e !== void 0 && e.action !== "none";
+}
+function s(e, t, n) {
+	if (t.has("config") || n) return !0;
+	if (e.config.entity) {
+		var r = t.get("hass");
+		return !r || r.states[e.config.entity] !== e.hass.states[e.config.entity];
+	}
+	return !1;
+}
+var c, l, u, d, f, p, m, h, g, _, v, y, b, x, S, C, w, T, E, D, O = t((() => {
+	u = function(e, t) {
+		return d(t).format(e);
+	}, d = function(e) {
+		return new Intl.DateTimeFormat(e.language, {
+			day: "numeric",
+			month: "short"
+		});
+	}, (function(e) {
+		e.language = "language", e.system = "system", e.comma_decimal = "comma_decimal", e.decimal_comma = "decimal_comma", e.space_comma = "space_comma", e.none = "none";
+	})(c || (c = {})), function(e) {
+		e.language = "language", e.system = "system", e.am_pm = "12", e.twenty_four = "24";
+	}(l || (l = {})), f = function(e) {
+		if (e.time_format === l.language || e.time_format === l.system) {
+			var t = e.time_format === l.language ? e.language : void 0, n = (/* @__PURE__ */ new Date()).toLocaleString(t);
+			return n.includes("AM") || n.includes("PM");
+		}
+		return e.time_format === l.am_pm;
+	}, p = function(e, t) {
+		return m(t).format(e);
+	}, m = function(e) {
+		return new Intl.DateTimeFormat(e.language, {
+			hour: "numeric",
+			minute: "2-digit",
+			hour12: f(e)
+		});
+	}, h = function(e) {
+		switch (e.number_format) {
+			case c.comma_decimal: return ["en-US", "en"];
+			case c.decimal_comma: return [
+				"de",
+				"es",
+				"it"
+			];
+			case c.space_comma: return [
+				"fr",
+				"sv",
+				"cs"
+			];
+			case c.system: return;
+			default: return e.language;
+		}
+	}, g = function(e, t) {
+		return t === void 0 && (t = 2), Math.round(e * 10 ** t) / 10 ** t;
+	}, _ = function(e, t, n) {
+		var r = t ? h(t) : void 0;
+		if (Number.isNaN = Number.isNaN || function e(t) {
+			return typeof t == "number" && e(t);
+		}, t?.number_format !== c.none && !Number.isNaN(Number(e)) && Intl) try {
+			return new Intl.NumberFormat(r, v(e, n)).format(Number(e));
+		} catch (t) {
+			return console.error(t), new Intl.NumberFormat(void 0, v(e, n)).format(Number(e));
+		}
+		return typeof e == "string" ? e : g(e, n?.maximumFractionDigits).toString() + (n?.style === "currency" ? " " + n.currency : "");
+	}, v = function(e, t) {
+		var n = i({ maximumFractionDigits: 2 }, t);
+		if (typeof e != "string") return n;
+		if (!t || !t.minimumFractionDigits && !t.maximumFractionDigits) {
+			var r = e.indexOf(".") > -1 ? e.split(".")[1].length : 0;
+			n.minimumFractionDigits = r, n.maximumFractionDigits = r;
+		}
+		return n;
+	}, y = [
+		"closed",
+		"locked",
+		"off"
+	], b = function(e, t, n, r) {
+		r = r || {}, n = n ?? {};
+		var i = new Event(t, {
+			bubbles: r.bubbles === void 0 || r.bubbles,
+			cancelable: !!r.cancelable,
+			composed: r.composed === void 0 || r.composed
+		});
+		return i.detail = n, e.dispatchEvent(i), i;
+	}, x = function(e) {
+		b(window, "haptic", e);
+	}, S = function(e, t, n) {
+		n === void 0 && (n = !1), n ? history.replaceState(null, "", t) : history.pushState(null, "", t), b(window, "location-changed", { replace: n });
+	}, C = function(e, t, n) {
+		n === void 0 && (n = !0);
+		var r, i = a(t), o = i === "group" ? "homeassistant" : i;
+		switch (i) {
+			case "lock":
+				r = n ? "unlock" : "lock";
+				break;
+			case "cover":
+				r = n ? "open_cover" : "close_cover";
+				break;
+			default: r = n ? "turn_on" : "turn_off";
+		}
+		return e.callService(o, r, { entity_id: t });
+	}, w = function(e, t) {
+		return C(e, t, y.includes(e.states[t].state));
+	}, T = function(e, t, n, r) {
+		if (r || (r = { action: "more-info" }), !r.confirmation || r.confirmation.exemptions && r.confirmation.exemptions.some(function(e) {
+			return e.user === t.user.id;
+		}) || (x("warning"), confirm(r.confirmation.text || "Are you sure you want to " + r.action + "?"))) switch (r.action) {
+			case "more-info":
+				(n.entity || n.camera_image) && b(e, "hass-more-info", { entityId: n.entity ? n.entity : n.camera_image });
+				break;
+			case "navigate":
+				r.navigation_path && S(0, r.navigation_path);
+				break;
+			case "url":
+				r.url_path && window.open(r.url_path);
+				break;
+			case "toggle":
+				n.entity && (w(t, n.entity), x("success"));
+				break;
+			case "call-service":
+				if (!r.service) return void x("failure");
+				var i = r.service.split(".", 2);
+				t.callService(i[0], i[1], r.service_data, r.target), x("success");
+				break;
+			case "fire-dom-event": b(e, "ll-custom", r);
+		}
+	}, E = function(e, t, n, r) {
+		var i;
+		r === "double_tap" && n.double_tap_action ? i = n.double_tap_action : r === "hold" && n.hold_action ? i = n.hold_action : r === "tap" && n.tap_action && (i = n.tap_action), T(e, t, n, i);
+	}, D = function() {
+		var e = document.querySelector("home-assistant");
+		if (e = (e = (e = (e = (e = (e = (e = (e = e && e.shadowRoot) && e.querySelector("home-assistant-main")) && e.shadowRoot) && e.querySelector("app-drawer-layout partial-panel-resolver")) && e.shadowRoot || e) && e.querySelector("ha-panel-lovelace")) && e.shadowRoot) && e.querySelector("hui-root")) {
+			var t = e.lovelace;
+			return t.current_view = e.___curView, t;
+		}
+		return null;
+	};
+})), k = /* @__PURE__ */ n(((e) => {
+	var t = e && e.__read || function(e, t) {
+		var n = typeof Symbol == "function" && e[Symbol.iterator];
+		if (!n) return e;
+		var r = n.call(e), i, a = [], o;
+		try {
+			for (; (t === void 0 || t-- > 0) && !(i = r.next()).done;) a.push(i.value);
+		} catch (e) {
+			o = { error: e };
+		} finally {
+			try {
+				i && !i.done && (n = r.return) && n.call(r);
+			} finally {
+				if (o) throw o.error;
+			}
+		}
+		return a;
+	};
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.parseRGB = void 0, e.parseRGB = function(e) {
+		var n = t(e.replace(/((rgba)|(rgb))|\(|\)|\s/g, "").split(","), 4);
+		return {
+			red: n[0],
+			green: n[1],
+			blue: n[2],
+			alpha: n[3] ?? ""
+		};
+	};
+})), A = /* @__PURE__ */ n(((e) => {
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.validateFunctionalRGB = void 0;
+	var t = k();
+	e.validateFunctionalRGB = function(e) {
+		var n = e.replace(/((rgba)|(rgb))|\(|\)|\s/g, "").split(",").length, r = e.startsWith("rgba("), i = n === 3 || n === 4;
+		if (!e.startsWith(r ? "rgba(" : "rgb(") || !e.endsWith(")") || !i) return !1;
+		var a = t.parseRGB(e), o = parseFloat(a.red), s = parseFloat(a.green), c = parseFloat(a.blue), l = [
+			a.red,
+			a.green,
+			a.blue
+		], u = l.every(function(e) {
+			return e.endsWith("%");
+		}), d = l.every(function(e) {
+			return e.match(/[0-9]|\./g)?.length === e.length;
+		});
+		if (!d && !u) return !1;
+		if (u) {
+			var f = !isNaN(o) && o >= 0 && o <= 100, p = !isNaN(s) && s >= 0 && s <= 100, m = !isNaN(c) && c >= 0 && c <= 100;
+			if (!f || !p || !m) return !1;
+		} else if (d) {
+			var f = !isNaN(o) && o >= 0 && o <= 255, p = !isNaN(s) && s >= 0 && s <= 255, m = !isNaN(c) && c >= 0 && c <= 255;
+			if (!f || !p || !m) return !1;
+		} else return !1;
+		if (r && a.alpha) {
+			var h = parseFloat(a.alpha);
+			if (isNaN(h) || a.alpha?.endsWith("%") && (h < 0 || h > 100) || !a.alpha?.endsWith("%") && (h > 1 || h < 0)) return !1;
+		}
+		return !0;
+	};
+})), j = /* @__PURE__ */ n(((e) => {
+	var t = e && e.__read || function(e, t) {
+		var n = typeof Symbol == "function" && e[Symbol.iterator];
+		if (!n) return e;
+		var r = n.call(e), i, a = [], o;
+		try {
+			for (; (t === void 0 || t-- > 0) && !(i = r.next()).done;) a.push(i.value);
+		} catch (e) {
+			o = { error: e };
+		} finally {
+			try {
+				i && !i.done && (n = r.return) && n.call(r);
+			} finally {
+				if (o) throw o.error;
+			}
+		}
+		return a;
+	}, n = e && e.__spread || function() {
+		for (var e = [], n = 0; n < arguments.length; n++) e = e.concat(t(arguments[n]));
+		return e;
+	};
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.validateHexRGB = void 0, e.validateHexRGB = function(e) {
+		return !(!e.startsWith("#") || (e = e.toUpperCase().slice(1), e.length !== 6 && e.length !== 3) || !n(e).every(function(e) {
+			return e.search(/[0-9A-F]/g) !== -1;
+		}));
+	};
+})), M = /* @__PURE__ */ n(((e) => {
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.isValidRGB = void 0;
+	var t = A(), n = j();
+	e.isValidRGB = function(e) {
+		if (typeof e != "string") throw Error("'rgbString' must be a string");
+		return e.startsWith("#") ? n.validateHexRGB(e) : t.validateFunctionalRGB(e);
+	};
+})), N = /* @__PURE__ */ n(((e) => {
+	var t = e && e.__read || function(e, t) {
+		var n = typeof Symbol == "function" && e[Symbol.iterator];
+		if (!n) return e;
+		var r = n.call(e), i, a = [], o;
+		try {
+			for (; (t === void 0 || t-- > 0) && !(i = r.next()).done;) a.push(i.value);
+		} catch (e) {
+			o = { error: e };
+		} finally {
+			try {
+				i && !i.done && (n = r.return) && n.call(r);
+			} finally {
+				if (o) throw o.error;
+			}
+		}
+		return a;
+	};
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.parseHSL = void 0, e.parseHSL = function(e) {
+		var n = t(e.replace(/((hsla)|(hsl))|\(|\)|\s/g, "").split(","), 4);
+		return {
+			hue: n[0],
+			saturation: n[1],
+			lightness: n[2],
+			alpha: n[3] ?? ""
+		};
+	};
+})), ee = /* @__PURE__ */ n(((e) => {
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.isValidHSL = void 0;
+	var t = N();
+	e.isValidHSL = function(e) {
+		if (typeof e != "string") throw Error("'hslString' must be a string");
+		var n = e.replace(/((hsla)|(hsl))|\(|\)|\s/g, "").split(",").length, r = e.startsWith("hsla("), i = n === 3 || n === 4;
+		if (!e.startsWith(r ? "hsla(" : "hsl(") || !e.endsWith(")") || !i) return !1;
+		var a = t.parseHSL(e), o = a.hue, s = a.saturation, c = a.lightness, l = a.alpha, u = parseFloat(o);
+		if (u > 360 || u < 0) return !1;
+		var d = parseFloat(s);
+		if (d > 100 || d < 0) return !1;
+		var f = parseFloat(c);
+		if (f > 100 || f < 0 || isNaN(parseFloat(o.replace(/(deg|rad|grad|turn)$/, ""))) || !s.endsWith("%") && d !== 0 || isNaN(parseFloat(s.replace(/%$/, ""))) || !c.endsWith("%") && f !== 0 || isNaN(parseFloat(c.replace(/%$/, "")))) return !1;
+		if (r && l) {
+			var p = l, m = parseFloat(l);
+			if (p.endsWith("%")) {
+				if (m > 100 || m < 0) return !1;
+			} else if (m > 1 || m < 0) return !1;
+		}
+		return !0;
+	};
+})), P = /* @__PURE__ */ n(((e) => {
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.validCSSColorNames = void 0, e.validCSSColorNames = /* @__PURE__ */ "black.silver.gray.white.maroon.red.purple.green.lime.olive.yellow.navy.blue.teal.aqua.orange.aliceblue.antiquewhite.aquamarine.azure.beige.bisque.blanchedalmond.blueviolet.brown.burlywood.cadetblue.chartreuse.chocolate.coral.cornflowerblue.cornsilk.crimson.cyan.darkblue.darkcyan.darkgoldenrod.darkgray.darkgreen.darkgrey.darkkhaki.darkmagenta.darkolivegreen.darkorange.darkorchid.darkred.darksalmon.darkseagreen.darkslateblue.darkslategray.darkslategrey.darkturquoise.darkviolet.deeppink.deepskyblue.dimgray.dimgrey.dodgerblue.firebrick.floralwhite.forestgreen.gainsboro.ghostwhite.gold.goldenrod.greenyellow.grey.honeydew.hotpink.indianred.indigo.ivory.khaki.lavender.lavenderblush.lawngreen.lemonchiffon.lightblue.lightcoral.lightcyan.lightgoldenrodyellow.lightgray.lightgreen.lightgrey.lightpink.lightsalmon.lightseagreen.lightskyblue.lightslategray.lightslategrey.lightsteelblue.lightyellow.limegreen.linen.magenta.fuchsia.mediumaquamarine.mediumblue.mediumorchid.mediumpurple.mediumseagreen.mediumslateblue.mediumspringgreen.mediumturquoise.mediumvioletred.midnightblue.mintcream.mistyrose.moccasin.navajowhite.oldlace.olivedrab.orangered.orchid.palegoldenrod.palegreen.paleturquoise.palevioletred.papayawhip.peachpuff.peru.pink.plum.powderblue.rosybrown.royalblue.saddlebrown.salmon.sandybrown.seagreen.seashell.sienna.skyblue.slateblue.slategray.slategrey.snow.springgreen.steelblue.tan.thistle.tomato.turquoise.violet.wheat.whitesmoke.yellowgreen.rebeccapurple".split(".");
+})), te = /* @__PURE__ */ n(((e) => {
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.isValidColorName = void 0;
+	var t = P();
+	e.isValidColorName = function(e) {
+		if (typeof e != "string") throw Error("'colorName' must be a string");
+		return e ? t.validCSSColorNames.includes(e.toLowerCase()) : !1;
+	};
+})), F = /* @__PURE__ */ n(((e) => {
+	var t = e && e.__createBinding || (Object.create ? (function(e, t, n, r) {
+		r === void 0 && (r = n), Object.defineProperty(e, r, {
+			enumerable: !0,
+			get: function() {
+				return t[n];
+			}
+		});
+	}) : (function(e, t, n, r) {
+		r === void 0 && (r = n), e[r] = t[n];
+	})), n = e && e.__exportStar || function(e, n) {
+		for (var r in e) r !== "default" && !Object.prototype.hasOwnProperty.call(n, r) && t(n, e, r);
+	};
+	Object.defineProperty(e, "__esModule", { value: !0 }), n(M(), e), n(ee(), e), n(te(), e);
+})), I, ne, re, ie, ae, oe, se, L, ce = t((() => {
+	I = globalThis, ne = I.ShadowRoot && (I.ShadyCSS === void 0 || I.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, re = Symbol(), ie = /* @__PURE__ */ new WeakMap(), ae = class {
+		constructor(e, t, n) {
+			if (this._$cssResult$ = !0, n !== re) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+			this.cssText = e, this.t = t;
+		}
+		get styleSheet() {
+			let e = this.o, t = this.t;
+			if (ne && e === void 0) {
+				let n = t !== void 0 && t.length === 1;
+				n && (e = ie.get(t)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), n && ie.set(t, e));
+			}
+			return e;
+		}
+		toString() {
+			return this.cssText;
+		}
+	}, oe = (e) => new ae(typeof e == "string" ? e : e + "", void 0, re), se = (e, t) => {
+		if (ne) e.adoptedStyleSheets = t.map(((e) => e instanceof CSSStyleSheet ? e : e.styleSheet));
+		else for (let n of t) {
+			let t = document.createElement("style"), r = I.litNonce;
+			r !== void 0 && t.setAttribute("nonce", r), t.textContent = n.cssText, e.appendChild(t);
+		}
+	}, L = ne ? (e) => e : (e) => e instanceof CSSStyleSheet ? ((e) => {
+		let t = "";
+		for (let n of e.cssRules) t += n.cssText;
+		return oe(t);
+	})(e) : e;
+})), le, ue, de, fe, pe, me, he, R, ge, _e, ve, z, ye, be, xe, Se, Ce = t((() => {
+	ce(), {is: ue, defineProperty: de, getOwnPropertyDescriptor: fe, getOwnPropertyNames: pe, getOwnPropertySymbols: me, getPrototypeOf: he} = Object, R = globalThis, ge = R.trustedTypes, _e = ge ? ge.emptyScript : "", ve = R.reactiveElementPolyfillSupport, z = (e, t) => e, ye = {
+		toAttribute(e, t) {
+			switch (t) {
+				case Boolean:
+					e = e ? _e : null;
+					break;
+				case Object:
+				case Array: e = e == null ? e : JSON.stringify(e);
+			}
+			return e;
+		},
+		fromAttribute(e, t) {
+			let n = e;
+			switch (t) {
+				case Boolean:
+					n = e !== null;
+					break;
+				case Number:
+					n = e === null ? null : Number(e);
+					break;
+				case Object:
+				case Array: try {
+					n = JSON.parse(e);
+				} catch {
+					n = null;
+				}
+			}
+			return n;
+		}
+	}, be = (e, t) => !ue(e, t), xe = {
+		attribute: !0,
+		type: String,
+		converter: ye,
+		reflect: !1,
+		useDefault: !1,
+		hasChanged: be
+	}, (le = Symbol).metadata ?? (le.metadata = Symbol("metadata")), R.litPropertyMetadata ?? (R.litPropertyMetadata = /* @__PURE__ */ new WeakMap()), Se = class extends HTMLElement {
+		static addInitializer(e) {
+			this._$Ei(), (this.l ?? (this.l = [])).push(e);
+		}
+		static get observedAttributes() {
+			return this.finalize(), this._$Eh && [...this._$Eh.keys()];
+		}
+		static createProperty(e, t = xe) {
+			if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
+				let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
+				r !== void 0 && de(this.prototype, e, r);
+			}
+		}
+		static getPropertyDescriptor(e, t, n) {
+			let { get: r, set: i } = fe(this.prototype, e) ?? {
+				get() {
+					return this[t];
+				},
+				set(e) {
+					this[t] = e;
+				}
+			};
+			return {
+				get: r,
+				set(t) {
+					let a = r?.call(this);
+					i?.call(this, t), this.requestUpdate(e, a, n);
+				},
+				configurable: !0,
+				enumerable: !0
+			};
+		}
+		static getPropertyOptions(e) {
+			return this.elementProperties.get(e) ?? xe;
+		}
+		static _$Ei() {
+			if (this.hasOwnProperty(z("elementProperties"))) return;
+			let e = he(this);
+			e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
+		}
+		static finalize() {
+			if (this.hasOwnProperty(z("finalized"))) return;
+			if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(z("properties"))) {
+				let e = this.properties, t = [...pe(e), ...me(e)];
+				for (let n of t) this.createProperty(n, e[n]);
+			}
+			let e = this[Symbol.metadata];
+			if (e !== null) {
+				let t = litPropertyMetadata.get(e);
+				if (t !== void 0) for (let [e, n] of t) this.elementProperties.set(e, n);
+			}
+			this._$Eh = /* @__PURE__ */ new Map();
+			for (let [e, t] of this.elementProperties) {
+				let n = this._$Eu(e, t);
+				n !== void 0 && this._$Eh.set(n, e);
+			}
+			this.elementStyles = this.finalizeStyles(this.styles);
+		}
+		static finalizeStyles(e) {
+			let t = [];
+			if (Array.isArray(e)) {
+				let n = new Set(e.flat(Infinity).reverse());
+				for (let e of n) t.unshift(L(e));
+			} else e !== void 0 && t.push(L(e));
+			return t;
+		}
+		static _$Eu(e, t) {
+			let n = t.attribute;
+			return !1 === n ? void 0 : typeof n == "string" ? n : typeof e == "string" ? e.toLowerCase() : void 0;
+		}
+		constructor() {
+			super(), this._$Ep = void 0, this.isUpdatePending = !1, this.hasUpdated = !1, this._$Em = null, this._$Ev();
+		}
+		_$Ev() {
+			this._$ES = new Promise(((e) => this.enableUpdating = e)), this._$AL = /* @__PURE__ */ new Map(), this._$E_(), this.requestUpdate(), this.constructor.l?.forEach(((e) => e(this)));
+		}
+		addController(e) {
+			(this._$EO ?? (this._$EO = /* @__PURE__ */ new Set())).add(e), this.renderRoot !== void 0 && this.isConnected && e.hostConnected?.();
+		}
+		removeController(e) {
+			this._$EO?.delete(e);
+		}
+		_$E_() {
+			let e = /* @__PURE__ */ new Map(), t = this.constructor.elementProperties;
+			for (let n of t.keys()) this.hasOwnProperty(n) && (e.set(n, this[n]), delete this[n]);
+			e.size > 0 && (this._$Ep = e);
+		}
+		createRenderRoot() {
+			let e = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
+			return se(e, this.constructor.elementStyles), e;
+		}
+		connectedCallback() {
+			this.renderRoot ?? (this.renderRoot = this.createRenderRoot()), this.enableUpdating(!0), this._$EO?.forEach(((e) => e.hostConnected?.()));
+		}
+		enableUpdating(e) {}
+		disconnectedCallback() {
+			this._$EO?.forEach(((e) => e.hostDisconnected?.()));
+		}
+		attributeChangedCallback(e, t, n) {
+			this._$AK(e, n);
+		}
+		_$ET(e, t) {
+			let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
+			if (r !== void 0 && !0 === n.reflect) {
+				let i = (n.converter?.toAttribute === void 0 ? ye : n.converter).toAttribute(t, n.type);
+				this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
+			}
+		}
+		_$AK(e, t) {
+			let n = this.constructor, r = n._$Eh.get(e);
+			if (r !== void 0 && this._$Em !== r) {
+				let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? ye : e.converter;
+				this._$Em = r;
+				let a = i.fromAttribute(t, e.type);
+				this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
+			}
+		}
+		requestUpdate(e, t, n) {
+			if (e !== void 0) {
+				let r = this.constructor, i = this[e];
+				if (n ?? (n = r.getPropertyOptions(e)), !((n.hasChanged ?? be)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(r._$Eu(e, n)))) return;
+				this.C(e, t, n);
+			}
+			!1 === this.isUpdatePending && (this._$ES = this._$EP());
+		}
+		C(e, t, { useDefault: n, reflect: r, wrapped: i }, a) {
+			n && !(this._$Ej ?? (this._$Ej = /* @__PURE__ */ new Map())).has(e) && (this._$Ej.set(e, a ?? t ?? this[e]), !0 !== i || a !== void 0) || (this._$AL.has(e) || (this.hasUpdated || n || (t = void 0), this._$AL.set(e, t)), !0 === r && this._$Em !== e && (this._$Eq ?? (this._$Eq = /* @__PURE__ */ new Set())).add(e));
+		}
+		async _$EP() {
+			this.isUpdatePending = !0;
+			try {
+				await this._$ES;
+			} catch (e) {
+				Promise.reject(e);
+			}
+			let e = this.scheduleUpdate();
+			return e != null && await e, !this.isUpdatePending;
+		}
+		scheduleUpdate() {
+			return this.performUpdate();
+		}
+		performUpdate() {
+			if (!this.isUpdatePending) return;
+			if (!this.hasUpdated) {
+				if (this.renderRoot ?? (this.renderRoot = this.createRenderRoot()), this._$Ep) {
+					for (let [e, t] of this._$Ep) this[e] = t;
+					this._$Ep = void 0;
+				}
+				let e = this.constructor.elementProperties;
+				if (e.size > 0) for (let [t, n] of e) {
+					let { wrapped: e } = n, r = this[t];
+					!0 !== e || this._$AL.has(t) || r === void 0 || this.C(t, void 0, n, r);
+				}
+			}
+			let e = !1, t = this._$AL;
+			try {
+				e = this.shouldUpdate(t), e ? (this.willUpdate(t), this._$EO?.forEach(((e) => e.hostUpdate?.())), this.update(t)) : this._$EM();
+			} catch (t) {
+				throw e = !1, this._$EM(), t;
+			}
+			e && this._$AE(t);
+		}
+		willUpdate(e) {}
+		_$AE(e) {
+			this._$EO?.forEach(((e) => e.hostUpdated?.())), this.hasUpdated || (this.hasUpdated = !0, this.firstUpdated(e)), this.updated(e);
+		}
+		_$EM() {
+			this._$AL = /* @__PURE__ */ new Map(), this.isUpdatePending = !1;
+		}
+		get updateComplete() {
+			return this.getUpdateComplete();
+		}
+		getUpdateComplete() {
+			return this._$ES;
+		}
+		shouldUpdate(e) {
+			return !0;
+		}
+		update(e) {
+			this._$Eq && (this._$Eq = this._$Eq.forEach(((e) => this._$ET(e, this[e])))), this._$EM();
+		}
+		updated(e) {}
+		firstUpdated(e) {}
+	}, Se.elementStyles = [], Se.shadowRootOptions = { mode: "open" }, Se[z("elementProperties")] = /* @__PURE__ */ new Map(), Se[z("finalized")] = /* @__PURE__ */ new Map(), ve?.({ ReactiveElement: Se }), (R.reactiveElementVersions ?? (R.reactiveElementVersions = [])).push("2.1.1");
+}));
+//#endregion
+//#region node_modules/lit-html/lit-html.js
+function we(e, t) {
+	if (!Fe(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+	return Oe === void 0 ? t : Oe.createHTML(t);
+}
+function Te(e, t, n = e, r) {
+	if (t === U) return t;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = Pe(t) ? void 0 : t._$litDirective$;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ?? (n._$Co = []))[r] = i), i !== void 0 && (t = Te(e, i._$AS(e, t.values), i, r)), t;
+}
+var Ee, De, Oe, ke, B, Ae, je, Me, Ne, Pe, Fe, Ie, Le, Re, ze, Be, Ve, He, Ue, We, Ge, V, H, U, W, Ke, qe, Je, Ye, Xe, Ze, Qe, $e, et, tt, nt, rt, it, at, ot = t((() => {
+	Ee = globalThis, De = Ee.trustedTypes, Oe = De ? De.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ke = "$lit$", B = `lit$${Math.random().toFixed(9).slice(2)}$`, Ae = "?" + B, je = `<${Ae}>`, Me = document, Ne = () => Me.createComment(""), Pe = (e) => e === null || typeof e != "object" && typeof e != "function", Fe = Array.isArray, Ie = (e) => Fe(e) || typeof e?.[Symbol.iterator] == "function", Le = "[ 	\n\f\r]", Re = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, ze = /-->/g, Be = />/g, Ve = RegExp(`>|${Le}(?:([^\\s"'>=/]+)(${Le}*=${Le}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), He = /'/g, Ue = /"/g, We = /^(?:script|style|textarea|title)$/i, Ge = (e) => (t, ...n) => ({
+		_$litType$: e,
+		strings: t,
+		values: n
+	}), V = Ge(1), H = Ge(2), Ge(3), U = Symbol.for("lit-noChange"), W = Symbol.for("lit-nothing"), Ke = /* @__PURE__ */ new WeakMap(), qe = Me.createTreeWalker(Me, 129), Je = (e, t) => {
+		let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = Re;
+		for (let t = 0; t < n; t++) {
+			let n = e[t], s, c, l = -1, u = 0;
+			for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === Re ? c[1] === "!--" ? o = ze : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = Ve) : (We.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = Ve) : o = Be : o === Ve ? c[0] === ">" ? (o = i ?? Re, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? Ve : c[3] === "\"" ? Ue : He) : o === Ue || o === He ? o = Ve : o === ze || o === Be ? o = Re : (o = Ve, i = void 0);
+			let d = o === Ve && e[t + 1].startsWith("/>") ? " " : "";
+			a += o === Re ? n + je : l >= 0 ? (r.push(s), n.slice(0, l) + ke + n.slice(l) + B + d) : n + B + (l === -2 ? t : d);
+		}
+		return [we(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+	}, Ye = class e {
+		constructor({ strings: t, _$litType$: n }, r) {
+			let i;
+			this.parts = [];
+			let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = Je(t, n);
+			if (this.el = e.createElement(l, r), qe.currentNode = this.el.content, n === 2 || n === 3) {
+				let e = this.el.content.firstChild;
+				e.replaceWith(...e.childNodes);
+			}
+			for (; (i = qe.nextNode()) !== null && c.length < s;) {
+				if (i.nodeType === 1) {
+					if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ke)) {
+						let t = u[o++], n = i.getAttribute(e).split(B), r = /([.?@])?(.*)/.exec(t);
+						c.push({
+							type: 1,
+							index: a,
+							name: r[2],
+							strings: n,
+							ctor: r[1] === "." ? $e : r[1] === "?" ? et : r[1] === "@" ? tt : Qe
+						}), i.removeAttribute(e);
+					} else e.startsWith(B) && (c.push({
+						type: 6,
+						index: a
+					}), i.removeAttribute(e));
+					if (We.test(i.tagName)) {
+						let e = i.textContent.split(B), t = e.length - 1;
+						if (t > 0) {
+							i.textContent = De ? De.emptyScript : "";
+							for (let n = 0; n < t; n++) i.append(e[n], Ne()), qe.nextNode(), c.push({
+								type: 2,
+								index: ++a
+							});
+							i.append(e[t], Ne());
+						}
+					}
+				} else if (i.nodeType === 8) if (i.data === Ae) c.push({
+					type: 2,
+					index: a
+				});
+				else {
+					let e = -1;
+					for (; (e = i.data.indexOf(B, e + 1)) !== -1;) c.push({
+						type: 7,
+						index: a
+					}), e += B.length - 1;
+				}
+				a++;
+			}
+		}
+		static createElement(e, t) {
+			let n = Me.createElement("template");
+			return n.innerHTML = e, n;
+		}
+	}, Xe = class {
+		constructor(e, t) {
+			this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
+		}
+		get parentNode() {
+			return this._$AM.parentNode;
+		}
+		get _$AU() {
+			return this._$AM._$AU;
+		}
+		u(e) {
+			let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? Me).importNode(t, !0);
+			qe.currentNode = r;
+			let i = qe.nextNode(), a = 0, o = 0, s = n[0];
+			for (; s !== void 0;) {
+				if (a === s.index) {
+					let t;
+					s.type === 2 ? t = new Ze(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new nt(i, this, e)), this._$AV.push(t), s = n[++o];
+				}
+				a !== s?.index && (i = qe.nextNode(), a++);
+			}
+			return qe.currentNode = Me, r;
+		}
+		p(e) {
+			let t = 0;
+			for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
+		}
+	}, Ze = class e {
+		get _$AU() {
+			return this._$AM?._$AU ?? this._$Cv;
+		}
+		constructor(e, t, n, r) {
+			this.type = 2, this._$AH = W, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
+		}
+		get parentNode() {
+			let e = this._$AA.parentNode, t = this._$AM;
+			return t !== void 0 && e?.nodeType === 11 && (e = t.parentNode), e;
+		}
+		get startNode() {
+			return this._$AA;
+		}
+		get endNode() {
+			return this._$AB;
+		}
+		_$AI(e, t = this) {
+			e = Te(this, e, t), Pe(e) ? e === W || e == null || e === "" ? (this._$AH !== W && this._$AR(), this._$AH = W) : e !== this._$AH && e !== U && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? Ie(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		}
+		O(e) {
+			return this._$AA.parentNode.insertBefore(e, this._$AB);
+		}
+		T(e) {
+			this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
+		}
+		_(e) {
+			this._$AH !== W && Pe(this._$AH) ? this._$AA.nextSibling.data = e : this.T(Me.createTextNode(e)), this._$AH = e;
+		}
+		$(e) {
+			let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = Ye.createElement(we(n.h, n.h[0]), this.options)), n);
+			if (this._$AH?._$AD === r) this._$AH.p(t);
+			else {
+				let e = new Xe(r, this), n = e.u(this.options);
+				e.p(t), this.T(n), this._$AH = e;
+			}
+		}
+		_$AC(e) {
+			let t = Ke.get(e.strings);
+			return t === void 0 && Ke.set(e.strings, t = new Ye(e)), t;
+		}
+		k(t) {
+			Fe(this._$AH) || (this._$AH = [], this._$AR());
+			let n = this._$AH, r, i = 0;
+			for (let a of t) i === n.length ? n.push(r = new e(this.O(Ne()), this.O(Ne()), this, this.options)) : r = n[i], r._$AI(a), i++;
+			i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
+		}
+		_$AR(e = this._$AA.nextSibling, t) {
+			for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
+				let t = e.nextSibling;
+				e.remove(), e = t;
+			}
+		}
+		setConnected(e) {
+			this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
+		}
+	}, Qe = class {
+		get tagName() {
+			return this.element.tagName;
+		}
+		get _$AU() {
+			return this._$AM._$AU;
+		}
+		constructor(e, t, n, r, i) {
+			this.type = 1, this._$AH = W, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = W;
+		}
+		_$AI(e, t = this, n, r) {
+			let i = this.strings, a = !1;
+			if (i === void 0) e = Te(this, e, t, 0), a = !Pe(e) || e !== this._$AH && e !== U, a && (this._$AH = e);
+			else {
+				let r = e, o, s;
+				for (e = i[0], o = 0; o < i.length - 1; o++) s = Te(this, r[n + o], t, o), s === U && (s = this._$AH[o]), a || (a = !Pe(s) || s !== this._$AH[o]), s === W ? e = W : e !== W && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			}
+			a && !r && this.j(e);
+		}
+		j(e) {
+			e === W ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+		}
+	}, $e = class extends Qe {
+		constructor() {
+			super(...arguments), this.type = 3;
+		}
+		j(e) {
+			this.element[this.name] = e === W ? void 0 : e;
+		}
+	}, et = class extends Qe {
+		constructor() {
+			super(...arguments), this.type = 4;
+		}
+		j(e) {
+			this.element.toggleAttribute(this.name, !!e && e !== W);
+		}
+	}, tt = class extends Qe {
+		constructor(e, t, n, r, i) {
+			super(e, t, n, r, i), this.type = 5;
+		}
+		_$AI(e, t = this) {
+			if ((e = Te(this, e, t, 0) ?? W) === U) return;
+			let n = this._$AH, r = e === W && n !== W || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== W && (n === W || r);
+			r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
+		}
+		handleEvent(e) {
+			typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
+		}
+	}, nt = class {
+		constructor(e, t, n) {
+			this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
+		}
+		get _$AU() {
+			return this._$AM._$AU;
+		}
+		_$AI(e) {
+			Te(this, e);
+		}
+	}, rt = {
+		M: ke,
+		P: B,
+		A: Ae,
+		C: 1,
+		L: Je,
+		R: Xe,
+		D: Ie,
+		V: Te,
+		I: Ze,
+		H: Qe,
+		N: et,
+		U: tt,
+		B: $e,
+		F: nt
+	}, it = Ee.litHtmlPolyfillSupport, it?.(Ye, Ze), (Ee.litHtmlVersions ?? (Ee.litHtmlVersions = [])).push("3.3.1"), at = (e, t, n) => {
+		let r = n?.renderBefore ?? t, i = r._$litPart$;
+		if (i === void 0) {
+			let e = n?.renderBefore ?? null;
+			r._$litPart$ = i = new Ze(t.insertBefore(Ne(), e), e, void 0, n ?? {});
+		}
+		return i._$AI(e), i;
+	};
+})), st, ct, lt, ut, dt, ft, pt, mt, ht, gt = t((() => {
+	st = globalThis, ct = st.ShadowRoot && (st.ShadyCSS === void 0 || st.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, lt = Symbol(), ut = /* @__PURE__ */ new WeakMap(), dt = class {
+		constructor(e, t, n) {
+			if (this._$cssResult$ = !0, n !== lt) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+			this.cssText = e, this.t = t;
+		}
+		get styleSheet() {
+			let e = this.o, t = this.t;
+			if (ct && e === void 0) {
+				let n = t !== void 0 && t.length === 1;
+				n && (e = ut.get(t)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), n && ut.set(t, e));
+			}
+			return e;
+		}
+		toString() {
+			return this.cssText;
+		}
+	}, ft = (e) => new dt(typeof e == "string" ? e : e + "", void 0, lt), pt = (e, ...t) => {
+		let n = e.length === 1 ? e[0] : t.reduce(((t, n, r) => t + ((e) => {
+			if (!0 === e._$cssResult$) return e.cssText;
+			if (typeof e == "number") return e;
+			throw Error("Value passed to 'css' function must be a 'css' function result: " + e + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
+		})(n) + e[r + 1]), e[0]);
+		return new dt(n, e, lt);
+	}, mt = (e, t) => {
+		if (ct) e.adoptedStyleSheets = t.map(((e) => e instanceof CSSStyleSheet ? e : e.styleSheet));
+		else for (let n of t) {
+			let t = document.createElement("style"), r = st.litNonce;
+			r !== void 0 && t.setAttribute("nonce", r), t.textContent = n.cssText, e.appendChild(t);
+		}
+	}, ht = ct ? (e) => e : (e) => e instanceof CSSStyleSheet ? ((e) => {
+		let t = "";
+		for (let n of e.cssRules) t += n.cssText;
+		return ft(t);
+	})(e) : e;
+})), _t, vt, yt, bt, xt, St, Ct, wt, Tt, Et, Dt, Ot, kt, At, jt, Mt, Nt = t((() => {
+	gt(), {is: vt, defineProperty: yt, getOwnPropertyDescriptor: bt, getOwnPropertyNames: xt, getOwnPropertySymbols: St, getPrototypeOf: Ct} = Object, wt = globalThis, Tt = wt.trustedTypes, Et = Tt ? Tt.emptyScript : "", Dt = wt.reactiveElementPolyfillSupport, Ot = (e, t) => e, kt = {
+		toAttribute(e, t) {
+			switch (t) {
+				case Boolean:
+					e = e ? Et : null;
+					break;
+				case Object:
+				case Array: e = e == null ? e : JSON.stringify(e);
+			}
+			return e;
+		},
+		fromAttribute(e, t) {
+			let n = e;
+			switch (t) {
+				case Boolean:
+					n = e !== null;
+					break;
+				case Number:
+					n = e === null ? null : Number(e);
+					break;
+				case Object:
+				case Array: try {
+					n = JSON.parse(e);
+				} catch {
+					n = null;
+				}
+			}
+			return n;
+		}
+	}, At = (e, t) => !vt(e, t), jt = {
+		attribute: !0,
+		type: String,
+		converter: kt,
+		reflect: !1,
+		useDefault: !1,
+		hasChanged: At
+	}, (_t = Symbol).metadata ?? (_t.metadata = Symbol("metadata")), wt.litPropertyMetadata ?? (wt.litPropertyMetadata = /* @__PURE__ */ new WeakMap()), Mt = class extends HTMLElement {
+		static addInitializer(e) {
+			this._$Ei(), (this.l ?? (this.l = [])).push(e);
+		}
+		static get observedAttributes() {
+			return this.finalize(), this._$Eh && [...this._$Eh.keys()];
+		}
+		static createProperty(e, t = jt) {
+			if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
+				let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
+				r !== void 0 && yt(this.prototype, e, r);
+			}
+		}
+		static getPropertyDescriptor(e, t, n) {
+			let { get: r, set: i } = bt(this.prototype, e) ?? {
+				get() {
+					return this[t];
+				},
+				set(e) {
+					this[t] = e;
+				}
+			};
+			return {
+				get: r,
+				set(t) {
+					let a = r?.call(this);
+					i?.call(this, t), this.requestUpdate(e, a, n);
+				},
+				configurable: !0,
+				enumerable: !0
+			};
+		}
+		static getPropertyOptions(e) {
+			return this.elementProperties.get(e) ?? jt;
+		}
+		static _$Ei() {
+			if (this.hasOwnProperty(Ot("elementProperties"))) return;
+			let e = Ct(this);
+			e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
+		}
+		static finalize() {
+			if (this.hasOwnProperty(Ot("finalized"))) return;
+			if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(Ot("properties"))) {
+				let e = this.properties, t = [...xt(e), ...St(e)];
+				for (let n of t) this.createProperty(n, e[n]);
+			}
+			let e = this[Symbol.metadata];
+			if (e !== null) {
+				let t = litPropertyMetadata.get(e);
+				if (t !== void 0) for (let [e, n] of t) this.elementProperties.set(e, n);
+			}
+			this._$Eh = /* @__PURE__ */ new Map();
+			for (let [e, t] of this.elementProperties) {
+				let n = this._$Eu(e, t);
+				n !== void 0 && this._$Eh.set(n, e);
+			}
+			this.elementStyles = this.finalizeStyles(this.styles);
+		}
+		static finalizeStyles(e) {
+			let t = [];
+			if (Array.isArray(e)) {
+				let n = new Set(e.flat(Infinity).reverse());
+				for (let e of n) t.unshift(ht(e));
+			} else e !== void 0 && t.push(ht(e));
+			return t;
+		}
+		static _$Eu(e, t) {
+			let n = t.attribute;
+			return !1 === n ? void 0 : typeof n == "string" ? n : typeof e == "string" ? e.toLowerCase() : void 0;
+		}
+		constructor() {
+			super(), this._$Ep = void 0, this.isUpdatePending = !1, this.hasUpdated = !1, this._$Em = null, this._$Ev();
+		}
+		_$Ev() {
+			this._$ES = new Promise(((e) => this.enableUpdating = e)), this._$AL = /* @__PURE__ */ new Map(), this._$E_(), this.requestUpdate(), this.constructor.l?.forEach(((e) => e(this)));
+		}
+		addController(e) {
+			(this._$EO ?? (this._$EO = /* @__PURE__ */ new Set())).add(e), this.renderRoot !== void 0 && this.isConnected && e.hostConnected?.();
+		}
+		removeController(e) {
+			this._$EO?.delete(e);
+		}
+		_$E_() {
+			let e = /* @__PURE__ */ new Map(), t = this.constructor.elementProperties;
+			for (let n of t.keys()) this.hasOwnProperty(n) && (e.set(n, this[n]), delete this[n]);
+			e.size > 0 && (this._$Ep = e);
+		}
+		createRenderRoot() {
+			let e = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
+			return mt(e, this.constructor.elementStyles), e;
+		}
+		connectedCallback() {
+			this.renderRoot ?? (this.renderRoot = this.createRenderRoot()), this.enableUpdating(!0), this._$EO?.forEach(((e) => e.hostConnected?.()));
+		}
+		enableUpdating(e) {}
+		disconnectedCallback() {
+			this._$EO?.forEach(((e) => e.hostDisconnected?.()));
+		}
+		attributeChangedCallback(e, t, n) {
+			this._$AK(e, n);
+		}
+		_$ET(e, t) {
+			let n = this.constructor.elementProperties.get(e), r = this.constructor._$Eu(e, n);
+			if (r !== void 0 && !0 === n.reflect) {
+				let i = (n.converter?.toAttribute === void 0 ? kt : n.converter).toAttribute(t, n.type);
+				this._$Em = e, i == null ? this.removeAttribute(r) : this.setAttribute(r, i), this._$Em = null;
+			}
+		}
+		_$AK(e, t) {
+			let n = this.constructor, r = n._$Eh.get(e);
+			if (r !== void 0 && this._$Em !== r) {
+				let e = n.getPropertyOptions(r), i = typeof e.converter == "function" ? { fromAttribute: e.converter } : e.converter?.fromAttribute === void 0 ? kt : e.converter;
+				this._$Em = r;
+				let a = i.fromAttribute(t, e.type);
+				this[r] = a ?? this._$Ej?.get(r) ?? a, this._$Em = null;
+			}
+		}
+		requestUpdate(e, t, n) {
+			if (e !== void 0) {
+				let r = this.constructor, i = this[e];
+				if (n ?? (n = r.getPropertyOptions(e)), !((n.hasChanged ?? At)(i, t) || n.useDefault && n.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(r._$Eu(e, n)))) return;
+				this.C(e, t, n);
+			}
+			!1 === this.isUpdatePending && (this._$ES = this._$EP());
+		}
+		C(e, t, { useDefault: n, reflect: r, wrapped: i }, a) {
+			n && !(this._$Ej ?? (this._$Ej = /* @__PURE__ */ new Map())).has(e) && (this._$Ej.set(e, a ?? t ?? this[e]), !0 !== i || a !== void 0) || (this._$AL.has(e) || (this.hasUpdated || n || (t = void 0), this._$AL.set(e, t)), !0 === r && this._$Em !== e && (this._$Eq ?? (this._$Eq = /* @__PURE__ */ new Set())).add(e));
+		}
+		async _$EP() {
+			this.isUpdatePending = !0;
+			try {
+				await this._$ES;
+			} catch (e) {
+				Promise.reject(e);
+			}
+			let e = this.scheduleUpdate();
+			return e != null && await e, !this.isUpdatePending;
+		}
+		scheduleUpdate() {
+			return this.performUpdate();
+		}
+		performUpdate() {
+			if (!this.isUpdatePending) return;
+			if (!this.hasUpdated) {
+				if (this.renderRoot ?? (this.renderRoot = this.createRenderRoot()), this._$Ep) {
+					for (let [e, t] of this._$Ep) this[e] = t;
+					this._$Ep = void 0;
+				}
+				let e = this.constructor.elementProperties;
+				if (e.size > 0) for (let [t, n] of e) {
+					let { wrapped: e } = n, r = this[t];
+					!0 !== e || this._$AL.has(t) || r === void 0 || this.C(t, void 0, n, r);
+				}
+			}
+			let e = !1, t = this._$AL;
+			try {
+				e = this.shouldUpdate(t), e ? (this.willUpdate(t), this._$EO?.forEach(((e) => e.hostUpdate?.())), this.update(t)) : this._$EM();
+			} catch (t) {
+				throw e = !1, this._$EM(), t;
+			}
+			e && this._$AE(t);
+		}
+		willUpdate(e) {}
+		_$AE(e) {
+			this._$EO?.forEach(((e) => e.hostUpdated?.())), this.hasUpdated || (this.hasUpdated = !0, this.firstUpdated(e)), this.updated(e);
+		}
+		_$EM() {
+			this._$AL = /* @__PURE__ */ new Map(), this.isUpdatePending = !1;
+		}
+		get updateComplete() {
+			return this.getUpdateComplete();
+		}
+		getUpdateComplete() {
+			return this._$ES;
+		}
+		shouldUpdate(e) {
+			return !0;
+		}
+		update(e) {
+			this._$Eq && (this._$Eq = this._$Eq.forEach(((e) => this._$ET(e, this[e])))), this._$EM();
+		}
+		updated(e) {}
+		firstUpdated(e) {}
+	}, Mt.elementStyles = [], Mt.shadowRootOptions = { mode: "open" }, Mt[Ot("elementProperties")] = /* @__PURE__ */ new Map(), Mt[Ot("finalized")] = /* @__PURE__ */ new Map(), Dt?.({ ReactiveElement: Mt }), (wt.reactiveElementVersions ?? (wt.reactiveElementVersions = [])).push("2.1.1");
+})), Pt, Ft, It, Lt = t((() => {
+	Nt(), Nt(), ot(), ot(), Pt = globalThis, Ft = class extends Mt {
+		constructor() {
+			super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
+		}
+		createRenderRoot() {
+			var e;
+			let t = super.createRenderRoot();
+			return (e = this.renderOptions).renderBefore ?? (e.renderBefore = t.firstChild), t;
+		}
+		update(e) {
+			let t = this.render();
+			this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = at(t, this.renderRoot, this.renderOptions);
+		}
+		connectedCallback() {
+			super.connectedCallback(), this._$Do?.setConnected(!0);
+		}
+		disconnectedCallback() {
+			super.disconnectedCallback(), this._$Do?.setConnected(!1);
+		}
+		render() {
+			return U;
+		}
+	}, Ft._$litElement$ = !0, Ft.finalized = !0, Pt.litElementHydrateSupport?.({ LitElement: Ft }), It = Pt.litElementPolyfillSupport, It?.({ LitElement: Ft }), (Pt.litElementVersions ?? (Pt.litElementVersions = [])).push("4.2.1");
+})), Rt = t((() => {})), zt = t((() => {
+	Ce(), ot(), Lt(), Rt();
+})), Bt, Vt = t((() => {
+	Bt = (e) => (t, n) => {
+		n === void 0 ? customElements.define(e, t) : n.addInitializer((() => {
+			customElements.define(e, t);
+		}));
+	};
+}));
+//#endregion
+//#region node_modules/lit/node_modules/@lit/reactive-element/decorators/property.js
+function G(e) {
+	return (t, n) => typeof n == "object" ? Ut(e, t, n) : ((e, t, n) => {
+		let r = t.hasOwnProperty(n);
+		return t.constructor.createProperty(n, e), r ? Object.getOwnPropertyDescriptor(t, n) : void 0;
+	})(e, t, n);
+}
+var Ht, Ut, Wt = t((() => {
+	Ce(), Ht = {
+		attribute: !0,
+		type: String,
+		converter: ye,
+		reflect: !1,
+		hasChanged: be
+	}, Ut = (e = Ht, t, n) => {
+		let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
+		if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
+			let { name: r } = n;
+			return {
+				set(n) {
+					let i = t.get.call(this);
+					t.set.call(this, n), this.requestUpdate(r, i, e);
+				},
+				init(t) {
+					return t !== void 0 && this.C(r, void 0, e, t), t;
+				}
+			};
+		}
+		if (r === "setter") {
+			let { name: r } = n;
+			return function(n) {
+				let i = this[r];
+				t.call(this, n), this.requestUpdate(r, i, e);
+			};
+		}
+		throw Error("Unsupported decorator location: " + r);
+	};
+}));
+//#endregion
+//#region node_modules/lit/node_modules/@lit/reactive-element/decorators/state.js
+function Gt(e) {
+	return G({
+		...e,
+		state: !0,
+		attribute: !1
+	});
+}
+var Kt = t((() => {
+	Wt();
+})), qt = t((() => {})), Jt = t((() => {})), Yt = t((() => {})), Xt = t((() => {})), Zt = t((() => {})), Qt = t((() => {})), $t = t((() => {
+	Vt(), Wt(), Kt(), qt(), Jt(), Yt(), Xt(), Zt(), Qt();
+}));
+//#endregion
+//#region node_modules/lit-html/directive-helpers.js
+O();
+var en = F();
+zt(), $t(), ot();
+var { I: tn } = rt, nn = (e) => e === null || typeof e != "object" && typeof e != "function", rn = (e) => e.strings === void 0, an = {
+	ATTRIBUTE: 1,
+	CHILD: 2,
+	PROPERTY: 3,
+	BOOLEAN_ATTRIBUTE: 4,
+	EVENT: 5,
+	ELEMENT: 6
+}, on = (e) => (...t) => ({
+	_$litDirective$: e,
+	values: t
+}), sn = class {
+	constructor(e) {}
+	get _$AU() {
+		return this._$AM._$AU;
+	}
+	_$AT(e, t, n) {
+		this._$Ct = e, this._$AM = t, this._$Ci = n;
+	}
+	_$AS(e, t) {
+		return this.update(e, t);
+	}
+	update(e, t) {
+		return this.render(...t);
+	}
+}, cn = (e, t) => {
+	let n = e._$AN;
+	if (n === void 0) return !1;
+	for (let e of n) e._$AO?.(t, !1), cn(e, t);
+	return !0;
+}, ln = (e) => {
+	let t, n;
+	do {
+		if ((t = e._$AM) === void 0) break;
+		n = t._$AN, n.delete(e), e = t;
+	} while (n?.size === 0);
+}, un = (e) => {
+	for (let t; t = e._$AM; e = t) {
+		let n = t._$AN;
+		if (n === void 0) t._$AN = n = /* @__PURE__ */ new Set();
+		else if (n.has(e)) break;
+		n.add(e), pn(t);
+	}
+};
+function dn(e) {
+	this._$AN === void 0 ? this._$AM = e : (ln(this), this._$AM = e, un(this));
+}
+function fn(e, t = !1, n = 0) {
+	let r = this._$AH, i = this._$AN;
+	if (i !== void 0 && i.size !== 0) if (t) if (Array.isArray(r)) for (let e = n; e < r.length; e++) cn(r[e], !1), ln(r[e]);
+	else r != null && (cn(r, !1), ln(r));
+	else cn(this, e);
+}
+var pn = (e) => {
+	e.type == an.CHILD && (e._$AP ?? (e._$AP = fn), e._$AQ ?? (e._$AQ = dn));
+}, mn = class extends sn {
+	constructor() {
+		super(...arguments), this._$AN = void 0;
+	}
+	_$AT(e, t, n) {
+		super._$AT(e, t, n), un(this), this.isConnected = e._$AU;
+	}
+	_$AO(e, t = !0) {
+		e !== this.isConnected && (this.isConnected = e, e ? this.reconnected?.() : this.disconnected?.()), t && (cn(this, e), ln(this));
+	}
+	setValue(e) {
+		if (rn(this._$Ct)) this._$Ct._$AI(e, this);
+		else {
+			let t = [...this._$Ct._$AH];
+			t[this._$Ci] = e, this._$Ct._$AI(t, this, 0);
+		}
+	}
+	disconnected() {}
+	reconnected() {}
+}, hn = class {
+	constructor(e) {
+		this.G = e;
+	}
+	disconnect() {
+		this.G = void 0;
+	}
+	reconnect(e) {
+		this.G = e;
+	}
+	deref() {
+		return this.G;
+	}
+}, gn = class {
+	constructor() {
+		this.Y = void 0, this.Z = void 0;
+	}
+	get() {
+		return this.Y;
+	}
+	pause() {
+		this.Y ?? (this.Y = new Promise(((e) => this.Z = e)));
+	}
+	resume() {
+		this.Z?.(), this.Y = this.Z = void 0;
+	}
+};
+//#endregion
+//#region node_modules/lit-html/directives/until.js
+ot();
+var _n = (e) => !nn(e) && typeof e.then == "function", vn = 1073741823, yn = on(class extends mn {
+	constructor() {
+		super(...arguments), this._$Cwt = vn, this._$Cbt = [], this._$CK = new hn(this), this._$CX = new gn();
+	}
+	render(...e) {
+		return e.find(((e) => !_n(e))) ?? U;
+	}
+	update(e, t) {
+		let n = this._$Cbt, r = n.length;
+		this._$Cbt = t;
+		let i = this._$CK, a = this._$CX;
+		this.isConnected || this.disconnected();
+		for (let e = 0; e < t.length && !(e > this._$Cwt); e++) {
+			let o = t[e];
+			if (!_n(o)) return this._$Cwt = e, o;
+			e < r && o === n[e] || (this._$Cwt = vn, r = 0, Promise.resolve(o).then((async (e) => {
+				for (; a.get();) await a.get();
+				let t = i.deref();
+				if (t !== void 0) {
+					let n = t._$Cbt.indexOf(o);
+					n > -1 && n < t._$Cwt && (t._$Cwt = n, t.setValue(e));
+				}
+			})));
+		}
+		return U;
+	}
+	disconnected() {
+		this._$CK.disconnect(), this._$CX.pause();
+	}
+	reconnected() {
+		this._$CK.reconnect(this), this._$CX.resume();
+	}
+}), bn = "6.9.0", xn = "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0, Sn = class extends HTMLElement {
+	constructor() {
+		super(), this.holdTime = 500, this.held = !1, this.ripple = document.createElement("mwc-ripple");
+	}
+	connectedCallback() {
+		Object.assign(this.style, {
+			position: "absolute",
+			width: xn ? "100px" : "50px",
+			height: xn ? "100px" : "50px",
+			transform: "translate(-50%, -50%)",
+			pointerEvents: "none",
+			zIndex: "999"
+		}), this.appendChild(this.ripple), this.ripple.primary = !0, [
+			"touchcancel",
+			"mouseout",
+			"mouseup",
+			"touchmove",
+			"mousewheel",
+			"wheel",
+			"scroll"
+		].forEach((e) => {
+			document.addEventListener(e, () => {
+				clearTimeout(this.timer), this.stopAnimation(), this.timer = void 0;
+			}, { passive: !0 });
+		});
+	}
+	bind(e, t) {
+		if (e.actionHandler) return;
+		e.actionHandler = !0, e.addEventListener("contextmenu", (e) => {
+			let t = e || window.event;
+			return t.preventDefault && t.preventDefault(), t.stopPropagation && t.stopPropagation(), t.cancelBubble = !0, t.returnValue = !1, !1;
+		});
+		let n = (e) => {
+			this.held = !1;
+			let t, n;
+			e.touches ? (t = e.touches[0].pageX, n = e.touches[0].pageY) : (t = e.pageX, n = e.pageY), this.timer = window.setTimeout(() => {
+				this.startAnimation(t, n), this.held = !0;
+			}, this.holdTime);
+		}, r = (n) => {
+			n.preventDefault(), !(["touchend", "touchcancel"].includes(n.type) && this.timer === void 0) && (clearTimeout(this.timer), this.stopAnimation(), this.timer = void 0, this.held ? b(e, "action", { action: "hold" }) : t.hasDoubleClick ? n.type === "click" && n.detail < 2 || !this.dblClickTimeout ? this.dblClickTimeout = window.setTimeout(() => {
+				this.dblClickTimeout = void 0, b(e, "action", { action: "tap" });
+			}, 250) : (clearTimeout(this.dblClickTimeout), this.dblClickTimeout = void 0, b(e, "action", { action: "double_tap" })) : b(e, "action", { action: "tap" }));
+		};
+		e.addEventListener("touchstart", n, { passive: !0 }), e.addEventListener("touchend", r), e.addEventListener("touchcancel", r), e.addEventListener("mousedown", n, { passive: !0 }), e.addEventListener("click", r), e.addEventListener("keyup", (e) => {
+			e.keyCode === 13 && r(e);
+		});
+	}
+	startAnimation(e, t) {
+		Object.assign(this.style, {
+			left: `${e}px`,
+			top: `${t}px`,
+			display: null
+		}), this.ripple.disabled = !1, this.ripple.active = !0, this.ripple.unbounded = !0;
+	}
+	stopAnimation() {
+		this.ripple.active = !1, this.ripple.disabled = !0, this.style.display = "none";
+	}
+};
+customElements.define("action-handler-hourly-weather", Sn);
+var Cn = () => {
+	let e = document.body;
+	if (e.querySelector("action-handler-hourly-weather")) return e.querySelector("action-handler-hourly-weather");
+	let t = document.createElement("action-handler-hourly-weather");
+	return e.appendChild(t), t;
+}, wn = (e, t) => {
+	let n = Cn();
+	n && n.bind(e, t);
+}, Tn = on(class extends sn {
+	update(e, [t]) {
+		return wn(e.element, t), U;
+	}
+	render(e) {}
+}), En = {
+	"clear-night": "conditions.clear",
+	cloudy: "conditions.cloudy",
+	fog: "conditions.fog",
+	hail: "conditions.hail",
+	lightning: "conditions.thunderstorm",
+	"lightning-rainy": "conditions.thunderstorm",
+	partlycloudy: "conditions.partlyCloudy",
+	pouring: "conditions.heavyRain",
+	rainy: "conditions.rain",
+	snowy: "conditions.snow",
+	"snowy-rainy": "conditions.mixedPrecip",
+	sunny: "conditions.sunny",
+	windy: "conditions.windy",
+	"windy-variant": "conditions.windy",
+	exceptional: "conditions.clear"
+}, Dn = {
+	"clear-night": "weather-night",
+	cloudy: "cloudy",
+	fog: "fog",
+	hail: "hail",
+	lightning: "lightning",
+	"lightning-rainy": "lightning-rainy",
+	partlycloudy: "weather-partly-cloudy",
+	pouring: "pouring",
+	rainy: "rainy",
+	snowy: "snowy",
+	"snowy-rainy": "snowy-rainy",
+	sunny: "sunny",
+	windy: "windy",
+	"windy-variant": "windy-variant",
+	exceptional: "alert-outline"
+}, On = {
+	n: "direction.n",
+	nne: "direction.nne",
+	ne: "direction.ne",
+	ene: "direction.ene",
+	e: "direction.e",
+	ese: "direction.ese",
+	se: "direction.se",
+	sse: "direction.sse",
+	s: "direction.s",
+	ssw: "direction.ssw",
+	sw: "direction.sw",
+	wsw: "direction.wsw",
+	w: "direction.w",
+	wnw: "direction.wnw",
+	nw: "direction.nw",
+	nnw: "direction.nnw"
+}, kn = {
+	n: 0,
+	nne: 22.5,
+	ne: 45,
+	ene: 67.5,
+	e: 90,
+	ese: 112.5,
+	se: 135,
+	sse: 157.5,
+	s: 180,
+	ssw: 202.5,
+	sw: 225,
+	wsw: 247.5,
+	w: 270,
+	wnw: 292.5,
+	nw: 315,
+	nnw: 337.5
+}, An = /* @__PURE__ */ r({
+	card: () => In,
+	common: () => jn,
+	conditions: () => Pn,
+	default: () => Ln,
+	direction: () => Fn,
+	editor: () => Mn,
+	errors: () => Nn
+}), jn, Mn, Nn, Pn, Fn, In, Ln, Rn = t((() => {
+	jn = {
+		version: "Версия",
+		title: "Времето по часове",
+		title_card: "Карта с времето по часове",
+		description: "Карта, която визуализира почасово метеорологичните условия във вид на лента.",
+		invalid_configuration: "Невалидна конфигурация"
+	}, Mn = {
+		entity: "Entity (Задължително)",
+		name: "Име (Опционално)",
+		segments_to_show: "Брой сегменти за визуализиране (Опционално)",
+		offset: "Брой сегменти с които да се отмести началото (Опционално)",
+		icons: "Показвай икони вместо текст",
+		label_spacing: "Брой сегменти между етикетите за час и температура (Опционално)",
+		show_wind: "Показвай посока и скорост на вятъра",
+		show_date: "Показвай дати",
+		show_precipitation_amounts: "Покажи количеството валежи",
+		show_precipitation_probability: "Покажи вероятноста за валежи",
+		none: "Няма",
+		speed_and_direction: "Скорост и посока",
+		speed_only: "Само скорост",
+		direction_only: "Само посока",
+		barb: "Като wind barb",
+		barb_and_speed: "Като wind barb и скорост",
+		barb_and_direction: "Като wind barb и посока",
+		barb_speed_and_direction: "Като wind barb, скорост и посока",
+		all: "Всички",
+		on_day_boundaries: "На границите между дните"
+	}, Nn = {
+		missing_entity: "entity липсва в конфигурацията",
+		too_many_segments_requested: "Задали сте твърде много сегменти с прогнози в num_segments. Трябва да бъдат <= от броя сегменти във forecast entity.",
+		must_be_int: "Трябва да бъде четно число по-голямо или равно на 2",
+		invalid_colors: "Следните цветове в конфигурацията Ви са невалидни:",
+		must_be_positive_int: "Трябва да е положително число",
+		offset_must_be_positive_int: "Отместването трябва да е положително число",
+		forecast_not_available: "Не е налична прогноза",
+		check_entity: "Проверете конфигурираното forecast entity.",
+		invalid_value_icon_fill: "icon_fill трябва да бъде или положително цяло число, или едно от 'single' или 'full'"
+	}, Pn = {
+		clear: "Ясно",
+		cloudy: "Облачно",
+		fog: "Мъгла",
+		hail: "Градушка",
+		thunderstorm: "Гръмотевична буря",
+		partlyCloudy: "Частична облачност",
+		heavyRain: "Проливен дъжд",
+		rain: "Дъжд",
+		snow: "Сняг",
+		mixedPrecip: "Смесен валеж",
+		sunny: "Слънчево",
+		windy: "Ветровито"
+	}, Fn = {
+		n: "С",
+		nne: "ССИ",
+		ne: "СИ",
+		ene: "ИСИ",
+		e: "И",
+		ese: "ИЮИ",
+		se: "ЮИ",
+		sse: "ЮЮИ",
+		s: "Ю",
+		ssw: "ЮЮЗ",
+		sw: "ЮЗ",
+		wsw: "ЗЮЗ",
+		w: "З",
+		wnw: "ЗСЗ",
+		nw: "СЗ",
+		nnw: "ССЗ"
+	}, In = { chance_of_precipitation: "{0}% вероятност за валежи" }, Ln = {
+		common: jn,
+		editor: Mn,
+		errors: Nn,
+		conditions: Pn,
+		direction: Fn,
+		card: In
+	};
+})), zn = /* @__PURE__ */ r({
+	card: () => Gn,
+	common: () => Bn,
+	conditions: () => Un,
+	default: () => Kn,
+	direction: () => Wn,
+	editor: () => Vn,
+	errors: () => Hn
+}), Bn, Vn, Hn, Un, Wn, Gn, Kn, qn = t((() => {
+	Bn = {
+		version: "Verze",
+		title: "Hodinnová předpověď",
+		title_card: "Karta Hodinnová předpověď",
+		description: "Karta zobrazující hodinovou předpověď v řádku.",
+		invalid_configuration: "Neplatná konfigurace"
+	}, Vn = {
+		entity: "Entita (Povinné)",
+		name: "Název (Nepovinné)",
+		segments_to_show: "Počet dílků předpovědi k vykreslení (Nepovinné)",
+		offset: "Počet dílků, které se přeskočí před začátkem (Nepovinné)",
+		icons: "Zobrazit ikony namísto textových popisků",
+		label_spacing: "Po kolika dílcích se vykreslí čas a teplota (Nepovinné)",
+		show_wind: "Zobrazit rychlost a směr větru",
+		show_date: "Zobrazit datumy",
+		show_precipitation_amounts: "Zobrazit množství srážek",
+		show_precipitation_probability: "Zobrazit pravdědpodobnost srážek",
+		none: "Žádné",
+		speed_and_direction: "Rychlost a směr",
+		speed_only: "Jen rychlost",
+		direction_only: "Jen směr",
+		barb: "Jako šipku větru",
+		barb_and_speed: "Jako šipku větru a rychlost",
+		barb_and_direction: "Jako šipku větru a směr",
+		barb_speed_and_direction: "Jako šipku větru, rychlost a směr",
+		all: "Všechny",
+		on_day_boundaries: "Při změně dne"
+	}, Hn = {
+		missing_entity: "Hodnota 'entity' nebyla zadána",
+		too_many_segments_requested: "Je nastaveno příliš mnoho dílků předpovědi v 'num_segments'. Hodnota musí být <= počtu hodnot v zadané entitě.",
+		must_be_int: "Hodnota musí být kladné sudé celé číslo",
+		invalid_colors: "Následující hodnoty v konfiguraci jsou neplatné:",
+		must_be_positive_int: "Hodnota musí být kladné celé číslo",
+		offset_must_be_positive_int: "Hodnota 'offset' musí být kladné celé číslo",
+		forecast_not_available: "Předpověď není dostupná",
+		check_entity: "Zkontrolujte zadanou entity předpovědi.",
+		invalid_value_icon_fill: "icon_fill musí být buď kladné celé číslo, nebo jedno z 'single'; nebo 'full';"
+	}, Un = {
+		clear: "Jasno",
+		cloudy: "Oblačno",
+		fog: "Mlha",
+		hail: "Kroupy",
+		thunderstorm: "Bouřka",
+		partlyCloudy: "Polojasno",
+		heavyRain: "Silný déšť",
+		rain: "Déšť",
+		snow: "Sníh",
+		mixedPrecip: "Smíšené srážky",
+		sunny: "Slunečno",
+		windy: "Větrno"
+	}, Wn = {
+		n: "S",
+		nne: "SSV",
+		ne: "SV",
+		ene: "VSV",
+		e: "V",
+		ese: "VJV",
+		se: "JV",
+		sse: "JJV",
+		s: "J",
+		ssw: "JJZ",
+		sw: "JZ",
+		wsw: "ZJZ",
+		w: "Z",
+		wnw: "ZSZ",
+		nw: "SZ",
+		nnw: "SSZ"
+	}, Gn = { chance_of_precipitation: "{0}% šance srážek" }, Kn = {
+		common: Bn,
+		editor: Vn,
+		errors: Hn,
+		conditions: Un,
+		direction: Wn,
+		card: Gn
+	};
+})), Jn = /* @__PURE__ */ r({
+	card: () => er,
+	common: () => Yn,
+	conditions: () => Qn,
+	default: () => tr,
+	direction: () => $n,
+	editor: () => Xn,
+	errors: () => Zn
+}), Yn, Xn, Zn, Qn, $n, er, tr, nr = t((() => {
+	Yn = {
+		version: "Version",
+		title: "Time Vejr",
+		title_card: "Time Vejr Kort",
+		description: "Et kort som viser vejret hver time som en linje.",
+		invalid_configuration: "Ugyldig konfiguration"
+	}, Xn = {
+		entity: "Entitet (Påkrævet)",
+		name: "Navn (Valgfri)",
+		segments_to_show: "Antal udsigtssegmenter der skal vises (Valgfri)",
+		offset: "Antal udsigtssegmenter starten skal forskydes (Valgfri)",
+		icons: "Vis ikoner i stedet for tekst",
+		label_spacing: "Antal segmenter imellem tid og temperatur labels (Valgfri)",
+		show_wind: "Vis vindhastighed og retning",
+		show_precipitation_amounts: "Vis nedbørsmængde",
+		show_precipitation_probability: "Vis nedbørssandsynlighed",
+		none: "Ingen",
+		speed_and_direction: "Hastighed og retning",
+		speed_only: "Kun hastighed",
+		direction_only: "Kun retning",
+		barb: "Som vindrose",
+		barb_and_speed: "Som vindrose og hastighed",
+		barb_and_direction: "Som vindrose og retning",
+		barb_speed_and_direction: "Som vindrose, hastighed, og retning",
+		show_date: "Vis datoer",
+		all: "Alle",
+		on_day_boundaries: "På dagsgrænser"
+	}, Zn = {
+		missing_entity: "entitet mangler i konfiguration",
+		too_many_segments_requested: "For mange segmenter forespurgt i num_segments. Skal være mindre eller lig antal segmenter i vejrudsigtsentiteten.",
+		must_be_int: "Skal være et heltal størrere end eller lig 2",
+		invalid_colors: "Føglende farver i din konfiguration er ugyldige:",
+		must_be_positive_int: "Skal være et positivt heltal",
+		offset_must_be_positive_int: "offset skal være et positivt heltal",
+		forecast_not_available: "Vejrudsigt ikke tilgængelig",
+		check_entity: "Kontroller den definerede vejrudsigtsentitet.",
+		invalid_value_icon_fill: "icon_fill skal enten være et positivt heltal eller et af 'single' eller 'full'"
+	}, Qn = {
+		clear: "Klart",
+		cloudy: "Skyet",
+		fog: "Tåge",
+		hail: "Hagl",
+		thunderstorm: "Torden",
+		partlyCloudy: "Delvist overskyet",
+		heavyRain: "Kraftig regn",
+		rain: "Regn",
+		snow: "Sne",
+		mixedPrecip: "Blandet nedbør",
+		sunny: "Sol",
+		windy: "Blæsende"
+	}, $n = {
+		n: "N",
+		nne: "NNØ",
+		ne: "NØ",
+		ene: "ØNØ",
+		e: "Ø",
+		ese: "ØSØ",
+		se: "SØ",
+		sse: "SSØ",
+		s: "S",
+		ssw: "SSV",
+		sw: "SV",
+		wsw: "VSV",
+		w: "V",
+		wnw: "VNV",
+		nw: "NV",
+		nnw: "NNV"
+	}, er = { chance_of_precipitation: "{0}% risiko for nedbør" }, tr = {
+		common: Yn,
+		editor: Xn,
+		errors: Zn,
+		conditions: Qn,
+		direction: $n,
+		card: er
+	};
+})), rr = /* @__PURE__ */ r({
+	card: () => lr,
+	common: () => ir,
+	conditions: () => sr,
+	default: () => ur,
+	direction: () => cr,
+	editor: () => ar,
+	errors: () => or
+}), ir, ar, or, sr, cr, lr, ur, dr = t((() => {
+	ir = {
+		version: "Version",
+		title: "Stündliches Wetterbedingungen",
+		title_card: "Stündliche Wetterbedingungen",
+		description: "Diese Karte stellt stündliche Wetterbedingungen als Balken dar.",
+		invalid_configuration: "Ungültige Konfiguration"
+	}, ar = {
+		entity: "Entität",
+		name: "Bezeichnung (optional)",
+		icons: "Zeigen Sie Symbole anstelle von Textbeschriftungen an",
+		offset: "Anzahl der Prognosesegmente zum Versetzen beginnen um (optional)",
+		segments_to_show: "Anzahl der anzuzeigenden Prognosesegmente (optional)",
+		label_spacing: "Anzahl der Vorhersagesegmente für Raumzeit- und Temperaturbeschriftungen nach (optional)",
+		show_wind: "Zeigt Windgeschwindigkeit und -richtung an",
+		show_precipitation_amounts: "Niederschlagsmenge anzeigen",
+		speed_only: "Nur Geschwindigkeit",
+		direction_only: "Nur Richtung",
+		barb: "Als Windbarbe",
+		show_precipitation_probability: "Niederschlagswahrscheinlichkeit anzeigen",
+		none: "Keiner",
+		speed_and_direction: "Geschwindigkeit und Richtung",
+		barb_and_speed: "Als Windwiderhaken und Geschwindigkeit",
+		barb_and_direction: "Als Windwiderhaken und Richtung",
+		barb_speed_and_direction: "Als Windwiderstand, Geschwindigkeit und Richtung",
+		show_date: "Termine anzeigen",
+		all: "Alle",
+		on_day_boundaries: "An Tagesgrenzen"
+	}, or = {
+		missing_entity: "Keine Wetter-Entität festgelegt",
+		must_be_int: "Muss eine gerade ganze Zahl größer oder gleich 2 sein.",
+		invalid_colors: "Die folgenden Farben in Ihrer Konfiguration sind ungültig:",
+		must_be_positive_int: "Muss eine positive Ganzzahl sein",
+		too_many_segments_requested: "Zu viele Prognosesegmente in num_segments angefordert. Muss <= Anzahl der Segmente in der Prognoseentität sein.",
+		offset_must_be_positive_int: "offset muss eine positive Ganzzahl sein",
+		forecast_not_available: "Prognose nicht verfügbar",
+		check_entity: "Überprüfen Sie die konfigurierte Prognoseentität.",
+		invalid_value_icon_fill: "icon_fill muss entweder eine positive Ganzzahl oder einer der Werte 'single' oder 'full' sein."
+	}, sr = {
+		clear: "Klar",
+		cloudy: "Bewölkt",
+		fog: "Nebel",
+		hail: "Hagel",
+		thunderstorm: "Gewitter",
+		partlyCloudy: "Teilweise bewölkt",
+		heavyRain: "Platzregen",
+		rain: "Regen",
+		snow: "Schnee",
+		mixedPrecip: "Gemischter Niederschlag",
+		sunny: "Sonnig",
+		windy: "Windig"
+	}, cr = {
+		n: "N",
+		nne: "NNO",
+		ne: "NO",
+		ene: "ONO",
+		e: "O",
+		ese: "OSO",
+		se: "SO",
+		sse: "SSO",
+		s: "S",
+		ssw: "SSW",
+		sw: "SW",
+		wsw: "WSW",
+		w: "W",
+		wnw: "WNW",
+		nw: "NW",
+		nnw: "NNW"
+	}, lr = { chance_of_precipitation: "{0}% Niederschlagswahrscheinlichkeit" }, ur = {
+		common: ir,
+		editor: ar,
+		errors: or,
+		conditions: sr,
+		direction: cr,
+		card: lr
+	};
+})), fr = /* @__PURE__ */ r({
+	card: () => vr,
+	common: () => pr,
+	conditions: () => gr,
+	default: () => yr,
+	direction: () => _r,
+	editor: () => mr,
+	errors: () => hr
+}), pr, mr, hr, gr, _r, vr, yr, br = t((() => {
+	pr = {
+		version: "Version",
+		title: "Hourly Weather",
+		title_card: "Hourly Weather Card",
+		description: "A card to render hourly weather conditions as a bar.",
+		invalid_configuration: "Invalid configuration"
+	}, mr = {
+		entity: "Entity (Required)",
+		name: "Name (Optional)",
+		segments_to_show: "Number of forecast segments to show (Optional)",
+		offset: "Number of forecast segments to offset start by (Optional)",
+		icons: "Show icons instead of text labels",
+		label_spacing: "Number of forecast segments to space time and temperature labels by (Optional)",
+		show_wind: "Show wind speed and direction",
+		show_date: "Show dates",
+		show_precipitation_amounts: "Show precipitation amount",
+		show_precipitation_probability: "Show precipitation probability",
+		none: "None",
+		speed_and_direction: "Speed and direction",
+		speed_only: "Speed only",
+		direction_only: "Direction only",
+		barb: "As wind barb",
+		barb_and_speed: "As wind barb and speed",
+		barb_and_direction: "As wind barb and direction",
+		barb_speed_and_direction: "As wind barb, speed, and direction",
+		all: "All",
+		on_day_boundaries: "On day boundaries"
+	}, hr = {
+		missing_entity: "entity is missing in configuration",
+		too_many_segments_requested: "Too many forecast segments requested in num_segments. Must be <= number of segments in forecast entity.",
+		must_be_int: "Must be an even integer greater than or equal to 2",
+		invalid_colors: "The following colors in your configuration are invalid:",
+		must_be_positive_int: "Must be a positive integer",
+		offset_must_be_positive_int: "offset must be a positive integer",
+		forecast_not_available: "Forecast not available",
+		check_entity: "Check the configured forecast entity.",
+		invalid_value_icon_fill: "icon_fill must be either a positive integer or one of 'single' or 'full'"
+	}, gr = {
+		clear: "Clear",
+		cloudy: "Cloudy",
+		fog: "Fog",
+		hail: "Hail",
+		thunderstorm: "Thunderstorm",
+		partlyCloudy: "Partly cloudy",
+		heavyRain: "Heavy rain",
+		rain: "Rain",
+		snow: "Snow",
+		mixedPrecip: "Mixed precip",
+		sunny: "Sunny",
+		windy: "Windy"
+	}, _r = {
+		n: "N",
+		nne: "NNE",
+		ne: "NE",
+		ene: "ENE",
+		e: "E",
+		ese: "ESE",
+		se: "SE",
+		sse: "SSE",
+		s: "S",
+		ssw: "SSW",
+		sw: "SW",
+		wsw: "WSW",
+		w: "W",
+		wnw: "WNW",
+		nw: "NW",
+		nnw: "NNW"
+	}, vr = { chance_of_precipitation: "{0}% chance of precipitation" }, yr = {
+		common: pr,
+		editor: mr,
+		errors: hr,
+		conditions: gr,
+		direction: _r,
+		card: vr
+	};
+})), xr = /* @__PURE__ */ r({
+	card: () => Dr,
+	common: () => Sr,
+	conditions: () => Tr,
+	default: () => Or,
+	direction: () => Er,
+	editor: () => Cr,
+	errors: () => wr
+}), Sr, Cr, wr, Tr, Er, Dr, Or, kr = t((() => {
+	Sr = {
+		version: "Versión",
+		title: "Tiempo por hora",
+		title_card: "Tarjeta de Tiempo por hora",
+		description: "Una tarjeta para mostrar las condiciones climáticas cada hora en una barra.",
+		invalid_configuration: "Configuración inválida"
+	}, Cr = {
+		entity: "Entidad (Requerida)",
+		name: "Nombre (Opcional)",
+		icons: "Mostrar iconos en vez de texto",
+		offset: "Número de segmentos de pronóstico para compensar el inicio por (Opcional)",
+		segments_to_show: "Número de segmentos de pronóstico para mostrar (Opcional)",
+		label_spacing: "Número de segmentos de pronóstico para etiquetas de temperatura y tiempo espacial por (Opcional)",
+		show_wind: "Mostrar la velocidad y dirección del viento",
+		show_precipitation_amounts: "Mostrar cantidad de precipitación",
+		speed_only: "Solo velocidad",
+		direction_only: "Solo dirección",
+		barb: "Como púa de viento",
+		show_precipitation_probability: "Mostrar probabilidad de precipitación",
+		none: "Ninguno",
+		speed_and_direction: "Velocidad y dirección",
+		barb_and_speed: "Como púas de viento y velocidad",
+		barb_and_direction: "Como púa de viento y dirección",
+		barb_speed_and_direction: "Como púa de viento, velocidad y dirección",
+		show_date: "Mostrar fechas",
+		all: "Todo",
+		on_day_boundaries: "En los límites del día"
+	}, wr = {
+		missing_entity: "falta la entidad en la configuración",
+		must_be_int: "Debe ser un entero mayor o igual a 2",
+		invalid_colors: "Los siguientes colores en su configuración no son válidos:",
+		must_be_positive_int: "Debe ser un entero positivo",
+		too_many_segments_requested: "Se solicitaron demasiados segmentos de pronóstico en num_segments. Debe ser <= número de segmentos en la entidad de pronóstico.",
+		offset_must_be_positive_int: "offset debe ser un número entero positivo",
+		forecast_not_available: "Pronóstico no disponible",
+		check_entity: "Verifique la entidad de pronóstico configurada.",
+		invalid_value_icon_fill: "icon_fill debe ser un número entero positivo o uno de los valores 'single' o 'full'"
+	}, Tr = {
+		clear: "Despejado",
+		cloudy: "Nublado",
+		fog: "Niebla",
+		hail: "Granizo",
+		thunderstorm: "Tormenta electrica",
+		partlyCloudy: "Parcialmente nublado",
+		heavyRain: "Tormenta",
+		rain: "Lluvia",
+		snow: "Nieve",
+		mixedPrecip: "Chaparrones dispersos",
+		sunny: "Soleado",
+		windy: "Ventoso"
+	}, Er = {
+		n: "N",
+		nne: "NNE",
+		ne: "NE",
+		ene: "ENE",
+		e: "E",
+		ese: "ESE",
+		se: "SE",
+		sse: "SSE",
+		s: "S",
+		ssw: "SSO",
+		sw: "SO",
+		wsw: "OSO",
+		w: "O",
+		wnw: "ONO",
+		nw: "NO",
+		nnw: "NNO"
+	}, Dr = { chance_of_precipitation: "{0}% probabilidad de precipitación" }, Or = {
+		common: Sr,
+		editor: Cr,
+		errors: wr,
+		conditions: Tr,
+		direction: Er,
+		card: Dr
+	};
+})), Ar = /* @__PURE__ */ r({
+	card: () => Ir,
+	common: () => jr,
+	conditions: () => Pr,
+	default: () => Lr,
+	direction: () => Fr,
+	editor: () => Mr,
+	errors: () => Nr
+}), jr, Mr, Nr, Pr, Fr, Ir, Lr, Rr = t((() => {
+	jr = {
+		version: "Version",
+		title: "Prévisions météo par heure",
+		title_card: "Prévisions météo par heure",
+		description: "Une carte pour afficher les prévisions météo par heure sur une ligne.",
+		invalid_configuration: "Configuration invalide"
+	}, Mr = {
+		entity: "Entité (requis)",
+		name: "Nom (facultatif)",
+		icons: "Afficher des icônes à la place du texte",
+		offset: "Décalage initial de segments de prévision (facultatif)",
+		segments_to_show: "Nombre de segments de prévision à afficher (facultatif)",
+		label_spacing: "Segments d'espacement entre les étiquettes d'heure et de température (facultatif)",
+		show_wind: "Afficher la vitesse et la direction du vent",
+		show_precipitation_amounts: "Afficher la quantité de précipitations",
+		speed_only: "Vitesse uniquement",
+		direction_only: "Sens uniquement",
+		barb: "Comme barbillon de vent",
+		show_precipitation_probability: "Afficher la probabilité de précipitation",
+		none: "Aucun",
+		speed_and_direction: "Vitesse et orientation",
+		barb_and_speed: "Comme barbe de vent et vitesse",
+		barb_and_direction: "Comme barbillon de vent et direction",
+		barb_speed_and_direction: "Comme barbillon de vent, vitesse et direction",
+		show_date: "Afficher les dates",
+		all: "Tous",
+		on_day_boundaries: "Aux limites du jour"
+	}, Nr = {
+		missing_entity: "Entité manquante dans la configuration",
+		must_be_int: "Doit être un nombre entier pair supérieur ou égal à 2",
+		invalid_colors: "Les couleurs suivantes dans votre configuration ne sont pas valides\xA0:",
+		must_be_positive_int: "Doit être un entier positif",
+		too_many_segments_requested: "Trop de segments de prévision demandés dans num_segments. Doit être <= au nombre de segments de l'entité de prévision.",
+		offset_must_be_positive_int: "offset doit être un entier positif",
+		forecast_not_available: "Prévision non disponible",
+		check_entity: "Vérifiez l'entité de prévision configurée.",
+		invalid_value_icon_fill: "icon_fill doit être soit un entier positif, soit l'un des nombres 'single' ou 'full'"
+	}, Pr = {
+		clear: "Dégagé",
+		cloudy: "Nuageux",
+		fog: "Brouillard",
+		hail: "Grêle",
+		thunderstorm: "Orage",
+		partlyCloudy: "Éclaircies",
+		heavyRain: "Averses",
+		rain: "Pluie",
+		snow: "Neige",
+		mixedPrecip: "Neigeux, pluvieux",
+		sunny: "Ensoleillé",
+		windy: "Venteux"
+	}, Fr = {
+		n: "N",
+		nne: "NNE",
+		ne: "NE",
+		ene: "ENE",
+		e: "E",
+		ese: "ESE",
+		se: "SE",
+		sse: "SSE",
+		s: "S",
+		ssw: "SSO",
+		sw: "SO",
+		wsw: "OSO",
+		w: "O",
+		wnw: "ONO",
+		nw: "NO",
+		nnw: "NNO"
+	}, Ir = { chance_of_precipitation: "{0}% probabilité de précipitations" }, Lr = {
+		common: jr,
+		editor: Mr,
+		errors: Nr,
+		conditions: Pr,
+		direction: Fr,
+		card: Ir
+	};
+})), zr = /* @__PURE__ */ r({
+	card: () => Gr,
+	common: () => Br,
+	conditions: () => Ur,
+	default: () => Kr,
+	direction: () => Wr,
+	editor: () => Vr,
+	errors: () => Hr
+}), Br, Vr, Hr, Ur, Wr, Gr, Kr, qr = t((() => {
+	Br = {
+		version: "Verzió",
+		title: "Óránkénti időjárás",
+		title_card: "Óránkénti időjárás kártya",
+		description: "Egy kártya, amely az óránkénti időjárási viszonyokat egy sávban jeleníti meg",
+		invalid_configuration: "Érvénytelen konfiguráció"
+	}, Vr = {
+		entity: "Entitás (Kötelező)",
+		name: "Név (Opcionális)",
+		segments_to_show: "Megjelenítendő előrejelzési órák száma (Opcionális)",
+		offset: "Az előrejelzett órák kezdő értékének eltolása (Opcionális)",
+		icons: "Ikonok megjelenítése szövegek helyett",
+		label_spacing: "Az idő- és hőmérsékleti címkékhez tartozó előrejelzési órák időköze (Opcionális)",
+		show_wind: "Szélsebesség és irány megjelenítése",
+		show_precipitation_amounts: "Csapadékmennyiség megjelenítése",
+		show_precipitation_probability: "Csapadék valószínűségének megjelenítése",
+		speed_only: "Sebesség",
+		direction_only: "Irány",
+		barb: "Irány nyílként",
+		none: "Egyik sem",
+		speed_and_direction: "Sebesség és irány",
+		barb_and_speed: "Szélfogóként és sebességként",
+		barb_and_direction: "Szellőként és irányként",
+		barb_speed_and_direction: "Szélfogként, sebességként és irányként",
+		show_date: "Dátumok megjelenítése",
+		all: "Minden",
+		on_day_boundaries: "A napok határain"
+	}, Hr = {
+		missing_entity: "az entitás hiányzik a konfigurációból",
+		too_many_segments_requested: "Túl sok előrejelzési órát adtak meg a num_segments-ben. <= az előrejelző egységben lévő órák száma.",
+		must_be_int: "Páros egész számnak kell lennie, amely nagyobb vagy egyenlő 2-nél.",
+		invalid_colors: "A konfigurációdban a következő színek érvénytelenek:",
+		must_be_positive_int: "Pozitív egész szám kell legyen",
+		offset_must_be_positive_int: "offset pozitív egész számnak kell lennie",
+		forecast_not_available: "Előrejelzés nem elérhető",
+		check_entity: "Ellenőrizze a beállított előrejelző egységet.",
+		invalid_value_icon_fill: "Az ikon_kitöltésének pozitív egésznek vagy az 'single' vagy 'full'"
+	}, Ur = {
+		clear: "Tiszta",
+		cloudy: "Felhős",
+		fog: "Ködös",
+		hail: "Jégeső",
+		thunderstorm: "Vihar",
+		partlyCloudy: "Részben felhős",
+		heavyRain: "Heves eső",
+		rain: "Esős",
+		snow: "Havazás",
+		mixedPrecip: "Havas eső",
+		sunny: "Napos",
+		windy: "Szeles"
+	}, Wr = {
+		n: "É",
+		nne: "ÉÉK",
+		ne: "ÉK",
+		ene: "KÉK",
+		e: "K",
+		ese: "KDK",
+		se: "DK",
+		sse: "DDK",
+		s: "D",
+		ssw: "DDNy",
+		sw: "DNy",
+		wsw: "NyDNy",
+		w: "Ny",
+		wnw: "NyÉNy",
+		nw: "ÉNy",
+		nnw: "ÉÉNy"
+	}, Gr = { chance_of_precipitation: "{0}% a csapadék valószínűsége" }, Kr = {
+		common: Br,
+		editor: Vr,
+		errors: Hr,
+		conditions: Ur,
+		direction: Wr,
+		card: Gr
+	};
+})), Jr = /* @__PURE__ */ r({
+	card: () => ei,
+	common: () => Yr,
+	conditions: () => Qr,
+	default: () => ti,
+	direction: () => $r,
+	editor: () => Xr,
+	errors: () => Zr
+}), Yr, Xr, Zr, Qr, $r, ei, ti, ni = t((() => {
+	Yr = {
+		version: "Versione",
+		title: "Previsione Meteo Oraria",
+		title_card: "Scheda Meteo Oraria",
+		description: "Una scheda per rappresentare le condizioni meteorologiche orarie come una barra.",
+		invalid_configuration: "Configurazione Non Valida"
+	}, Xr = {
+		entity: "Entità (Richiesta)",
+		name: "Nome (Facoltativo)",
+		icons: "Mostra le icone invece delle etichette di testo",
+		offset: "Numero di segmenti di previsione di cui compensare l'inizio (Facoltativo)",
+		segments_to_show: "Numero di segmenti di previsione da mostrare (facoltativo)",
+		label_spacing: "Numero di segmenti di previsione per spazio etichette tempo e temperatura per (facoltativo)",
+		show_wind: "Mostra la velocità e la direzione del vento",
+		show_precipitation_amounts: "Mostra la quantità di precipitazioni",
+		speed_only: "Solo velocità",
+		direction_only: "Solo direzione",
+		barb: "Come una punta di vento",
+		show_precipitation_probability: "Mostra la probabilità di precipitazioni",
+		none: "Nessuno",
+		speed_and_direction: "Velocità e direzione",
+		barb_and_speed: "Come il vento tagliente e la velocità",
+		barb_and_direction: "Come il vento e la direzione",
+		barb_speed_and_direction: "Come la punta del vento, la velocità e la direzione",
+		show_date: "Mostra date",
+		all: "Tutto",
+		on_day_boundaries: "Sui confini del giorno"
+	}, Zr = {
+		missing_entity: "entità mancante nella configurazione",
+		must_be_int: "Deve essere un numero intero pari, maggiore o uguale a 2",
+		invalid_colors: "I seguenti colori nella tua configurazione non sono validi:",
+		must_be_positive_int: "Deve essere un numero intero positivo",
+		too_many_segments_requested: "Troppi segmenti di previsione richiesti in num_segments. Deve essere <= numero di segmenti nell'entità di previsione.",
+		offset_must_be_positive_int: "offset deve essere un numero intero positivo",
+		forecast_not_available: "Previsione non disponibile",
+		check_entity: "Controllare l'entità di previsione configurata.",
+		invalid_value_icon_fill: "icon_fill deve essere un numero intero positivo o uno dei valori 'single' o 'full'"
+	}, Qr = {
+		clear: "Limpido",
+		cloudy: "Nuvoloso",
+		fog: "Nebbia",
+		hail: "Grandine",
+		thunderstorm: "Temporale",
+		partlyCloudy: "Parzialmente Nuvoloso",
+		heavyRain: "Acquazzone",
+		rain: "Pioggia",
+		snow: "Neve",
+		mixedPrecip: "Precipitazioni Miste",
+		sunny: "Soleggiato",
+		windy: "Ventoso"
+	}, $r = {
+		n: "N",
+		nne: "NNE",
+		ne: "NE",
+		ene: "ENE",
+		e: "E",
+		ese: "ESE",
+		se: "SE",
+		sse: "SSE",
+		s: "S",
+		ssw: "SSO",
+		sw: "SO",
+		wsw: "OSO",
+		w: "O",
+		wnw: "ONO",
+		nw: "NO",
+		nnw: "NNO"
+	}, ei = { chance_of_precipitation: "{0}% possibilità di precipitazioni" }, ti = {
+		common: Yr,
+		editor: Xr,
+		errors: Zr,
+		conditions: Qr,
+		direction: $r,
+		card: ei
+	};
+})), ri = /* @__PURE__ */ r({
+	card: () => li,
+	common: () => ii,
+	conditions: () => si,
+	default: () => ui,
+	direction: () => ci,
+	editor: () => ai,
+	errors: () => oi
+}), ii, ai, oi, si, ci, li, ui, di = t((() => {
+	ii = {
+		version: "Versjon",
+		invalid_configuration: "Ikke gyldig konfiguration",
+		title: "Timelig vær",
+		title_card: "Timevis værkort",
+		description: "Et kort for å gjengi værforhold hver time som en bar."
+	}, ai = {
+		icons: "Vis ikoner i stedet for tekstetiketter",
+		entity: "Entitet (obligatorisk)",
+		name: "Navn (valgfritt)",
+		offset: "Antall prognosesegmenter å utligne start med (valgfritt)",
+		segments_to_show: "Antall prognosesegmenter som skal vises (valgfritt)",
+		label_spacing: "Antall prognosesegmenter til romtid og temperaturetiketter etter (valgfritt)",
+		show_wind: "Vis vindhastighet og retning",
+		show_precipitation_amounts: "Vis nedbørsmengde",
+		speed_only: "Kun hastighet",
+		direction_only: "Kun retning",
+		barb: "Som vindmothak",
+		show_precipitation_probability: "Vis nedbørssannsynlighet",
+		none: "Ingen",
+		speed_and_direction: "Fart og retning",
+		barb_and_speed: "Som vindmottak og fart",
+		barb_and_direction: "Som vindmottak og retning",
+		barb_speed_and_direction: "Som vindmothak, hastighet og retning",
+		show_date: "Vis datoer",
+		all: "Alle",
+		on_day_boundaries: "På dagsgrenser"
+	}, oi = {
+		missing_entity: "entity mangler i konfigurasjonen",
+		must_be_int: "Må være et jevnt heltall større enn eller lik 2",
+		invalid_colors: "Følgende farger i konfigurasjonen din er ugyldige:",
+		must_be_positive_int: "Må være et positivt heltall",
+		too_many_segments_requested: "For mange prognosesegmenter er forespurt i num_segments. Må være <= antall segmenter i prognoseenheten.",
+		offset_must_be_positive_int: "offset må være et positivt heltall",
+		forecast_not_available: "Værvarsel er ikke tilgjengelig",
+		check_entity: "Sjekk den konfigurerte prognoseenheten.",
+		invalid_value_icon_fill: "icon_fill må enten være et positivt heltall eller et av 'single' eller 'full'"
+	}, si = {
+		clear: "Klar",
+		cloudy: "Skyet",
+		fog: "Tåke",
+		hail: "Hagl",
+		thunderstorm: "Tordenvær",
+		partlyCloudy: "Delvis skyet",
+		heavyRain: "Mye regn",
+		rain: "Regn",
+		snow: "Snø",
+		mixedPrecip: "Blandet nedbør",
+		sunny: "Solfylt",
+		windy: "Vindfullt"
+	}, ci = {
+		n: "N",
+		nne: "NNØ",
+		ne: "NE",
+		ene: "ØNØ",
+		e: "Ø",
+		ese: "ØSØ",
+		se: "SØ",
+		sse: "SSØ",
+		s: "S",
+		ssw: "SSV",
+		sw: "SV",
+		wsw: "VSV",
+		w: "V",
+		wnw: "VNV",
+		nw: "NV",
+		nnw: "NNV"
+	}, li = { chance_of_precipitation: "{0}% sjanse for nedbør" }, ui = {
+		common: ii,
+		editor: ai,
+		errors: oi,
+		conditions: si,
+		direction: ci,
+		card: li
+	};
+})), fi = /* @__PURE__ */ r({
+	card: () => vi,
+	common: () => pi,
+	conditions: () => gi,
+	default: () => yi,
+	direction: () => _i,
+	editor: () => mi,
+	errors: () => hi
+}), pi, mi, hi, gi, _i, vi, yi, bi = t((() => {
+	pi = {
+		version: "Versjon",
+		invalid_configuration: "Ikkje gyldeg konfiguasjon",
+		title: "Timelig vær",
+		title_card: "Timevis værkort",
+		description: "Eit kort for å gjengje verforhold kvar time som ein bar."
+	}, mi = {
+		icons: "Vis ikon i staden for tekstetikettar",
+		entity: "Entitet (obligatorisk)",
+		name: "Namn (valfritt)",
+		offset: "Antall prognosesegment å utligne start med (valfritt)",
+		segments_to_show: "Antall prognosesegment som skal synast (valfritt)",
+		label_spacing: "Antall prognosesegment til romtid og temperaturetikettar etter (valfritt)",
+		show_wind: "Vis vindhastigheit og retning",
+		show_precipitation_amounts: "Vis nedbørsmengde",
+		neither: "Ingen",
+		both: "Både",
+		speed_only: "Kun hastigheit",
+		direction_only: "Kun retning",
+		barb: "Som vindmothak",
+		show_precipitation_probability: "Vis nedbørssannsyn",
+		none: "Ingen",
+		speed_and_direction: "Fart og retning",
+		barb_and_speed: "Som vindmottak og fart",
+		barb_and_direction: "Som vindmottak og retning",
+		barb_speed_and_direction: "Som vindmothak, hastighet og retning",
+		show_date: "Vis datoer",
+		all: "Alle",
+		on_day_boundaries: "På dagsgrenser"
+	}, hi = {
+		missing_entity: "entity manglar i konfigurasjonen",
+		must_be_int: "Må være et jevnt heiltal større enn eller lik 2",
+		invalid_colors: "Følgande fargar i konfigurasjonen din er ugyldege:",
+		must_be_positive_int: "Må vere eit positivt heiltal",
+		too_many_segments_requested: "For mange prognosesegment er førespurt i num_segments. Må vere <= antall segment i prognoseeininga.",
+		offset_must_be_positive_int: "offset må vere eit positivt heiltal",
+		forecast_not_available: "Vervarsel er ikkje tilgjengeleg",
+		check_entity: "Sjekk den konfigurerte prognoseeininga.",
+		invalid_value_icon_fill: "icon_fill må enten være et positivt heltall eller et av 'single' eller 'full'"
+	}, gi = {
+		clear: "Klart",
+		cloudy: "Skya",
+		fog: "Tåke",
+		hail: "Hagl",
+		thunderstorm: "Tordenvær",
+		partlyCloudy: "Delvis skya",
+		heavyRain: "Mykje regn",
+		rain: "Regn",
+		snow: "Snø",
+		mixedPrecip: "Blanda nedbør",
+		sunny: "Sol",
+		windy: "Vindfullt"
+	}, _i = {
+		n: "N",
+		nne: "NNØ",
+		ne: "NE",
+		ene: "ØNØ",
+		e: "Ø",
+		ese: "ØSØ",
+		se: "SØ",
+		sse: "SSØ",
+		s: "S",
+		ssw: "SSV",
+		sw: "SV",
+		wsw: "VSV",
+		w: "V",
+		wnw: "VNV",
+		nw: "NV",
+		nnw: "NNV"
+	}, vi = { chance_of_precipitation: "{0}% sjanse for nedbør" }, yi = {
+		common: pi,
+		editor: mi,
+		errors: hi,
+		conditions: gi,
+		direction: _i,
+		card: vi
+	};
+})), xi = /* @__PURE__ */ r({
+	card: () => Di,
+	common: () => Si,
+	conditions: () => Ti,
+	default: () => Oi,
+	direction: () => Ei,
+	editor: () => Ci,
+	errors: () => wi
+}), Si, Ci, wi, Ti, Ei, Di, Oi, ki = t((() => {
+	Si = {
+		version: "Versie",
+		title: "Weer per uur",
+		title_card: "Weerkaart per uur",
+		description: "Een kaart om de weersomstandigheden per uur weer te geven als een bar.",
+		invalid_configuration: "Ongeldige configuratie"
+	}, Ci = {
+		entity: "Entiteit (Verplicht)",
+		name: "Naam: (Optioneel)",
+		segments_to_show: "Aantal weer te geven prognosesegmenten (Optioneel)",
+		offset: "Aantal prognosesegmenten om mee te compenseren (Optioneel)",
+		icons: "Pictogrammen weergeven in plaats van tekstlabels",
+		label_spacing: "Aantal prognosesegmenten naar ruimtetijd- en temperatuurlabels per (Optioneel)",
+		show_wind: "Toon windsnelheid en richting",
+		show_precipitation_amounts: "Toon hoeveelheid neerslag",
+		speed_only: "Alleen snelheid",
+		direction_only: "Alleen richting (tekst)",
+		barb: "Alleen richting (pijl)",
+		show_precipitation_probability: "Neerslagkans weergeven",
+		none: "Geen",
+		speed_and_direction: "Snelheid en richting",
+		barb_and_speed: "Zoals wind weerhaak en snelheid",
+		barb_and_direction: "Als windhaak en richting",
+		barb_speed_and_direction: "Zoals wind weerhaak, snelheid en richting",
+		show_date: "Datums weergeven",
+		all: "Alle",
+		on_day_boundaries: "Op daggrenzen"
+	}, wi = {
+		missing_entity: "entiteit ontbreekt in configuratie",
+		too_many_segments_requested: "Te veel prognosesegmenten aangevraagd in num_segments. Moet <= aantal segmenten in prognose-entiteit zijn.",
+		must_be_int: "Moet een even geheel getal zijn groter of gelijk aan 2",
+		invalid_colors: "De volgende kleuren in uw configuratie zijn ongeldig:",
+		must_be_positive_int: "Moet een positief geheel getal zijn",
+		offset_must_be_positive_int: "offset moet een positief geheel getal zijn",
+		forecast_not_available: "Prognose niet beschikbaar",
+		check_entity: "Controleer de geconfigureerde prognose-entiteit.",
+		invalid_value_icon_fill: "icon_fill moet een positief geheel getal zijn of een van de 'single'; of 'full'"
+	}, Ti = {
+		clear: "Helder",
+		cloudy: "Bewolkt",
+		fog: "Mist",
+		hail: "Hagel",
+		thunderstorm: "Onweersbui",
+		partlyCloudy: "Half bewolkt",
+		heavyRain: "Zware regen",
+		rain: "Regen",
+		snow: "Sneeuw",
+		mixedPrecip: "Gemengde neerslag",
+		sunny: "Zonnig",
+		windy: "Winderig"
+	}, Ei = {
+		n: "N",
+		nne: "NNO",
+		ne: "NO",
+		ene: "ONO",
+		e: "O",
+		ese: "OZO",
+		se: "ZO",
+		sse: "ZZO",
+		s: "Z",
+		ssw: "ZZW",
+		sw: "ZW",
+		wsw: "WZW",
+		w: "W",
+		wnw: "WNW",
+		nw: "NW",
+		nnw: "NNW"
+	}, Di = { chance_of_precipitation: "{0}% kans op neerslag" }, Oi = {
+		common: Si,
+		editor: Ci,
+		errors: wi,
+		conditions: Ti,
+		direction: Ei,
+		card: Di
+	};
+})), Ai = /* @__PURE__ */ r({
+	card: () => Ii,
+	common: () => ji,
+	conditions: () => Pi,
+	default: () => Li,
+	direction: () => Fi,
+	editor: () => Mi,
+	errors: () => Ni
+}), ji, Mi, Ni, Pi, Fi, Ii, Li, Ri = t((() => {
+	ji = {
+		version: "Wersja",
+		title: "Pogoda godzinowa",
+		title_card: "Pogoda godzinowa",
+		description: "Karta w formie wykresu słupkowego dla pogody godzinowej",
+		invalid_configuration: "Nieprawiłowa konfiguracja"
+	}, Mi = {
+		entity: "Encja",
+		name: "Nazwa (opcjonalnie)",
+		icons: "Pokaż ikony zamiast etykiet tekstowych",
+		offset: "Liczba segmentów prognozy, o które należy skompensować początek (opcjonalnie)",
+		segments_to_show: "Liczba segmentów prognozy do wyświetlenia (opcjonalnie)",
+		label_spacing: "Liczba segmentów prognozy do etykiet czasoprzestrzeni i temperatury według (opcjonalnie)",
+		show_wind: "Pokaż prędkość i kierunek wiatru",
+		show_precipitation_amounts: "Pokaż ilość opadów",
+		speed_only: "Tylko prędkość",
+		direction_only: "Tylko kierunek",
+		barb: "Jak kolce wiatru",
+		show_precipitation_probability: "Pokaż prawdopodobieństwo opadów",
+		none: "Nic",
+		speed_and_direction: "Szybkość i kierunek",
+		barb_and_speed: "Jak kolce wiatru i prędkość",
+		barb_and_direction: "Jako zadzior i kierunek wiatru",
+		barb_speed_and_direction: "Jak kolce wiatru, prędkość i kierunek",
+		show_date: "Pokaż daty",
+		all: "Wszystko",
+		on_day_boundaries: "Na granicach dnia"
+	}, Ni = {
+		missing_entity: "encja nie istnieje",
+		must_be_int: "Musi być parzystą liczbą całkowitą większą lub równą 2",
+		invalid_colors: "Następujące kolory w Twojej konfiguracji są nieprawidłowe:",
+		must_be_positive_int: "Musi być dodatnią liczbą całkowitą",
+		too_many_segments_requested: "Zażądano zbyt wielu segmentów prognozy w num_segments. Musi wynosić <= liczba segmentów w elemencie prognozy.",
+		offset_must_be_positive_int: "offset musi być dodatnią liczbą całkowitą",
+		forecast_not_available: "Prognoza niedostępna",
+		check_entity: "Sprawdź skonfigurowaną encję prognozy.",
+		invalid_value_icon_fill: "icon_fill musi być dodatnią liczbą całkowitą lub jedną z wartości 'single' lub 'full'"
+	}, Pi = {
+		clear: "Bezchmurnie",
+		cloudy: "Pochmurnie",
+		fog: "Mgła",
+		hail: "Grad",
+		thunderstorm: "Burza",
+		partlyCloudy: "Częściowe zachmurzenie",
+		heavyRain: "Ulewa",
+		rain: "Deszcz",
+		snow: "Śnieg",
+		mixedPrecip: "Mieszane opady",
+		sunny: "Słonecznie",
+		windy: "Wietrznie"
+	}, Fi = {
+		n: "P",
+		nne: "PPW",
+		ne: "PW",
+		ene: "WPW",
+		e: "W",
+		ese: "WPdW",
+		se: "PdW",
+		sse: "PdPdW",
+		s: "Pd",
+		ssw: "PdPdZ",
+		sw: "PdZ",
+		wsw: "ZPdZ",
+		w: "Z",
+		wnw: "ZPZ",
+		nw: "PZ",
+		nnw: "PPZ"
+	}, Ii = { chance_of_precipitation: "{0}% szans na opady" }, Li = {
+		common: ji,
+		editor: Mi,
+		errors: Ni,
+		conditions: Pi,
+		direction: Fi,
+		card: Ii
+	};
+})), zi = /* @__PURE__ */ r({
+	card: () => Gi,
+	common: () => Bi,
+	conditions: () => Ui,
+	default: () => Ki,
+	direction: () => Wi,
+	editor: () => Vi,
+	errors: () => Hi
+}), Bi, Vi, Hi, Ui, Wi, Gi, Ki, qi = t((() => {
+	Bi = {
+		version: "Versão",
+		title: "Tempo de hora em hora",
+		title_card: "Tempo de hora em hora",
+		description: "Um cartão para mostrar as condições meteorológicas de hora em hora como uma barra.",
+		invalid_configuration: "Configuração Inválida"
+	}, Vi = {
+		entity: "Entidade",
+		name: "Nome (opcional)",
+		icons: "Mostrar ícones em vez de rótulos de texto",
+		offset: "Número de segmentos de previsão para começar a compensar (opcional)",
+		segments_to_show: "Número de segmentos de previsão a serem exibidos (opcional)",
+		label_spacing: "Número de segmentos de previsão para rótulos de tempo e temperatura de espaço por (opcional)",
+		show_wind: "Mostrar velocidade e direção do vento",
+		show_precipitation_amounts: "Mostrar quantidade de precipitação",
+		speed_only: "Apenas velocidade",
+		direction_only: "Apenas direção",
+		barb: "Como farpa de vento",
+		show_precipitation_probability: "Mostrar probabilidade de precipitação",
+		none: "Nenhum",
+		speed_and_direction: "Velocidade e direção",
+		barb_and_speed: "Como farpa de vento e velocidade",
+		barb_and_direction: "Como farpa de vento e direção",
+		barb_speed_and_direction: "Como farpa de vento, velocidade e direção",
+		show_date: "Mostrar datas",
+		all: "Todos",
+		on_day_boundaries: "Nos limites do dia"
+	}, Hi = {
+		missing_entity: "A entidade não existe na configuração",
+		must_be_int: "Deve ser um número inteiro par maior ou igual a 2",
+		invalid_colors: "As seguintes cores em sua configuração são inválidas:",
+		must_be_positive_int: "Deve ser um número inteiro positivo",
+		too_many_segments_requested: "Muitos segmentos de previsão solicitados em num_segments. Deve ser <= número de segmentos na entidade de previsão.",
+		offset_must_be_positive_int: "offset deve ser um número inteiro positivo",
+		forecast_not_available: "Previsão não disponível",
+		check_entity: "Verifique a entidade de previsão configurada.",
+		invalid_value_icon_fill: "icon_fill deve ser um número inteiro positivo ou um dos valores 'single' ou 'full'"
+	}, Ui = {
+		clear: "Limpo",
+		cloudy: "Nublado",
+		fog: "Nevoeiro",
+		hail: "Granizo",
+		thunderstorm: "Trovoada",
+		partlyCloudy: "Pouco nublado",
+		heavyRain: "Chuva forte",
+		rain: "Chuva",
+		snow: "Neve",
+		mixedPrecip: "Precipitação mista",
+		sunny: "Sol",
+		windy: "Vento"
+	}, Wi = {
+		n: "N",
+		nne: "NNE",
+		ne: "NE",
+		ene: "ENE",
+		e: "E",
+		ese: "ESE",
+		se: "SE",
+		sse: "SSE",
+		s: "S",
+		ssw: "SSO",
+		sw: "SO",
+		wsw: "OSO",
+		w: "O",
+		wnw: "ONO",
+		nw: "NO",
+		nnw: "NNO"
+	}, Gi = { chance_of_precipitation: "{0}% chance de chuva" }, Ki = {
+		common: Bi,
+		editor: Vi,
+		errors: Hi,
+		conditions: Ui,
+		direction: Wi,
+		card: Gi
+	};
+})), Ji = /* @__PURE__ */ r({
+	card: () => ea,
+	common: () => Yi,
+	conditions: () => Qi,
+	default: () => ta,
+	direction: () => $i,
+	editor: () => Xi,
+	errors: () => Zi
+}), Yi, Xi, Zi, Qi, $i, ea, ta, na = t((() => {
+	Yi = {
+		version: "Versão",
+		title: "Tempo de hora em hora",
+		title_card: "Cartão meteorológico por hora",
+		description: "Um cartão para renderizar as condições climáticas horárias como uma barra.",
+		invalid_configuration: "Configuração inválida"
+	}, Xi = {
+		entity: "Entidade (obrigatório)",
+		name: "Nome (opcional)",
+		segments_to_show: "Número de segmentos de previsão a serem exibidos (opcional)",
+		offset: "Número de segmentos de previsão para começar a compensar (opcional)",
+		icons: "Mostrar ícones em vez de rótulos de texto",
+		label_spacing: "Número de segmentos de previsão para rótulos de tempo e temperatura de espaço por (opcional)",
+		show_wind: "Mostrar velocidade e direção do vento",
+		show_precipitation_amounts: "Mostrar quantidade de precipitação",
+		neither: "Nenhum",
+		both: "Ambos",
+		speed_only: "Apenas velocidade",
+		direction_only: "Apenas direção",
+		barb: "Como farpa de vento",
+		show_precipitation_probability: "Mostrar probabilidade de precipitação",
+		none: "Nenhum",
+		speed_and_direction: "Velocidade e direção",
+		barb_and_speed: "Como farpa de vento e velocidade",
+		barb_and_direction: "Como farpa de vento e direção",
+		barb_speed_and_direction: "Como farpa de vento, velocidade e direção",
+		show_date: "Mostrar datas",
+		all: "Todos",
+		on_day_boundaries: "Nos limites do dia"
+	}, Zi = {
+		missing_entity: "entidade está faltando na configuração",
+		too_many_segments_requested: "Muitos segmentos de previsão solicitados em num_segments. Deve ser <= número de segmentos na entidade de previsão.",
+		must_be_int: "Deve ser um número inteiro par maior ou igual a 2",
+		invalid_colors: "As seguintes cores em sua configuração são inválidas:",
+		must_be_positive_int: "Deve ser um número inteiro positivo",
+		offset_must_be_positive_int: "offset deve ser um número inteiro positivo",
+		forecast_not_available: "Previsão não disponível",
+		check_entity: "Verifique a entidade de previsão configurada.",
+		invalid_value_icon_fill: "icon_fill deve ser um número inteiro positivo ou um dos valores 'single' ou 'full'"
+	}, Qi = {
+		clear: "Claro",
+		cloudy: "Nublado",
+		fog: "Névoa",
+		hail: "Granizo",
+		thunderstorm: "Tempestade",
+		partlyCloudy: "Parcialmente nublado",
+		heavyRain: "Chuva pesada",
+		rain: "Chuva",
+		snow: "Neve",
+		mixedPrecip: "Precipitação mista",
+		sunny: "Ensolarado",
+		windy: "Ventania"
+	}, $i = {
+		n: "N",
+		nne: "NNE",
+		ne: "NE",
+		ene: "ENE",
+		e: "E",
+		ese: "ESE",
+		se: "SE",
+		sse: "SSE",
+		s: "S",
+		ssw: "SSO",
+		sw: "SO",
+		wsw: "OSO",
+		w: "O",
+		wnw: "ONO",
+		nw: "NO",
+		nnw: "NNO"
+	}, ea = { chance_of_precipitation: "{0}% chance de precipitação" }, ta = {
+		common: Yi,
+		editor: Xi,
+		errors: Zi,
+		conditions: Qi,
+		direction: $i,
+		card: ea
+	};
+})), ra = /* @__PURE__ */ r({
+	card: () => la,
+	common: () => ia,
+	conditions: () => sa,
+	default: () => ua,
+	direction: () => ca,
+	editor: () => aa,
+	errors: () => oa
+}), ia, aa, oa, sa, ca, la, ua, da = t((() => {
+	ia = {
+		version: "Версия",
+		title: "Почасовая погода",
+		title_card: "Карточка почасовой погоды",
+		description: "Карточка для отображения почасовых условий погоды в виде полосы.",
+		invalid_configuration: "Недопустимая конфигурация"
+	}, aa = {
+		entity: "Сущность (Обязательно)",
+		name: "Название (По желанию)",
+		segments_to_show: "Количество отображаемых сегментов (По желанию)",
+		offset: "Количество сегментов для смещения (По желанию)",
+		icons: "Отображать значки вместо текстовых меток",
+		label_spacing: "Количество сегментов для размещения временных и температурных меток (По желанию)",
+		show_wind: "Отображать скорость и направление ветра",
+		show_date: "Отображать даты",
+		show_precipitation_amounts: "Отображать количество осадков",
+		show_precipitation_probability: "Отображать вероятность осадков",
+		none: "Нет",
+		speed_and_direction: "Скорость и направление",
+		speed_only: "Только скорость",
+		direction_only: "Только направление",
+		barb: "Как ветровой флажок",
+		barb_and_speed: "Как ветровой флажок и скорость",
+		barb_and_direction: "Как ветровой флажок и направление",
+		barb_speed_and_direction: "Как ветровой флажок, скорость и направление",
+		all: "Все",
+		on_day_boundaries: "На границах дня"
+	}, oa = {
+		missing_entity: "Отсутствует сущность в конфигурации",
+		too_many_segments_requested: "Запрошено слишком много сегментов в num_segments. Должно быть <= количества сегментов в сущности прогноза.",
+		must_be_int: "Должно быть четным целым числом, большим или равным 2",
+		invalid_colors: "Следующие цвета в вашей конфигурации недопустимы:",
+		must_be_positive_int: "Должно быть положительным целым числом",
+		offset_must_be_positive_int: "Смещение должно быть положительным целым числом",
+		forecast_not_available: "Прогноз недоступен",
+		check_entity: "Проверьте настроенную сущность прогноза.",
+		invalid_value_icon_fill: "icon_fill должен быть либо положительным целым числом, либо одним из значений 'single' или 'full'"
+	}, sa = {
+		clear: "Ясно",
+		cloudy: "Облачно",
+		fog: "Туман",
+		hail: "Град",
+		thunderstorm: "Гроза",
+		partlyCloudy: "Частичная облачность",
+		heavyRain: "Сильный дождь",
+		rain: "Дождь",
+		snow: "Снег",
+		mixedPrecip: "Смешанные осадки",
+		sunny: "Солнечно",
+		windy: "Ветрено"
+	}, ca = {
+		n: "С",
+		nne: "ССВ",
+		ne: "СВ",
+		ene: "ВСВ",
+		e: "В",
+		ese: "ВЮВ",
+		se: "ЮВ",
+		sse: "ЮЮВ",
+		s: "Ю",
+		ssw: "ЮЮЗ",
+		sw: "ЮЗ",
+		wsw: "ЗЮЗ",
+		w: "З",
+		wnw: "ЗСЗ",
+		nw: "СЗ",
+		nnw: "ССЗ"
+	}, la = { chance_of_precipitation: "Вероятность осадков: {0}%" }, ua = {
+		common: ia,
+		editor: aa,
+		errors: oa,
+		conditions: sa,
+		direction: ca,
+		card: la
+	};
+})), fa = /* @__PURE__ */ r({
+	card: () => va,
+	common: () => pa,
+	conditions: () => ga,
+	default: () => ya,
+	direction: () => _a,
+	editor: () => ma,
+	errors: () => ha
+}), pa, ma, ha, ga, _a, va, ya, ba = t((() => {
+	pa = {
+		version: "Verzia",
+		title: "Hodinové počasie",
+		title_card: "Hodinové Weather Card",
+		description: "Karta na vykreslenie hodinových poveternostných podmienok ako pruh.",
+		invalid_configuration: "Neplatná konfigurácia"
+	}, ma = {
+		entity: "Entita (požadovaná)",
+		name: "Názov (voliteľné)",
+		segments_to_show: "Počet segmentov prognózy, ktoré sa majú zobraziť (voliteľné)",
+		offset: "Počet segmentov prognózy, o ktoré sa má začať kompenzácia (voliteľné)",
+		icons: "Zobrazovať ikony namiesto textových štítkov",
+		label_spacing: "Počet segmentov predpovede na štítky časopriestoru a teploty podľa (voliteľné)",
+		show_wind: "Zobraziť rýchlosť a smer vetra",
+		show_precipitation_amounts: "Zobraziť množstvo zrážok",
+		show_precipitation_probability: "Zobraziť pravdepodobnosť zrážok",
+		none: "Nič",
+		speed_and_direction: "Rýchlosť a smer",
+		speed_only: "Len rýchlosť",
+		direction_only: "Len smer",
+		barb: "Ako veterný osteň",
+		barb_and_speed: "Ako veterný osteň a rýchlosť",
+		barb_and_direction: "Ako veterný osteň a smer",
+		barb_speed_and_direction: "Ako veterný osteň, rýchlosť a smer",
+		show_date: "Zobraziť dátumy",
+		all: "Všetky",
+		on_day_boundaries: "Na hraniciach dňa"
+	}, ha = {
+		missing_entity: "v konfigurácii chýba entita",
+		too_many_segments_requested: "Príliš veľa segmentov prognózy požadovaných v num_segments. Musí byť <= počet segmentov v entite prognózy.",
+		must_be_int: "Musí byť párne celé číslo väčšie alebo rovné 2",
+		invalid_colors: "Nasledujúce farby vo vašej konfigurácii sú neplatné:",
+		must_be_positive_int: "Musí to byť kladné celé číslo",
+		offset_must_be_positive_int: "offset musí byť kladné celé číslo",
+		forecast_not_available: "Predpoveď nie je k dispozícii",
+		check_entity: "Skontrolujte nakonfigurovanú entitu predpovede.",
+		invalid_value_icon_fill: "icon_fill musí byť buď kladné celé číslo alebo jedno z 'single'; alebo 'full';"
+	}, ga = {
+		clear: "Čisté",
+		cloudy: "Zamračené",
+		fog: "Hmla",
+		hail: "Ľadovec",
+		thunderstorm: "Búrka",
+		partlyCloudy: "Čiastočne zamračené",
+		heavyRain: "Hustý dážď",
+		rain: "Dážď",
+		snow: "Sneh",
+		mixedPrecip: "Zmiešené",
+		sunny: "Slnečno",
+		windy: "Veterno"
+	}, _a = {
+		n: "S",
+		nne: "SSV",
+		ne: "SV",
+		ene: "VSV",
+		e: "V",
+		ese: "VJV",
+		se: "JV",
+		sse: "JJV",
+		s: "J",
+		ssw: "JJZ",
+		sw: "JZ",
+		wsw: "ZJZ",
+		w: "Z",
+		wnw: "ZSZ",
+		nw: "SZ",
+		nnw: "SSZ"
+	}, va = { chance_of_precipitation: "{0}% možnosť zrážok" }, ya = {
+		common: pa,
+		editor: ma,
+		errors: ha,
+		conditions: ga,
+		direction: _a,
+		card: va
+	};
+})), xa = /* @__PURE__ */ r({
+	card: () => Da,
+	common: () => Sa,
+	conditions: () => Ta,
+	default: () => Oa,
+	direction: () => Ea,
+	editor: () => Ca,
+	errors: () => wa
+}), Sa, Ca, wa, Ta, Ea, Da, Oa, ka = t((() => {
+	Sa = {
+		version: "Sürüm",
+		title: "Saatlik Hava Durumu",
+		title_card: "Saatlik Hava Durumu Kartı",
+		description: "Saatlik hava koşullarını çubuk grafik olarak gösteren bir kart.",
+		invalid_configuration: "Geçersiz yapılandırma"
+	}, Ca = {
+		entity: "Varlık (Zorunlu)",
+		name: "Ad (İsteğe bağlı)",
+		segments_to_show: "Gösterilecek tahmin dilimi sayısı (İsteğe bağlı)",
+		offset: "Başlangıcı öteleme sayısı (İsteğe bağlı)",
+		icons: "Metin etiketleri yerine simgeleri göster",
+		label_spacing: "Zaman ve sıcaklık etiketlerinin aralık sayısı (İsteğe bağlı)",
+		show_wind: "Rüzgar hızı ve yönünü göster",
+		show_date: "Tarihleri göster",
+		show_precipitation_amounts: "Yağış miktarını göster",
+		show_precipitation_probability: "Yağış olasılığını göster",
+		none: "Yok",
+		speed_and_direction: "Hız ve yön",
+		speed_only: "Sadece hız",
+		direction_only: "Sadece yön",
+		barb: "Rüzgar oku olarak",
+		barb_and_speed: "Rüzgar oku ve hız olarak",
+		barb_and_direction: "Rüzgar oku ve yön olarak",
+		barb_speed_and_direction: "Rüzgar oku, hız ve yön olarak",
+		all: "Tümü",
+		on_day_boundaries: "Gün sınırlarında"
+	}, wa = {
+		missing_entity: "Yapılandırmada varlık eksik",
+		too_many_segments_requested: "İstenen tahmin dilimi sayısı çok fazla. num_segments değeri, tahmin varlığındaki dilim sayısından fazla olamaz.",
+		must_be_int: "2 veya daha büyük çift bir tam sayı olmalı",
+		invalid_colors: "Yapılandırmanızdaki geçersiz renkler:",
+		must_be_positive_int: "Pozitif bir tam sayı olmalı",
+		offset_must_be_positive_int: "offset pozitif bir tam sayı olmalı",
+		forecast_not_available: "Tahmin mevcut değil",
+		check_entity: "Yapılandırılmış tahmin varlığını kontrol edin.",
+		invalid_value_icon_fill: "icon_fill değeri pozitif bir tam sayı ya da 'single' veya 'full' olmalıdır"
+	}, Ta = {
+		clear: "Açık",
+		cloudy: "Bulutlu",
+		fog: "Sisli",
+		hail: "Dolu",
+		thunderstorm: "Gök gürültülü fırtına",
+		partlyCloudy: "Parçalı bulutlu",
+		heavyRain: "Şiddetli yağmur",
+		rain: "Yağmur",
+		snow: "Kar",
+		mixedPrecip: "Karışık yağış",
+		sunny: "Güneşli",
+		windy: "Rüzgarlı"
+	}, Ea = {
+		n: "K",
+		nne: "KKB",
+		ne: "KB",
+		ene: "DKB",
+		e: "D",
+		ese: "DGD",
+		se: "GD",
+		sse: "GGB",
+		s: "G",
+		ssw: "GGB",
+		sw: "GB",
+		wsw: "BGB",
+		w: "B",
+		wnw: "BKB",
+		nw: "KB",
+		nnw: "KKB"
+	}, Da = { chance_of_precipitation: "%{0} yağış olasılığı" }, Oa = {
+		common: Sa,
+		editor: Ca,
+		errors: wa,
+		conditions: Ta,
+		direction: Ea,
+		card: Da
+	};
+})), Aa = /* @__PURE__ */ r({
+	card: () => Ia,
+	common: () => ja,
+	conditions: () => Pa,
+	default: () => La,
+	direction: () => Fa,
+	editor: () => Ma,
+	errors: () => Na
+}), ja, Ma, Na, Pa, Fa, Ia, La, Ra = t((() => {
+	ja = {
+		version: "Версія",
+		title: "Погодинний прогноз погоди",
+		title_card: "Картка погодинного прогнозу погоди",
+		description: "Картка для відображення погодинних умов погоди у вигляді діаграми.",
+		invalid_configuration: "Недійсна конфігурація"
+	}, Ma = {
+		entity: "Сутність (Обов'язково)",
+		name: "Назва (Необов'язково)",
+		segments_to_show: "Кількість сегментів прогнозу для показу (Необов'язково)",
+		offset: "Кількість сегментів прогнозу для зміщення початку (Необов'язково)",
+		icons: "Показувати іконки замість текстових міток",
+		label_spacing: "Кількість сегментів прогнозу для інтервалу між мітками часу та температури (Необов'язково)",
+		show_wind: "Показувати швидкість та напрямок вітру",
+		show_date: "Показувати дати",
+		show_precipitation_amounts: "Показувати кількість опадів",
+		show_precipitation_probability: "Показувати ймовірність опадів",
+		none: "Нічого",
+		speed_and_direction: "Швидкість та напрямок",
+		speed_only: "Тільки швидкість",
+		direction_only: "Тільки напрямок",
+		barb: "Як вітровий вимпел",
+		barb_and_speed: "Як вітровий вимпел та швидкість",
+		barb_and_direction: "Як вітровий вимпел та напрямок",
+		barb_speed_and_direction: "Як вітровий вимпел, швидкість та напрямок",
+		all: "Все",
+		on_day_boundaries: "На межах днів"
+	}, Na = {
+		missing_entity: "відсутня сутність в конфігурації",
+		too_many_segments_requested: "Запитано забагато сегментів прогнозу в num_segments. Має бути <= кількості сегментів в сутності прогнозу.",
+		must_be_int: "Має бути парним цілим числом більшим або рівним 2",
+		invalid_colors: "Наступні кольори у вашій конфігурації недійсні:",
+		must_be_positive_int: "Має бути додатнім цілим числом",
+		offset_must_be_positive_int: "offset має бути додатнім цілим числом",
+		forecast_not_available: "Прогноз недоступний",
+		check_entity: "Перевірте налаштовану сутність прогнозу.",
+		invalid_value_icon_fill: "icon_fill має бути додатнім цілим числом або одним з 'single' чи 'full'"
+	}, Pa = {
+		clear: "Ясно",
+		cloudy: "Хмарно",
+		fog: "Туман",
+		hail: "Град",
+		thunderstorm: "Гроза",
+		partlyCloudy: "Частково хмарно",
+		heavyRain: "Сильний дощ",
+		rain: "Дощ",
+		snow: "Сніг",
+		mixedPrecip: "Змішані опади",
+		sunny: "Сонячно",
+		windy: "Вітряно"
+	}, Fa = {
+		n: "Пн",
+		nne: "ПнПнСх",
+		ne: "ПнСх",
+		ene: "СхПнСх",
+		e: "Сх",
+		ese: "СхПдСх",
+		se: "ПдСх",
+		sse: "ПдПдСх",
+		s: "Пд",
+		ssw: "ПдПдЗх",
+		sw: "ПдЗх",
+		wsw: "ЗхПдЗх",
+		w: "Зх",
+		wnw: "ЗхПнЗх",
+		nw: "ПнЗх",
+		nnw: "ПнПнЗх"
+	}, Ia = { chance_of_precipitation: "{0}% ймовірність опадів" }, La = {
+		common: ja,
+		editor: Ma,
+		errors: Na,
+		conditions: Pa,
+		direction: Fa,
+		card: Ia
+	};
+})), za = /* @__PURE__ */ r({
+	card: () => Ga,
+	common: () => Ba,
+	conditions: () => Ua,
+	default: () => Ka,
+	direction: () => Wa,
+	editor: () => Va,
+	errors: () => Ha
+}), Ba, Va, Ha, Ua, Wa, Ga, Ka, qa = t((() => {
+	Ba = {
+		version: "版本",
+		title: "逐小时天气",
+		title_card: "逐小时天气卡片",
+		description: "一个用于显示逐小时天气状况的卡片。",
+		invalid_configuration: "无效的配置"
+	}, Va = {
+		entity: "实体（必需）",
+		name: "名称（可选）",
+		segments_to_show: "显示的预测段数（可选）",
+		offset: "开始的预测段偏移数（可选）",
+		icons: "显示图标而非文字标签",
+		label_spacing: "时间和温度标签的预测段间距数（可选）",
+		show_wind: "显示风速和风向",
+		show_date: "显示日期",
+		show_precipitation_amounts: "显示降雨量",
+		show_precipitation_probability: "显示降雨概率",
+		none: "无",
+		speed_and_direction: "速度和方向",
+		speed_only: "仅速度",
+		direction_only: "仅方向",
+		barb: "风向图标",
+		barb_and_speed: "风向图标和速度",
+		barb_and_direction: "风向图标和方向",
+		barb_speed_and_direction: "风向图标，速度和方向",
+		all: "全部",
+		on_day_boundaries: "在日边界上"
+	}, Ha = {
+		missing_entity: "配置中缺少实体",
+		too_many_segments_requested: "在num_segments中请求的预测段过多。必须 <= 预测实体中的段数。",
+		must_be_int: "必须是大于或等于2的偶数",
+		invalid_colors: "配置中的以下颜色无效：",
+		must_be_positive_int: "必须是正整数",
+		offset_must_be_positive_int: "偏移必须是正整数",
+		forecast_not_available: "预测不可用",
+		check_entity: "检查配置的预测实体。",
+		invalid_value_icon_fill: "icon_fill 必须是正整数,或者是'single'或'full'之一"
+	}, Ua = {
+		clear: "晴朗",
+		cloudy: "多云",
+		fog: "雾",
+		hail: "冰雹",
+		thunderstorm: "雷暴",
+		partlyCloudy: "局部多云",
+		heavyRain: "大雨",
+		rain: "雨",
+		snow: "雪",
+		mixedPrecip: "雨夹雪",
+		sunny: "晴天",
+		windy: "有风"
+	}, Wa = {
+		n: "北",
+		nne: "北偏东",
+		ne: "东北",
+		ene: "东偏北",
+		e: "东",
+		ese: "东偏南",
+		se: "东南",
+		sse: "南偏东",
+		s: "南",
+		ssw: "南偏西",
+		sw: "西南",
+		wsw: "西偏南",
+		w: "西",
+		wnw: "西偏北",
+		nw: "西北",
+		nnw: "北偏西"
+	}, Ga = { chance_of_precipitation: "{0}%的降雨概率" }, Ka = {
+		common: Ba,
+		editor: Va,
+		errors: Ha,
+		conditions: Ua,
+		direction: Wa,
+		card: Ga
+	};
+}));
+//#endregion
+//#region src/localize/localize.ts
+function Ja(e, t) {
+	return function(n, r = "", i = "") {
+		let a = (e || localStorage.getItem("selectedLanguage") || t || "en").replace(/['"]+/g, "").replace("-", "_"), o;
+		try {
+			o = n.split(".").reduce((e, t) => e[t], Ya[a]);
+		} catch {
+			o = n.split(".").reduce((e, t) => e[t], Ya.en);
+		}
+		return o === void 0 && (o = n.split(".").reduce((e, t) => e[t], Ya.en)), r !== "" && i !== "" && (o = o.replace(r, i)), o;
+	};
+}
+var Ya, Xa = t((() => {
+	Rn(), qn(), nr(), dr(), br(), kr(), Rr(), qr(), ni(), di(), bi(), ki(), Ri(), qi(), na(), da(), ba(), ka(), Ra(), qa(), Ya = {
+		bg: An,
+		cs: zn,
+		da: Jn,
+		de: rr,
+		en: fr,
+		es: xr,
+		fr: Ar,
+		hu: zr,
+		it: Jr,
+		nb: ri,
+		nn_NO: fi,
+		nl: xi,
+		pl: Ai,
+		pt: zi,
+		pt_BR: Ji,
+		ru: ra,
+		sk: fa,
+		tr: xa,
+		uk: Aa,
+		zh: za
+	};
+}));
+Xa(), ot();
+var Za = "important", Qa = " !important", $a = on(class extends sn {
+	constructor(e) {
+		if (super(e), e.type !== an.ATTRIBUTE || e.name !== "style" || e.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+	}
+	render(e) {
+		return Object.keys(e).reduce(((t, n) => {
+			let r = e[n];
+			return r == null ? t : t + `${n = n.includes("-") ? n : n.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${r};`;
+		}), "");
+	}
+	update(e, [t]) {
+		let { style: n } = e.element;
+		if (this.ft === void 0) return this.ft = new Set(Object.keys(t)), this.render(t);
+		for (let e of this.ft) t[e] ?? (this.ft.delete(e), e.includes("-") ? n.removeProperty(e) : n[e] = null);
+		for (let e in t) {
+			let r = t[e];
+			if (r != null) {
+				this.ft.add(e);
+				let t = typeof r == "string" && r.endsWith(Qa);
+				e.includes("-") || t ? n.setProperty(e, t ? r.slice(0, -11) : r, t ? Za : "") : n[e] = r;
+			}
+		}
+		return U;
+	}
+}), eo = "bottom", to = "right", no = "left", ro = "auto", io = [
+	"top",
+	eo,
+	to,
+	no
+], ao = "start", oo = "clippingParents", so = "viewport", co = "popper", lo = "reference", uo = /*#__PURE__*/ io.reduce(function(e, t) {
+	return e.concat([t + "-" + ao, t + "-end"]);
+}, []), fo = /*#__PURE__*/ [].concat(io, [ro]).reduce(function(e, t) {
+	return e.concat([
+		t,
+		t + "-" + ao,
+		t + "-end"
+	]);
+}, []), po = [
+	"beforeRead",
+	"read",
+	"afterRead",
+	"beforeMain",
+	"main",
+	"afterMain",
+	"beforeWrite",
+	"write",
+	"afterWrite"
+];
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getNodeName.js
+function K(e) {
+	return e ? (e.nodeName || "").toLowerCase() : null;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getWindow.js
+function q(e) {
+	if (e == null) return window;
+	if (e.toString() !== "[object Window]") {
+		var t = e.ownerDocument;
+		return t && t.defaultView || window;
+	}
+	return e;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/instanceOf.js
+function mo(e) {
+	return e instanceof q(e).Element || e instanceof Element;
+}
+function J(e) {
+	return e instanceof q(e).HTMLElement || e instanceof HTMLElement;
+}
+function ho(e) {
+	return typeof ShadowRoot > "u" ? !1 : e instanceof q(e).ShadowRoot || e instanceof ShadowRoot;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/applyStyles.js
+function go(e) {
+	var t = e.state;
+	Object.keys(t.elements).forEach(function(e) {
+		var n = t.styles[e] || {}, r = t.attributes[e] || {}, i = t.elements[e];
+		!J(i) || !K(i) || (Object.assign(i.style, n), Object.keys(r).forEach(function(e) {
+			var t = r[e];
+			t === !1 ? i.removeAttribute(e) : i.setAttribute(e, t === !0 ? "" : t);
+		}));
+	});
+}
+function _o(e) {
+	var t = e.state, n = {
+		popper: {
+			position: t.options.strategy,
+			left: "0",
+			top: "0",
+			margin: "0"
+		},
+		arrow: { position: "absolute" },
+		reference: {}
+	};
+	return Object.assign(t.elements.popper.style, n.popper), t.styles = n, t.elements.arrow && Object.assign(t.elements.arrow.style, n.arrow), function() {
+		Object.keys(t.elements).forEach(function(e) {
+			var r = t.elements[e], i = t.attributes[e] || {}, a = Object.keys(t.styles.hasOwnProperty(e) ? t.styles[e] : n[e]).reduce(function(e, t) {
+				return e[t] = "", e;
+			}, {});
+			!J(r) || !K(r) || (Object.assign(r.style, a), Object.keys(i).forEach(function(e) {
+				r.removeAttribute(e);
+			}));
+		});
+	};
+}
+var vo = {
+	name: "applyStyles",
+	enabled: !0,
+	phase: "write",
+	fn: go,
+	effect: _o,
+	requires: ["computeStyles"]
+};
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/getBasePlacement.js
+function Y(e) {
+	return e.split("-")[0];
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/math.js
+var yo = Math.max, bo = Math.min, xo = Math.round;
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/userAgent.js
+function So() {
+	var e = navigator.userAgentData;
+	return e != null && e.brands && Array.isArray(e.brands) ? e.brands.map(function(e) {
+		return e.brand + "/" + e.version;
+	}).join(" ") : navigator.userAgent;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/isLayoutViewport.js
+function Co() {
+	return !/^((?!chrome|android).)*safari/i.test(So());
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getBoundingClientRect.js
+function wo(e, t, n) {
+	t === void 0 && (t = !1), n === void 0 && (n = !1);
+	var r = e.getBoundingClientRect(), i = 1, a = 1;
+	t && J(e) && (i = e.offsetWidth > 0 && xo(r.width) / e.offsetWidth || 1, a = e.offsetHeight > 0 && xo(r.height) / e.offsetHeight || 1);
+	var o = (mo(e) ? q(e) : window).visualViewport, s = !Co() && n, c = (r.left + (s && o ? o.offsetLeft : 0)) / i, l = (r.top + (s && o ? o.offsetTop : 0)) / a, u = r.width / i, d = r.height / a;
+	return {
+		width: u,
+		height: d,
+		top: l,
+		right: c + u,
+		bottom: l + d,
+		left: c,
+		x: c,
+		y: l
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getLayoutRect.js
+function To(e) {
+	var t = wo(e), n = e.offsetWidth, r = e.offsetHeight;
+	return Math.abs(t.width - n) <= 1 && (n = t.width), Math.abs(t.height - r) <= 1 && (r = t.height), {
+		x: e.offsetLeft,
+		y: e.offsetTop,
+		width: n,
+		height: r
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/contains.js
+function Eo(e, t) {
+	var n = t.getRootNode && t.getRootNode();
+	if (e.contains(t)) return !0;
+	if (n && ho(n)) {
+		var r = t;
+		do {
+			if (r && e.isSameNode(r)) return !0;
+			r = r.parentNode || r.host;
+		} while (r);
+	}
+	return !1;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getComputedStyle.js
+function Do(e) {
+	return q(e).getComputedStyle(e);
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/isTableElement.js
+function Oo(e) {
+	return [
+		"table",
+		"td",
+		"th"
+	].indexOf(K(e)) >= 0;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getDocumentElement.js
+function ko(e) {
+	return ((mo(e) ? e.ownerDocument : e.document) || window.document).documentElement;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getParentNode.js
+function Ao(e) {
+	return K(e) === "html" ? e : e.assignedSlot || e.parentNode || (ho(e) ? e.host : null) || ko(e);
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getOffsetParent.js
+function jo(e) {
+	return !J(e) || Do(e).position === "fixed" ? null : e.offsetParent;
+}
+function Mo(e) {
+	var t = /firefox/i.test(So());
+	if (/Trident/i.test(So()) && J(e) && Do(e).position === "fixed") return null;
+	var n = Ao(e);
+	for (ho(n) && (n = n.host); J(n) && ["html", "body"].indexOf(K(n)) < 0;) {
+		var r = Do(n);
+		if (r.transform !== "none" || r.perspective !== "none" || r.contain === "paint" || ["transform", "perspective"].indexOf(r.willChange) !== -1 || t && r.willChange === "filter" || t && r.filter && r.filter !== "none") return n;
+		n = n.parentNode;
+	}
+	return null;
+}
+function No(e) {
+	for (var t = q(e), n = jo(e); n && Oo(n) && Do(n).position === "static";) n = jo(n);
+	return n && (K(n) === "html" || K(n) === "body" && Do(n).position === "static") ? t : n || Mo(e) || t;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/getMainAxisFromPlacement.js
+function Po(e) {
+	return ["top", "bottom"].indexOf(e) >= 0 ? "x" : "y";
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/within.js
+function Fo(e, t, n) {
+	return yo(e, bo(t, n));
+}
+function Io(e, t, n) {
+	var r = Fo(e, t, n);
+	return r > n ? n : r;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/getFreshSideObject.js
+function Lo() {
+	return {
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/mergePaddingObject.js
+function Ro(e) {
+	return Object.assign({}, Lo(), e);
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/expandToHashMap.js
+function zo(e, t) {
+	return t.reduce(function(t, n) {
+		return t[n] = e, t;
+	}, {});
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/arrow.js
+var Bo = function(e, t) {
+	return e = typeof e == "function" ? e(Object.assign({}, t.rects, { placement: t.placement })) : e, Ro(typeof e == "number" ? zo(e, io) : e);
+};
+function Vo(e) {
+	var t, n = e.state, r = e.name, i = e.options, a = n.elements.arrow, o = n.modifiersData.popperOffsets, s = Y(n.placement), c = Po(s), l = ["left", "right"].indexOf(s) >= 0 ? "height" : "width";
+	if (!(!a || !o)) {
+		var u = Bo(i.padding, n), d = To(a), f = c === "y" ? "top" : no, p = c === "y" ? eo : to, m = n.rects.reference[l] + n.rects.reference[c] - o[c] - n.rects.popper[l], h = o[c] - n.rects.reference[c], g = No(a), _ = g ? c === "y" ? g.clientHeight || 0 : g.clientWidth || 0 : 0, v = m / 2 - h / 2, y = u[f], b = _ - d[l] - u[p], x = _ / 2 - d[l] / 2 + v, S = Fo(y, x, b), C = c;
+		n.modifiersData[r] = (t = {}, t[C] = S, t.centerOffset = S - x, t);
+	}
+}
+function Ho(e) {
+	var t = e.state, n = e.options.element, r = n === void 0 ? "[data-popper-arrow]" : n;
+	r != null && (typeof r == "string" && (r = t.elements.popper.querySelector(r), !r) || Eo(t.elements.popper, r) && (t.elements.arrow = r));
+}
+var Uo = {
+	name: "arrow",
+	enabled: !0,
+	phase: "main",
+	fn: Vo,
+	effect: Ho,
+	requires: ["popperOffsets"],
+	requiresIfExists: ["preventOverflow"]
+};
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/getVariation.js
+function Wo(e) {
+	return e.split("-")[1];
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/computeStyles.js
+var Go = {
+	top: "auto",
+	right: "auto",
+	bottom: "auto",
+	left: "auto"
+};
+function Ko(e, t) {
+	var n = e.x, r = e.y, i = t.devicePixelRatio || 1;
+	return {
+		x: xo(n * i) / i || 0,
+		y: xo(r * i) / i || 0
+	};
+}
+function qo(e) {
+	var t, n = e.popper, r = e.popperRect, i = e.placement, a = e.variation, o = e.offsets, s = e.position, c = e.gpuAcceleration, l = e.adaptive, u = e.roundOffsets, d = e.isFixed, f = o.x, p = f === void 0 ? 0 : f, m = o.y, h = m === void 0 ? 0 : m, g = typeof u == "function" ? u({
+		x: p,
+		y: h
+	}) : {
+		x: p,
+		y: h
+	};
+	p = g.x, h = g.y;
+	var _ = o.hasOwnProperty("x"), v = o.hasOwnProperty("y"), y = no, b = "top", x = window;
+	if (l) {
+		var S = No(n), C = "clientHeight", w = "clientWidth";
+		if (S === q(n) && (S = ko(n), Do(S).position !== "static" && s === "absolute" && (C = "scrollHeight", w = "scrollWidth")), S = S, i === "top" || (i === "left" || i === "right") && a === "end") {
+			b = eo;
+			var T = d && S === x && x.visualViewport ? x.visualViewport.height : S[C];
+			h -= T - r.height, h *= c ? 1 : -1;
+		}
+		if (i === "left" || (i === "top" || i === "bottom") && a === "end") {
+			y = to;
+			var E = d && S === x && x.visualViewport ? x.visualViewport.width : S[w];
+			p -= E - r.width, p *= c ? 1 : -1;
+		}
+	}
+	var D = Object.assign({ position: s }, l && Go), O = u === !0 ? Ko({
+		x: p,
+		y: h
+	}, q(n)) : {
+		x: p,
+		y: h
+	};
+	if (p = O.x, h = O.y, c) {
+		var k;
+		return Object.assign({}, D, (k = {}, k[b] = v ? "0" : "", k[y] = _ ? "0" : "", k.transform = (x.devicePixelRatio || 1) <= 1 ? "translate(" + p + "px, " + h + "px)" : "translate3d(" + p + "px, " + h + "px, 0)", k));
+	}
+	return Object.assign({}, D, (t = {}, t[b] = v ? h + "px" : "", t[y] = _ ? p + "px" : "", t.transform = "", t));
+}
+function Jo(e) {
+	var t = e.state, n = e.options, r = n.gpuAcceleration, i = r === void 0 || r, a = n.adaptive, o = a === void 0 || a, s = n.roundOffsets, c = s === void 0 || s, l = {
+		placement: Y(t.placement),
+		variation: Wo(t.placement),
+		popper: t.elements.popper,
+		popperRect: t.rects.popper,
+		gpuAcceleration: i,
+		isFixed: t.options.strategy === "fixed"
+	};
+	t.modifiersData.popperOffsets != null && (t.styles.popper = Object.assign({}, t.styles.popper, qo(Object.assign({}, l, {
+		offsets: t.modifiersData.popperOffsets,
+		position: t.options.strategy,
+		adaptive: o,
+		roundOffsets: c
+	})))), t.modifiersData.arrow != null && (t.styles.arrow = Object.assign({}, t.styles.arrow, qo(Object.assign({}, l, {
+		offsets: t.modifiersData.arrow,
+		position: "absolute",
+		adaptive: !1,
+		roundOffsets: c
+	})))), t.attributes.popper = Object.assign({}, t.attributes.popper, { "data-popper-placement": t.placement });
+}
+var Yo = {
+	name: "computeStyles",
+	enabled: !0,
+	phase: "beforeWrite",
+	fn: Jo,
+	data: {}
+}, Xo = { passive: !0 };
+function Zo(e) {
+	var t = e.state, n = e.instance, r = e.options, i = r.scroll, a = i === void 0 || i, o = r.resize, s = o === void 0 || o, c = q(t.elements.popper), l = [].concat(t.scrollParents.reference, t.scrollParents.popper);
+	return a && l.forEach(function(e) {
+		e.addEventListener("scroll", n.update, Xo);
+	}), s && c.addEventListener("resize", n.update, Xo), function() {
+		a && l.forEach(function(e) {
+			e.removeEventListener("scroll", n.update, Xo);
+		}), s && c.removeEventListener("resize", n.update, Xo);
+	};
+}
+var Qo = {
+	name: "eventListeners",
+	enabled: !0,
+	phase: "write",
+	fn: function() {},
+	effect: Zo,
+	data: {}
+}, $o = {
+	left: "right",
+	right: "left",
+	bottom: "top",
+	top: "bottom"
+};
+function es(e) {
+	return e.replace(/left|right|bottom|top/g, function(e) {
+		return $o[e];
+	});
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/getOppositeVariationPlacement.js
+var ts = {
+	start: "end",
+	end: "start"
+};
+function ns(e) {
+	return e.replace(/start|end/g, function(e) {
+		return ts[e];
+	});
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getWindowScroll.js
+function rs(e) {
+	var t = q(e);
+	return {
+		scrollLeft: t.pageXOffset,
+		scrollTop: t.pageYOffset
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getWindowScrollBarX.js
+function is(e) {
+	return wo(ko(e)).left + rs(e).scrollLeft;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getViewportRect.js
+function as(e, t) {
+	var n = q(e), r = ko(e), i = n.visualViewport, a = r.clientWidth, o = r.clientHeight, s = 0, c = 0;
+	if (i) {
+		a = i.width, o = i.height;
+		var l = Co();
+		(l || !l && t === "fixed") && (s = i.offsetLeft, c = i.offsetTop);
+	}
+	return {
+		width: a,
+		height: o,
+		x: s + is(e),
+		y: c
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getDocumentRect.js
+function os(e) {
+	var t = ko(e), n = rs(e), r = e.ownerDocument?.body, i = yo(t.scrollWidth, t.clientWidth, r ? r.scrollWidth : 0, r ? r.clientWidth : 0), a = yo(t.scrollHeight, t.clientHeight, r ? r.scrollHeight : 0, r ? r.clientHeight : 0), o = -n.scrollLeft + is(e), s = -n.scrollTop;
+	return Do(r || t).direction === "rtl" && (o += yo(t.clientWidth, r ? r.clientWidth : 0) - i), {
+		width: i,
+		height: a,
+		x: o,
+		y: s
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/isScrollParent.js
+function ss(e) {
+	var t = Do(e), n = t.overflow, r = t.overflowX, i = t.overflowY;
+	return /auto|scroll|overlay|hidden/.test(n + i + r);
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getScrollParent.js
+function cs(e) {
+	return [
+		"html",
+		"body",
+		"#document"
+	].indexOf(K(e)) >= 0 ? e.ownerDocument.body : J(e) && ss(e) ? e : cs(Ao(e));
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/listScrollParents.js
+function ls(e, t) {
+	t === void 0 && (t = []);
+	var n = cs(e), r = n === e.ownerDocument?.body, i = q(n), a = r ? [i].concat(i.visualViewport || [], ss(n) ? n : []) : n, o = t.concat(a);
+	return r ? o : o.concat(ls(Ao(a)));
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/rectToClientRect.js
+function us(e) {
+	return Object.assign({}, e, {
+		left: e.x,
+		top: e.y,
+		right: e.x + e.width,
+		bottom: e.y + e.height
+	});
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getClippingRect.js
+function ds(e, t) {
+	var n = wo(e, !1, t === "fixed");
+	return n.top += e.clientTop, n.left += e.clientLeft, n.bottom = n.top + e.clientHeight, n.right = n.left + e.clientWidth, n.width = e.clientWidth, n.height = e.clientHeight, n.x = n.left, n.y = n.top, n;
+}
+function fs(e, t, n) {
+	return t === "viewport" ? us(as(e, n)) : mo(t) ? ds(t, n) : us(os(ko(e)));
+}
+function ps(e) {
+	var t = ls(Ao(e)), n = ["absolute", "fixed"].indexOf(Do(e).position) >= 0 && J(e) ? No(e) : e;
+	return mo(n) ? t.filter(function(e) {
+		return mo(e) && Eo(e, n) && K(e) !== "body";
+	}) : [];
+}
+function ms(e, t, n, r) {
+	var i = t === "clippingParents" ? ps(e) : [].concat(t), a = [].concat(i, [n]), o = a[0], s = a.reduce(function(t, n) {
+		var i = fs(e, n, r);
+		return t.top = yo(i.top, t.top), t.right = bo(i.right, t.right), t.bottom = bo(i.bottom, t.bottom), t.left = yo(i.left, t.left), t;
+	}, fs(e, o, r));
+	return s.width = s.right - s.left, s.height = s.bottom - s.top, s.x = s.left, s.y = s.top, s;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/computeOffsets.js
+function hs(e) {
+	var t = e.reference, n = e.element, r = e.placement, i = r ? Y(r) : null, a = r ? Wo(r) : null, o = t.x + t.width / 2 - n.width / 2, s = t.y + t.height / 2 - n.height / 2, c;
+	switch (i) {
+		case "top":
+			c = {
+				x: o,
+				y: t.y - n.height
+			};
+			break;
+		case eo:
+			c = {
+				x: o,
+				y: t.y + t.height
+			};
+			break;
+		case to:
+			c = {
+				x: t.x + t.width,
+				y: s
+			};
+			break;
+		case no:
+			c = {
+				x: t.x - n.width,
+				y: s
+			};
+			break;
+		default: c = {
+			x: t.x,
+			y: t.y
+		};
+	}
+	var l = i ? Po(i) : null;
+	if (l != null) {
+		var u = l === "y" ? "height" : "width";
+		switch (a) {
+			case ao:
+				c[l] = c[l] - (t[u] / 2 - n[u] / 2);
+				break;
+			case "end": c[l] = c[l] + (t[u] / 2 - n[u] / 2);
+		}
+	}
+	return c;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/detectOverflow.js
+function gs(e, t) {
+	t === void 0 && (t = {});
+	var n = t, r = n.placement, i = r === void 0 ? e.placement : r, a = n.strategy, o = a === void 0 ? e.strategy : a, s = n.boundary, c = s === void 0 ? oo : s, l = n.rootBoundary, u = l === void 0 ? so : l, d = n.elementContext, f = d === void 0 ? co : d, p = n.altBoundary, m = p !== void 0 && p, h = n.padding, g = h === void 0 ? 0 : h, _ = Ro(typeof g == "number" ? zo(g, io) : g), v = f === "popper" ? lo : co, y = e.rects.popper, b = e.elements[m ? v : f], x = ms(mo(b) ? b : b.contextElement || ko(e.elements.popper), c, u, o), S = wo(e.elements.reference), C = hs({
+		reference: S,
+		element: y,
+		strategy: "absolute",
+		placement: i
+	}), w = us(Object.assign({}, y, C)), T = f === "popper" ? w : S, E = {
+		top: x.top - T.top + _.top,
+		bottom: T.bottom - x.bottom + _.bottom,
+		left: x.left - T.left + _.left,
+		right: T.right - x.right + _.right
+	}, D = e.modifiersData.offset;
+	if (f === "popper" && D) {
+		var O = D[i];
+		Object.keys(E).forEach(function(e) {
+			var t = ["right", "bottom"].indexOf(e) >= 0 ? 1 : -1, n = ["top", "bottom"].indexOf(e) >= 0 ? "y" : "x";
+			E[e] += O[n] * t;
+		});
+	}
+	return E;
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/computeAutoPlacement.js
+function _s(e, t) {
+	t === void 0 && (t = {});
+	var n = t, r = n.placement, i = n.boundary, a = n.rootBoundary, o = n.padding, s = n.flipVariations, c = n.allowedAutoPlacements, l = c === void 0 ? fo : c, u = Wo(r), d = u ? s ? uo : uo.filter(function(e) {
+		return Wo(e) === u;
+	}) : io, f = d.filter(function(e) {
+		return l.indexOf(e) >= 0;
+	});
+	f.length === 0 && (f = d);
+	var p = f.reduce(function(t, n) {
+		return t[n] = gs(e, {
+			placement: n,
+			boundary: i,
+			rootBoundary: a,
+			padding: o
+		})[Y(n)], t;
+	}, {});
+	return Object.keys(p).sort(function(e, t) {
+		return p[e] - p[t];
+	});
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/flip.js
+function vs(e) {
+	if (Y(e) === "auto") return [];
+	var t = es(e);
+	return [
+		ns(e),
+		t,
+		ns(t)
+	];
+}
+function ys(e) {
+	var t = e.state, n = e.options, r = e.name;
+	if (!t.modifiersData[r]._skip) {
+		for (var i = n.mainAxis, a = i === void 0 || i, o = n.altAxis, s = o === void 0 || o, c = n.fallbackPlacements, l = n.padding, u = n.boundary, d = n.rootBoundary, f = n.altBoundary, p = n.flipVariations, m = p === void 0 || p, h = n.allowedAutoPlacements, g = t.options.placement, _ = Y(g) === g, v = c || (_ || !m ? [es(g)] : vs(g)), y = [g].concat(v).reduce(function(e, n) {
+			return e.concat(Y(n) === "auto" ? _s(t, {
+				placement: n,
+				boundary: u,
+				rootBoundary: d,
+				padding: l,
+				flipVariations: m,
+				allowedAutoPlacements: h
+			}) : n);
+		}, []), b = t.rects.reference, x = t.rects.popper, S = /* @__PURE__ */ new Map(), C = !0, w = y[0], T = 0; T < y.length; T++) {
+			var E = y[T], D = Y(E), O = Wo(E) === ao, k = ["top", eo].indexOf(D) >= 0, A = k ? "width" : "height", j = gs(t, {
+				placement: E,
+				boundary: u,
+				rootBoundary: d,
+				altBoundary: f,
+				padding: l
+			}), M = k ? O ? to : no : O ? eo : "top";
+			b[A] > x[A] && (M = es(M));
+			var N = es(M), ee = [];
+			if (a && ee.push(j[D] <= 0), s && ee.push(j[M] <= 0, j[N] <= 0), ee.every(function(e) {
+				return e;
+			})) {
+				w = E, C = !1;
+				break;
+			}
+			S.set(E, ee);
+		}
+		if (C) for (var P = m ? 3 : 1, te = function(e) {
+			var t = y.find(function(t) {
+				var n = S.get(t);
+				if (n) return n.slice(0, e).every(function(e) {
+					return e;
+				});
+			});
+			if (t) return w = t, "break";
+		}, F = P; F > 0 && te(F) !== "break"; F--);
+		t.placement !== w && (t.modifiersData[r]._skip = !0, t.placement = w, t.reset = !0);
+	}
+}
+var bs = {
+	name: "flip",
+	enabled: !0,
+	phase: "main",
+	fn: ys,
+	requiresIfExists: ["offset"],
+	data: { _skip: !1 }
+};
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/hide.js
+function xs(e, t, n) {
+	return n === void 0 && (n = {
+		x: 0,
+		y: 0
+	}), {
+		top: e.top - t.height - n.y,
+		right: e.right - t.width + n.x,
+		bottom: e.bottom - t.height + n.y,
+		left: e.left - t.width - n.x
+	};
+}
+function Ss(e) {
+	return [
+		"top",
+		to,
+		eo,
+		no
+	].some(function(t) {
+		return e[t] >= 0;
+	});
+}
+function Cs(e) {
+	var t = e.state, n = e.name, r = t.rects.reference, i = t.rects.popper, a = t.modifiersData.preventOverflow, o = gs(t, { elementContext: "reference" }), s = gs(t, { altBoundary: !0 }), c = xs(o, r), l = xs(s, i, a), u = Ss(c), d = Ss(l);
+	t.modifiersData[n] = {
+		referenceClippingOffsets: c,
+		popperEscapeOffsets: l,
+		isReferenceHidden: u,
+		hasPopperEscaped: d
+	}, t.attributes.popper = Object.assign({}, t.attributes.popper, {
+		"data-popper-reference-hidden": u,
+		"data-popper-escaped": d
+	});
+}
+var ws = {
+	name: "hide",
+	enabled: !0,
+	phase: "main",
+	requiresIfExists: ["preventOverflow"],
+	fn: Cs
+};
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/offset.js
+function Ts(e, t, n) {
+	var r = Y(e), i = ["left", "top"].indexOf(r) >= 0 ? -1 : 1, a = typeof n == "function" ? n(Object.assign({}, t, { placement: e })) : n, o = a[0], s = a[1];
+	return o = o || 0, s = (s || 0) * i, ["left", "right"].indexOf(r) >= 0 ? {
+		x: s,
+		y: o
+	} : {
+		x: o,
+		y: s
+	};
+}
+function Es(e) {
+	var t = e.state, n = e.options, r = e.name, i = n.offset, a = i === void 0 ? [0, 0] : i, o = fo.reduce(function(e, n) {
+		return e[n] = Ts(n, t.rects, a), e;
+	}, {}), s = o[t.placement], c = s.x, l = s.y;
+	t.modifiersData.popperOffsets != null && (t.modifiersData.popperOffsets.x += c, t.modifiersData.popperOffsets.y += l), t.modifiersData[r] = o;
+}
+var Ds = {
+	name: "offset",
+	enabled: !0,
+	phase: "main",
+	requires: ["popperOffsets"],
+	fn: Es
+};
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/popperOffsets.js
+function Os(e) {
+	var t = e.state, n = e.name;
+	t.modifiersData[n] = hs({
+		reference: t.rects.reference,
+		element: t.rects.popper,
+		strategy: "absolute",
+		placement: t.placement
+	});
+}
+var ks = {
+	name: "popperOffsets",
+	enabled: !0,
+	phase: "read",
+	fn: Os,
+	data: {}
+};
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/getAltAxis.js
+function As(e) {
+	return e === "x" ? "y" : "x";
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/modifiers/preventOverflow.js
+function js(e) {
+	var t = e.state, n = e.options, r = e.name, i = n.mainAxis, a = i === void 0 || i, o = n.altAxis, s = o !== void 0 && o, c = n.boundary, l = n.rootBoundary, u = n.altBoundary, d = n.padding, f = n.tether, p = f === void 0 || f, m = n.tetherOffset, h = m === void 0 ? 0 : m, g = gs(t, {
+		boundary: c,
+		rootBoundary: l,
+		padding: d,
+		altBoundary: u
+	}), _ = Y(t.placement), v = Wo(t.placement), y = !v, b = Po(_), x = As(b), S = t.modifiersData.popperOffsets, C = t.rects.reference, w = t.rects.popper, T = typeof h == "function" ? h(Object.assign({}, t.rects, { placement: t.placement })) : h, E = typeof T == "number" ? {
+		mainAxis: T,
+		altAxis: T
+	} : Object.assign({
+		mainAxis: 0,
+		altAxis: 0
+	}, T), D = t.modifiersData.offset ? t.modifiersData.offset[t.placement] : null, O = {
+		x: 0,
+		y: 0
+	};
+	if (S) {
+		if (a) {
+			var k = b === "y" ? "top" : no, A = b === "y" ? eo : to, j = b === "y" ? "height" : "width", M = S[b], N = M + g[k], ee = M - g[A], P = p ? -w[j] / 2 : 0, te = v === "start" ? C[j] : w[j], F = v === "start" ? -w[j] : -C[j], I = t.elements.arrow, ne = p && I ? To(I) : {
+				width: 0,
+				height: 0
+			}, re = t.modifiersData["arrow#persistent"] ? t.modifiersData["arrow#persistent"].padding : Lo(), ie = re[k], ae = re[A], oe = Fo(0, C[j], ne[j]), se = y ? C[j] / 2 - P - oe - ie - E.mainAxis : te - oe - ie - E.mainAxis, L = y ? -C[j] / 2 + P + oe + ae + E.mainAxis : F + oe + ae + E.mainAxis, ce = t.elements.arrow && No(t.elements.arrow), le = ce ? b === "y" ? ce.clientTop || 0 : ce.clientLeft || 0 : 0, ue = D?.[b] ?? 0, de = M + se - ue - le, fe = M + L - ue, pe = Fo(p ? bo(N, de) : N, M, p ? yo(ee, fe) : ee);
+			S[b] = pe, O[b] = pe - M;
+		}
+		if (s) {
+			var me = b === "x" ? "top" : no, he = b === "x" ? eo : to, R = S[x], ge = x === "y" ? "height" : "width", _e = R + g[me], ve = R - g[he], z = ["top", no].indexOf(_) !== -1, ye = D?.[x] ?? 0, be = z ? _e : R - C[ge] - w[ge] - ye + E.altAxis, xe = z ? R + C[ge] + w[ge] - ye - E.altAxis : ve, Se = p && z ? Io(be, R, xe) : Fo(p ? be : _e, R, p ? xe : ve);
+			S[x] = Se, O[x] = Se - R;
+		}
+		t.modifiersData[r] = O;
+	}
+}
+var Ms = {
+	name: "preventOverflow",
+	enabled: !0,
+	phase: "main",
+	fn: js,
+	requiresIfExists: ["offset"]
+};
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getHTMLElementScroll.js
+function Ns(e) {
+	return {
+		scrollLeft: e.scrollLeft,
+		scrollTop: e.scrollTop
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getNodeScroll.js
+function Ps(e) {
+	return e === q(e) || !J(e) ? rs(e) : Ns(e);
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/dom-utils/getCompositeRect.js
+function Fs(e) {
+	var t = e.getBoundingClientRect(), n = xo(t.width) / e.offsetWidth || 1, r = xo(t.height) / e.offsetHeight || 1;
+	return n !== 1 || r !== 1;
+}
+function Is(e, t, n) {
+	n === void 0 && (n = !1);
+	var r = J(t), i = J(t) && Fs(t), a = ko(t), o = wo(e, i, n), s = {
+		scrollLeft: 0,
+		scrollTop: 0
+	}, c = {
+		x: 0,
+		y: 0
+	};
+	return (r || !r && !n) && ((K(t) !== "body" || ss(a)) && (s = Ps(t)), J(t) ? (c = wo(t, !0), c.x += t.clientLeft, c.y += t.clientTop) : a && (c.x = is(a))), {
+		x: o.left + s.scrollLeft - c.x,
+		y: o.top + s.scrollTop - c.y,
+		width: o.width,
+		height: o.height
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/orderModifiers.js
+function Ls(e) {
+	var t = /* @__PURE__ */ new Map(), n = /* @__PURE__ */ new Set(), r = [];
+	e.forEach(function(e) {
+		t.set(e.name, e);
+	});
+	function i(e) {
+		n.add(e.name), [].concat(e.requires || [], e.requiresIfExists || []).forEach(function(e) {
+			if (!n.has(e)) {
+				var r = t.get(e);
+				r && i(r);
+			}
+		}), r.push(e);
+	}
+	return e.forEach(function(e) {
+		n.has(e.name) || i(e);
+	}), r;
+}
+function Rs(e) {
+	var t = Ls(e);
+	return po.reduce(function(e, n) {
+		return e.concat(t.filter(function(e) {
+			return e.phase === n;
+		}));
+	}, []);
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/debounce.js
+function zs(e) {
+	var t;
+	return function() {
+		return t || (t = new Promise(function(n) {
+			Promise.resolve().then(function() {
+				t = void 0, n(e());
+			});
+		})), t;
+	};
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/utils/mergeByName.js
+function Bs(e) {
+	var t = e.reduce(function(e, t) {
+		var n = e[t.name];
+		return e[t.name] = n ? Object.assign({}, n, t, {
+			options: Object.assign({}, n.options, t.options),
+			data: Object.assign({}, n.data, t.data)
+		}) : t, e;
+	}, {});
+	return Object.keys(t).map(function(e) {
+		return t[e];
+	});
+}
+//#endregion
+//#region node_modules/@popperjs/core/lib/createPopper.js
+var Vs = {
+	placement: "bottom",
+	modifiers: [],
+	strategy: "absolute"
+};
+function Hs() {
+	return ![...arguments].some(function(e) {
+		return !(e && typeof e.getBoundingClientRect == "function");
+	});
+}
+function Us(e) {
+	e === void 0 && (e = {});
+	var t = e, n = t.defaultModifiers, r = n === void 0 ? [] : n, i = t.defaultOptions, a = i === void 0 ? Vs : i;
+	return function(e, t, n) {
+		n === void 0 && (n = a);
+		var i = {
+			placement: "bottom",
+			orderedModifiers: [],
+			options: Object.assign({}, Vs, a),
+			modifiersData: {},
+			elements: {
+				reference: e,
+				popper: t
+			},
+			attributes: {},
+			styles: {}
+		}, o = [], s = !1, c = {
+			state: i,
+			setOptions: function(n) {
+				var o = typeof n == "function" ? n(i.options) : n;
+				u(), i.options = Object.assign({}, a, i.options, o), i.scrollParents = {
+					reference: mo(e) ? ls(e) : e.contextElement ? ls(e.contextElement) : [],
+					popper: ls(t)
+				};
+				var s = Rs(Bs([].concat(r, i.options.modifiers)));
+				return i.orderedModifiers = s.filter(function(e) {
+					return e.enabled;
+				}), l(), c.update();
+			},
+			forceUpdate: function() {
+				if (!s) {
+					var e = i.elements, t = e.reference, n = e.popper;
+					if (Hs(t, n)) {
+						i.rects = {
+							reference: Is(t, No(n), i.options.strategy === "fixed"),
+							popper: To(n)
+						}, i.reset = !1, i.placement = i.options.placement, i.orderedModifiers.forEach(function(e) {
+							return i.modifiersData[e.name] = Object.assign({}, e.data);
+						});
+						for (var r = 0; r < i.orderedModifiers.length; r++) {
+							if (i.reset === !0) {
+								i.reset = !1, r = -1;
+								continue;
+							}
+							var a = i.orderedModifiers[r], o = a.fn, l = a.options, u = l === void 0 ? {} : l, d = a.name;
+							typeof o == "function" && (i = o({
+								state: i,
+								options: u,
+								name: d,
+								instance: c
+							}) || i);
+						}
+					}
+				}
+			},
+			update: zs(function() {
+				return new Promise(function(e) {
+					c.forceUpdate(), e(i);
+				});
+			}),
+			destroy: function() {
+				u(), s = !0;
+			}
+		};
+		if (!Hs(e, t)) return c;
+		c.setOptions(n).then(function(e) {
+			!s && n.onFirstUpdate && n.onFirstUpdate(e);
+		});
+		function l() {
+			i.orderedModifiers.forEach(function(e) {
+				var t = e.name, n = e.options, r = n === void 0 ? {} : n, a = e.effect;
+				if (typeof a == "function") {
+					var s = a({
+						state: i,
+						name: t,
+						instance: c,
+						options: r
+					});
+					o.push(s || function() {});
+				}
+			});
+		}
+		function u() {
+			o.forEach(function(e) {
+				return e();
+			}), o = [];
+		}
+		return c;
+	};
+}
+var Ws = /*#__PURE__*/ Us({ defaultModifiers: [
+	Qo,
+	ks,
+	Yo,
+	vo,
+	Ds,
+	bs,
+	Ms,
+	Uo,
+	ws
+] }), Gs = "tippy-box", Ks = "tippy-content", qs = "tippy-backdrop", Js = "tippy-arrow", Ys = "tippy-svg-arrow", Xs = {
+	passive: !0,
+	capture: !0
+}, Zs = function() {
+	return document.body;
+};
+function Qs(e, t, n) {
+	return Array.isArray(e) ? e[t] ?? (Array.isArray(n) ? n[t] : n) : e;
+}
+function $s(e, t) {
+	var n = {}.toString.call(e);
+	return n.indexOf("[object") === 0 && n.indexOf(t + "]") > -1;
+}
+function ec(e, t) {
+	return typeof e == "function" ? e.apply(void 0, t) : e;
+}
+function tc(e, t) {
+	if (t === 0) return e;
+	var n;
+	return function(r) {
+		clearTimeout(n), n = setTimeout(function() {
+			e(r);
+		}, t);
+	};
+}
+function nc(e) {
+	return e.split(/\s+/).filter(Boolean);
+}
+function rc(e) {
+	return [].concat(e);
+}
+function ic(e, t) {
+	e.indexOf(t) === -1 && e.push(t);
+}
+function ac(e) {
+	return e.filter(function(t, n) {
+		return e.indexOf(t) === n;
+	});
+}
+function oc(e) {
+	return e.split("-")[0];
+}
+function sc(e) {
+	return [].slice.call(e);
+}
+function cc(e) {
+	return Object.keys(e).reduce(function(t, n) {
+		return e[n] !== void 0 && (t[n] = e[n]), t;
+	}, {});
+}
+function lc() {
+	return document.createElement("div");
+}
+function uc(e) {
+	return ["Element", "Fragment"].some(function(t) {
+		return $s(e, t);
+	});
+}
+function dc(e) {
+	return $s(e, "NodeList");
+}
+function fc(e) {
+	return $s(e, "MouseEvent");
+}
+function pc(e) {
+	return !!(e && e._tippy && e._tippy.reference === e);
+}
+function mc(e) {
+	return uc(e) ? [e] : dc(e) ? sc(e) : Array.isArray(e) ? e : sc(document.querySelectorAll(e));
+}
+function hc(e, t) {
+	e.forEach(function(e) {
+		e && (e.style.transitionDuration = t + "ms");
+	});
+}
+function gc(e, t) {
+	e.forEach(function(e) {
+		e && e.setAttribute("data-state", t);
+	});
+}
+function _c(e) {
+	var t, n = rc(e)[0];
+	return n != null && (t = n.ownerDocument) != null && t.body ? n.ownerDocument : document;
+}
+function vc(e, t) {
+	var n = t.clientX, r = t.clientY;
+	return e.every(function(e) {
+		var t = e.popperRect, i = e.popperState, a = e.props.interactiveBorder, o = oc(i.placement), s = i.modifiersData.offset;
+		if (!s) return !0;
+		var c = o === "bottom" ? s.top.y : 0, l = o === "top" ? s.bottom.y : 0, u = o === "right" ? s.left.x : 0, d = o === "left" ? s.right.x : 0, f = t.top - r + c > a, p = r - t.bottom - l > a, m = t.left - n + u > a, h = n - t.right - d > a;
+		return f || p || m || h;
+	});
+}
+function yc(e, t, n) {
+	var r = t + "EventListener";
+	["transitionend", "webkitTransitionEnd"].forEach(function(t) {
+		e[r](t, n);
+	});
+}
+function bc(e, t) {
+	for (var n = t; n;) {
+		if (e.contains(n)) return !0;
+		n = n.getRootNode == null ? void 0 : n.getRootNode()?.host;
+	}
+	return !1;
+}
+var X = { isTouch: !1 }, xc = 0;
+function Sc() {
+	X.isTouch || (X.isTouch = !0, window.performance && document.addEventListener("mousemove", Cc));
+}
+function Cc() {
+	var e = performance.now();
+	e - xc < 20 && (X.isTouch = !1, document.removeEventListener("mousemove", Cc)), xc = e;
+}
+function wc() {
+	var e = document.activeElement;
+	if (pc(e)) {
+		var t = e._tippy;
+		e.blur && !t.state.isVisible && e.blur();
+	}
+}
+function Tc() {
+	document.addEventListener("touchstart", Sc, Xs), window.addEventListener("blur", wc);
+}
+var Ec = typeof window < "u" && typeof document < "u" && !!window.msCrypto, Z = Object.assign({
+	appendTo: Zs,
+	aria: {
+		content: "auto",
+		expanded: "auto"
+	},
+	delay: 0,
+	duration: [300, 250],
+	getReferenceClientRect: null,
+	hideOnClick: !0,
+	ignoreAttributes: !1,
+	interactive: !1,
+	interactiveBorder: 2,
+	interactiveDebounce: 0,
+	moveTransition: "",
+	offset: [0, 10],
+	onAfterUpdate: function() {},
+	onBeforeUpdate: function() {},
+	onCreate: function() {},
+	onDestroy: function() {},
+	onHidden: function() {},
+	onHide: function() {},
+	onMount: function() {},
+	onShow: function() {},
+	onShown: function() {},
+	onTrigger: function() {},
+	onUntrigger: function() {},
+	onClickOutside: function() {},
+	placement: "top",
+	plugins: [],
+	popperOptions: {},
+	render: null,
+	showOnCreate: !1,
+	touch: !0,
+	trigger: "mouseenter focus",
+	triggerTarget: null
+}, {
+	animateFill: !1,
+	followCursor: !1,
+	inlinePositioning: !1,
+	sticky: !1
+}, {
+	allowHTML: !1,
+	animation: "fade",
+	arrow: !0,
+	content: "",
+	inertia: !1,
+	maxWidth: 350,
+	role: "tooltip",
+	theme: "",
+	zIndex: 9999
+}), Dc = Object.keys(Z), Oc = function(e) {
+	Object.keys(e).forEach(function(t) {
+		Z[t] = e[t];
+	});
+};
+function kc(e) {
+	var t = (e.plugins || []).reduce(function(t, n) {
+		var r = n.name, i = n.defaultValue;
+		return r && (t[r] = e[r] === void 0 ? Z[r] ?? i : e[r]), t;
+	}, {});
+	return Object.assign({}, e, t);
+}
+function Ac(e, t) {
+	return (t ? Object.keys(kc(Object.assign({}, Z, { plugins: t }))) : Dc).reduce(function(t, n) {
+		var r = (e.getAttribute("data-tippy-" + n) || "").trim();
+		if (!r) return t;
+		if (n === "content") t[n] = r;
+		else try {
+			t[n] = JSON.parse(r);
+		} catch {
+			t[n] = r;
+		}
+		return t;
+	}, {});
+}
+function jc(e, t) {
+	var n = Object.assign({}, t, { content: ec(t.content, [e]) }, t.ignoreAttributes ? {} : Ac(e, t.plugins));
+	return n.aria = Object.assign({}, Z.aria, n.aria), n.aria = {
+		expanded: n.aria.expanded === "auto" ? t.interactive : n.aria.expanded,
+		content: n.aria.content === "auto" ? t.interactive ? null : "describedby" : n.aria.content
+	}, n;
+}
+var Mc = function() {
+	return "innerHTML";
+};
+function Nc(e, t) {
+	e[Mc()] = t;
+}
+function Pc(e) {
+	var t = lc();
+	return e === !0 ? t.className = Js : (t.className = Ys, uc(e) ? t.appendChild(e) : Nc(t, e)), t;
+}
+function Fc(e, t) {
+	uc(t.content) ? (Nc(e, ""), e.appendChild(t.content)) : typeof t.content != "function" && (t.allowHTML ? Nc(e, t.content) : e.textContent = t.content);
+}
+function Ic(e) {
+	var t = e.firstElementChild, n = sc(t.children);
+	return {
+		box: t,
+		content: n.find(function(e) {
+			return e.classList.contains(Ks);
+		}),
+		arrow: n.find(function(e) {
+			return e.classList.contains(Js) || e.classList.contains(Ys);
+		}),
+		backdrop: n.find(function(e) {
+			return e.classList.contains(qs);
+		})
+	};
+}
+function Lc(e) {
+	var t = lc(), n = lc();
+	n.className = Gs, n.setAttribute("data-state", "hidden"), n.setAttribute("tabindex", "-1");
+	var r = lc();
+	r.className = Ks, r.setAttribute("data-state", "hidden"), Fc(r, e.props), t.appendChild(n), n.appendChild(r), i(e.props, e.props);
+	function i(n, r) {
+		var i = Ic(t), a = i.box, o = i.content, s = i.arrow;
+		r.theme ? a.setAttribute("data-theme", r.theme) : a.removeAttribute("data-theme"), typeof r.animation == "string" ? a.setAttribute("data-animation", r.animation) : a.removeAttribute("data-animation"), r.inertia ? a.setAttribute("data-inertia", "") : a.removeAttribute("data-inertia"), a.style.maxWidth = typeof r.maxWidth == "number" ? r.maxWidth + "px" : r.maxWidth, r.role ? a.setAttribute("role", r.role) : a.removeAttribute("role"), (n.content !== r.content || n.allowHTML !== r.allowHTML) && Fc(o, e.props), r.arrow ? s ? n.arrow !== r.arrow && (a.removeChild(s), a.appendChild(Pc(r.arrow))) : a.appendChild(Pc(r.arrow)) : s && a.removeChild(s);
+	}
+	return {
+		popper: t,
+		onUpdate: i
+	};
+}
+Lc.$$tippy = !0;
+var Rc = 1, zc = [], Bc = [];
+function Vc(e, t) {
+	var n = jc(e, Object.assign({}, Z, kc(cc(t)))), r, i, a, o = !1, s = !1, c = !1, l = !1, u, d, f, p = [], m = tc(de, n.interactiveDebounce), h, g = Rc++, _ = null, v = ac(n.plugins), y = {
+		id: g,
+		reference: e,
+		popper: lc(),
+		popperInstance: _,
+		props: n,
+		state: {
+			isEnabled: !0,
+			isVisible: !1,
+			isDestroyed: !1,
+			isMounted: !1,
+			isShown: !1
+		},
+		plugins: v,
+		clearDelayTimeouts: xe,
+		setProps: Se,
+		setContent: Ce,
+		show: we,
+		hide: Te,
+		hideWithInteractivity: Ee,
+		enable: ye,
+		disable: be,
+		unmount: De,
+		destroy: Oe
+	};
+	/* istanbul ignore if */
+	if (!n.render) return y;
+	var b = n.render(y), x = b.popper, S = b.onUpdate;
+	x.setAttribute("data-tippy-root", ""), x.id = "tippy-" + y.id, y.popper = x, e._tippy = y, x._tippy = y;
+	var C = v.map(function(e) {
+		return e.fn(y);
+	}), w = e.hasAttribute("aria-expanded");
+	return ce(), P(), M(), N("onCreate", [y]), n.showOnCreate && ve(), x.addEventListener("mouseenter", function() {
+		y.props.interactive && y.state.isVisible && y.clearDelayTimeouts();
+	}), x.addEventListener("mouseleave", function() {
+		y.props.interactive && y.props.trigger.indexOf("mouseenter") >= 0 && k().addEventListener("mousemove", m);
+	}), y;
+	function T() {
+		var e = y.props.touch;
+		return Array.isArray(e) ? e : [e, 0];
+	}
+	function E() {
+		return T()[0] === "hold";
+	}
+	function D() {
+		var e;
+		return !!((e = y.props.render) != null && e.$$tippy);
+	}
+	function O() {
+		return h || e;
+	}
+	function k() {
+		var e = O().parentNode;
+		return e ? _c(e) : document;
+	}
+	function A() {
+		return Ic(x);
+	}
+	function j(e) {
+		return y.state.isMounted && !y.state.isVisible || X.isTouch || u && u.type === "focus" ? 0 : Qs(y.props.delay, +!e, Z.delay);
+	}
+	function M(e) {
+		e === void 0 && (e = !1), x.style.pointerEvents = y.props.interactive && !e ? "" : "none", x.style.zIndex = "" + y.props.zIndex;
+	}
+	function N(e, t, n) {
+		if (n === void 0 && (n = !0), C.forEach(function(n) {
+			n[e] && n[e].apply(n, t);
+		}), n) {
+			var r;
+			(r = y.props)[e].apply(r, t);
+		}
+	}
+	function ee() {
+		var t = y.props.aria;
+		if (t.content) {
+			var n = "aria-" + t.content, r = x.id;
+			rc(y.props.triggerTarget || e).forEach(function(e) {
+				var t = e.getAttribute(n);
+				if (y.state.isVisible) e.setAttribute(n, t ? t + " " + r : r);
+				else {
+					var i = t && t.replace(r, "").trim();
+					i ? e.setAttribute(n, i) : e.removeAttribute(n);
+				}
+			});
+		}
+	}
+	function P() {
+		w || !y.props.aria.expanded || rc(y.props.triggerTarget || e).forEach(function(e) {
+			y.props.interactive ? e.setAttribute("aria-expanded", y.state.isVisible && e === O() ? "true" : "false") : e.removeAttribute("aria-expanded");
+		});
+	}
+	function te() {
+		k().removeEventListener("mousemove", m), zc = zc.filter(function(e) {
+			return e !== m;
+		});
+	}
+	function F(t) {
+		if (!(X.isTouch && (c || t.type === "mousedown"))) {
+			var n = t.composedPath && t.composedPath()[0] || t.target;
+			if (!(y.props.interactive && bc(x, n))) {
+				if (rc(y.props.triggerTarget || e).some(function(e) {
+					return bc(e, n);
+				})) {
+					if (X.isTouch || y.state.isVisible && y.props.trigger.indexOf("click") >= 0) return;
+				} else N("onClickOutside", [y, t]);
+				y.props.hideOnClick === !0 && (y.clearDelayTimeouts(), y.hide(), s = !0, setTimeout(function() {
+					s = !1;
+				}), y.state.isMounted || ie());
+			}
+		}
+	}
+	function I() {
+		c = !0;
+	}
+	function ne() {
+		c = !1;
+	}
+	function re() {
+		var e = k();
+		e.addEventListener("mousedown", F, !0), e.addEventListener("touchend", F, Xs), e.addEventListener("touchstart", ne, Xs), e.addEventListener("touchmove", I, Xs);
+	}
+	function ie() {
+		var e = k();
+		e.removeEventListener("mousedown", F, !0), e.removeEventListener("touchend", F, Xs), e.removeEventListener("touchstart", ne, Xs), e.removeEventListener("touchmove", I, Xs);
+	}
+	function ae(e, t) {
+		se(e, function() {
+			!y.state.isVisible && x.parentNode && x.parentNode.contains(x) && t();
+		});
+	}
+	function oe(e, t) {
+		se(e, t);
+	}
+	function se(e, t) {
+		var n = A().box;
+		function r(e) {
+			e.target === n && (yc(n, "remove", r), t());
+		}
+		if (e === 0) return t();
+		yc(n, "remove", d), yc(n, "add", r), d = r;
+	}
+	function L(t, n, r) {
+		r === void 0 && (r = !1), rc(y.props.triggerTarget || e).forEach(function(e) {
+			e.addEventListener(t, n, r), p.push({
+				node: e,
+				eventType: t,
+				handler: n,
+				options: r
+			});
+		});
+	}
+	function ce() {
+		E() && (L("touchstart", ue, { passive: !0 }), L("touchend", fe, { passive: !0 })), nc(y.props.trigger).forEach(function(e) {
+			if (e !== "manual") switch (L(e, ue), e) {
+				case "mouseenter":
+					L("mouseleave", fe);
+					break;
+				case "focus":
+					L(Ec ? "focusout" : "blur", pe);
+					break;
+				case "focusin": L("focusout", pe);
+			}
+		});
+	}
+	function le() {
+		p.forEach(function(e) {
+			var t = e.node, n = e.eventType, r = e.handler, i = e.options;
+			t.removeEventListener(n, r, i);
+		}), p = [];
+	}
+	function ue(e) {
+		var t = !1;
+		if (!(!y.state.isEnabled || me(e) || s)) {
+			var n = u?.type === "focus";
+			u = e, h = e.currentTarget, P(), !y.state.isVisible && fc(e) && zc.forEach(function(t) {
+				return t(e);
+			}), e.type === "click" && (y.props.trigger.indexOf("mouseenter") < 0 || o) && y.props.hideOnClick !== !1 && y.state.isVisible ? t = !0 : ve(e), e.type === "click" && (o = !t), t && !n && z(e);
+		}
+	}
+	function de(e) {
+		var t = e.target, r = O().contains(t) || x.contains(t);
+		e.type === "mousemove" && r || vc(_e().concat(x).map(function(e) {
+			var t = e._tippy.popperInstance?.state;
+			return t ? {
+				popperRect: e.getBoundingClientRect(),
+				popperState: t,
+				props: n
+			} : null;
+		}).filter(Boolean), e) && (te(), z(e));
+	}
+	function fe(e) {
+		if (!(me(e) || y.props.trigger.indexOf("click") >= 0 && o)) {
+			if (y.props.interactive) {
+				y.hideWithInteractivity(e);
+				return;
+			}
+			z(e);
+		}
+	}
+	function pe(e) {
+		y.props.trigger.indexOf("focusin") < 0 && e.target !== O() || y.props.interactive && e.relatedTarget && x.contains(e.relatedTarget) || z(e);
+	}
+	function me(e) {
+		return X.isTouch ? E() !== e.type.indexOf("touch") >= 0 : !1;
+	}
+	function he() {
+		R();
+		var t = y.props, n = t.popperOptions, r = t.placement, i = t.offset, a = t.getReferenceClientRect, o = t.moveTransition, s = D() ? Ic(x).arrow : null, c = a ? {
+			getBoundingClientRect: a,
+			contextElement: a.contextElement || O()
+		} : e, l = [
+			{
+				name: "offset",
+				options: { offset: i }
+			},
+			{
+				name: "preventOverflow",
+				options: { padding: {
+					top: 2,
+					bottom: 2,
+					left: 5,
+					right: 5
+				} }
+			},
+			{
+				name: "flip",
+				options: { padding: 5 }
+			},
+			{
+				name: "computeStyles",
+				options: { adaptive: !o }
+			},
+			{
+				name: "$$tippy",
+				enabled: !0,
+				phase: "beforeWrite",
+				requires: ["computeStyles"],
+				fn: function(e) {
+					var t = e.state;
+					if (D()) {
+						var n = A().box;
+						[
+							"placement",
+							"reference-hidden",
+							"escaped"
+						].forEach(function(e) {
+							e === "placement" ? n.setAttribute("data-placement", t.placement) : t.attributes.popper["data-popper-" + e] ? n.setAttribute("data-" + e, "") : n.removeAttribute("data-" + e);
+						}), t.attributes.popper = {};
+					}
+				}
+			}
+		];
+		D() && s && l.push({
+			name: "arrow",
+			options: {
+				element: s,
+				padding: 3
+			}
+		}), l.push.apply(l, n?.modifiers || []), y.popperInstance = Ws(c, x, Object.assign({}, n, {
+			placement: r,
+			onFirstUpdate: f,
+			modifiers: l
+		}));
+	}
+	function R() {
+		y.popperInstance && (y.popperInstance.destroy(), y.popperInstance = null);
+	}
+	function ge() {
+		var e = y.props.appendTo, t, n = O();
+		t = y.props.interactive && e === Zs || e === "parent" ? n.parentNode : ec(e, [n]), t.contains(x) || t.appendChild(x), y.state.isMounted = !0, he();
+	}
+	function _e() {
+		return sc(x.querySelectorAll("[data-tippy-root]"));
+	}
+	function ve(e) {
+		y.clearDelayTimeouts(), e && N("onTrigger", [y, e]), re();
+		var t = j(!0), n = T(), i = n[0], a = n[1];
+		X.isTouch && i === "hold" && a && (t = a), t ? r = setTimeout(function() {
+			y.show();
+		}, t) : y.show();
+	}
+	function z(e) {
+		if (y.clearDelayTimeouts(), N("onUntrigger", [y, e]), !y.state.isVisible) {
+			ie();
+			return;
+		}
+		if (!(y.props.trigger.indexOf("mouseenter") >= 0 && y.props.trigger.indexOf("click") >= 0 && ["mouseleave", "mousemove"].indexOf(e.type) >= 0 && o)) {
+			var t = j(!1);
+			t ? i = setTimeout(function() {
+				y.state.isVisible && y.hide();
+			}, t) : a = requestAnimationFrame(function() {
+				y.hide();
+			});
+		}
+	}
+	function ye() {
+		y.state.isEnabled = !0;
+	}
+	function be() {
+		y.hide(), y.state.isEnabled = !1;
+	}
+	function xe() {
+		clearTimeout(r), clearTimeout(i), cancelAnimationFrame(a);
+	}
+	function Se(t) {
+		if (!y.state.isDestroyed) {
+			N("onBeforeUpdate", [y, t]), le();
+			var n = y.props, r = jc(e, Object.assign({}, n, cc(t), { ignoreAttributes: !0 }));
+			y.props = r, ce(), n.interactiveDebounce !== r.interactiveDebounce && (te(), m = tc(de, r.interactiveDebounce)), n.triggerTarget && !r.triggerTarget ? rc(n.triggerTarget).forEach(function(e) {
+				e.removeAttribute("aria-expanded");
+			}) : r.triggerTarget && e.removeAttribute("aria-expanded"), P(), M(), S && S(n, r), y.popperInstance && (he(), _e().forEach(function(e) {
+				requestAnimationFrame(e._tippy.popperInstance.forceUpdate);
+			})), N("onAfterUpdate", [y, t]);
+		}
+	}
+	function Ce(e) {
+		y.setProps({ content: e });
+	}
+	function we() {
+		var e = y.state.isVisible, t = y.state.isDestroyed, n = !y.state.isEnabled, r = X.isTouch && !y.props.touch, i = Qs(y.props.duration, 0, Z.duration);
+		if (!(e || t || n || r) && !O().hasAttribute("disabled") && (N("onShow", [y], !1), y.props.onShow(y) !== !1)) {
+			if (y.state.isVisible = !0, D() && (x.style.visibility = "visible"), M(), re(), y.state.isMounted || (x.style.transition = "none"), D()) {
+				var a = A(), o = a.box, s = a.content;
+				hc([o, s], 0);
+			}
+			f = function() {
+				var e;
+				if (!(!y.state.isVisible || l)) {
+					if (l = !0, x.offsetHeight, x.style.transition = y.props.moveTransition, D() && y.props.animation) {
+						var t = A(), n = t.box, r = t.content;
+						hc([n, r], i), gc([n, r], "visible");
+					}
+					ee(), P(), ic(Bc, y), (e = y.popperInstance) == null || e.forceUpdate(), N("onMount", [y]), y.props.animation && D() && oe(i, function() {
+						y.state.isShown = !0, N("onShown", [y]);
+					});
+				}
+			}, ge();
+		}
+	}
+	function Te() {
+		var e = !y.state.isVisible, t = y.state.isDestroyed, n = !y.state.isEnabled, r = Qs(y.props.duration, 1, Z.duration);
+		if (!(e || t || n) && (N("onHide", [y], !1), y.props.onHide(y) !== !1)) {
+			if (y.state.isVisible = !1, y.state.isShown = !1, l = !1, o = !1, D() && (x.style.visibility = "hidden"), te(), ie(), M(!0), D()) {
+				var i = A(), a = i.box, s = i.content;
+				y.props.animation && (hc([a, s], r), gc([a, s], "hidden"));
+			}
+			ee(), P(), y.props.animation ? D() && ae(r, y.unmount) : y.unmount();
+		}
+	}
+	function Ee(e) {
+		k().addEventListener("mousemove", m), ic(zc, m), m(e);
+	}
+	function De() {
+		y.state.isVisible && y.hide(), y.state.isMounted && (R(), _e().forEach(function(e) {
+			e._tippy.unmount();
+		}), x.parentNode && x.parentNode.removeChild(x), Bc = Bc.filter(function(e) {
+			return e !== y;
+		}), y.state.isMounted = !1, N("onHidden", [y]));
+	}
+	function Oe() {
+		y.state.isDestroyed || (y.clearDelayTimeouts(), y.unmount(), le(), delete e._tippy, y.state.isDestroyed = !0, N("onDestroy", [y]));
+	}
+}
+function Hc(e, t) {
+	t === void 0 && (t = {});
+	var n = Z.plugins.concat(t.plugins || []);
+	Tc();
+	var r = Object.assign({}, t, { plugins: n }), i = mc(e).reduce(function(e, t) {
+		var n = t && Vc(t, r);
+		return n && e.push(n), e;
+	}, []);
+	return uc(e) ? i[0] : i;
+}
+//#endregion
+//#region src/lib/svg-wind-barbs/index.ts
+Hc.defaultProps = Z, Hc.setDefaultProps = Oc, Hc.currentInput = X, Object.assign({}, vo, { effect: function(e) {
+	var t = e.state, n = {
+		popper: {
+			position: t.options.strategy,
+			left: "0",
+			top: "0",
+			margin: "0"
+		},
+		arrow: { position: "absolute" },
+		reference: {}
+	};
+	Object.assign(t.elements.popper.style, n.popper), t.styles = n, t.elements.arrow && Object.assign(t.elements.arrow.style, n.arrow);
+} }), Hc.setDefaultProps({ render: Lc }), zt();
+var Uc = H`<path class="svg-wb-fill" d="M125,120c2.762,0,5,2.239,5,5c0,2.762-2.238,5-5,5c-2.761,0-5-2.238-5-5C120,122.239,122.239,120,125,120z"/><path fill="none" class="svg-wb-stroke" stroke-width="2" d="M125,115c5.523,0,10,4.477,10,10c0,5.523-4.477,10-10,10 c-5.523,0-10-4.477-10-10C115,119.477,119.477,115,125,115z "/>`, Wc = H`<path class="svg-wb" d="M125,112V76 M125,125l7-12.1h-14L125,125z"/>`, Gc = H`<path class="svg-wb" d="M125,112V76 M125,89l7-7 M125,125l7-12.1h-14L125,125z"/>`, Kc = H`<path class="svg-wb" d="M125,112V89 M125,89l14-14 M125,125l7-12.1h-14L125,125z"/>`, qc = H`<path class="svg-wb" d="M125,112V89 M125,89l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, Jc = H`<path class="svg-wb" d="M125,112V89 M125,89l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, Yc = H`<path class="svg-wb" d="M125,112V79 M125,79l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, Xc = H`<path class="svg-wb" d="M125,112V79 M125,79l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, Zc = H`<path class="svg-wb" d="M125,112V69 M125,69l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, Qc = H`<path class="svg-wb" d="M125,112V69 M125,69l14-14 M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, $c = H`<path class="svg-wb" d="M125,112V59 M125,59l14-14 M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14 L125,125z"/>`, el = H`<path class="svg-wb" d="M125,112V76 M125,76h14l-14,14V76z M125,125l7-12.1h-14L125,125z"/>`, tl = H`<path class="svg-wb" d="M125,112V76 M125,76h14l-14,14V76z M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, nl = H`<path class="svg-wb" d="M125,112V76 M125,76h14l-14,14V76z M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, rl = H`<path class="svg-wb" d="M125,112V66 M125,66h14l-14,14V66z M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, il = H`<path class="svg-wb" d="M125,112V66 M125,66h14l-14,14V66z M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, al = H`<path class="svg-wb" d="M125,112V56 M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, ol = H`<path class="svg-wb" d="M125,112V56 M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, sl = H`<path class="svg-wb" d="M125,112V46 M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1 h-14L125,125z"/>`, cl = H`<path class="svg-wb" d="M125,112V46 M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1 h-14L125,125z"/>`, ll = H`<path class="svg-wb" d="M125,112V36 M125,36h14l-14,14V36z M125,60l14-14 M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, ul = H`<path class="svg-wb" d="M125,112V62 M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,125l7-12.1h-14L125,125z"/>`, dl = H`<path class="svg-wb" d="M125,112V62 M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, fl = H`<path class="svg-wb" d="M125,112V62 M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, pl = H`<path class="svg-wb" d="M125,112V52 M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14 L125,125z"/>`, ml = H`<path class="svg-wb" d="M125,112V52 M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14 L125,125z"/>`, hl = H`<path class="svg-wb" d="M125,112V42 M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125 l7-12.1h-14L125,125z"/>`, gl = H`<path class="svg-wb" d="M125,112V42 M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125 l7-12.1h-14L125,125z"/>`, _l = H`<path class="svg-wb" d="M125,112V32 M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100 l7-7 M125,125l7-12.1h-14L125,125z"/>`, vl = H`<path class="svg-wb" d="M125,112V32 M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100 l14-14 M125,125l7-12.1h-14L125,125z"/>`, yl = H`<path class="svg-wb" d="M125,112V22 M125,22h14l-14,14V22z M125,36h14l-14,14V36z M125,60l14-14 M125,70l14-14 M125,80l14-14 M125,90 l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, bl = H`<path class="svg-wb" d="M125,112V48 M125,48h14l-14,14V48z M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,125l7-12.1h-14L125,125z"/>`, xl = H`<path class="svg-wb" d="M125,112V48 M125,48h14l-14,14V48z M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l7-7 M125,125l7-12.1 h-14L125,125z"/>`, Sl = H`<path class="svg-wb" d="M125,112V48 M125,48h14l-14,14V48z M125,62h14l-14,14V62z M125,76h14l-14,14V76z M125,100l14-14 M125,125 l7-12.1h-14L125,125z"/>`, Cl = H`<path class="svg-wb" d="M125,112V38 M125,38h14l-14,14V38z M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, wl = H`<path class="svg-wb" d="M125,112V38 M125,38h14l-14,14V38z M125,52h14l-14,14V52z M125,66h14l-14,14V66z M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, Tl = H`<path class="svg-wb" d="M125,112V28 M125,28h14l-14,14V28z M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, El = H`<path class="svg-wb" d="M125,112V28 M125,28h14l-14,14V28z M125,42h14l-14,14V42z M125,56h14l-14,14V56z M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`, Dl = H`<path class="svg-wb" d="M125,112V18 M125,18h14l-14,14V18z M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l7-7 M125,125l7-12.1h-14L125,125z"/>`, Ol = H`<path class="svg-wb" d="M125,112V18 M125,18h14l-14,14V18z M125,32h14l-14,14V32z M125,46h14l-14,14V46z M125,70l14-14 M125,80l14-14 M125,90l14-14 M125,100l14-14 M125,125l7-12.1h-14L125,125z"/>`;
+function kl(e) {
+	return e <= 0 || e < 1 ? Uc : e < 2.5 ? Wc : e < 5 ? Gc : e < 7.5 ? Kc : e < 10 ? qc : e < 12.5 ? Jc : e < 15 ? Yc : e < 17.5 ? Xc : e < 20 ? Zc : e < 22.5 ? Qc : e < 25 ? $c : e < 27.5 ? el : e < 30 ? tl : e < 32.5 ? nl : e < 35 ? rl : e < 37.5 ? il : e < 40 ? al : e < 42.5 ? ol : e < 45 ? sl : e < 47.5 ? cl : e < 50 ? ll : e < 52.5 ? ul : e < 55 ? dl : e < 57.5 ? fl : e < 60 ? pl : e < 62.5 ? ml : e < 65 ? hl : e < 67.5 ? gl : e < 70 ? _l : e < 72.5 ? vl : e < 75 ? yl : e < 77.5 ? bl : e < 80 ? xl : e < 82.5 ? Sl : e < 85 ? Cl : e < 87.5 ? wl : e < 90 ? Tl : e < 92.5 ? El : e < 95 ? Dl : e < 97.5 ? Ol : Uc;
+}
+//#endregion
+//#region \0@oxc-project+runtime@0.142.0/helpers/esm/decorate.js
+function Q(e, t, n, r) {
+	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
+	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
+	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
+	return i > 3 && a && Object.defineProperty(t, n, a), a;
+}
+var Al = t((() => {}));
+zt(), Al();
+var jl, Ml = ".tippy-box[data-animation=fade][data-state=hidden]{opacity:0}[data-tippy-root]{max-width:calc(100vw - 10px)}.tippy-box{position:relative;background-color:#333;color:#fff;border-radius:4px;font-size:14px;line-height:1.4;white-space:normal;outline:0;transition-property:transform,visibility,opacity}.tippy-box[data-placement^=top]>.tippy-arrow{bottom:0}.tippy-box[data-placement^=top]>.tippy-arrow:before{bottom:-7px;left:0;border-width:8px 8px 0;border-top-color:initial;transform-origin:center top}.tippy-box[data-placement^=bottom]>.tippy-arrow{top:0}.tippy-box[data-placement^=bottom]>.tippy-arrow:before{top:-7px;left:0;border-width:0 8px 8px;border-bottom-color:initial;transform-origin:center bottom}.tippy-box[data-placement^=left]>.tippy-arrow{right:0}.tippy-box[data-placement^=left]>.tippy-arrow:before{border-width:8px 0 8px 8px;border-left-color:initial;right:-7px;transform-origin:center left}.tippy-box[data-placement^=right]>.tippy-arrow{left:0}.tippy-box[data-placement^=right]>.tippy-arrow:before{left:-7px;border-width:8px 8px 8px 0;border-right-color:initial;transform-origin:center right}.tippy-box[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-arrow{width:16px;height:16px;color:#333}.tippy-arrow:before{content:\"\";position:absolute;border-color:transparent;border-style:solid}.tippy-content{position:relative;padding:5px 9px;z-index:1}", $ = class extends Ft {
+	constructor(...e) {
+		super(...e), this.conditions = [], this.temperatures = [], this.wind = [], this.precipitation = [], this.icons = !1, this.icon_map = void 0, this.colors = void 0, this.hide_hours = !1, this.hide_temperatures = !1, this.hide_bar = !1, this.icon_fill = "single", this.show_wind = "false", this.show_precipitation_amounts = !1, this.show_precipitation_probability = !1, this.show_date = "false", this.label_spacing = 2, this.labels = En, this.tips = [];
+	}
+	render() {
+		let e = [], t = 1;
+		if (!this.hide_bar) for (let n of this.conditions) {
+			let r = this.labels[n[0]], i = this.icon_map?.[n[0]];
+			i || (i = Dn[n[0]], i = i === n[0] ? "mdi:weather-" + i : "mdi:" + i);
+			let a = [];
+			if (!this.icons) a.push(V`<span class="condition-label">${r}</span>`);
+			else {
+				let e;
+				e = !this.icon_fill || this.icon_fill === "single" ? n[1] : this.icon_fill === "full" ? 1 : Math.max(Number(this.icon_fill) || 0, 1);
+				let t = 1;
+				for (let r = 0; r < n[1]; r += e) {
+					let n = {
+						gridColumnStart: String(t),
+						gridColumnEnd: String(t += e * 2)
+					};
+					a.push(V`<span class="condition-icon" style=${$a(n)}><ha-icon icon=${i}></ha-icon></span>`);
+				}
+			}
+			let o = {
+				gridColumnStart: String(t),
+				gridColumnEnd: String(t += n[1] * 2)
+			};
+			e.push(V`
+          <div class=${n[0]} style=${$a(o)} data-tippy-content=${r}>
+            ${a}
           </div>
-        `)}const o=null!==(t=this.show_wind)&&void 0!==t?t:"",r=[];let s=null;for(let e=0;e<this.temperatures.length;e+=1){const t=e%this.label_spacing!==0,i=this.hide_hours||t,n=this.hide_temperatures||t,a=("true"===o||o.includes("speed"))&&!t,l=("true"===o||o.includes("direction"))&&!t,d=o.includes("barb")&&!t,c=this.show_precipitation_amounts&&!t,h=this.show_precipitation_probability&&!t,{hour:p,date:u,temperature:m}=this.temperatures[e];let f=null;!t&&this.show_date&&"false"!==this.show_date&&("all"===this.show_date?f=u:"boundary"===this.show_date&&(s!==u?(f=u,s=u):f=Me`&nbsp;`));const{windSpeed:g,windSpeedRawMS:v,windDirection:_,windDirectionRaw:b}=this.wind[e],y=[],x="number"==typeof b?b:Kt[null==b?void 0:b.toLowerCase()];d&&void 0!==x&&(y.push(Me`<span title=${`${g} ${_}`}>
-          ${this.getWindBarb(v,x)}
-        </span>`),(a||l)&&y.push(Me`<br>`)),a&&y.push(Me`${g}`),a&&l&&y.push(Me`<br>`),l&&y.push(Me`${_}`);const{precipitationAmount:w,precipitationProbability:A,precipitationProbabilityText:$}=this.precipitation[e],E=[];c&&E.push(Me`${w}`),c&&h&&E.push(Me`<br>`),h&&E.push(Me`<span title=${$}>${A}</span>`),r.push(Me`
+        `);
+		}
+		let n = this.show_wind ?? "", r = [], i = null;
+		for (let e = 0; e < this.temperatures.length; e += 1) {
+			let t = e % this.label_spacing !== 0, a = this.hide_hours || t, o = this.hide_temperatures || t, s = (n === "true" || n.includes("speed")) && !t, c = (n === "true" || n.includes("direction")) && !t, l = n.includes("barb") && !t, u = this.show_precipitation_amounts && !t, d = this.show_precipitation_probability && !t, { hour: f, date: p, temperature: m } = this.temperatures[e], h = null;
+			!t && this.show_date && this.show_date !== "false" && (this.show_date === "all" ? h = p : this.show_date === "boundary" && (i === p ? h = V`&nbsp;` : (h = p, i = p)));
+			let { windSpeed: g, windSpeedRawMS: _, windDirection: v, windDirectionRaw: y } = this.wind[e], b = [], x = typeof y == "number" ? y : kn[y?.toLowerCase()];
+			l && x !== void 0 && (b.push(V`<span title=${`${g} ${v}`}>
+          ${this.getWindBarb(_, x)}
+        </span>`), (s || c) && b.push(V`<br>`)), s && b.push(V`${g}`), s && c && b.push(V`<br>`), c && b.push(V`${v}`);
+			let { precipitationAmount: S, precipitationProbability: C, precipitationProbabilityText: w } = this.precipitation[e], T = [];
+			u && T.push(V`${S}`), u && d && T.push(V`<br>`), d && T.push(V`<span title=${w}>${C}</span>`), r.push(V`
         <div class="bar-block">
           <div class="bar-block-left"></div>
           <div class="bar-block-right"></div>
           <div class="bar-block-bottom">
-            <div class="date">${f}</div>
-            <div class="hour">${i?null:p}</div>
-            <div class="temperature">${n?null:Me`${m}&deg;`}</div>
-            <div class="wind">${y}</div>
-            <div class="precipitation">${E}</div>
+            <div class="date">${h}</div>
+            <div class="hour">${a ? null : f}</div>
+            <div class="temperature">${o ? null : V`${m}&deg;`}</div>
+            <div class="wind">${b}</div>
+            <div class="precipitation">${T}</div>
           </div>
         </div>
-      `)}let a=null;return this.colors&&(a=this.getColorStyles(this.colors)),Me`
+      `);
+		}
+		let a = null;
+		return this.colors && (a = this.getColorStyles(this.colors)), V`
       <div class="main">
-        ${null!=a?a:null}
-        ${this.hide_bar?null:Me`<div class="bar">${i}</div>`}
+        ${a ?? null}
+        ${this.hide_bar ? null : V`<div class="bar">${e}</div>`}
         <div class="axes">${r}</div>
       </div>
-    `}update(e){super.update(e),this.tips.forEach(e=>e.destroy()),this.tips=Ls(this.renderRoot.querySelectorAll(".bar > div"),{appendTo:this.renderRoot.firstElementChild||void 0,touch:"hold"})}getColorStyles(e){if(!e||0===e.size)return null;const t=[];for(const[i,n]of e.entries())n.background&&t.push(`--color-${i}: ${n.background};`),n.foreground&&t.push(`--color-${i}-foreground: ${n.foreground};`);return Me`<style>
+    `;
+	}
+	update(e) {
+		super.update(e), this.tips.forEach((e) => e.destroy()), this.tips = Hc(this.renderRoot.querySelectorAll(".bar > div"), {
+			appendTo: this.renderRoot.firstElementChild || void 0,
+			touch: "hold"
+		});
+	}
+	getColorStyles(e) {
+		if (!e || e.size === 0) return null;
+		let t = [];
+		for (let [n, r] of e.entries()) r.background && t.push(`--color-${n}: ${r.background};`), r.foreground && t.push(`--color-${n}-foreground: ${r.foreground};`);
+		return V`<style>
       .main > .bar {
-        ${et(t.join(" "))}
+        ${ft(t.join(" "))}
       }
-    </style>`}getWindBarb(e,t){return Me`<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 40 120 120" class="barb" style=${Ro({transform:`rotate(${t}deg)`})}>
-      ${i=e,i<=0||i<1?Hs:i<2.5?Ps:i<5?Ds:i<7.5?Vs:i<10?Fs:i<12.5?Bs:i<15?Us:i<17.5?js:i<20?Ws:i<22.5?qs:i<25?Gs:i<27.5?Xs:i<30?Ks:i<32.5?Ys:i<35?Zs:i<37.5?Js:i<40?Qs:i<42.5?ea:i<45?ta:i<47.5?ia:i<50?na:i<52.5?oa:i<55?ra:i<57.5?sa:i<60?aa:i<62.5?la:i<65?da:i<67.5?ca:i<70?ha:i<72.5?pa:i<75?ua:i<77.5?ma:i<80?fa:i<82.5?ga:i<85?va:i<87.5?_a:i<90?ba:i<92.5?ya:i<95?xa:i<97.5?wa:Hs}
-    </svg>`;var i}}var $a;Aa.styles=[et('.tippy-box[data-animation=fade][data-state=hidden]{opacity:0}[data-tippy-root]{max-width:calc(100vw - 10px)}.tippy-box{position:relative;background-color:#333;color:#fff;border-radius:4px;font-size:14px;line-height:1.4;white-space:normal;outline:0;transition-property:transform,visibility,opacity}.tippy-box[data-placement^=top]>.tippy-arrow{bottom:0}.tippy-box[data-placement^=top]>.tippy-arrow:before{bottom:-7px;left:0;border-width:8px 8px 0;border-top-color:initial;transform-origin:center top}.tippy-box[data-placement^=bottom]>.tippy-arrow{top:0}.tippy-box[data-placement^=bottom]>.tippy-arrow:before{top:-7px;left:0;border-width:0 8px 8px;border-bottom-color:initial;transform-origin:center bottom}.tippy-box[data-placement^=left]>.tippy-arrow{right:0}.tippy-box[data-placement^=left]>.tippy-arrow:before{border-width:8px 0 8px 8px;border-left-color:initial;right:-7px;transform-origin:center left}.tippy-box[data-placement^=right]>.tippy-arrow{left:0}.tippy-box[data-placement^=right]>.tippy-arrow:before{left:-7px;border-width:8px 8px 8px 0;border-right-color:initial;transform-origin:center right}.tippy-box[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-arrow{width:16px;height:16px;color:#333}.tippy-arrow:before{content:"";position:absolute;border-color:transparent;border-style:solid}.tippy-content{position:relative;padding:5px 9px;z-index:1}'),tt`
+    </style>`;
+	}
+	getWindBarb(e, t) {
+		let n = { transform: `rotate(${t}deg)` };
+		return V`<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 40 120 120" class="barb" style=${$a(n)}>
+      ${kl(e)}
+    </svg>`;
+	}
+};
+jl = $, jl.styles = [ft(Ml), pt`
     .main {
       --color-clear-night: #111;
       --color-cloudy: #777777;
@@ -279,1225 +5062,225 @@ const xt=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       stroke-linejoin: round;
       stroke-miterlimit: 10;
     }
-  `],n([$t({type:Array})],Aa.prototype,"conditions",void 0),n([$t({type:Array})],Aa.prototype,"temperatures",void 0),n([$t({type:Array})],Aa.prototype,"wind",void 0),n([$t({type:Array})],Aa.prototype,"precipitation",void 0),n([$t({type:Boolean})],Aa.prototype,"icons",void 0),n([$t({type:Object})],Aa.prototype,"icon_map",void 0),n([$t({attribute:!1})],Aa.prototype,"colors",void 0),n([$t({type:Boolean})],Aa.prototype,"hide_hours",void 0),n([$t({type:Boolean})],Aa.prototype,"hide_temperatures",void 0),n([$t({type:Boolean})],Aa.prototype,"hide_bar",void 0),n([$t({type:String})],Aa.prototype,"icon_fill",void 0),n([$t({type:String})],Aa.prototype,"show_wind",void 0),n([$t({type:Boolean})],Aa.prototype,"show_precipitation_amounts",void 0),n([$t({type:Boolean})],Aa.prototype,"show_precipitation_probability",void 0),n([$t({type:String})],Aa.prototype,"show_date",void 0),n([$t({type:Number})],Aa.prototype,"label_spacing",void 0),n([$t({type:Object})],Aa.prototype,"labels",void 0),customElements.define("weather-bar",Aa);const Ea=Oo(void 0,void 0);console.info(`%c  HOURLY-WEATHER-CARD \n%c  ${Ea("common.version")} 6.8.0    `,"color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray"),window.customCards=window.customCards||[],window.customCards.push({type:"hourly-weather",name:Ea("common.title_card"),description:Ea("common.description")});let Ca=$a=class extends bt{constructor(){super(...arguments),this.configRenderPending=!1,this.localizer=void 0,this.localizerLastSettings={configuredLanguage:void 0,haServerLanguage:void 0},this._labels=qt,this.labelsLocalized=!1,this._directions=Object.keys(Xt),this.directionsLocalized=!1}static async getConfigElement(){return await Promise.resolve().then(function(){return E_}),document.createElement("hourly-weather-editor")}static getStubConfig(){return{}}localize(e,t="",i=""){var n,o,r,s,a,l;return this.localizer&&!this.localizerSettingsChanged||(this.localizer=Oo(null===(n=this.config)||void 0===n?void 0:n.language,null===(r=null===(o=this.hass)||void 0===o?void 0:o.locale)||void 0===r?void 0:r.language),this.localizerLastSettings.configuredLanguage=null===(s=this.config)||void 0===s?void 0:s.language,this.localizerLastSettings.haServerLanguage=null===(l=null===(a=this.hass)||void 0===a?void 0:a.locale)||void 0===l?void 0:l.language,this.labelsLocalized=!1,this.directionsLocalized=!1),this.localizer(e,t,i)}get localizerSettingsChanged(){var e,t,i;return this.localizerLastSettings.configuredLanguage!==(null===(e=this.config)||void 0===e?void 0:e.language)||this.localizerLastSettings.haServerLanguage!==(null===(i=null===(t=this.hass)||void 0===t?void 0:t.locale)||void 0===i?void 0:i.language)}get labels(){return this.labelsLocalized&&!this.localizerSettingsChanged||(this._labels=Object.fromEntries(Object.entries(qt).map(([e,t])=>[e,this.localize(t)])),this.labelsLocalized=!0),this._labels}get directions(){return this.directionsLocalized&&!this.localizerSettingsChanged||(this._directions=Object.values(Xt).map(e=>this.localize(e)),this._directions.push(this._directions[0]),this.directionsLocalized=!0),this._directions}unsubscribeForecastEvents(){this.subscribedToForecast&&(this.subscribedToForecast.then(e=>e()),this.subscribedToForecast=void 0)}async subscribeToForecastEvents(){if(this.unsubscribeForecastEvents(),!(this.isConnected&&this.hass&&this.config&&this.config.entity&&this.hassSupportsForecastEvents()&&this.config.entity.startsWith("weather.")))return;const e=this.getIdealForecastType();this.subscribedToForecast=this.hass.connection.subscribeMessage(e=>this.forecastEvent=e,{type:"weather/subscribe_forecast",forecast_type:e,entity_id:this.config.entity})}getIdealForecastType(){var e,t;if(null===(e=this.config)||void 0===e?void 0:e.forecast_type)return this.config.forecast_type;if(!(null===(t=this.config)||void 0===t?void 0:t.entity))return"hourly";const i=this.hass.states[this.config.entity];if(!i)return"hourly";const n=i.attributes.supported_features;return n?2&n?"hourly":4&n?"twice_daily":"daily":"hourly"}setConfig(e){if(!e)throw new Error(this.localize("common.invalid_configuration"));if(!e.entity)throw new Error(this.localize("errors.missing_entity"));if(e.label_spacing){const t=parseInt(e.label_spacing,10);if(!Number.isNaN(t)&&t<1)throw new Error(this.localize("errors.must_be_positive_int"))}e.test_gui&&function(){var e=document.querySelector("home-assistant");if(e=(e=(e=(e=(e=(e=(e=(e=e&&e.shadowRoot)&&e.querySelector("home-assistant-main"))&&e.shadowRoot)&&e.querySelector("app-drawer-layout partial-panel-resolver"))&&e.shadowRoot||e)&&e.querySelector("ha-panel-lovelace"))&&e.shadowRoot)&&e.querySelector("hui-root")){var t=e.lovelace;return t.current_view=e.___curView,t}return null}().setEditMode(!0),this.config=Object.assign({name:this.localize("common.title")},e),this.triggerConfigRender()}triggerConfigRender(){var e;(null===(e=this.hass)||void 0===e?void 0:e.connection)?this.renderedConfig=this.renderConfig():this.configRenderPending=!0}async renderConfig(){const{config:e}=this;if(!e)return e;return Object.assign(Object.assign({},e),{num_segments:await this.renderTemplate(null==e?void 0:e.num_segments),offset:await this.renderTemplate(null==e?void 0:e.offset),label_spacing:await this.renderTemplate(null==e?void 0:e.label_spacing),name:await this.renderTemplate(null==e?void 0:e.name)})}async renderTemplate(e){return e?"string"!=typeof e?e:e.includes("{{")?new Promise(t=>{this.hass.connection.subscribeMessage(e=>t(e.result),{type:"render_template",template:e})}):e:e}connectedCallback(){super.connectedCallback(),this.hasUpdated&&this.subscribeToForecastEvents()}disconnectedCallback(){super.disconnectedCallback(),this.unsubscribeForecastEvents()}shouldUpdate(e){if(!this.config)return!1;if(e.has("hass")){const t=e.get("hass");if(t&&this.hass&&JSON.stringify(t.locale)!==JSON.stringify(this.hass.locale))return!0}return function(e,t,i){if(t.has("config")||i)return!0;if(e.config.entity){var n=t.get("hass");return!n||n.states[e.config.entity]!==e.hass.states[e.config.entity]}return!1}(this,e,!1)}updated(e){var t,i,n;super.updated(e),(null===(t=this.hass)||void 0===t?void 0:t.connection)&&this.configRenderPending&&(this.configRenderPending=!1,this.triggerConfigRender()),(!this.subscribedToForecast||e.has("config")&&(null===(i=this.config)||void 0===i?void 0:i.entity)!==(null===(n=e.get("config"))||void 0===n?void 0:n.entity))&&this.subscribeToForecastEvents()}getForecast(){var e,t,i,n,o;const r=!(null===(e=this.forecastEvent)||void 0===e?void 0:e.forecast)&&this.hassSupportsForecastEvents();return{forecast:null!==(i=null===(t=this.forecastEvent)||void 0===t?void 0:t.forecast)&&void 0!==i?i:null===(o=null===(n=this.hass)||void 0===n?void 0:n.states[this.config.entity])||void 0===o?void 0:o.attributes.forecast,pending:r}}hassSupportsForecastEvents(){var e,t,i,n,o,r;return!!(null===(i=null===(t=null===(e=this.hass)||void 0===e?void 0:e.services)||void 0===t?void 0:t.weather)||void 0===i?void 0:i.get_forecasts)||!!(null===(r=null===(o=null===(n=this.hass)||void 0===n?void 0:n.services)||void 0===o?void 0:o.weather)||void 0===r?void 0:r.get_forecast)}render(){return Me`${Ft(this.renderCore(),Me``)}`}async renderCore(){var e,t,i,n,o,r;const s=await this.renderedConfig;if(!s)return;const a=s.entity,l=this.hass.states[a],{forecast:d,pending:c}=this.getForecast(),h=null!==(e=l.attributes.wind_speed_unit)&&void 0!==e?e:"",p=null!==(t=l.attributes.precipitation_unit)&&void 0!==t?t:"",u=parseInt(null!==(n=null!==(i=s.num_segments)&&void 0!==i?i:s.num_hours)&&void 0!==n?n:"12",10),m=parseInt(null!==(o=s.offset)&&void 0!==o?o:"0",10),f=parseInt(null!==(r=s.label_spacing)&&void 0!==r?r:"2",10),g=!d||!d.length,v=s.icon_fill,b=!!s.hide_minutes,y=!!s.round_temperatures;if(u<1)return await this._showError(this.localize("errors.offset_must_be_positive_int","offset","num_segments"));if(m<0)return await this._showError(this.localize("errors.offset_must_be_positive_int"));if(!g&&u>d.length-m){if(c)return;return await this._showError(this.localize("errors.too_many_segments_requested"))}if(f<1)return await this._showError(this.localize("errors.offset_must_be_positive_int","offset","label_spacing"));if(v){const e="full"===s.icon_fill,t="single"===s.icon_fill,i=Number(s.icon_fill),n=Number.isInteger(i)&&i>0;if(!e&&!t&&!n)return await this._showError(this.localize("errors.invalid_value_icon_fill"))}let x=s.show_wind;if("boolean"==typeof x&&(x=x?"true":"false"),g){if(c)return;return Me`
-        <ha-card
-          .header=${s.name}
-          @action=${this._handleAction}
-          .actionHandler=${Wt({hasHold:_(s.hold_action),hasDoubleClick:_(s.double_tap_action)})}
-          tabindex="0"
-          .label=${`Hourly Weather: ${s.entity||"No Entity Defined"}`}
-        >
-          <div class="card-content">
-            <h3>${this.localize("errors.forecast_not_available")}</h3>
-            <p>${this.localize("errors.check_entity")}</p>
-          </div>
-        </ha-card>`}const w=this.getConditionListFromForecast(d,u,m),A=this.getTemperatures(d,u,m,b,y),$=this.getWind(d,u,m,h,b),E=this.getPrecipitation(d,u,m,p,b),C=this.getColorSettings(s.colors);return Me`
-      <ha-card
-        .header=${s.name}
-        @action=${this._handleAction}
-        .actionHandler=${Wt({hasHold:_(s.hold_action),hasDoubleClick:_(s.double_tap_action)})}
-        tabindex="0"
-        .label=${`Hourly Weather: ${s.entity||"No Entity Defined"}`}
-      >
-        <div class="card-content">
-          ${C.warnings.length?this._showWarning(this.localize("errors.invalid_colors")+" "+C.warnings.join(", ")):""}
-          <!-- @ts-ignore -->
-          <weather-bar
-            .conditions=${w}
-            .temperatures=${A}
-            .wind=${$}
-            .precipitation=${E}
-            .icons=${!!s.icons}
-            .icon_map=${s.icon_map}
-            .colors=${C.validColors}
-            .hide_hours=${!!s.hide_hours}
-            .hide_temperatures=${!!s.hide_temperatures}
-            .hide_bar=${!!s.hide_bar}
-            .icon_fill=${s.icon_fill}
-            .show_wind=${x}
-            .show_precipitation_amounts=${!!s.show_precipitation_amounts}
-            .show_precipitation_probability=${!!s.show_precipitation_probability}
-            .show_date=${s.show_date}
-            .label_spacing=${f}
-            .labels=${this.labels}></weather-bar>
-        </div>
-      </ha-card>
-    `}getConditionListFromForecast(e,t,i){let n=e[i].condition,o=0;const r=[[n,1]];for(let s=i+1;s<t+i;s++){const t=e[s].condition;t===n?r[o][1]++:(r.push([t,1]),o++,n=t)}return r}getTemperatures(e,t,i,n,o){const r=[];for(let s=i;s<t+i;s++){const t=e[s],i=new Date(t.datetime),l=o&&!Number.isNaN(t.temperature)?Math.round(t.temperature):t.temperature;r.push({date:a(i,this.hass.locale),hour:this.formatHour(i,this.hass.locale,n),temperature:p(l,this.hass.locale)})}return r}getPrecipitation(e,t,i,n,o){const r=[];for(let s=i;s<t+i;s++){const t=e[s];let i="";t.precipitation>0&&(i=`${p(t.precipitation,this.hass.locale)} ${n}`.trim());let a="",l="";t.precipitation_probability>0&&(a=`${p(t.precipitation_probability,this.hass.locale)}%`.trim(),l=this.localize("card.chance_of_precipitation","{0}",String(t.precipitation_probability))),r.push({hour:this.formatHour(new Date(t.datetime),this.hass.locale,o),precipitationAmount:i,precipitationProbability:a,precipitationProbabilityText:l})}return r}getWind(e,t,i,n,o){const r=[];for(let s=i;s<t+i;s++){const t=e[s];let i="-",a="";t.wind_speed>0&&(i=`${Math.round(t.wind_speed)} ${n}`.trim(),a=this.formatWindDir(t.wind_bearing)),r.push({hour:this.formatHour(new Date(t.datetime),this.hass.locale,o),windSpeed:i,windSpeedRawMS:this.getWindSpeedMS(t.wind_speed,n),windDirection:a,windDirectionRaw:t.wind_bearing})}return r}formatWindDir(e){if("string"==typeof e){const t=e.toLowerCase();return t in Xt?this.localize(Xt[t]):e}return this.directions[Math.floor((e+11.25)/22.5)]}getWindSpeedMS(e,t){switch(t){case"m/s":return e;case"mph":return.44704*e;case"km/h":return.27777777777778*e;case"ft/s":return.3048*e;case"kt":case"kn":return.51444444444444*e}return-1}formatHour(e,t,i){const n=function(e,t){return c(t).format(e)}(e,t);return i||n.includes("AM")||n.includes("PM")?n.replace(":00",""):n}getColorSettings(e){if(!e)return{validColors:void 0,warnings:[]};const t=new Map,i=[];return Object.entries(e).forEach(([e,n])=>{this.isValidColorDefinition(e,n)?t.set(e,$a.toColorObject(n)):i.push(`${e}: ${JSON.stringify(n,null,2)}`)}),{validColors:t,warnings:i}}isValidColorDefinition(e,t){if(!(e in Gt))return!1;if("string"==typeof t){if(!$a.isValidColor(t))return!1}else{if(!t.background&&!t.foreground)return!1;if(t.background&&!$a.isValidColor(t.background))return!1;if(t.foreground&&!$a.isValidColor(t.foreground))return!1}return!0}static isValidColor(e){return!!(j.isValidRGB(e)||j.isValidColorName(e)||j.isValidHSL(e)||$a.isValidColorVar(e))}static isValidCustomPropertyName(e){if("string"!=typeof e)return!1;if(!e.startsWith("--"))return!1;const t=e.slice(2);return 0!==t.length&&(!/^-[0-9]/.test(t)&&!/^[0-9]/.test(t)&&/^[A-Za-z0-9_-]+$/.test(t))}static isValidColorVar(e){if("string"!=typeof e)return!1;const t=e.trim();if(!t.startsWith("var(")||!t.endsWith(")"))return!1;const i=t.slice(4,-1).trim(),[n,o]=i.split(","),r=n.trim();if(!$a.isValidCustomPropertyName(r))return!1;const s=null==o?void 0:o.trim();return!(s&&!$a.isValidColor(s))}static toColorObject(e){return"string"==typeof e?{background:e}:e}_handleAction(e){this.hass&&this.config&&e.detail.action&&function(e,t,i,n){var o;"double_tap"===n&&i.double_tap_action?o=i.double_tap_action:"hold"===n&&i.hold_action?o=i.hold_action:"tap"===n&&i.tap_action&&(o=i.tap_action),v(e,t,i,o)}(this,this.hass,this.config,e.detail.action)}_showWarning(e){return Me` <hui-warning>${e}</hui-warning> `}async _showError(e){await new Promise(e=>setTimeout(e,0));const t=document.createElement("hui-error-card");return t.setConfig({type:"error",error:e,origConfig:this.config}),Me` ${t} `}static get styles(){return tt``}};n([$t({attribute:!1})],Ca.prototype,"hass",void 0),n([Et()],Ca.prototype,"config",void 0),n([Et()],Ca.prototype,"renderedConfig",void 0),n([Et()],Ca.prototype,"forecastEvent",void 0),n([Et()],Ca.prototype,"subscribedToForecast",void 0),Ca=$a=n([xt("hourly-weather")],Ca);
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const Sa=window,ka=Sa.ShadowRoot&&(void 0===Sa.ShadyCSS||Sa.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,Ta=Symbol(),Ia=new WeakMap;class Oa{constructor(e,t,i){if(this._$cssResult$=!0,i!==Ta)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(ka&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=Ia.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&Ia.set(t,e))}return e}toString(){return this.cssText}}const Ma=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,n)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[n+1],e[0]);return new Oa(i,e,Ta)},Na=(e,t)=>{ka?e.adoptedStyleSheets=t.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet):t.forEach(t=>{const i=document.createElement("style"),n=Sa.litNonce;void 0!==n&&i.setAttribute("nonce",n),i.textContent=t.cssText,e.appendChild(i)})},Ra=ka?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new Oa("string"==typeof e?e:e+"",void 0,Ta))(t)})(e):e;
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-/**
- * @license
- * Copyright 2016 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var za,La=function(){function e(e){void 0===e&&(e={}),this.adapter=e}return Object.defineProperty(e,"cssClasses",{get:function(){return{}},enumerable:!1,configurable:!0}),Object.defineProperty(e,"strings",{get:function(){return{}},enumerable:!1,configurable:!0}),Object.defineProperty(e,"numbers",{get:function(){return{}},enumerable:!1,configurable:!0}),Object.defineProperty(e,"defaultAdapter",{get:function(){return{}},enumerable:!1,configurable:!0}),e.prototype.init=function(){},e.prototype.destroy=function(){},e}(),Ha={ROOT:"mdc-form-field"},Pa={LABEL_SELECTOR:".mdc-form-field > label"},Da=function(e){function n(t){var o=e.call(this,i(i({},n.defaultAdapter),t))||this;return o.click=function(){o.handleClick()},o}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return Ha},enumerable:!1,configurable:!0}),Object.defineProperty(n,"strings",{get:function(){return Pa},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{activateInputRipple:function(){},deactivateInputRipple:function(){},deregisterInteractionHandler:function(){},registerInteractionHandler:function(){}}},enumerable:!1,configurable:!0}),n.prototype.init=function(){this.adapter.registerInteractionHandler("click",this.click)},n.prototype.destroy=function(){this.adapter.deregisterInteractionHandler("click",this.click)},n.prototype.handleClick=function(){var e=this;this.adapter.activateInputRipple(),requestAnimationFrame(function(){e.adapter.deactivateInputRipple()})},n}(La);
-/**
- * @license
- * Copyright 2017 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */const Va=window,Fa=Va.trustedTypes,Ba=Fa?Fa.emptyScript:"",Ua=Va.reactiveElementPolyfillSupport,ja={toAttribute(e,t){switch(t){case Boolean:e=e?Ba:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},Wa=(e,t)=>t!==e&&(t==t||e==e),qa={attribute:!0,type:String,converter:ja,reflect:!1,hasChanged:Wa},Ga="finalized";class Xa extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this.u()}static addInitializer(e){var t;this.finalize(),(null!==(t=this.h)&&void 0!==t?t:this.h=[]).push(e)}static get observedAttributes(){this.finalize();const e=[];return this.elementProperties.forEach((t,i)=>{const n=this._$Ep(i,t);void 0!==n&&(this._$Ev.set(n,i),e.push(n))}),e}static createProperty(e,t=qa){if(t.state&&(t.attribute=!1),this.finalize(),this.elementProperties.set(e,t),!t.noAccessor&&!this.prototype.hasOwnProperty(e)){const i="symbol"==typeof e?Symbol():"__"+e,n=this.getPropertyDescriptor(e,i,t);void 0!==n&&Object.defineProperty(this.prototype,e,n)}}static getPropertyDescriptor(e,t,i){return{get(){return this[t]},set(n){const o=this[e];this[t]=n,this.requestUpdate(e,o,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)||qa}static finalize(){if(this.hasOwnProperty(Ga))return!1;this[Ga]=!0;const e=Object.getPrototypeOf(this);if(e.finalize(),void 0!==e.h&&(this.h=[...e.h]),this.elementProperties=new Map(e.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const e=this.properties,t=[...Object.getOwnPropertyNames(e),...Object.getOwnPropertySymbols(e)];for(const i of t)this.createProperty(i,e[i])}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(Ra(e))}else void 0!==e&&t.push(Ra(e));return t}static _$Ep(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}u(){var e;this._$E_=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(e=this.constructor.h)||void 0===e||e.forEach(e=>e(this))}addController(e){var t,i;(null!==(t=this._$ES)&&void 0!==t?t:this._$ES=[]).push(e),void 0!==this.renderRoot&&this.isConnected&&(null===(i=e.hostConnected)||void 0===i||i.call(e))}removeController(e){var t;null===(t=this._$ES)||void 0===t||t.splice(this._$ES.indexOf(e)>>>0,1)}_$Eg(){this.constructor.elementProperties.forEach((e,t)=>{this.hasOwnProperty(t)&&(this._$Ei.set(t,this[t]),delete this[t])})}createRenderRoot(){var e;const t=null!==(e=this.shadowRoot)&&void 0!==e?e:this.attachShadow(this.constructor.shadowRootOptions);return Na(t,this.constructor.elementStyles),t}connectedCallback(){var e;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(e=this._$ES)||void 0===e||e.forEach(e=>{var t;return null===(t=e.hostConnected)||void 0===t?void 0:t.call(e)})}enableUpdating(e){}disconnectedCallback(){var e;null===(e=this._$ES)||void 0===e||e.forEach(e=>{var t;return null===(t=e.hostDisconnected)||void 0===t?void 0:t.call(e)})}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$EO(e,t,i=qa){var n;const o=this.constructor._$Ep(e,i);if(void 0!==o&&!0===i.reflect){const r=(void 0!==(null===(n=i.converter)||void 0===n?void 0:n.toAttribute)?i.converter:ja).toAttribute(t,i.type);this._$El=e,null==r?this.removeAttribute(o):this.setAttribute(o,r),this._$El=null}}_$AK(e,t){var i;const n=this.constructor,o=n._$Ev.get(e);if(void 0!==o&&this._$El!==o){const e=n.getPropertyOptions(o),r="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==(null===(i=e.converter)||void 0===i?void 0:i.fromAttribute)?e.converter:ja;this._$El=o,this[o]=r.fromAttribute(t,e.type),this._$El=null}}requestUpdate(e,t,i){let n=!0;void 0!==e&&(((i=i||this.constructor.getPropertyOptions(e)).hasChanged||Wa)(this[e],t)?(this._$AL.has(e)||this._$AL.set(e,t),!0===i.reflect&&this._$El!==e&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(e,i))):n=!1),!this.isUpdatePending&&n&&(this._$E_=this._$Ej())}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var e;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach((e,t)=>this[t]=e),this._$Ei=void 0);let t=!1;const i=this._$AL;try{t=this.shouldUpdate(i),t?(this.willUpdate(i),null===(e=this._$ES)||void 0===e||e.forEach(e=>{var t;return null===(t=e.hostUpdate)||void 0===t?void 0:t.call(e)}),this.update(i)):this._$Ek()}catch(e){throw t=!1,this._$Ek(),e}t&&this._$AE(i)}willUpdate(e){}_$AE(e){var t;null===(t=this._$ES)||void 0===t||t.forEach(e=>{var t;return null===(t=e.hostUpdated)||void 0===t?void 0:t.call(e)}),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(e){return!0}update(e){void 0!==this._$EC&&(this._$EC.forEach((e,t)=>this._$EO(t,this[t],e)),this._$EC=void 0),this._$Ek()}updated(e){}firstUpdated(e){}}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var Ka;Xa[Ga]=!0,Xa.elementProperties=new Map,Xa.elementStyles=[],Xa.shadowRootOptions={mode:"open"},null==Ua||Ua({ReactiveElement:Xa}),(null!==(za=Va.reactiveElementVersions)&&void 0!==za?za:Va.reactiveElementVersions=[]).push("1.6.2");const Ya=window,Za=Ya.trustedTypes,Ja=Za?Za.createPolicy("lit-html",{createHTML:e=>e}):void 0,Qa="$lit$",el=`lit$${(Math.random()+"").slice(9)}$`,tl="?"+el,il=`<${tl}>`,nl=document,ol=()=>nl.createComment(""),rl=e=>null===e||"object"!=typeof e&&"function"!=typeof e,sl=Array.isArray,al="[ \t\n\f\r]",ll=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,dl=/-->/g,cl=/>/g,hl=RegExp(`>|${al}(?:([^\\s"'>=/]+)(${al}*=${al}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),pl=/'/g,ul=/"/g,ml=/^(?:script|style|textarea|title)$/i,fl=Symbol.for("lit-noChange"),gl=Symbol.for("lit-nothing"),vl=new WeakMap,_l=nl.createTreeWalker(nl,129,null,!1);function bl(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==Ja?Ja.createHTML(t):t}class yl{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=ll;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===ll?"!--"===l[1]?s=dl:void 0!==l[1]?s=cl:void 0!==l[2]?(ml.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=hl):void 0!==l[3]&&(s=hl):s===hl?">"===l[0]?(s=null!=o?o:ll,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?hl:'"'===l[3]?ul:pl):s===ul||s===pl?s=hl:s===dl||s===cl?s=ll:(s=hl,o=void 0);const h=s===hl&&e[t+1].startsWith("/>")?" ":"";r+=s===ll?i+il:d>=0?(n.push(a),i.slice(0,d)+Qa+i.slice(d)+el+h):i+el+(-2===d?(n.push(void 0),t):h)}return[bl(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=yl.createElement(l,i),_l.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=_l.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(Qa)||t.startsWith(el)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+Qa).split(el),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?El:"?"===t[1]?Sl:"@"===t[1]?kl:$l})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(ml.test(n.tagName)){const e=n.textContent.split(el),t=e.length-1;if(t>0){n.textContent=Za?Za.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],ol()),_l.nextNode(),a.push({type:2,index:++o});n.append(e[t],ol())}}}else if(8===n.nodeType)if(n.data===tl)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(el,e+1));)a.push({type:7,index:o}),e+=el.length-1}o++}}static createElement(e,t){const i=nl.createElement("template");return i.innerHTML=e,i}}function xl(e,t,i=e,n){var o,r,s,a;if(t===fl)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=rl(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=xl(e,l._$AS(e,t.values),l,n)),t}class wl{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:nl).importNode(i,!0);_l.currentNode=o;let r=_l.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Al(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new Tl(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=_l.nextNode(),s++)}return _l.currentNode=nl,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Al{constructor(e,t,i,n){var o;this.type=2,this._$AH=gl,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=xl(this,e,t),rl(e)?e===gl||null==e||""===e?(this._$AH!==gl&&this._$AR(),this._$AH=gl):e!==this._$AH&&e!==fl&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>sl(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==gl&&rl(this._$AH)?this._$AA.nextSibling.data=e:this.$(nl.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=yl.createElement(bl(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new wl(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=vl.get(e.strings);return void 0===t&&vl.set(e.strings,t=new yl(e)),t}T(e){sl(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Al(this.k(ol()),this.k(ol()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class $l{constructor(e,t,i,n,o){this.type=1,this._$AH=gl,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=gl}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=xl(this,e,t,0),r=!rl(e)||e!==this._$AH&&e!==fl,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=xl(this,n[i+s],t,s),a===fl&&(a=this._$AH[s]),r||(r=!rl(a)||a!==this._$AH[s]),a===gl?e=gl:e!==gl&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===gl?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class El extends $l{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===gl?void 0:e}}const Cl=Za?Za.emptyScript:"";class Sl extends $l{constructor(){super(...arguments),this.type=4}j(e){e&&e!==gl?this.element.setAttribute(this.name,Cl):this.element.removeAttribute(this.name)}}class kl extends $l{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=xl(this,e,t,0))&&void 0!==i?i:gl)===fl)return;const n=this._$AH,o=e===gl&&n!==gl||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==gl&&(n===gl||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class Tl{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){xl(this,e)}}const Il=Ya.litHtmlPolyfillSupport;null==Il||Il(yl,Al),(null!==(Ka=Ya.litHtmlVersions)&&void 0!==Ka?Ka:Ya.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var Ol,Ml;class Nl extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Al(t.insertBefore(ol(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return fl}}Nl.finalized=!0,Nl._$litElement$=!0,null===(Ol=globalThis.litElementHydrateSupport)||void 0===Ol||Ol.call(globalThis,{LitElement:Nl});const Rl=globalThis.litElementPolyfillSupport;null==Rl||Rl({LitElement:Nl}),(null!==(Ml=globalThis.litElementVersions)&&void 0!==Ml?Ml:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-const zl=e=>e.nodeType===Node.ELEMENT_NODE;function Ll(e){return{addClass:t=>{e.classList.add(t)},removeClass:t=>{e.classList.remove(t)},hasClass:t=>e.classList.contains(t)}}const Hl=()=>{},Pl={get passive(){return!1}};document.addEventListener("x",Hl,Pl),document.removeEventListener("x",Hl);const Dl=(e=window.document)=>{let t=e.activeElement;const i=[];if(!t)return i;for(;t&&(i.push(t),t.shadowRoot);)t=t.shadowRoot.activeElement;return i},Vl=e=>{const t=Dl();if(!t.length)return!1;const i=t[t.length-1],n=new Event("check-if-focused",{bubbles:!0,composed:!0});let o=[];const r=e=>{o=e.composedPath()};return document.body.addEventListener("check-if-focused",r),i.dispatchEvent(n),document.body.removeEventListener("check-if-focused",r),-1!==o.indexOf(e)};
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-class Fl extends Nl{click(){if(this.mdcRoot)return this.mdcRoot.focus(),void this.mdcRoot.click();super.click()}createFoundation(){void 0!==this.mdcFoundation&&this.mdcFoundation.destroy(),this.mdcFoundationClass&&(this.mdcFoundation=new this.mdcFoundationClass(this.createAdapter()),this.mdcFoundation.init())}firstUpdated(){this.createFoundation()}}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const Bl=(e,t)=>"method"===t.kind&&t.descriptor&&!("value"in t.descriptor)?{...t,finisher(i){i.createProperty(t.key,e)}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:t.key,initializer(){"function"==typeof t.initializer&&(this[t.key]=t.initializer.call(this))},finisher(i){i.createProperty(t.key,e)}};function Ul(e){return(t,i)=>void 0!==i?((e,t,i)=>{t.constructor.createProperty(i,e)})(e,t,i):Bl(e,t)}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function jl(e){return Ul({...e,state:!0})}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const Wl=({finisher:e,descriptor:t})=>(i,n)=>{var o;if(void 0===n){const n=null!==(o=i.originalKey)&&void 0!==o?o:i.key,r=null!=t?{kind:"method",placement:"prototype",key:n,descriptor:t(i.key)}:{...i,key:n};return null!=e&&(r.finisher=function(t){e(t,n)}),r}{const o=i.constructor;void 0!==t&&Object.defineProperty(i,n,t(n)),null==e||e(o,n)}};
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function ql(e){return Wl({finisher:(t,i)=>{Object.assign(t.prototype[i],e)}})}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function Gl(e,t){return Wl({descriptor:i=>{const n={get(){var t,i;return null!==(i=null===(t=this.renderRoot)||void 0===t?void 0:t.querySelector(e))&&void 0!==i?i:null},enumerable:!0,configurable:!0};if(t){const t="symbol"==typeof i?Symbol():"__"+i;n.get=function(){var i,n;return void 0===this[t]&&(this[t]=null!==(n=null===(i=this.renderRoot)||void 0===i?void 0:i.querySelector(e))&&void 0!==n?n:null),this[t]}}return n}})}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */function Xl(e){return Wl({descriptor:t=>({async get(){var t;return await this.updateComplete,null===(t=this.renderRoot)||void 0===t?void 0:t.querySelector(e)},enumerable:!0,configurable:!0})})}
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */var Kl;const Yl=null!=(null===(Kl=window.HTMLSlotElement)||void 0===Kl?void 0:Kl.prototype.assignedElements)?(e,t)=>e.assignedElements(t):(e,t)=>e.assignedNodes(t).filter(e=>e.nodeType===Node.ELEMENT_NODE);
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-function Zl(e,t,i){let n,o=e;return"object"==typeof e?(o=e.slot,n=e):n={flatten:t},i?function(e){const{slot:t,selector:i}=null!=e?e:{};return Wl({descriptor:n=>({get(){var n;const o="slot"+(t?`[name=${t}]`:":not([name])"),r=null===(n=this.renderRoot)||void 0===n?void 0:n.querySelector(o),s=null!=r?Yl(r,e):[];return i?s.filter(e=>e.matches(i)):s},enumerable:!0,configurable:!0})})}({slot:o,flatten:t,selector:i}):Wl({descriptor:e=>({get(){var e,t;const i="slot"+(o?`[name=${o}]`:":not([name])"),r=null===(e=this.renderRoot)||void 0===e?void 0:e.querySelector(i);return null!==(t=null==r?void 0:r.assignedNodes(n))&&void 0!==t?t:[]},enumerable:!0,configurable:!0})})}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */var Jl,Ql;const ed=null!==(Ql=null===(Jl=window.ShadyDOM)||void 0===Jl?void 0:Jl.inUse)&&void 0!==Ql&&Ql;class td extends Fl{constructor(){super(...arguments),this.disabled=!1,this.containingForm=null,this.formDataListener=e=>{this.disabled||this.setFormData(e.formData)}}findFormElement(){if(!this.shadowRoot||ed)return null;const e=this.getRootNode().querySelectorAll("form");for(const t of Array.from(e))if(t.contains(this))return t;return null}connectedCallback(){var e;super.connectedCallback(),this.containingForm=this.findFormElement(),null===(e=this.containingForm)||void 0===e||e.addEventListener("formdata",this.formDataListener)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this.containingForm)||void 0===e||e.removeEventListener("formdata",this.formDataListener),this.containingForm=null}click(){this.formElement&&!this.disabled&&(this.formElement.focus(),this.formElement.click())}firstUpdated(){super.firstUpdated(),this.shadowRoot&&this.mdcRoot.addEventListener("change",e=>{this.dispatchEvent(new Event("change",e))})}}td.shadowRootOptions={mode:"open",delegatesFocus:!0},n([Ul({type:Boolean})],td.prototype,"disabled",void 0);
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-const id=e=>(t,i)=>{if(t.constructor._observers){if(!t.constructor.hasOwnProperty("_observers")){const e=t.constructor._observers;t.constructor._observers=new Map,e.forEach((e,i)=>t.constructor._observers.set(i,e))}}else{t.constructor._observers=new Map;const e=t.updated;t.updated=function(t){e.call(this,t),t.forEach((e,t)=>{const i=this.constructor._observers.get(t);void 0!==i&&i.call(this,this[t],e)})}}t.constructor._observers.set(i,e)};
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */var nd;const od=window,rd=od.trustedTypes,sd=rd?rd.createPolicy("lit-html",{createHTML:e=>e}):void 0,ad="$lit$",ld=`lit$${(Math.random()+"").slice(9)}$`,dd="?"+ld,cd=`<${dd}>`,hd=document,pd=()=>hd.createComment(""),ud=e=>null===e||"object"!=typeof e&&"function"!=typeof e,md=Array.isArray,fd="[ \t\n\f\r]",gd=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,vd=/-->/g,_d=/>/g,bd=RegExp(`>|${fd}(?:([^\\s"'>=/]+)(${fd}*=${fd}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),yd=/'/g,xd=/"/g,wd=/^(?:script|style|textarea|title)$/i,Ad=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),$d=Symbol.for("lit-noChange"),Ed=Symbol.for("lit-nothing"),Cd=new WeakMap,Sd=hd.createTreeWalker(hd,129,null,!1);function kd(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==sd?sd.createHTML(t):t}class Td{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=gd;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===gd?"!--"===l[1]?s=vd:void 0!==l[1]?s=_d:void 0!==l[2]?(wd.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=bd):void 0!==l[3]&&(s=bd):s===bd?">"===l[0]?(s=null!=o?o:gd,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?bd:'"'===l[3]?xd:yd):s===xd||s===yd?s=bd:s===vd||s===_d?s=gd:(s=bd,o=void 0);const h=s===bd&&e[t+1].startsWith("/>")?" ":"";r+=s===gd?i+cd:d>=0?(n.push(a),i.slice(0,d)+ad+i.slice(d)+ld+h):i+ld+(-2===d?(n.push(void 0),t):h)}return[kd(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=Td.createElement(l,i),Sd.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=Sd.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(ad)||t.startsWith(ld)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+ad).split(ld),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?Rd:"?"===t[1]?Ld:"@"===t[1]?Hd:Nd})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(wd.test(n.tagName)){const e=n.textContent.split(ld),t=e.length-1;if(t>0){n.textContent=rd?rd.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],pd()),Sd.nextNode(),a.push({type:2,index:++o});n.append(e[t],pd())}}}else if(8===n.nodeType)if(n.data===dd)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(ld,e+1));)a.push({type:7,index:o}),e+=ld.length-1}o++}}static createElement(e,t){const i=hd.createElement("template");return i.innerHTML=e,i}}function Id(e,t,i=e,n){var o,r,s,a;if(t===$d)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=ud(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=Id(e,l._$AS(e,t.values),l,n)),t}class Od{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:hd).importNode(i,!0);Sd.currentNode=o;let r=Sd.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Md(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new Pd(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=Sd.nextNode(),s++)}return Sd.currentNode=hd,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Md{constructor(e,t,i,n){var o;this.type=2,this._$AH=Ed,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Id(this,e,t),ud(e)?e===Ed||null==e||""===e?(this._$AH!==Ed&&this._$AR(),this._$AH=Ed):e!==this._$AH&&e!==$d&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>md(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==Ed&&ud(this._$AH)?this._$AA.nextSibling.data=e:this.$(hd.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Td.createElement(kd(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Od(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Cd.get(e.strings);return void 0===t&&Cd.set(e.strings,t=new Td(e)),t}T(e){md(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Md(this.k(pd()),this.k(pd()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class Nd{constructor(e,t,i,n,o){this.type=1,this._$AH=Ed,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=Ed}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=Id(this,e,t,0),r=!ud(e)||e!==this._$AH&&e!==$d,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=Id(this,n[i+s],t,s),a===$d&&(a=this._$AH[s]),r||(r=!ud(a)||a!==this._$AH[s]),a===Ed?e=Ed:e!==Ed&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===Ed?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class Rd extends Nd{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===Ed?void 0:e}}const zd=rd?rd.emptyScript:"";class Ld extends Nd{constructor(){super(...arguments),this.type=4}j(e){e&&e!==Ed?this.element.setAttribute(this.name,zd):this.element.removeAttribute(this.name)}}class Hd extends Nd{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=Id(this,e,t,0))&&void 0!==i?i:Ed)===$d)return;const n=this._$AH,o=e===Ed&&n!==Ed||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==Ed&&(n===Ed||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class Pd{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Id(this,e)}}const Dd=od.litHtmlPolyfillSupport;null==Dd||Dd(Td,Md),(null!==(nd=od.litHtmlVersions)&&void 0!==nd?nd:od.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var Vd,Fd;class Bd extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Md(t.insertBefore(pd(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return $d}}Bd.finalized=!0,Bd._$litElement$=!0,null===(Vd=globalThis.litElementHydrateSupport)||void 0===Vd||Vd.call(globalThis,{LitElement:Bd});const Ud=globalThis.litElementPolyfillSupport;null==Ud||Ud({LitElement:Bd}),(null!==(Fd=globalThis.litElementVersions)&&void 0!==Fd?Fd:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const jd=1;class Wd{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const qd=(e=>(...t)=>({_$litDirective$:e,values:t}))(class extends Wd{constructor(e){var t;if(super(e),e.type!==jd||"class"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(e){return" "+Object.keys(e).filter(t=>e[t]).join(" ")+" "}update(e,[t]){var i,n;if(void 0===this.it){this.it=new Set,void 0!==e.strings&&(this.nt=new Set(e.strings.join(" ").split(/\s/).filter(e=>""!==e)));for(const e in t)t[e]&&!(null===(i=this.nt)||void 0===i?void 0:i.has(e))&&this.it.add(e);return this.render(t)}const o=e.element.classList;this.it.forEach(e=>{e in t||(o.remove(e),this.it.delete(e))});for(const e in t){const i=!!t[e];i===this.it.has(e)||(null===(n=this.nt)||void 0===n?void 0:n.has(e))||(i?(o.add(e),this.it.add(e)):(o.remove(e),this.it.delete(e)))}return $d}});
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */class Gd extends Fl{constructor(){super(...arguments),this.alignEnd=!1,this.spaceBetween=!1,this.nowrap=!1,this.label="",this.mdcFoundationClass=Da}createAdapter(){return{registerInteractionHandler:(e,t)=>{this.labelEl.addEventListener(e,t)},deregisterInteractionHandler:(e,t)=>{this.labelEl.removeEventListener(e,t)},activateInputRipple:async()=>{const e=this.input;if(e instanceof td){const t=await e.ripple;t&&t.startPress()}},deactivateInputRipple:async()=>{const e=this.input;if(e instanceof td){const t=await e.ripple;t&&t.endPress()}}}}get input(){var e,t;return null!==(t=null===(e=this.slottedInputs)||void 0===e?void 0:e[0])&&void 0!==t?t:null}render(){const e={"mdc-form-field--align-end":this.alignEnd,"mdc-form-field--space-between":this.spaceBetween,"mdc-form-field--nowrap":this.nowrap};return Ad`
-      <div class="mdc-form-field ${qd(e)}">
-        <slot></slot>
-        <label class="mdc-label"
-               @click="${this._labelClick}">${this.label}</label>
-      </div>`}click(){this._labelClick()}_labelClick(){const e=this.input;e&&(e.focus(),e.click())}}n([Ul({type:Boolean})],Gd.prototype,"alignEnd",void 0),n([Ul({type:Boolean})],Gd.prototype,"spaceBetween",void 0),n([Ul({type:Boolean})],Gd.prototype,"nowrap",void 0),n([Ul({type:String}),id(async function(e){var t;null===(t=this.input)||void 0===t||t.setAttribute("aria-label",e)})],Gd.prototype,"label",void 0),n([Gl(".mdc-form-field")],Gd.prototype,"mdcRoot",void 0),n([Zl("",!0,"*")],Gd.prototype,"slottedInputs",void 0),n([Gl("label")],Gd.prototype,"labelEl",void 0);
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */
-const Xd=Ma`.mdc-form-field{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-body2-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.875rem;font-size:var(--mdc-typography-body2-font-size, 0.875rem);line-height:1.25rem;line-height:var(--mdc-typography-body2-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-body2-font-weight, 400);letter-spacing:0.0178571429em;letter-spacing:var(--mdc-typography-body2-letter-spacing, 0.0178571429em);text-decoration:inherit;text-decoration:var(--mdc-typography-body2-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-body2-text-transform, inherit);color:rgba(0, 0, 0, 0.87);color:var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));display:inline-flex;align-items:center;vertical-align:middle}.mdc-form-field>label{margin-left:0;margin-right:auto;padding-left:4px;padding-right:0;order:0}[dir=rtl] .mdc-form-field>label,.mdc-form-field>label[dir=rtl]{margin-left:auto;margin-right:0}[dir=rtl] .mdc-form-field>label,.mdc-form-field>label[dir=rtl]{padding-left:0;padding-right:4px}.mdc-form-field--nowrap>label{text-overflow:ellipsis;overflow:hidden;white-space:nowrap}.mdc-form-field--align-end>label{margin-left:auto;margin-right:0;padding-left:0;padding-right:4px;order:-1}[dir=rtl] .mdc-form-field--align-end>label,.mdc-form-field--align-end>label[dir=rtl]{margin-left:0;margin-right:auto}[dir=rtl] .mdc-form-field--align-end>label,.mdc-form-field--align-end>label[dir=rtl]{padding-left:4px;padding-right:0}.mdc-form-field--space-between{justify-content:space-between}.mdc-form-field--space-between>label{margin:0}[dir=rtl] .mdc-form-field--space-between>label,.mdc-form-field--space-between>label[dir=rtl]{margin:0}:host{display:inline-flex}.mdc-form-field{width:100%}::slotted(*){-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-body2-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.875rem;font-size:var(--mdc-typography-body2-font-size, 0.875rem);line-height:1.25rem;line-height:var(--mdc-typography-body2-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-body2-font-weight, 400);letter-spacing:0.0178571429em;letter-spacing:var(--mdc-typography-body2-letter-spacing, 0.0178571429em);text-decoration:inherit;text-decoration:var(--mdc-typography-body2-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-body2-text-transform, inherit);color:rgba(0, 0, 0, 0.87);color:var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87))}::slotted(mwc-switch){margin-right:10px}[dir=rtl] ::slotted(mwc-switch),::slotted(mwc-switch[dir=rtl]){margin-left:10px}`,Kd={"mwc-formfield":class extends Gd{static get styles(){return Xd}}};
-/**
- * @license
- * Copyright 2020 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var Yd="Unknown",Zd="Backspace",Jd="Enter",Qd="Spacebar",ec="PageUp",tc="PageDown",ic="End",nc="Home",oc="ArrowLeft",rc="ArrowUp",sc="ArrowRight",ac="ArrowDown",lc="Delete",dc="Escape",cc="Tab",hc=new Set;hc.add(Zd),hc.add(Jd),hc.add(Qd),hc.add(ec),hc.add(tc),hc.add(ic),hc.add(nc),hc.add(oc),hc.add(rc),hc.add(sc),hc.add(ac),hc.add(lc),hc.add(dc),hc.add(cc);var pc=8,uc=13,mc=32,fc=33,gc=34,vc=35,_c=36,bc=37,yc=38,xc=39,wc=40,Ac=46,$c=27,Ec=9,Cc=new Map;Cc.set(pc,Zd),Cc.set(uc,Jd),Cc.set(mc,Qd),Cc.set(fc,ec),Cc.set(gc,tc),Cc.set(vc,ic),Cc.set(_c,nc),Cc.set(bc,oc),Cc.set(yc,rc),Cc.set(xc,sc),Cc.set(wc,ac),Cc.set(Ac,lc),Cc.set($c,dc),Cc.set(Ec,cc);var Sc,kc,Tc=new Set;function Ic(e){var t=e.key;if(hc.has(t))return t;var i=Cc.get(e.keyCode);return i||Yd}
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */Tc.add(ec),Tc.add(tc),Tc.add(ic),Tc.add(nc),Tc.add(oc),Tc.add(rc),Tc.add(sc),Tc.add(ac);var Oc="mdc-list-item--activated",Mc="mdc-list-item",Nc="mdc-list-item--disabled",Rc="mdc-list-item--selected",zc="mdc-list-item__text",Lc="mdc-list-item__primary-text",Hc="mdc-list";(Sc={})[""+Oc]="mdc-list-item--activated",Sc[""+Mc]="mdc-list-item",Sc[""+Nc]="mdc-list-item--disabled",Sc[""+Rc]="mdc-list-item--selected",Sc[""+Lc]="mdc-list-item__primary-text",Sc[""+Hc]="mdc-list";var Pc=((kc={})[""+Oc]="mdc-deprecated-list-item--activated",kc[""+Mc]="mdc-deprecated-list-item",kc[""+Nc]="mdc-deprecated-list-item--disabled",kc[""+Rc]="mdc-deprecated-list-item--selected",kc[""+zc]="mdc-deprecated-list-item__text",kc[""+Lc]="mdc-deprecated-list-item__primary-text",kc[""+Hc]="mdc-deprecated-list",kc),Dc={ACTION_EVENT:"MDCList:action",SELECTION_CHANGE_EVENT:"MDCList:selectionChange",ARIA_CHECKED:"aria-checked",ARIA_CHECKED_CHECKBOX_SELECTOR:'[role="checkbox"][aria-checked="true"]',ARIA_CHECKED_RADIO_SELECTOR:'[role="radio"][aria-checked="true"]',ARIA_CURRENT:"aria-current",ARIA_DISABLED:"aria-disabled",ARIA_ORIENTATION:"aria-orientation",ARIA_ORIENTATION_HORIZONTAL:"horizontal",ARIA_ROLE_CHECKBOX_SELECTOR:'[role="checkbox"]',ARIA_SELECTED:"aria-selected",ARIA_INTERACTIVE_ROLES_SELECTOR:'[role="listbox"], [role="menu"]',ARIA_MULTI_SELECTABLE_SELECTOR:'[aria-multiselectable="true"]',CHECKBOX_RADIO_SELECTOR:'input[type="checkbox"], input[type="radio"]',CHECKBOX_SELECTOR:'input[type="checkbox"]',CHILD_ELEMENTS_TO_TOGGLE_TABINDEX:"\n    ."+Mc+" button:not(:disabled),\n    ."+Mc+" a,\n    ."+Pc[Mc]+" button:not(:disabled),\n    ."+Pc[Mc]+" a\n  ",DEPRECATED_SELECTOR:".mdc-deprecated-list",FOCUSABLE_CHILD_ELEMENTS:"\n    ."+Mc+" button:not(:disabled),\n    ."+Mc+" a,\n    ."+Mc+' input[type="radio"]:not(:disabled),\n    .'+Mc+' input[type="checkbox"]:not(:disabled),\n    .'+Pc[Mc]+" button:not(:disabled),\n    ."+Pc[Mc]+" a,\n    ."+Pc[Mc]+' input[type="radio"]:not(:disabled),\n    .'+Pc[Mc]+' input[type="checkbox"]:not(:disabled)\n  ',RADIO_SELECTOR:'input[type="radio"]',SELECTED_ITEM_SELECTOR:'[aria-selected="true"], [aria-current="true"]'},Vc={UNSET_INDEX:-1,TYPEAHEAD_BUFFER_CLEAR_TIMEOUT_MS:300},Fc=["input","button","textarea","select"],Bc=function(e){var t=e.target;if(t){var i=(""+t.tagName).toLowerCase();-1===Fc.indexOf(i)&&e.preventDefault()}};function Uc(e,t){for(var i=new Map,n=0;n<e;n++){var o=t(n).trim();if(o){var r=o[0].toLowerCase();i.has(r)||i.set(r,[]),i.get(r).push({text:o.toLowerCase(),index:n})}}return i.forEach(function(e){e.sort(function(e,t){return e.index-t.index})}),i}function jc(e,t){var i,n=e.nextChar,o=e.focusItemAtIndex,r=e.sortedIndexByFirstChar,s=e.focusedItemIndex,a=e.skipFocus,l=e.isItemAtIndexDisabled;return clearTimeout(t.bufferClearTimeout),t.bufferClearTimeout=setTimeout(function(){!function(e){e.typeaheadBuffer=""}(t)},Vc.TYPEAHEAD_BUFFER_CLEAR_TIMEOUT_MS),t.typeaheadBuffer=t.typeaheadBuffer+n,i=1===t.typeaheadBuffer.length?function(e,t,i,n){var o=n.typeaheadBuffer[0],r=e.get(o);if(!r)return-1;if(o===n.currentFirstChar&&r[n.sortedIndexCursor].index===t){n.sortedIndexCursor=(n.sortedIndexCursor+1)%r.length;var s=r[n.sortedIndexCursor].index;if(!i(s))return s}n.currentFirstChar=o;var a,l=-1;for(a=0;a<r.length;a++)if(!i(r[a].index)){l=a;break}for(;a<r.length;a++)if(r[a].index>t&&!i(r[a].index)){l=a;break}if(-1!==l)return n.sortedIndexCursor=l,r[n.sortedIndexCursor].index;return-1}(r,s,l,t):function(e,t,i){var n=i.typeaheadBuffer[0],o=e.get(n);if(!o)return-1;var r=o[i.sortedIndexCursor];if(0===r.text.lastIndexOf(i.typeaheadBuffer,0)&&!t(r.index))return r.index;var s=(i.sortedIndexCursor+1)%o.length,a=-1;for(;s!==i.sortedIndexCursor;){var l=o[s],d=0===l.text.lastIndexOf(i.typeaheadBuffer,0),c=!t(l.index);if(d&&c){a=s;break}s=(s+1)%o.length}if(-1!==a)return i.sortedIndexCursor=a,o[i.sortedIndexCursor].index;return-1}(r,l,t),-1===i||a||o(i),i}function Wc(e){return e.typeaheadBuffer.length>0}
-/**
- * @license
- * Copyright 2016 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var qc={LABEL_FLOAT_ABOVE:"mdc-floating-label--float-above",LABEL_REQUIRED:"mdc-floating-label--required",LABEL_SHAKE:"mdc-floating-label--shake",ROOT:"mdc-floating-label"},Gc=function(e){function n(t){var o=e.call(this,i(i({},n.defaultAdapter),t))||this;return o.shakeAnimationEndHandler=function(){o.handleShakeAnimationEnd()},o}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return qc},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},removeClass:function(){},getWidth:function(){return 0},registerInteractionHandler:function(){},deregisterInteractionHandler:function(){}}},enumerable:!1,configurable:!0}),n.prototype.init=function(){this.adapter.registerInteractionHandler("animationend",this.shakeAnimationEndHandler)},n.prototype.destroy=function(){this.adapter.deregisterInteractionHandler("animationend",this.shakeAnimationEndHandler)},n.prototype.getWidth=function(){return this.adapter.getWidth()},n.prototype.shake=function(e){var t=n.cssClasses.LABEL_SHAKE;e?this.adapter.addClass(t):this.adapter.removeClass(t)},n.prototype.float=function(e){var t=n.cssClasses,i=t.LABEL_FLOAT_ABOVE,o=t.LABEL_SHAKE;e?this.adapter.addClass(i):(this.adapter.removeClass(i),this.adapter.removeClass(o))},n.prototype.setRequired=function(e){var t=n.cssClasses.LABEL_REQUIRED;e?this.adapter.addClass(t):this.adapter.removeClass(t)},n.prototype.handleShakeAnimationEnd=function(){var e=n.cssClasses.LABEL_SHAKE;this.adapter.removeClass(e)},n}(La);
-/**
- * @license
- * Copyright 2016 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const Xc=1,Kc=3;class Yc{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */const Zc=(e=>(...t)=>({_$litDirective$:e,values:t}))(class extends Yc{constructor(e){switch(super(e),this.foundation=null,this.previousPart=null,e.type){case Xc:case Kc:break;default:throw new Error("FloatingLabel directive only support attribute and property parts")}}update(e,[t]){if(e!==this.previousPart){this.foundation&&this.foundation.destroy(),this.previousPart=e;const t=e.element;t.classList.add("mdc-floating-label");const i=(e=>({addClass:t=>e.classList.add(t),removeClass:t=>e.classList.remove(t),getWidth:()=>e.scrollWidth,registerInteractionHandler:(t,i)=>{e.addEventListener(t,i)},deregisterInteractionHandler:(t,i)=>{e.removeEventListener(t,i)}}))(t);this.foundation=new Gc(i),this.foundation.init()}return this.render(t)}render(e){return this.foundation}});
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */var Jc={LINE_RIPPLE_ACTIVE:"mdc-line-ripple--active",LINE_RIPPLE_DEACTIVATING:"mdc-line-ripple--deactivating"},Qc=function(e){function n(t){var o=e.call(this,i(i({},n.defaultAdapter),t))||this;return o.transitionEndHandler=function(e){o.handleTransitionEnd(e)},o}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return Jc},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},removeClass:function(){},hasClass:function(){return!1},setStyle:function(){},registerEventHandler:function(){},deregisterEventHandler:function(){}}},enumerable:!1,configurable:!0}),n.prototype.init=function(){this.adapter.registerEventHandler("transitionend",this.transitionEndHandler)},n.prototype.destroy=function(){this.adapter.deregisterEventHandler("transitionend",this.transitionEndHandler)},n.prototype.activate=function(){this.adapter.removeClass(Jc.LINE_RIPPLE_DEACTIVATING),this.adapter.addClass(Jc.LINE_RIPPLE_ACTIVE)},n.prototype.setRippleCenter=function(e){this.adapter.setStyle("transform-origin",e+"px center")},n.prototype.deactivate=function(){this.adapter.addClass(Jc.LINE_RIPPLE_DEACTIVATING)},n.prototype.handleTransitionEnd=function(e){var t=this.adapter.hasClass(Jc.LINE_RIPPLE_DEACTIVATING);"opacity"===e.propertyName&&t&&(this.adapter.removeClass(Jc.LINE_RIPPLE_ACTIVE),this.adapter.removeClass(Jc.LINE_RIPPLE_DEACTIVATING))},n}(La);
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const eh=1,th=3;class ih{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */const nh=(e=>(...t)=>({_$litDirective$:e,values:t}))(class extends ih{constructor(e){switch(super(e),this.previousPart=null,this.foundation=null,e.type){case eh:case th:return;default:throw new Error("LineRipple only support attribute and property parts.")}}update(e,t){if(this.previousPart!==e){this.foundation&&this.foundation.destroy(),this.previousPart=e;const t=e.element;t.classList.add("mdc-line-ripple");const i=(e=>({addClass:t=>e.classList.add(t),removeClass:t=>e.classList.remove(t),hasClass:t=>e.classList.contains(t),setStyle:(t,i)=>e.style.setProperty(t,i),registerEventHandler:(t,i)=>{e.addEventListener(t,i)},deregisterEventHandler:(t,i)=>{e.removeEventListener(t,i)}}))(t);this.foundation=new Qc(i),this.foundation.init()}return this.render()}render(){return this.foundation}});
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */var oh,rh,sh={ANCHOR:"mdc-menu-surface--anchor",ANIMATING_CLOSED:"mdc-menu-surface--animating-closed",ANIMATING_OPEN:"mdc-menu-surface--animating-open",FIXED:"mdc-menu-surface--fixed",IS_OPEN_BELOW:"mdc-menu-surface--is-open-below",OPEN:"mdc-menu-surface--open",ROOT:"mdc-menu-surface"},ah={CLOSED_EVENT:"MDCMenuSurface:closed",CLOSING_EVENT:"MDCMenuSurface:closing",OPENED_EVENT:"MDCMenuSurface:opened",OPENING_EVENT:"MDCMenuSurface:opening",FOCUSABLE_ELEMENTS:["button:not(:disabled)",'[href]:not([aria-disabled="true"])',"input:not(:disabled)","select:not(:disabled)","textarea:not(:disabled)",'[tabindex]:not([tabindex="-1"]):not([aria-disabled="true"])'].join(", ")},lh={TRANSITION_OPEN_DURATION:120,TRANSITION_CLOSE_DURATION:75,MARGIN_TO_EDGE:32,ANCHOR_TO_MENU_SURFACE_WIDTH_RATIO:.67,TOUCH_EVENT_WAIT_MS:30};!function(e){e[e.BOTTOM=1]="BOTTOM",e[e.CENTER=2]="CENTER",e[e.RIGHT=4]="RIGHT",e[e.FLIP_RTL=8]="FLIP_RTL"}(oh||(oh={})),function(e){e[e.TOP_LEFT=0]="TOP_LEFT",e[e.TOP_RIGHT=4]="TOP_RIGHT",e[e.BOTTOM_LEFT=1]="BOTTOM_LEFT",e[e.BOTTOM_RIGHT=5]="BOTTOM_RIGHT",e[e.TOP_START=8]="TOP_START",e[e.TOP_END=12]="TOP_END",e[e.BOTTOM_START=9]="BOTTOM_START",e[e.BOTTOM_END=13]="BOTTOM_END"}(rh||(rh={}));
-/**
- * @license
- * Copyright 2016 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var dh,ch={ACTIVATED:"mdc-select--activated",DISABLED:"mdc-select--disabled",FOCUSED:"mdc-select--focused",INVALID:"mdc-select--invalid",MENU_INVALID:"mdc-select__menu--invalid",OUTLINED:"mdc-select--outlined",REQUIRED:"mdc-select--required",ROOT:"mdc-select",WITH_LEADING_ICON:"mdc-select--with-leading-icon"},hh={ARIA_CONTROLS:"aria-controls",ARIA_DESCRIBEDBY:"aria-describedby",ARIA_SELECTED_ATTR:"aria-selected",CHANGE_EVENT:"MDCSelect:change",HIDDEN_INPUT_SELECTOR:'input[type="hidden"]',LABEL_SELECTOR:".mdc-floating-label",LEADING_ICON_SELECTOR:".mdc-select__icon",LINE_RIPPLE_SELECTOR:".mdc-line-ripple",MENU_SELECTOR:".mdc-select__menu",OUTLINE_SELECTOR:".mdc-notched-outline",SELECTED_TEXT_SELECTOR:".mdc-select__selected-text",SELECT_ANCHOR_SELECTOR:".mdc-select__anchor",VALUE_ATTR:"data-value"},ph={LABEL_SCALE:.75,UNSET_INDEX:-1,CLICK_DEBOUNCE_TIMEOUT_MS:330},uh=function(e){function n(t,o){void 0===o&&(o={});var r=e.call(this,i(i({},n.defaultAdapter),t))||this;return r.disabled=!1,r.isMenuOpen=!1,r.useDefaultValidation=!0,r.customValidity=!0,r.lastSelectedIndex=ph.UNSET_INDEX,r.clickDebounceTimeout=0,r.recentlyClicked=!1,r.leadingIcon=o.leadingIcon,r.helperText=o.helperText,r}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return ch},enumerable:!1,configurable:!0}),Object.defineProperty(n,"numbers",{get:function(){return ph},enumerable:!1,configurable:!0}),Object.defineProperty(n,"strings",{get:function(){return hh},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},removeClass:function(){},hasClass:function(){return!1},activateBottomLine:function(){},deactivateBottomLine:function(){},getSelectedIndex:function(){return-1},setSelectedIndex:function(){},hasLabel:function(){return!1},floatLabel:function(){},getLabelWidth:function(){return 0},setLabelRequired:function(){},hasOutline:function(){return!1},notchOutline:function(){},closeOutline:function(){},setRippleCenter:function(){},notifyChange:function(){},setSelectedText:function(){},isSelectAnchorFocused:function(){return!1},getSelectAnchorAttr:function(){return""},setSelectAnchorAttr:function(){},removeSelectAnchorAttr:function(){},addMenuClass:function(){},removeMenuClass:function(){},openMenu:function(){},closeMenu:function(){},getAnchorElement:function(){return null},setMenuAnchorElement:function(){},setMenuAnchorCorner:function(){},setMenuWrapFocus:function(){},focusMenuItemAtIndex:function(){},getMenuItemCount:function(){return 0},getMenuItemValues:function(){return[]},getMenuItemTextAtIndex:function(){return""},isTypeaheadInProgress:function(){return!1},typeaheadMatchItem:function(){return-1}}},enumerable:!1,configurable:!0}),n.prototype.getSelectedIndex=function(){return this.adapter.getSelectedIndex()},n.prototype.setSelectedIndex=function(e,t,i){void 0===t&&(t=!1),void 0===i&&(i=!1),e>=this.adapter.getMenuItemCount()||(e===ph.UNSET_INDEX?this.adapter.setSelectedText(""):this.adapter.setSelectedText(this.adapter.getMenuItemTextAtIndex(e).trim()),this.adapter.setSelectedIndex(e),t&&this.adapter.closeMenu(),i||this.lastSelectedIndex===e||this.handleChange(),this.lastSelectedIndex=e)},n.prototype.setValue=function(e,t){void 0===t&&(t=!1);var i=this.adapter.getMenuItemValues().indexOf(e);this.setSelectedIndex(i,!1,t)},n.prototype.getValue=function(){var e=this.adapter.getSelectedIndex(),t=this.adapter.getMenuItemValues();return e!==ph.UNSET_INDEX?t[e]:""},n.prototype.getDisabled=function(){return this.disabled},n.prototype.setDisabled=function(e){this.disabled=e,this.disabled?(this.adapter.addClass(ch.DISABLED),this.adapter.closeMenu()):this.adapter.removeClass(ch.DISABLED),this.leadingIcon&&this.leadingIcon.setDisabled(this.disabled),this.disabled?this.adapter.removeSelectAnchorAttr("tabindex"):this.adapter.setSelectAnchorAttr("tabindex","0"),this.adapter.setSelectAnchorAttr("aria-disabled",this.disabled.toString())},n.prototype.openMenu=function(){this.adapter.addClass(ch.ACTIVATED),this.adapter.openMenu(),this.isMenuOpen=!0,this.adapter.setSelectAnchorAttr("aria-expanded","true")},n.prototype.setHelperTextContent=function(e){this.helperText&&this.helperText.setContent(e)},n.prototype.layout=function(){if(this.adapter.hasLabel()){var e=this.getValue().length>0,t=this.adapter.hasClass(ch.FOCUSED),i=e||t,n=this.adapter.hasClass(ch.REQUIRED);this.notchOutline(i),this.adapter.floatLabel(i),this.adapter.setLabelRequired(n)}},n.prototype.layoutOptions=function(){var e=this.adapter.getMenuItemValues().indexOf(this.getValue());this.setSelectedIndex(e,!1,!0)},n.prototype.handleMenuOpened=function(){if(0!==this.adapter.getMenuItemValues().length){var e=this.getSelectedIndex(),t=e>=0?e:0;this.adapter.focusMenuItemAtIndex(t)}},n.prototype.handleMenuClosing=function(){this.adapter.setSelectAnchorAttr("aria-expanded","false")},n.prototype.handleMenuClosed=function(){this.adapter.removeClass(ch.ACTIVATED),this.isMenuOpen=!1,this.adapter.isSelectAnchorFocused()||this.blur()},n.prototype.handleChange=function(){this.layout(),this.adapter.notifyChange(this.getValue()),this.adapter.hasClass(ch.REQUIRED)&&this.useDefaultValidation&&this.setValid(this.isValid())},n.prototype.handleMenuItemAction=function(e){this.setSelectedIndex(e,!0)},n.prototype.handleFocus=function(){this.adapter.addClass(ch.FOCUSED),this.layout(),this.adapter.activateBottomLine()},n.prototype.handleBlur=function(){this.isMenuOpen||this.blur()},n.prototype.handleClick=function(e){this.disabled||this.recentlyClicked||(this.setClickDebounceTimeout(),this.isMenuOpen?this.adapter.closeMenu():(this.adapter.setRippleCenter(e),this.openMenu()))},n.prototype.handleKeydown=function(e){if(!this.isMenuOpen&&this.adapter.hasClass(ch.FOCUSED)){var t=Ic(e)===Jd,i=Ic(e)===Qd,n=Ic(e)===rc,o=Ic(e)===ac;if(!(e.ctrlKey||e.metaKey)&&(!i&&e.key&&1===e.key.length||i&&this.adapter.isTypeaheadInProgress())){var r=i?" ":e.key,s=this.adapter.typeaheadMatchItem(r,this.getSelectedIndex());return s>=0&&this.setSelectedIndex(s),void e.preventDefault()}(t||i||n||o)&&(this.openMenu(),e.preventDefault())}},n.prototype.notchOutline=function(e){if(this.adapter.hasOutline()){var t=this.adapter.hasClass(ch.FOCUSED);if(e){var i=ph.LABEL_SCALE,n=this.adapter.getLabelWidth()*i;this.adapter.notchOutline(n)}else t||this.adapter.closeOutline()}},n.prototype.setLeadingIconAriaLabel=function(e){this.leadingIcon&&this.leadingIcon.setAriaLabel(e)},n.prototype.setLeadingIconContent=function(e){this.leadingIcon&&this.leadingIcon.setContent(e)},n.prototype.getUseDefaultValidation=function(){return this.useDefaultValidation},n.prototype.setUseDefaultValidation=function(e){this.useDefaultValidation=e},n.prototype.setValid=function(e){this.useDefaultValidation||(this.customValidity=e),this.adapter.setSelectAnchorAttr("aria-invalid",(!e).toString()),e?(this.adapter.removeClass(ch.INVALID),this.adapter.removeMenuClass(ch.MENU_INVALID)):(this.adapter.addClass(ch.INVALID),this.adapter.addMenuClass(ch.MENU_INVALID)),this.syncHelperTextValidity(e)},n.prototype.isValid=function(){return this.useDefaultValidation&&this.adapter.hasClass(ch.REQUIRED)&&!this.adapter.hasClass(ch.DISABLED)?this.getSelectedIndex()!==ph.UNSET_INDEX&&(0!==this.getSelectedIndex()||Boolean(this.getValue())):this.customValidity},n.prototype.setRequired=function(e){e?this.adapter.addClass(ch.REQUIRED):this.adapter.removeClass(ch.REQUIRED),this.adapter.setSelectAnchorAttr("aria-required",e.toString()),this.adapter.setLabelRequired(e)},n.prototype.getRequired=function(){return"true"===this.adapter.getSelectAnchorAttr("aria-required")},n.prototype.init=function(){var e=this.adapter.getAnchorElement();e&&(this.adapter.setMenuAnchorElement(e),this.adapter.setMenuAnchorCorner(rh.BOTTOM_START)),this.adapter.setMenuWrapFocus(!1),this.setDisabled(this.adapter.hasClass(ch.DISABLED)),this.syncHelperTextValidity(!this.adapter.hasClass(ch.INVALID)),this.layout(),this.layoutOptions()},n.prototype.blur=function(){this.adapter.removeClass(ch.FOCUSED),this.layout(),this.adapter.deactivateBottomLine(),this.adapter.hasClass(ch.REQUIRED)&&this.useDefaultValidation&&this.setValid(this.isValid())},n.prototype.syncHelperTextValidity=function(e){if(this.helperText){this.helperText.setValidity(e);var t=this.helperText.isVisible(),i=this.helperText.getId();t&&i?this.adapter.setSelectAnchorAttr(hh.ARIA_DESCRIBEDBY,i):this.adapter.removeSelectAnchorAttr(hh.ARIA_DESCRIBEDBY)}},n.prototype.setClickDebounceTimeout=function(){var e=this;clearTimeout(this.clickDebounceTimeout),this.clickDebounceTimeout=setTimeout(function(){e.recentlyClicked=!1},ph.CLICK_DEBOUNCE_TIMEOUT_MS),this.recentlyClicked=!0},n}(La);const mh=window,fh=mh.trustedTypes,gh=fh?fh.createPolicy("lit-html",{createHTML:e=>e}):void 0,vh="$lit$",_h=`lit$${(Math.random()+"").slice(9)}$`,bh="?"+_h,yh=`<${bh}>`,xh=document,wh=()=>xh.createComment(""),Ah=e=>null===e||"object"!=typeof e&&"function"!=typeof e,$h=Array.isArray,Eh="[ \t\n\f\r]",Ch=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Sh=/-->/g,kh=/>/g,Th=RegExp(`>|${Eh}(?:([^\\s"'>=/]+)(${Eh}*=${Eh}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),Ih=/'/g,Oh=/"/g,Mh=/^(?:script|style|textarea|title)$/i,Nh=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),Rh=Symbol.for("lit-noChange"),zh=Symbol.for("lit-nothing"),Lh=new WeakMap,Hh=xh.createTreeWalker(xh,129,null,!1);function Ph(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==gh?gh.createHTML(t):t}class Dh{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=Ch;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===Ch?"!--"===l[1]?s=Sh:void 0!==l[1]?s=kh:void 0!==l[2]?(Mh.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=Th):void 0!==l[3]&&(s=Th):s===Th?">"===l[0]?(s=null!=o?o:Ch,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?Th:'"'===l[3]?Oh:Ih):s===Oh||s===Ih?s=Th:s===Sh||s===kh?s=Ch:(s=Th,o=void 0);const h=s===Th&&e[t+1].startsWith("/>")?" ":"";r+=s===Ch?i+yh:d>=0?(n.push(a),i.slice(0,d)+vh+i.slice(d)+_h+h):i+_h+(-2===d?(n.push(void 0),t):h)}return[Ph(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=Dh.createElement(l,i),Hh.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=Hh.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(vh)||t.startsWith(_h)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+vh).split(_h),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?jh:"?"===t[1]?qh:"@"===t[1]?Gh:Uh})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(Mh.test(n.tagName)){const e=n.textContent.split(_h),t=e.length-1;if(t>0){n.textContent=fh?fh.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],wh()),Hh.nextNode(),a.push({type:2,index:++o});n.append(e[t],wh())}}}else if(8===n.nodeType)if(n.data===bh)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(_h,e+1));)a.push({type:7,index:o}),e+=_h.length-1}o++}}static createElement(e,t){const i=xh.createElement("template");return i.innerHTML=e,i}}function Vh(e,t,i=e,n){var o,r,s,a;if(t===Rh)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=Ah(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=Vh(e,l._$AS(e,t.values),l,n)),t}class Fh{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:xh).importNode(i,!0);Hh.currentNode=o;let r=Hh.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Bh(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new Xh(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=Hh.nextNode(),s++)}return Hh.currentNode=xh,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Bh{constructor(e,t,i,n){var o;this.type=2,this._$AH=zh,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Vh(this,e,t),Ah(e)?e===zh||null==e||""===e?(this._$AH!==zh&&this._$AR(),this._$AH=zh):e!==this._$AH&&e!==Rh&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>$h(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==zh&&Ah(this._$AH)?this._$AA.nextSibling.data=e:this.$(xh.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Dh.createElement(Ph(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Fh(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Lh.get(e.strings);return void 0===t&&Lh.set(e.strings,t=new Dh(e)),t}T(e){$h(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Bh(this.k(wh()),this.k(wh()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class Uh{constructor(e,t,i,n,o){this.type=1,this._$AH=zh,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=zh}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=Vh(this,e,t,0),r=!Ah(e)||e!==this._$AH&&e!==Rh,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=Vh(this,n[i+s],t,s),a===Rh&&(a=this._$AH[s]),r||(r=!Ah(a)||a!==this._$AH[s]),a===zh?e=zh:e!==zh&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===zh?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class jh extends Uh{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===zh?void 0:e}}const Wh=fh?fh.emptyScript:"";class qh extends Uh{constructor(){super(...arguments),this.type=4}j(e){e&&e!==zh?this.element.setAttribute(this.name,Wh):this.element.removeAttribute(this.name)}}class Gh extends Uh{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=Vh(this,e,t,0))&&void 0!==i?i:zh)===Rh)return;const n=this._$AH,o=e===zh&&n!==zh||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==zh&&(n===zh||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class Xh{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Vh(this,e)}}const Kh=mh.litHtmlPolyfillSupport;null==Kh||Kh(Dh,Bh),(null!==(dh=mh.litHtmlVersions)&&void 0!==dh?dh:mh.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var Yh,Zh;class Jh extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Bh(t.insertBefore(wh(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return Rh}}Jh.finalized=!0,Jh._$litElement$=!0,null===(Yh=globalThis.litElementHydrateSupport)||void 0===Yh||Yh.call(globalThis,{LitElement:Jh});const Qh=globalThis.litElementPolyfillSupport;null==Qh||Qh({LitElement:Jh}),(null!==(Zh=globalThis.litElementVersions)&&void 0!==Zh?Zh:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const ep=1;class tp{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const ip=(e=>(...t)=>({_$litDirective$:e,values:t}))(class extends tp{constructor(e){var t;if(super(e),e.type!==ep||"class"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(e){return" "+Object.keys(e).filter(t=>e[t]).join(" ")+" "}update(e,[t]){var i,n;if(void 0===this.it){this.it=new Set,void 0!==e.strings&&(this.nt=new Set(e.strings.join(" ").split(/\s/).filter(e=>""!==e)));for(const e in t)t[e]&&!(null===(i=this.nt)||void 0===i?void 0:i.has(e))&&this.it.add(e);return this.render(t)}const o=e.element.classList;this.it.forEach(e=>{e in t||(o.remove(e),this.it.delete(e))});for(const e in t){const i=!!t[e];i===this.it.has(e)||(null===(n=this.nt)||void 0===n?void 0:n.has(e))||(i?(o.add(e),this.it.add(e)):(o.remove(e),this.it.delete(e)))}return Rh}}),np=e=>null!=e?e:zh,op=(e={})=>{const t={};for(const i in e)t[i]=e[i];return Object.assign({badInput:!1,customError:!1,patternMismatch:!1,rangeOverflow:!1,rangeUnderflow:!1,stepMismatch:!1,tooLong:!1,tooShort:!1,typeMismatch:!1,valid:!0,valueMissing:!1},t)};
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class rp extends td{constructor(){super(...arguments),this.mdcFoundationClass=uh,this.disabled=!1,this.outlined=!1,this.label="",this.outlineOpen=!1,this.outlineWidth=0,this.value="",this.name="",this.selectedText="",this.icon="",this.menuOpen=!1,this.helper="",this.validateOnInitialRender=!1,this.validationMessage="",this.required=!1,this.naturalMenuWidth=!1,this.isUiValid=!0,this.fixedMenuPosition=!1,this.typeaheadState={bufferClearTimeout:0,currentFirstChar:"",sortedIndexCursor:0,typeaheadBuffer:""},this.sortedIndexByFirstChar=new Map,this.menuElement_=null,this.listeners=[],this.onBodyClickBound=()=>{},this._menuUpdateComplete=null,this.valueSetDirectly=!1,this.validityTransform=null,this._validity=op()}get items(){return this.menuElement_||(this.menuElement_=this.menuElement),this.menuElement_?this.menuElement_.items:[]}get selected(){const e=this.menuElement;return e?e.selected:null}get index(){const e=this.menuElement;return e?e.index:-1}get shouldRenderHelperText(){return!!this.helper||!!this.validationMessage}get validity(){return this._checkValidity(this.value),this._validity}render(){const e={"mdc-select--disabled":this.disabled,"mdc-select--no-label":!this.label,"mdc-select--filled":!this.outlined,"mdc-select--outlined":this.outlined,"mdc-select--with-leading-icon":!!this.icon,"mdc-select--required":this.required,"mdc-select--invalid":!this.isUiValid},t=this.label?"label":void 0,i=this.shouldRenderHelperText?"helper-text":void 0;return Nh`
-      <div
-          class="mdc-select ${ip(e)}">
-        <input
-            class="formElement"
-            name="${this.name}"
-            .value="${this.value}"
-            hidden
-            ?disabled="${this.disabled}"
-            ?required=${this.required}>
-        <!-- @ts-ignore -->
-        <div class="mdc-select__anchor"
-            aria-autocomplete="none"
-            role="combobox"
-            aria-expanded=${this.menuOpen}
-            aria-invalid=${!this.isUiValid}
-            aria-haspopup="listbox"
-            aria-labelledby=${np(t)}
-            aria-required=${this.required}
-            aria-describedby=${np(i)}
-            @click=${this.onClick}
-            @focus=${this.onFocus}
-            @blur=${this.onBlur}
-            @keydown=${this.onKeydown}>
-          ${this.renderRipple()}
-          ${this.outlined?this.renderOutline():this.renderLabel()}
-          ${this.renderLeadingIcon()}
-          <span class="mdc-select__selected-text-container">
-            <span class="mdc-select__selected-text">${this.selectedText}</span>
-          </span>
-          <span class="mdc-select__dropdown-icon">
-            <svg
-                class="mdc-select__dropdown-icon-graphic"
-                viewBox="7 10 10 5"
-                focusable="false">
-              <polygon
-                  class="mdc-select__dropdown-icon-inactive"
-                  stroke="none"
-                  fill-rule="evenodd"
-                  points="7 10 12 15 17 10">
-              </polygon>
-              <polygon
-                  class="mdc-select__dropdown-icon-active"
-                  stroke="none"
-                  fill-rule="evenodd"
-                  points="7 15 12 10 17 15">
-              </polygon>
-            </svg>
-          </span>
-          ${this.renderLineRipple()}
-        </div>
-        ${this.renderMenu()}
-      </div>
-      ${this.renderHelperText()}`}renderMenu(){const e=this.getMenuClasses();return Nh`
-      <mwc-menu
-        innerRole="listbox"
-        wrapFocus
-        class=" ${ip(e)}"
-        activatable
-        .fullwidth=${!this.fixedMenuPosition&&!this.naturalMenuWidth}
-        .open=${this.menuOpen}
-        .anchor=${this.anchorElement}
-        .fixed=${this.fixedMenuPosition}
-        @selected=${this.onSelected}
-        @opened=${this.onOpened}
-        @closed=${this.onClosed}
-        @items-updated=${this.onItemsUpdated}
-        @keydown=${this.handleTypeahead}>
-      ${this.renderMenuContent()}
-    </mwc-menu>`}getMenuClasses(){return{"mdc-select__menu":!0,"mdc-menu":!0,"mdc-menu-surface":!0,"mdc-select__menu--invalid":!this.isUiValid}}renderMenuContent(){return Nh`<slot></slot>`}renderRipple(){return this.outlined?zh:Nh`
-      <span class="mdc-select__ripple"></span>
-    `}renderOutline(){return this.outlined?Nh`
-      <mwc-notched-outline
-          .width=${this.outlineWidth}
-          .open=${this.outlineOpen}
-          class="mdc-notched-outline">
-        ${this.renderLabel()}
-      </mwc-notched-outline>`:zh}renderLabel(){return this.label?Nh`
-      <span
-          .floatingLabelFoundation=${Zc(this.label)}
-          id="label">${this.label}</span>
-    `:zh}renderLeadingIcon(){return this.icon?Nh`<mwc-icon class="mdc-select__icon"><div>${this.icon}</div></mwc-icon>`:zh}renderLineRipple(){return this.outlined?zh:Nh`
-      <span .lineRippleFoundation=${nh()}></span>
-    `}renderHelperText(){if(!this.shouldRenderHelperText)return zh;const e=this.validationMessage&&!this.isUiValid;return Nh`
-        <p
-          class="mdc-select-helper-text ${ip({"mdc-select-helper-text--validation-msg":e})}"
-          id="helper-text">${e?this.validationMessage:this.helper}</p>`}createAdapter(){return Object.assign(Object.assign({},Ll(this.mdcRoot)),{activateBottomLine:()=>{this.lineRippleElement&&this.lineRippleElement.lineRippleFoundation.activate()},deactivateBottomLine:()=>{this.lineRippleElement&&this.lineRippleElement.lineRippleFoundation.deactivate()},hasLabel:()=>!!this.label,floatLabel:e=>{this.labelElement&&this.labelElement.floatingLabelFoundation.float(e)},getLabelWidth:()=>this.labelElement?this.labelElement.floatingLabelFoundation.getWidth():0,setLabelRequired:e=>{this.labelElement&&this.labelElement.floatingLabelFoundation.setRequired(e)},hasOutline:()=>this.outlined,notchOutline:e=>{this.outlineElement&&!this.outlineOpen&&(this.outlineWidth=e,this.outlineOpen=!0)},closeOutline:()=>{this.outlineElement&&(this.outlineOpen=!1)},setRippleCenter:e=>{if(this.lineRippleElement){this.lineRippleElement.lineRippleFoundation.setRippleCenter(e)}},notifyChange:async e=>{if(!this.valueSetDirectly&&e===this.value)return;this.valueSetDirectly=!1,this.value=e,await this.updateComplete;const t=new Event("change",{bubbles:!0});this.dispatchEvent(t)},setSelectedText:e=>this.selectedText=e,isSelectAnchorFocused:()=>{const e=this.anchorElement;if(!e)return!1;return e.getRootNode().activeElement===e},getSelectAnchorAttr:e=>{const t=this.anchorElement;return t?t.getAttribute(e):null},setSelectAnchorAttr:(e,t)=>{const i=this.anchorElement;i&&i.setAttribute(e,t)},removeSelectAnchorAttr:e=>{const t=this.anchorElement;t&&t.removeAttribute(e)},openMenu:()=>{this.menuOpen=!0},closeMenu:()=>{this.menuOpen=!1},addMenuClass:()=>{},removeMenuClass:()=>{},getAnchorElement:()=>this.anchorElement,setMenuAnchorElement:()=>{},setMenuAnchorCorner:()=>{const e=this.menuElement;e&&(e.corner="BOTTOM_START")},setMenuWrapFocus:e=>{const t=this.menuElement;t&&(t.wrapFocus=e)},focusMenuItemAtIndex:e=>{const t=this.menuElement;if(!t)return;const i=t.items[e];i&&i.focus()},getMenuItemCount:()=>{const e=this.menuElement;return e?e.items.length:0},getMenuItemValues:()=>{const e=this.menuElement;if(!e)return[];return e.items.map(e=>e.value)},getMenuItemTextAtIndex:e=>{const t=this.menuElement;if(!t)return"";const i=t.items[e];return i?i.text:""},getSelectedIndex:()=>this.index,setSelectedIndex:()=>{},isTypeaheadInProgress:()=>Wc(this.typeaheadState),typeaheadMatchItem:(e,t)=>{if(!this.menuElement)return-1;const i={focusItemAtIndex:e=>{this.menuElement.focusItemAtIndex(e)},focusedItemIndex:t||this.menuElement.getFocusedItemIndex(),nextChar:e,sortedIndexByFirstChar:this.sortedIndexByFirstChar,skipFocus:!1,isItemAtIndexDisabled:e=>this.items[e].disabled},n=jc(i,this.typeaheadState);return-1!==n&&this.select(n),n}})}checkValidity(){const e=this._checkValidity(this.value);if(!e){const e=new Event("invalid",{bubbles:!1,cancelable:!0});this.dispatchEvent(e)}return e}reportValidity(){const e=this.checkValidity();return this.isUiValid=e,e}_checkValidity(e){const t=this.formElement.validity;let i=op(t);if(this.validityTransform){const t=this.validityTransform(e,i);i=Object.assign(Object.assign({},i),t)}return this._validity=i,this._validity.valid}setCustomValidity(e){this.validationMessage=e,this.formElement.setCustomValidity(e)}async getUpdateComplete(){await this._menuUpdateComplete;return await super.getUpdateComplete()}async firstUpdated(){const e=this.menuElement;if(e&&(this._menuUpdateComplete=e.updateComplete,await this._menuUpdateComplete),super.firstUpdated(),this.mdcFoundation.isValid=()=>!0,this.mdcFoundation.setValid=()=>{},this.mdcFoundation.setDisabled(this.disabled),this.validateOnInitialRender&&this.reportValidity(),!this.selected){!this.items.length&&this.slotElement&&this.slotElement.assignedNodes({flatten:!0}).length&&(await new Promise(e=>requestAnimationFrame(e)),await this.layout());const e=this.items.length&&""===this.items[0].value;if(!this.value&&e)return void this.select(0);this.selectByValue(this.value)}this.sortedIndexByFirstChar=Uc(this.items.length,e=>this.items[e].text)}onItemsUpdated(){this.sortedIndexByFirstChar=Uc(this.items.length,e=>this.items[e].text)}select(e){const t=this.menuElement;t&&t.select(e)}selectByValue(e){let t=-1;for(let i=0;i<this.items.length;i++){if(this.items[i].value===e){t=i;break}}this.valueSetDirectly=!0,this.select(t),this.mdcFoundation.handleChange()}disconnectedCallback(){super.disconnectedCallback();for(const e of this.listeners)e.target.removeEventListener(e.name,e.cb)}focus(){const e=new CustomEvent("focus"),t=this.anchorElement;t&&(t.dispatchEvent(e),t.focus())}blur(){const e=new CustomEvent("blur"),t=this.anchorElement;t&&(t.dispatchEvent(e),t.blur())}onFocus(){this.mdcFoundation&&this.mdcFoundation.handleFocus()}onBlur(){this.mdcFoundation&&this.mdcFoundation.handleBlur();const e=this.menuElement;e&&!e.open&&this.reportValidity()}onClick(e){if(this.mdcFoundation){this.focus();const t=e.target.getBoundingClientRect();let i=0;i="touches"in e?e.touches[0].clientX:e.clientX;const n=i-t.left;this.mdcFoundation.handleClick(n)}}onKeydown(e){const t=Ic(e)===rc,i=Ic(e)===ac;if(i||t){const n=t&&this.index>0,o=i&&this.index<this.items.length-1;return n?this.select(this.index-1):o&&this.select(this.index+1),e.preventDefault(),void this.mdcFoundation.openMenu()}this.mdcFoundation.handleKeydown(e)}handleTypeahead(e){if(!this.menuElement)return;const t=this.menuElement.getFocusedItemIndex(),i=zl(e.target)?e.target:null;!function(e,t){var i=e.event,n=e.isTargetListItem,o=e.focusedItemIndex,r=e.focusItemAtIndex,s=e.sortedIndexByFirstChar,a=e.isItemAtIndexDisabled,l="ArrowLeft"===Ic(i),d="ArrowUp"===Ic(i),c="ArrowRight"===Ic(i),h="ArrowDown"===Ic(i),p="Home"===Ic(i),u="End"===Ic(i),m="Enter"===Ic(i),f="Spacebar"===Ic(i);i.altKey||i.ctrlKey||i.metaKey||l||d||c||h||p||u||m||(f||1!==i.key.length?f&&(n&&Bc(i),n&&Wc(t)&&jc({focusItemAtIndex:r,focusedItemIndex:o,nextChar:" ",sortedIndexByFirstChar:s,skipFocus:!1,isItemAtIndexDisabled:a},t)):(Bc(i),jc({focusItemAtIndex:r,focusedItemIndex:o,nextChar:i.key.toLowerCase(),sortedIndexByFirstChar:s,skipFocus:!1,isItemAtIndexDisabled:a},t)))}({event:e,focusItemAtIndex:e=>{this.menuElement.focusItemAtIndex(e)},focusedItemIndex:t,isTargetListItem:!!i&&i.hasAttribute("mwc-list-item"),sortedIndexByFirstChar:this.sortedIndexByFirstChar,isItemAtIndexDisabled:e=>this.items[e].disabled},this.typeaheadState)}async onSelected(e){this.mdcFoundation||await this.updateComplete,this.mdcFoundation.handleMenuItemAction(e.detail.index);const t=this.items[e.detail.index];t&&(this.value=t.value)}onOpened(){this.mdcFoundation&&(this.menuOpen=!0,this.mdcFoundation.handleMenuOpened())}onClosed(){this.mdcFoundation&&(this.menuOpen=!1,this.mdcFoundation.handleMenuClosed())}setFormData(e){this.name&&null!==this.selected&&e.append(this.name,this.value)}async layout(e=!0){this.mdcFoundation&&this.mdcFoundation.layout(),await this.updateComplete;const t=this.menuElement;t&&t.layout(e);const i=this.labelElement;if(!i)return void(this.outlineOpen=!1);const n=!!this.label&&!!this.value;if(i.floatingLabelFoundation.float(n),!this.outlined)return;this.outlineOpen=n,await this.updateComplete;const o=i.floatingLabelFoundation.getWidth();this.outlineOpen&&(this.outlineWidth=o)}async layoutOptions(){this.mdcFoundation&&this.mdcFoundation.layoutOptions()}}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var sp;n([Gl(".mdc-select")],rp.prototype,"mdcRoot",void 0),n([Gl(".formElement")],rp.prototype,"formElement",void 0),n([Gl("slot")],rp.prototype,"slotElement",void 0),n([Gl("select")],rp.prototype,"nativeSelectElement",void 0),n([Gl("input")],rp.prototype,"nativeInputElement",void 0),n([Gl(".mdc-line-ripple")],rp.prototype,"lineRippleElement",void 0),n([Gl(".mdc-floating-label")],rp.prototype,"labelElement",void 0),n([Gl("mwc-notched-outline")],rp.prototype,"outlineElement",void 0),n([Gl(".mdc-menu")],rp.prototype,"menuElement",void 0),n([Gl(".mdc-select__anchor")],rp.prototype,"anchorElement",void 0),n([Ul({type:Boolean,attribute:"disabled",reflect:!0}),id(function(e){this.mdcFoundation&&this.mdcFoundation.setDisabled(e)})],rp.prototype,"disabled",void 0),n([Ul({type:Boolean}),id(function(e,t){void 0!==t&&this.outlined!==t&&this.layout(!1)})],rp.prototype,"outlined",void 0),n([Ul({type:String}),id(function(e,t){void 0!==t&&this.label!==t&&this.layout(!1)})],rp.prototype,"label",void 0),n([jl()],rp.prototype,"outlineOpen",void 0),n([jl()],rp.prototype,"outlineWidth",void 0),n([Ul({type:String}),id(function(e){if(this.mdcFoundation){const t=null===this.selected&&!!e,i=this.selected&&this.selected.value!==e;(t||i)&&this.selectByValue(e),this.reportValidity()}})],rp.prototype,"value",void 0),n([Ul()],rp.prototype,"name",void 0),n([jl()],rp.prototype,"selectedText",void 0),n([Ul({type:String})],rp.prototype,"icon",void 0),n([jl()],rp.prototype,"menuOpen",void 0),n([Ul({type:String})],rp.prototype,"helper",void 0),n([Ul({type:Boolean})],rp.prototype,"validateOnInitialRender",void 0),n([Ul({type:String})],rp.prototype,"validationMessage",void 0),n([Ul({type:Boolean})],rp.prototype,"required",void 0),n([Ul({type:Boolean})],rp.prototype,"naturalMenuWidth",void 0),n([jl()],rp.prototype,"isUiValid",void 0),n([Ul({type:Boolean})],rp.prototype,"fixedMenuPosition",void 0),n([ql({capture:!0})],rp.prototype,"handleTypeahead",null);const ap=window,lp=ap.trustedTypes,dp=lp?lp.createPolicy("lit-html",{createHTML:e=>e}):void 0,cp="$lit$",hp=`lit$${(Math.random()+"").slice(9)}$`,pp="?"+hp,up=`<${pp}>`,mp=document,fp=()=>mp.createComment(""),gp=e=>null===e||"object"!=typeof e&&"function"!=typeof e,vp=Array.isArray,_p="[ \t\n\f\r]",bp=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,yp=/-->/g,xp=/>/g,wp=RegExp(`>|${_p}(?:([^\\s"'>=/]+)(${_p}*=${_p}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),Ap=/'/g,$p=/"/g,Ep=/^(?:script|style|textarea|title)$/i,Cp=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),Sp=Symbol.for("lit-noChange"),kp=Symbol.for("lit-nothing"),Tp=new WeakMap,Ip=mp.createTreeWalker(mp,129,null,!1);function Op(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==dp?dp.createHTML(t):t}class Mp{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=bp;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===bp?"!--"===l[1]?s=yp:void 0!==l[1]?s=xp:void 0!==l[2]?(Ep.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=wp):void 0!==l[3]&&(s=wp):s===wp?">"===l[0]?(s=null!=o?o:bp,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?wp:'"'===l[3]?$p:Ap):s===$p||s===Ap?s=wp:s===yp||s===xp?s=bp:(s=wp,o=void 0);const h=s===wp&&e[t+1].startsWith("/>")?" ":"";r+=s===bp?i+up:d>=0?(n.push(a),i.slice(0,d)+cp+i.slice(d)+hp+h):i+hp+(-2===d?(n.push(void 0),t):h)}return[Op(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=Mp.createElement(l,i),Ip.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=Ip.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(cp)||t.startsWith(hp)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+cp).split(hp),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?Hp:"?"===t[1]?Dp:"@"===t[1]?Vp:Lp})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(Ep.test(n.tagName)){const e=n.textContent.split(hp),t=e.length-1;if(t>0){n.textContent=lp?lp.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],fp()),Ip.nextNode(),a.push({type:2,index:++o});n.append(e[t],fp())}}}else if(8===n.nodeType)if(n.data===pp)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(hp,e+1));)a.push({type:7,index:o}),e+=hp.length-1}o++}}static createElement(e,t){const i=mp.createElement("template");return i.innerHTML=e,i}}function Np(e,t,i=e,n){var o,r,s,a;if(t===Sp)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=gp(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=Np(e,l._$AS(e,t.values),l,n)),t}class Rp{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:mp).importNode(i,!0);Ip.currentNode=o;let r=Ip.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new zp(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new Fp(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=Ip.nextNode(),s++)}return Ip.currentNode=mp,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class zp{constructor(e,t,i,n){var o;this.type=2,this._$AH=kp,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Np(this,e,t),gp(e)?e===kp||null==e||""===e?(this._$AH!==kp&&this._$AR(),this._$AH=kp):e!==this._$AH&&e!==Sp&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>vp(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==kp&&gp(this._$AH)?this._$AA.nextSibling.data=e:this.$(mp.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Mp.createElement(Op(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Rp(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Tp.get(e.strings);return void 0===t&&Tp.set(e.strings,t=new Mp(e)),t}T(e){vp(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new zp(this.k(fp()),this.k(fp()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class Lp{constructor(e,t,i,n,o){this.type=1,this._$AH=kp,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=kp}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=Np(this,e,t,0),r=!gp(e)||e!==this._$AH&&e!==Sp,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=Np(this,n[i+s],t,s),a===Sp&&(a=this._$AH[s]),r||(r=!gp(a)||a!==this._$AH[s]),a===kp?e=kp:e!==kp&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===kp?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class Hp extends Lp{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===kp?void 0:e}}const Pp=lp?lp.emptyScript:"";class Dp extends Lp{constructor(){super(...arguments),this.type=4}j(e){e&&e!==kp?this.element.setAttribute(this.name,Pp):this.element.removeAttribute(this.name)}}class Vp extends Lp{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=Np(this,e,t,0))&&void 0!==i?i:kp)===Sp)return;const n=this._$AH,o=e===kp&&n!==kp||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==kp&&(n===kp||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class Fp{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Np(this,e)}}const Bp=ap.litHtmlPolyfillSupport;null==Bp||Bp(Mp,zp),(null!==(sp=ap.litHtmlVersions)&&void 0!==sp?sp:ap.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var Up,jp;class Wp extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new zp(t.insertBefore(fp(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return Sp}}Wp.finalized=!0,Wp._$litElement$=!0,null===(Up=globalThis.litElementHydrateSupport)||void 0===Up||Up.call(globalThis,{LitElement:Wp});const qp=globalThis.litElementPolyfillSupport;null==qp||qp({LitElement:Wp}),(null!==(jp=globalThis.litElementVersions)&&void 0!==jp?jp:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const Gp=e=>null!=e?e:kp,Xp=(e,t)=>e-t,Kp=["input","button","textarea","select"];
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */function Yp(e){return e instanceof Set}const Zp=e=>{const t=e===Vc.UNSET_INDEX?new Set:e;return Yp(t)?new Set(t):new Set([t])};class Jp extends La{constructor(e){super(Object.assign(Object.assign({},Jp.defaultAdapter),e)),this.isMulti_=!1,this.wrapFocus_=!1,this.isVertical_=!0,this.selectedIndex_=Vc.UNSET_INDEX,this.focusedItemIndex_=Vc.UNSET_INDEX,this.useActivatedClass_=!1,this.ariaCurrentAttrValue_=null}static get strings(){return Dc}static get numbers(){return Vc}static get defaultAdapter(){return{focusItemAtIndex:()=>{},getFocusedElementIndex:()=>0,getListItemCount:()=>0,isFocusInsideList:()=>!1,isRootFocused:()=>!1,notifyAction:()=>{},notifySelected:()=>{},getSelectedStateForElementIndex:()=>!1,setDisabledStateForElementIndex:()=>{},getDisabledStateForElementIndex:()=>!1,setSelectedStateForElementIndex:()=>{},setActivatedStateForElementIndex:()=>{},setTabIndexForElementIndex:()=>{},setAttributeForElementIndex:()=>{},getAttributeForElementIndex:()=>null}}setWrapFocus(e){this.wrapFocus_=e}setMulti(e){this.isMulti_=e;const t=this.selectedIndex_;if(e){if(!Yp(t)){const e=t===Vc.UNSET_INDEX;this.selectedIndex_=e?new Set:new Set([t])}}else if(Yp(t))if(t.size){const e=Array.from(t).sort(Xp);this.selectedIndex_=e[0]}else this.selectedIndex_=Vc.UNSET_INDEX}setVerticalOrientation(e){this.isVertical_=e}setUseActivatedClass(e){this.useActivatedClass_=e}getSelectedIndex(){return this.selectedIndex_}setSelectedIndex(e){this.isIndexValid_(e)&&(this.isMulti_?this.setMultiSelectionAtIndex_(Zp(e)):this.setSingleSelectionAtIndex_(e))}handleFocusIn(e,t){t>=0&&this.adapter.setTabIndexForElementIndex(t,0)}handleFocusOut(e,t){t>=0&&this.adapter.setTabIndexForElementIndex(t,-1),setTimeout(()=>{this.adapter.isFocusInsideList()||this.setTabindexToFirstSelectedItem_()},0)}handleKeydown(e,t,i){const n="ArrowLeft"===Ic(e),o="ArrowUp"===Ic(e),r="ArrowRight"===Ic(e),s="ArrowDown"===Ic(e),a="Home"===Ic(e),l="End"===Ic(e),d="Enter"===Ic(e),c="Spacebar"===Ic(e);if(this.adapter.isRootFocused())return void(o||l?(e.preventDefault(),this.focusLastElement()):(s||a)&&(e.preventDefault(),this.focusFirstElement()));let h,p=this.adapter.getFocusedElementIndex();if(!(-1===p&&(p=i,p<0))){if(this.isVertical_&&s||!this.isVertical_&&r)this.preventDefaultEvent(e),h=this.focusNextElement(p);else if(this.isVertical_&&o||!this.isVertical_&&n)this.preventDefaultEvent(e),h=this.focusPrevElement(p);else if(a)this.preventDefaultEvent(e),h=this.focusFirstElement();else if(l)this.preventDefaultEvent(e),h=this.focusLastElement();else if((d||c)&&t){const t=e.target;if(t&&"A"===t.tagName&&d)return;this.preventDefaultEvent(e),this.setSelectedIndexOnAction_(p,!0)}this.focusedItemIndex_=p,void 0!==h&&(this.setTabindexAtIndex_(h),this.focusedItemIndex_=h)}}handleSingleSelection(e,t,i){e!==Vc.UNSET_INDEX&&(this.setSelectedIndexOnAction_(e,t,i),this.setTabindexAtIndex_(e),this.focusedItemIndex_=e)}focusNextElement(e){let t=e+1;if(t>=this.adapter.getListItemCount()){if(!this.wrapFocus_)return e;t=0}return this.adapter.focusItemAtIndex(t),t}focusPrevElement(e){let t=e-1;if(t<0){if(!this.wrapFocus_)return e;t=this.adapter.getListItemCount()-1}return this.adapter.focusItemAtIndex(t),t}focusFirstElement(){return this.adapter.focusItemAtIndex(0),0}focusLastElement(){const e=this.adapter.getListItemCount()-1;return this.adapter.focusItemAtIndex(e),e}setEnabled(e,t){this.isIndexValid_(e)&&this.adapter.setDisabledStateForElementIndex(e,!t)}preventDefaultEvent(e){const t=`${e.target.tagName}`.toLowerCase();-1===Kp.indexOf(t)&&e.preventDefault()}setSingleSelectionAtIndex_(e,t=!0){this.selectedIndex_!==e&&(this.selectedIndex_!==Vc.UNSET_INDEX&&(this.adapter.setSelectedStateForElementIndex(this.selectedIndex_,!1),this.useActivatedClass_&&this.adapter.setActivatedStateForElementIndex(this.selectedIndex_,!1)),t&&this.adapter.setSelectedStateForElementIndex(e,!0),this.useActivatedClass_&&this.adapter.setActivatedStateForElementIndex(e,!0),this.setAriaForSingleSelectionAtIndex_(e),this.selectedIndex_=e,this.adapter.notifySelected(e))}setMultiSelectionAtIndex_(e,t=!0){const i=((e,t)=>{const i=Array.from(e),n=Array.from(t),o={added:[],removed:[]},r=i.sort(Xp),s=n.sort(Xp);let a=0,l=0;for(;a<r.length||l<s.length;){const e=r[a],t=s[l];e!==t?void 0!==e&&(void 0===t||e<t)?(o.removed.push(e),a++):void 0!==t&&(void 0===e||t<e)&&(o.added.push(t),l++):(a++,l++)}return o})(Zp(this.selectedIndex_),e);if(i.removed.length||i.added.length){for(const e of i.removed)t&&this.adapter.setSelectedStateForElementIndex(e,!1),this.useActivatedClass_&&this.adapter.setActivatedStateForElementIndex(e,!1);for(const e of i.added)t&&this.adapter.setSelectedStateForElementIndex(e,!0),this.useActivatedClass_&&this.adapter.setActivatedStateForElementIndex(e,!0);this.selectedIndex_=e,this.adapter.notifySelected(e,i)}}setAriaForSingleSelectionAtIndex_(e){this.selectedIndex_===Vc.UNSET_INDEX&&(this.ariaCurrentAttrValue_=this.adapter.getAttributeForElementIndex(e,Dc.ARIA_CURRENT));const t=null!==this.ariaCurrentAttrValue_,i=t?Dc.ARIA_CURRENT:Dc.ARIA_SELECTED;this.selectedIndex_!==Vc.UNSET_INDEX&&this.adapter.setAttributeForElementIndex(this.selectedIndex_,i,"false");const n=t?this.ariaCurrentAttrValue_:"true";this.adapter.setAttributeForElementIndex(e,i,n)}setTabindexAtIndex_(e){this.focusedItemIndex_===Vc.UNSET_INDEX&&0!==e?this.adapter.setTabIndexForElementIndex(0,-1):this.focusedItemIndex_>=0&&this.focusedItemIndex_!==e&&this.adapter.setTabIndexForElementIndex(this.focusedItemIndex_,-1),this.adapter.setTabIndexForElementIndex(e,0)}setTabindexToFirstSelectedItem_(){let e=0;"number"==typeof this.selectedIndex_&&this.selectedIndex_!==Vc.UNSET_INDEX?e=this.selectedIndex_:Yp(this.selectedIndex_)&&this.selectedIndex_.size>0&&(e=Math.min(...this.selectedIndex_)),this.setTabindexAtIndex_(e)}isIndexValid_(e){if(e instanceof Set){if(!this.isMulti_)throw new Error("MDCListFoundation: Array of index is only supported for checkbox based list");if(0===e.size)return!0;{let t=!1;for(const i of e)if(t=this.isIndexInRange_(i),t)break;return t}}if("number"==typeof e){if(this.isMulti_)throw new Error("MDCListFoundation: Expected array of index for checkbox based list but got number: "+e);return e===Vc.UNSET_INDEX||this.isIndexInRange_(e)}return!1}isIndexInRange_(e){const t=this.adapter.getListItemCount();return e>=0&&e<t}setSelectedIndexOnAction_(e,t,i){if(this.adapter.getDisabledStateForElementIndex(e))return;let n=e;if(this.isMulti_&&(n=new Set([e])),this.isIndexValid_(n)){if(this.isMulti_)this.toggleMultiAtIndex(e,i,t);else if(t||i)this.setSingleSelectionAtIndex_(e,t);else{this.selectedIndex_===e&&this.setSingleSelectionAtIndex_(Vc.UNSET_INDEX)}t&&this.adapter.notifyAction(e)}}toggleMultiAtIndex(e,t,i=!0){let n=!1;n=void 0===t?!this.adapter.getSelectedStateForElementIndex(e):t;const o=Zp(this.selectedIndex_);n?o.add(e):o.delete(e),this.setMultiSelectionAtIndex_(o,i)}}
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */const Qp=e=>e.hasAttribute("mwc-list-item");function eu(){const e=this.itemsReadyResolver;this.itemsReady=new Promise(e=>this.itemsReadyResolver=e),e()}class tu extends Fl{constructor(){super(),this.mdcAdapter=null,this.mdcFoundationClass=Jp,this.activatable=!1,this.multi=!1,this.wrapFocus=!1,this.itemRoles=null,this.innerRole=null,this.innerAriaLabel=null,this.rootTabbable=!1,this.previousTabindex=null,this.noninteractive=!1,this.itemsReadyResolver=()=>{},this.itemsReady=Promise.resolve([]),this.items_=[];const e=function(e,t=50){let i;return function(n=!0){clearTimeout(i),i=setTimeout(()=>{e(n)},t)}}(this.layout.bind(this));this.debouncedLayout=(t=!0)=>{eu.call(this),e(t)}}async getUpdateComplete(){const e=await super.getUpdateComplete();return await this.itemsReady,e}get items(){return this.items_}updateItems(){var e;const t=null!==(e=this.assignedElements)&&void 0!==e?e:[],i=[];for(const e of t)Qp(e)&&(i.push(e),e._managingList=this),e.hasAttribute("divider")&&!e.hasAttribute("role")&&e.setAttribute("role","separator");this.items_=i;const n=new Set;if(this.items_.forEach((e,t)=>{this.itemRoles?e.setAttribute("role",this.itemRoles):e.removeAttribute("role"),e.selected&&n.add(t)}),this.multi)this.select(n);else{const e=n.size?n.entries().next().value[1]:-1;this.select(e)}const o=new Event("items-updated",{bubbles:!0,composed:!0});this.dispatchEvent(o)}get selected(){const e=this.index;if(!Yp(e))return-1===e?null:this.items[e];const t=[];for(const i of e)t.push(this.items[i]);return t}get index(){return this.mdcFoundation?this.mdcFoundation.getSelectedIndex():-1}render(){const e=null===this.innerRole?void 0:this.innerRole,t=null===this.innerAriaLabel?void 0:this.innerAriaLabel,i=this.rootTabbable?"0":"-1";return Cp`
-      <!-- @ts-ignore -->
-      <ul
-          tabindex=${i}
-          role="${Gp(e)}"
-          aria-label="${Gp(t)}"
-          class="mdc-deprecated-list"
-          @keydown=${this.onKeydown}
-          @focusin=${this.onFocusIn}
-          @focusout=${this.onFocusOut}
-          @request-selected=${this.onRequestSelected}
-          @list-item-rendered=${this.onListItemConnected}>
-        <slot></slot>
-        ${this.renderPlaceholder()}
-      </ul>
-    `}renderPlaceholder(){var e;const t=null!==(e=this.assignedElements)&&void 0!==e?e:[];return void 0!==this.emptyMessage&&0===t.length?Cp`
-        <mwc-list-item noninteractive>${this.emptyMessage}</mwc-list-item>
-      `:null}firstUpdated(){super.firstUpdated(),this.items.length||(this.mdcFoundation.setMulti(this.multi),this.layout())}onFocusIn(e){if(this.mdcFoundation&&this.mdcRoot){const t=this.getIndexOfTarget(e);this.mdcFoundation.handleFocusIn(e,t)}}onFocusOut(e){if(this.mdcFoundation&&this.mdcRoot){const t=this.getIndexOfTarget(e);this.mdcFoundation.handleFocusOut(e,t)}}onKeydown(e){if(this.mdcFoundation&&this.mdcRoot){const t=this.getIndexOfTarget(e),i=e.target,n=Qp(i);this.mdcFoundation.handleKeydown(e,n,t)}}onRequestSelected(e){if(this.mdcFoundation){let t=this.getIndexOfTarget(e);if(-1===t&&(this.layout(),t=this.getIndexOfTarget(e),-1===t))return;if(this.items[t].disabled)return;const i=e.detail.selected,n=e.detail.source;this.mdcFoundation.handleSingleSelection(t,"interaction"===n,i),e.stopPropagation()}}getIndexOfTarget(e){const t=this.items,i=e.composedPath();for(const e of i){let i=-1;if(zl(e)&&Qp(e)&&(i=t.indexOf(e)),-1!==i)return i}return-1}createAdapter(){return this.mdcAdapter={getListItemCount:()=>this.mdcRoot?this.items.length:0,getFocusedElementIndex:this.getFocusedItemIndex,getAttributeForElementIndex:(e,t)=>{if(!this.mdcRoot)return"";const i=this.items[e];return i?i.getAttribute(t):""},setAttributeForElementIndex:(e,t,i)=>{if(!this.mdcRoot)return;const n=this.items[e];n&&n.setAttribute(t,i)},focusItemAtIndex:e=>{const t=this.items[e];t&&t.focus()},setTabIndexForElementIndex:(e,t)=>{const i=this.items[e];i&&(i.tabindex=t)},notifyAction:e=>{const t={bubbles:!0,composed:!0};t.detail={index:e};const i=new CustomEvent("action",t);this.dispatchEvent(i)},notifySelected:(e,t)=>{const i={bubbles:!0,composed:!0};i.detail={index:e,diff:t};const n=new CustomEvent("selected",i);this.dispatchEvent(n)},isFocusInsideList:()=>Vl(this),isRootFocused:()=>{const e=this.mdcRoot;return e.getRootNode().activeElement===e},setDisabledStateForElementIndex:(e,t)=>{const i=this.items[e];i&&(i.disabled=t)},getDisabledStateForElementIndex:e=>{const t=this.items[e];return!!t&&t.disabled},setSelectedStateForElementIndex:(e,t)=>{const i=this.items[e];i&&(i.selected=t)},getSelectedStateForElementIndex:e=>{const t=this.items[e];return!!t&&t.selected},setActivatedStateForElementIndex:(e,t)=>{const i=this.items[e];i&&(i.activated=t)}},this.mdcAdapter}selectUi(e,t=!1){const i=this.items[e];i&&(i.selected=!0,i.activated=t)}deselectUi(e){const t=this.items[e];t&&(t.selected=!1,t.activated=!1)}select(e){this.mdcFoundation&&this.mdcFoundation.setSelectedIndex(e)}toggle(e,t){this.multi&&this.mdcFoundation.toggleMultiAtIndex(e,t)}onListItemConnected(e){const t=e.target;this.layout(-1===this.items.indexOf(t))}layout(e=!0){e&&this.updateItems();const t=this.items[0];for(const e of this.items)e.tabindex=-1;t&&(this.noninteractive?this.previousTabindex||(this.previousTabindex=t):t.tabindex=0),this.itemsReadyResolver()}getFocusedItemIndex(){if(!this.mdcRoot)return-1;if(!this.items.length)return-1;const e=Dl();if(!e.length)return-1;for(let t=e.length-1;t>=0;t--){const i=e[t];if(Qp(i))return this.items.indexOf(i)}return-1}focusItemAtIndex(e){for(const e of this.items)if(0===e.tabindex){e.tabindex=-1;break}this.items[e].tabindex=0,this.items[e].focus()}focus(){const e=this.mdcRoot;e&&e.focus()}blur(){const e=this.mdcRoot;e&&e.blur()}}n([Ul({type:String})],tu.prototype,"emptyMessage",void 0),n([Gl(".mdc-deprecated-list")],tu.prototype,"mdcRoot",void 0),n([Zl("",!0,"*")],tu.prototype,"assignedElements",void 0),n([Zl("",!0,'[tabindex="0"]')],tu.prototype,"tabbableElements",void 0),n([Ul({type:Boolean}),id(function(e){this.mdcFoundation&&this.mdcFoundation.setUseActivatedClass(e)})],tu.prototype,"activatable",void 0),n([Ul({type:Boolean}),id(function(e,t){this.mdcFoundation&&this.mdcFoundation.setMulti(e),void 0!==t&&this.layout()})],tu.prototype,"multi",void 0),n([Ul({type:Boolean}),id(function(e){this.mdcFoundation&&this.mdcFoundation.setWrapFocus(e)})],tu.prototype,"wrapFocus",void 0),n([Ul({type:String}),id(function(e,t){void 0!==t&&this.updateItems()})],tu.prototype,"itemRoles",void 0),n([Ul({type:String})],tu.prototype,"innerRole",void 0),n([Ul({type:String})],tu.prototype,"innerAriaLabel",void 0),n([Ul({type:Boolean})],tu.prototype,"rootTabbable",void 0),n([Ul({type:Boolean,reflect:!0}),id(function(e){var t,i;if(e){const e=null!==(i=null===(t=this.tabbableElements)||void 0===t?void 0:t[0])&&void 0!==i?i:null;this.previousTabindex=e,e&&e.setAttribute("tabindex","-1")}else!e&&this.previousTabindex&&(this.previousTabindex.setAttribute("tabindex","0"),this.previousTabindex=null)})],tu.prototype,"noninteractive",void 0);
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-class iu{constructor(e){this.startPress=t=>{e().then(e=>{e&&e.startPress(t)})},this.endPress=()=>{e().then(e=>{e&&e.endPress()})},this.startFocus=()=>{e().then(e=>{e&&e.startFocus()})},this.endFocus=()=>{e().then(e=>{e&&e.endFocus()})},this.startHover=()=>{e().then(e=>{e&&e.startHover()})},this.endHover=()=>{e().then(e=>{e&&e.endHover()})}}}
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const nu=1;class ou{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const ru=(e=>(...t)=>({_$litDirective$:e,values:t}))(class extends ou{constructor(e){var t;if(super(e),e.type!==nu||"class"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(e){return" "+Object.keys(e).filter(t=>e[t]).join(" ")+" "}update(e,[t]){var i,n;if(void 0===this.it){this.it=new Set,void 0!==e.strings&&(this.nt=new Set(e.strings.join(" ").split(/\s/).filter(e=>""!==e)));for(const e in t)t[e]&&!(null===(i=this.nt)||void 0===i?void 0:i.has(e))&&this.it.add(e);return this.render(t)}const o=e.element.classList;this.it.forEach(e=>{e in t||(o.remove(e),this.it.delete(e))});for(const e in t){const i=!!t[e];i===this.it.has(e)||(null===(n=this.nt)||void 0===n?void 0:n.has(e))||(i?(o.add(e),this.it.add(e)):(o.remove(e),this.it.delete(e)))}return Sp}});
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */class su extends Wp{constructor(){super(...arguments),this.value="",this.group=null,this.tabindex=-1,this.disabled=!1,this.twoline=!1,this.activated=!1,this.graphic=null,this.multipleGraphics=!1,this.hasMeta=!1,this.noninteractive=!1,this.selected=!1,this.shouldRenderRipple=!1,this._managingList=null,this.boundOnClick=this.onClick.bind(this),this._firstChanged=!0,this._skipPropRequest=!1,this.rippleHandlers=new iu(()=>(this.shouldRenderRipple=!0,this.ripple)),this.listeners=[{target:this,eventNames:["click"],cb:()=>{this.onClick()}},{target:this,eventNames:["mouseenter"],cb:this.rippleHandlers.startHover},{target:this,eventNames:["mouseleave"],cb:this.rippleHandlers.endHover},{target:this,eventNames:["focus"],cb:this.rippleHandlers.startFocus},{target:this,eventNames:["blur"],cb:this.rippleHandlers.endFocus},{target:this,eventNames:["mousedown","touchstart"],cb:e=>{const t=e.type;this.onDown("mousedown"===t?"mouseup":"touchend",e)}}]}get text(){const e=this.textContent;return e?e.trim():""}render(){const e=this.renderText(),t=this.graphic?this.renderGraphic():Cp``,i=this.hasMeta?this.renderMeta():Cp``;return Cp`
-      ${this.renderRipple()}
-      ${t}
-      ${e}
-      ${i}`}renderRipple(){return this.shouldRenderRipple?Cp`
-      <mwc-ripple
-        .activated=${this.activated}>
-      </mwc-ripple>`:this.activated?Cp`<div class="fake-activated-ripple"></div>`:""}renderGraphic(){const e={multi:this.multipleGraphics};return Cp`
-      <span class="mdc-deprecated-list-item__graphic material-icons ${ru(e)}">
-        <slot name="graphic"></slot>
-      </span>`}renderMeta(){return Cp`
-      <span class="mdc-deprecated-list-item__meta material-icons">
-        <slot name="meta"></slot>
-      </span>`}renderText(){const e=this.twoline?this.renderTwoline():this.renderSingleLine();return Cp`
-      <span class="mdc-deprecated-list-item__text">
-        ${e}
-      </span>`}renderSingleLine(){return Cp`<slot></slot>`}renderTwoline(){return Cp`
-      <span class="mdc-deprecated-list-item__primary-text">
-        <slot></slot>
-      </span>
-      <span class="mdc-deprecated-list-item__secondary-text">
-        <slot name="secondary"></slot>
-      </span>
-    `}onClick(){this.fireRequestSelected(!this.selected,"interaction")}onDown(e,t){const i=()=>{window.removeEventListener(e,i),this.rippleHandlers.endPress()};window.addEventListener(e,i),this.rippleHandlers.startPress(t)}fireRequestSelected(e,t){if(this.noninteractive)return;const i=new CustomEvent("request-selected",{bubbles:!0,composed:!0,detail:{source:t,selected:e}});this.dispatchEvent(i)}connectedCallback(){super.connectedCallback(),this.noninteractive||this.setAttribute("mwc-list-item","");for(const e of this.listeners)for(const t of e.eventNames)e.target.addEventListener(t,e.cb,{passive:!0})}disconnectedCallback(){super.disconnectedCallback();for(const e of this.listeners)for(const t of e.eventNames)e.target.removeEventListener(t,e.cb);this._managingList&&(this._managingList.debouncedLayout?this._managingList.debouncedLayout(!0):this._managingList.layout(!0))}firstUpdated(){const e=new Event("list-item-rendered",{bubbles:!0,composed:!0});this.dispatchEvent(e)}}n([Gl("slot")],su.prototype,"slotElement",void 0),n([Xl("mwc-ripple")],su.prototype,"ripple",void 0),n([Ul({type:String})],su.prototype,"value",void 0),n([Ul({type:String,reflect:!0})],su.prototype,"group",void 0),n([Ul({type:Number,reflect:!0})],su.prototype,"tabindex",void 0),n([Ul({type:Boolean,reflect:!0}),id(function(e){e?this.setAttribute("aria-disabled","true"):this.setAttribute("aria-disabled","false")})],su.prototype,"disabled",void 0),n([Ul({type:Boolean,reflect:!0})],su.prototype,"twoline",void 0),n([Ul({type:Boolean,reflect:!0})],su.prototype,"activated",void 0),n([Ul({type:String,reflect:!0})],su.prototype,"graphic",void 0),n([Ul({type:Boolean})],su.prototype,"multipleGraphics",void 0),n([Ul({type:Boolean})],su.prototype,"hasMeta",void 0),n([Ul({type:Boolean,reflect:!0}),id(function(e){e?(this.removeAttribute("aria-checked"),this.removeAttribute("mwc-list-item"),this.selected=!1,this.activated=!1,this.tabIndex=-1):this.setAttribute("mwc-list-item","")})],su.prototype,"noninteractive",void 0),n([Ul({type:Boolean,reflect:!0}),id(function(e){const t=this.getAttribute("role"),i="gridcell"===t||"option"===t||"row"===t||"tab"===t;i&&e?this.setAttribute("aria-selected","true"):i&&this.setAttribute("aria-selected","false"),this._firstChanged?this._firstChanged=!1:this._skipPropRequest||this.fireRequestSelected(e,"property")})],su.prototype,"selected",void 0),n([jl()],su.prototype,"shouldRenderRipple",void 0),n([jl()],su.prototype,"_managingList",void 0);
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var au,lu={MENU_SELECTED_LIST_ITEM:"mdc-menu-item--selected",MENU_SELECTION_GROUP:"mdc-menu__selection-group",ROOT:"mdc-menu"},du={ARIA_CHECKED_ATTR:"aria-checked",ARIA_DISABLED_ATTR:"aria-disabled",CHECKBOX_SELECTOR:'input[type="checkbox"]',LIST_SELECTOR:".mdc-list,.mdc-deprecated-list",SELECTED_EVENT:"MDCMenu:selected",SKIP_RESTORE_FOCUS:"data-menu-item-skip-restore-focus"},cu={FOCUS_ROOT_INDEX:-1};!function(e){e[e.NONE=0]="NONE",e[e.LIST_ROOT=1]="LIST_ROOT",e[e.FIRST_ITEM=2]="FIRST_ITEM",e[e.LAST_ITEM=3]="LAST_ITEM"}(au||(au={}));
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var hu,pu=function(e){function n(t){var o=e.call(this,i(i({},n.defaultAdapter),t))||this;return o.isSurfaceOpen=!1,o.isQuickOpen=!1,o.isHoistedElement=!1,o.isFixedPosition=!1,o.isHorizontallyCenteredOnViewport=!1,o.maxHeight=0,o.openBottomBias=0,o.openAnimationEndTimerId=0,o.closeAnimationEndTimerId=0,o.animationRequestId=0,o.anchorCorner=rh.TOP_START,o.originCorner=rh.TOP_START,o.anchorMargin={top:0,right:0,bottom:0,left:0},o.position={x:0,y:0},o}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return sh},enumerable:!1,configurable:!0}),Object.defineProperty(n,"strings",{get:function(){return ah},enumerable:!1,configurable:!0}),Object.defineProperty(n,"numbers",{get:function(){return lh},enumerable:!1,configurable:!0}),Object.defineProperty(n,"Corner",{get:function(){return rh},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},removeClass:function(){},hasClass:function(){return!1},hasAnchor:function(){return!1},isElementInContainer:function(){return!1},isFocused:function(){return!1},isRtl:function(){return!1},getInnerDimensions:function(){return{height:0,width:0}},getAnchorDimensions:function(){return null},getWindowDimensions:function(){return{height:0,width:0}},getBodyDimensions:function(){return{height:0,width:0}},getWindowScroll:function(){return{x:0,y:0}},setPosition:function(){},setMaxHeight:function(){},setTransformOrigin:function(){},saveFocus:function(){},restoreFocus:function(){},notifyClose:function(){},notifyClosing:function(){},notifyOpen:function(){},notifyOpening:function(){}}},enumerable:!1,configurable:!0}),n.prototype.init=function(){var e=n.cssClasses,t=e.ROOT,i=e.OPEN;if(!this.adapter.hasClass(t))throw new Error(t+" class required in root element.");this.adapter.hasClass(i)&&(this.isSurfaceOpen=!0)},n.prototype.destroy=function(){clearTimeout(this.openAnimationEndTimerId),clearTimeout(this.closeAnimationEndTimerId),cancelAnimationFrame(this.animationRequestId)},n.prototype.setAnchorCorner=function(e){this.anchorCorner=e},n.prototype.flipCornerHorizontally=function(){this.originCorner=this.originCorner^oh.RIGHT},n.prototype.setAnchorMargin=function(e){this.anchorMargin.top=e.top||0,this.anchorMargin.right=e.right||0,this.anchorMargin.bottom=e.bottom||0,this.anchorMargin.left=e.left||0},n.prototype.setIsHoisted=function(e){this.isHoistedElement=e},n.prototype.setFixedPosition=function(e){this.isFixedPosition=e},n.prototype.isFixed=function(){return this.isFixedPosition},n.prototype.setAbsolutePosition=function(e,t){this.position.x=this.isFinite(e)?e:0,this.position.y=this.isFinite(t)?t:0},n.prototype.setIsHorizontallyCenteredOnViewport=function(e){this.isHorizontallyCenteredOnViewport=e},n.prototype.setQuickOpen=function(e){this.isQuickOpen=e},n.prototype.setMaxHeight=function(e){this.maxHeight=e},n.prototype.setOpenBottomBias=function(e){this.openBottomBias=e},n.prototype.isOpen=function(){return this.isSurfaceOpen},n.prototype.open=function(){var e=this;this.isSurfaceOpen||(this.adapter.notifyOpening(),this.adapter.saveFocus(),this.isQuickOpen?(this.isSurfaceOpen=!0,this.adapter.addClass(n.cssClasses.OPEN),this.dimensions=this.adapter.getInnerDimensions(),this.autoposition(),this.adapter.notifyOpen()):(this.adapter.addClass(n.cssClasses.ANIMATING_OPEN),this.animationRequestId=requestAnimationFrame(function(){e.dimensions=e.adapter.getInnerDimensions(),e.autoposition(),e.adapter.addClass(n.cssClasses.OPEN),e.openAnimationEndTimerId=setTimeout(function(){e.openAnimationEndTimerId=0,e.adapter.removeClass(n.cssClasses.ANIMATING_OPEN),e.adapter.notifyOpen()},lh.TRANSITION_OPEN_DURATION)}),this.isSurfaceOpen=!0))},n.prototype.close=function(e){var t=this;if(void 0===e&&(e=!1),this.isSurfaceOpen){if(this.adapter.notifyClosing(),this.isQuickOpen)return this.isSurfaceOpen=!1,e||this.maybeRestoreFocus(),this.adapter.removeClass(n.cssClasses.OPEN),this.adapter.removeClass(n.cssClasses.IS_OPEN_BELOW),void this.adapter.notifyClose();this.adapter.addClass(n.cssClasses.ANIMATING_CLOSED),requestAnimationFrame(function(){t.adapter.removeClass(n.cssClasses.OPEN),t.adapter.removeClass(n.cssClasses.IS_OPEN_BELOW),t.closeAnimationEndTimerId=setTimeout(function(){t.closeAnimationEndTimerId=0,t.adapter.removeClass(n.cssClasses.ANIMATING_CLOSED),t.adapter.notifyClose()},lh.TRANSITION_CLOSE_DURATION)}),this.isSurfaceOpen=!1,e||this.maybeRestoreFocus()}},n.prototype.handleBodyClick=function(e){var t=e.target;this.adapter.isElementInContainer(t)||this.close()},n.prototype.handleKeydown=function(e){var t=e.keyCode;("Escape"===e.key||27===t)&&this.close()},n.prototype.autoposition=function(){var e;this.measurements=this.getAutoLayoutmeasurements();var t=this.getoriginCorner(),i=this.getMenuSurfaceMaxHeight(t),o=this.hasBit(t,oh.BOTTOM)?"bottom":"top",r=this.hasBit(t,oh.RIGHT)?"right":"left",s=this.getHorizontalOriginOffset(t),a=this.getVerticalOriginOffset(t),l=this.measurements,d=l.anchorSize,c=l.surfaceSize,h=((e={})[r]=s,e[o]=a,e);d.width/c.width>lh.ANCHOR_TO_MENU_SURFACE_WIDTH_RATIO&&(r="center"),(this.isHoistedElement||this.isFixedPosition)&&this.adjustPositionForHoistedElement(h),this.adapter.setTransformOrigin(r+" "+o),this.adapter.setPosition(h),this.adapter.setMaxHeight(i?i+"px":""),this.hasBit(t,oh.BOTTOM)||this.adapter.addClass(n.cssClasses.IS_OPEN_BELOW)},n.prototype.getAutoLayoutmeasurements=function(){var e=this.adapter.getAnchorDimensions(),t=this.adapter.getBodyDimensions(),i=this.adapter.getWindowDimensions(),n=this.adapter.getWindowScroll();return e||(e={top:this.position.y,right:this.position.x,bottom:this.position.y,left:this.position.x,width:0,height:0}),{anchorSize:e,bodySize:t,surfaceSize:this.dimensions,viewportDistance:{top:e.top,right:i.width-e.right,bottom:i.height-e.bottom,left:e.left},viewportSize:i,windowScroll:n}},n.prototype.getoriginCorner=function(){var e,t,i=this.originCorner,o=this.measurements,r=o.viewportDistance,s=o.anchorSize,a=o.surfaceSize,l=n.numbers.MARGIN_TO_EDGE;this.hasBit(this.anchorCorner,oh.BOTTOM)?(e=r.top-l+this.anchorMargin.bottom,t=r.bottom-l-this.anchorMargin.bottom):(e=r.top-l+this.anchorMargin.top,t=r.bottom-l+s.height-this.anchorMargin.top),!(t-a.height>0)&&e>t+this.openBottomBias&&(i=this.setBit(i,oh.BOTTOM));var d,c,h=this.adapter.isRtl(),p=this.hasBit(this.anchorCorner,oh.FLIP_RTL),u=this.hasBit(this.anchorCorner,oh.RIGHT)||this.hasBit(i,oh.RIGHT),m=!1;(m=h&&p?!u:u)?(d=r.left+s.width+this.anchorMargin.right,c=r.right-this.anchorMargin.right):(d=r.left+this.anchorMargin.left,c=r.right+s.width-this.anchorMargin.left);var f=d-a.width>0,g=c-a.width>0,v=this.hasBit(i,oh.FLIP_RTL)&&this.hasBit(i,oh.RIGHT);return g&&v&&h||!f&&v?i=this.unsetBit(i,oh.RIGHT):(f&&m&&h||f&&!m&&u||!g&&d>=c)&&(i=this.setBit(i,oh.RIGHT)),i},n.prototype.getMenuSurfaceMaxHeight=function(e){if(this.maxHeight>0)return this.maxHeight;var t=this.measurements.viewportDistance,i=0,o=this.hasBit(e,oh.BOTTOM),r=this.hasBit(this.anchorCorner,oh.BOTTOM),s=n.numbers.MARGIN_TO_EDGE;return o?(i=t.top+this.anchorMargin.top-s,r||(i+=this.measurements.anchorSize.height)):(i=t.bottom-this.anchorMargin.bottom+this.measurements.anchorSize.height-s,r&&(i-=this.measurements.anchorSize.height)),i},n.prototype.getHorizontalOriginOffset=function(e){var t=this.measurements.anchorSize,i=this.hasBit(e,oh.RIGHT),n=this.hasBit(this.anchorCorner,oh.RIGHT);if(i){var o=n?t.width-this.anchorMargin.left:this.anchorMargin.right;return this.isHoistedElement||this.isFixedPosition?o-(this.measurements.viewportSize.width-this.measurements.bodySize.width):o}return n?t.width-this.anchorMargin.right:this.anchorMargin.left},n.prototype.getVerticalOriginOffset=function(e){var t=this.measurements.anchorSize,i=this.hasBit(e,oh.BOTTOM),n=this.hasBit(this.anchorCorner,oh.BOTTOM);return i?n?t.height-this.anchorMargin.top:-this.anchorMargin.bottom:n?t.height+this.anchorMargin.bottom:this.anchorMargin.top},n.prototype.adjustPositionForHoistedElement=function(e){var t,i,n=this.measurements,r=n.windowScroll,s=n.viewportDistance,a=n.surfaceSize,l=n.viewportSize,d=Object.keys(e);try{for(var c=o(d),h=c.next();!h.done;h=c.next()){var p=h.value,u=e[p]||0;!this.isHorizontallyCenteredOnViewport||"left"!==p&&"right"!==p?(u+=s[p],this.isFixedPosition||("top"===p?u+=r.y:"bottom"===p?u-=r.y:"left"===p?u+=r.x:u-=r.x),e[p]=u):e[p]=(l.width-a.width)/2}}catch(e){t={error:e}}finally{try{h&&!h.done&&(i=c.return)&&i.call(c)}finally{if(t)throw t.error}}},n.prototype.maybeRestoreFocus=function(){var e=this,t=this.adapter.isFocused(),i=this.adapter.getOwnerDocument?this.adapter.getOwnerDocument():document,n=i.activeElement&&this.adapter.isElementInContainer(i.activeElement);(t||n)&&setTimeout(function(){e.adapter.restoreFocus()},lh.TOUCH_EVENT_WAIT_MS)},n.prototype.hasBit=function(e,t){return Boolean(e&t)},n.prototype.setBit=function(e,t){return e|t},n.prototype.unsetBit=function(e,t){return e^t},n.prototype.isFinite=function(e){return"number"==typeof e&&isFinite(e)},n}(La),uu=pu,mu=function(e){function n(t){var o=e.call(this,i(i({},n.defaultAdapter),t))||this;return o.closeAnimationEndTimerId=0,o.defaultFocusState=au.LIST_ROOT,o.selectedIndex=-1,o}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return lu},enumerable:!1,configurable:!0}),Object.defineProperty(n,"strings",{get:function(){return du},enumerable:!1,configurable:!0}),Object.defineProperty(n,"numbers",{get:function(){return cu},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClassToElementAtIndex:function(){},removeClassFromElementAtIndex:function(){},addAttributeToElementAtIndex:function(){},removeAttributeFromElementAtIndex:function(){},getAttributeFromElementAtIndex:function(){return null},elementContainsClass:function(){return!1},closeSurface:function(){},getElementIndex:function(){return-1},notifySelected:function(){},getMenuItemCount:function(){return 0},focusItemAtIndex:function(){},focusListRoot:function(){},getSelectedSiblingOfItemAtIndex:function(){return-1},isSelectableItemAtIndex:function(){return!1}}},enumerable:!1,configurable:!0}),n.prototype.destroy=function(){this.closeAnimationEndTimerId&&clearTimeout(this.closeAnimationEndTimerId),this.adapter.closeSurface()},n.prototype.handleKeydown=function(e){var t=e.key,i=e.keyCode;("Tab"===t||9===i)&&this.adapter.closeSurface(!0)},n.prototype.handleItemAction=function(e){var t=this,i=this.adapter.getElementIndex(e);if(!(i<0)){this.adapter.notifySelected({index:i});var n="true"===this.adapter.getAttributeFromElementAtIndex(i,du.SKIP_RESTORE_FOCUS);this.adapter.closeSurface(n),this.closeAnimationEndTimerId=setTimeout(function(){var i=t.adapter.getElementIndex(e);i>=0&&t.adapter.isSelectableItemAtIndex(i)&&t.setSelectedIndex(i)},pu.numbers.TRANSITION_CLOSE_DURATION)}},n.prototype.handleMenuSurfaceOpened=function(){switch(this.defaultFocusState){case au.FIRST_ITEM:this.adapter.focusItemAtIndex(0);break;case au.LAST_ITEM:this.adapter.focusItemAtIndex(this.adapter.getMenuItemCount()-1);break;case au.NONE:break;default:this.adapter.focusListRoot()}},n.prototype.setDefaultFocusState=function(e){this.defaultFocusState=e},n.prototype.getSelectedIndex=function(){return this.selectedIndex},n.prototype.setSelectedIndex=function(e){if(this.validatedIndex(e),!this.adapter.isSelectableItemAtIndex(e))throw new Error("MDCMenuFoundation: No selection group at specified index.");var t=this.adapter.getSelectedSiblingOfItemAtIndex(e);t>=0&&(this.adapter.removeAttributeFromElementAtIndex(t,du.ARIA_CHECKED_ATTR),this.adapter.removeClassFromElementAtIndex(t,lu.MENU_SELECTED_LIST_ITEM)),this.adapter.addClassToElementAtIndex(e,lu.MENU_SELECTED_LIST_ITEM),this.adapter.addAttributeToElementAtIndex(e,du.ARIA_CHECKED_ATTR,"true"),this.selectedIndex=e},n.prototype.setEnabled=function(e,t){this.validatedIndex(e),t?(this.adapter.removeClassFromElementAtIndex(e,Nc),this.adapter.addAttributeToElementAtIndex(e,du.ARIA_DISABLED_ATTR,"false")):(this.adapter.addClassToElementAtIndex(e,Nc),this.adapter.addAttributeToElementAtIndex(e,du.ARIA_DISABLED_ATTR,"true"))},n.prototype.validatedIndex=function(e){var t=this.adapter.getMenuItemCount();if(!(e>=0&&e<t))throw new Error("MDCMenuFoundation: No list item at specified index.")},n}(La);const fu=window,gu=fu.trustedTypes,vu=gu?gu.createPolicy("lit-html",{createHTML:e=>e}):void 0,_u="$lit$",bu=`lit$${(Math.random()+"").slice(9)}$`,yu="?"+bu,xu=`<${yu}>`,wu=document,Au=()=>wu.createComment(""),$u=e=>null===e||"object"!=typeof e&&"function"!=typeof e,Eu=Array.isArray,Cu="[ \t\n\f\r]",Su=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,ku=/-->/g,Tu=/>/g,Iu=RegExp(`>|${Cu}(?:([^\\s"'>=/]+)(${Cu}*=${Cu}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),Ou=/'/g,Mu=/"/g,Nu=/^(?:script|style|textarea|title)$/i,Ru=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),zu=Symbol.for("lit-noChange"),Lu=Symbol.for("lit-nothing"),Hu=new WeakMap,Pu=wu.createTreeWalker(wu,129,null,!1);function Du(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==vu?vu.createHTML(t):t}class Vu{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=Su;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===Su?"!--"===l[1]?s=ku:void 0!==l[1]?s=Tu:void 0!==l[2]?(Nu.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=Iu):void 0!==l[3]&&(s=Iu):s===Iu?">"===l[0]?(s=null!=o?o:Su,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?Iu:'"'===l[3]?Mu:Ou):s===Mu||s===Ou?s=Iu:s===ku||s===Tu?s=Su:(s=Iu,o=void 0);const h=s===Iu&&e[t+1].startsWith("/>")?" ":"";r+=s===Su?i+xu:d>=0?(n.push(a),i.slice(0,d)+_u+i.slice(d)+bu+h):i+bu+(-2===d?(n.push(void 0),t):h)}return[Du(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=Vu.createElement(l,i),Pu.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=Pu.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(_u)||t.startsWith(bu)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+_u).split(bu),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?Wu:"?"===t[1]?Gu:"@"===t[1]?Xu:ju})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(Nu.test(n.tagName)){const e=n.textContent.split(bu),t=e.length-1;if(t>0){n.textContent=gu?gu.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],Au()),Pu.nextNode(),a.push({type:2,index:++o});n.append(e[t],Au())}}}else if(8===n.nodeType)if(n.data===yu)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(bu,e+1));)a.push({type:7,index:o}),e+=bu.length-1}o++}}static createElement(e,t){const i=wu.createElement("template");return i.innerHTML=e,i}}function Fu(e,t,i=e,n){var o,r,s,a;if(t===zu)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=$u(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=Fu(e,l._$AS(e,t.values),l,n)),t}class Bu{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:wu).importNode(i,!0);Pu.currentNode=o;let r=Pu.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Uu(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new Ku(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=Pu.nextNode(),s++)}return Pu.currentNode=wu,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Uu{constructor(e,t,i,n){var o;this.type=2,this._$AH=Lu,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Fu(this,e,t),$u(e)?e===Lu||null==e||""===e?(this._$AH!==Lu&&this._$AR(),this._$AH=Lu):e!==this._$AH&&e!==zu&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>Eu(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==Lu&&$u(this._$AH)?this._$AA.nextSibling.data=e:this.$(wu.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Vu.createElement(Du(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Bu(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Hu.get(e.strings);return void 0===t&&Hu.set(e.strings,t=new Vu(e)),t}T(e){Eu(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Uu(this.k(Au()),this.k(Au()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class ju{constructor(e,t,i,n,o){this.type=1,this._$AH=Lu,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=Lu}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=Fu(this,e,t,0),r=!$u(e)||e!==this._$AH&&e!==zu,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=Fu(this,n[i+s],t,s),a===zu&&(a=this._$AH[s]),r||(r=!$u(a)||a!==this._$AH[s]),a===Lu?e=Lu:e!==Lu&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===Lu?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class Wu extends ju{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===Lu?void 0:e}}const qu=gu?gu.emptyScript:"";class Gu extends ju{constructor(){super(...arguments),this.type=4}j(e){e&&e!==Lu?this.element.setAttribute(this.name,qu):this.element.removeAttribute(this.name)}}class Xu extends ju{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=Fu(this,e,t,0))&&void 0!==i?i:Lu)===zu)return;const n=this._$AH,o=e===Lu&&n!==Lu||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==Lu&&(n===Lu||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class Ku{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Fu(this,e)}}const Yu=fu.litHtmlPolyfillSupport;null==Yu||Yu(Vu,Uu),(null!==(hu=fu.litHtmlVersions)&&void 0!==hu?hu:fu.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var Zu,Ju;class Qu extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Uu(t.insertBefore(Au(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return zu}}Qu.finalized=!0,Qu._$litElement$=!0,null===(Zu=globalThis.litElementHydrateSupport)||void 0===Zu||Zu.call(globalThis,{LitElement:Qu});const em=globalThis.litElementPolyfillSupport;null==em||em({LitElement:Qu}),(null!==(Ju=globalThis.litElementVersions)&&void 0!==Ju?Ju:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const tm=1,im=e=>(...t)=>({_$litDirective$:e,values:t});class nm{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const om=im(class extends nm{constructor(e){var t;if(super(e),e.type!==tm||"class"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(e){return" "+Object.keys(e).filter(t=>e[t]).join(" ")+" "}update(e,[t]){var i,n;if(void 0===this.it){this.it=new Set,void 0!==e.strings&&(this.nt=new Set(e.strings.join(" ").split(/\s/).filter(e=>""!==e)));for(const e in t)t[e]&&!(null===(i=this.nt)||void 0===i?void 0:i.has(e))&&this.it.add(e);return this.render(t)}const o=e.element.classList;this.it.forEach(e=>{e in t||(o.remove(e),this.it.delete(e))});for(const e in t){const i=!!t[e];i===this.it.has(e)||(null===(n=this.nt)||void 0===n?void 0:n.has(e))||(i?(o.add(e),this.it.add(e)):(o.remove(e),this.it.delete(e)))}return zu}});
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */class rm extends Fl{constructor(){super(...arguments),this.mdcFoundationClass=mu,this.listElement_=null,this.anchor=null,this.open=!1,this.quick=!1,this.wrapFocus=!1,this.innerRole="menu",this.innerAriaLabel=null,this.corner="TOP_START",this.x=null,this.y=null,this.absolute=!1,this.multi=!1,this.activatable=!1,this.fixed=!1,this.forceGroupSelection=!1,this.fullwidth=!1,this.menuCorner="START",this.stayOpenOnBodyClick=!1,this.defaultFocus="LIST_ROOT",this._listUpdateComplete=null}get listElement(){return this.listElement_||(this.listElement_=this.renderRoot.querySelector("mwc-list")),this.listElement_}get items(){const e=this.listElement;return e?e.items:[]}get index(){const e=this.listElement;return e?e.index:-1}get selected(){const e=this.listElement;return e?e.selected:null}render(){return this.renderSurface()}renderSurface(){const e=this.getSurfaceClasses();return Ru`
-      <mwc-menu-surface
-        ?hidden=${!this.open}
-        .anchor=${this.anchor}
-        .open=${this.open}
-        .quick=${this.quick}
-        .corner=${this.corner}
-        .x=${this.x}
-        .y=${this.y}
-        .absolute=${this.absolute}
-        .fixed=${this.fixed}
-        .fullwidth=${this.fullwidth}
-        .menuCorner=${this.menuCorner}
-        ?stayOpenOnBodyClick=${this.stayOpenOnBodyClick}
-        class=${om(e)}
-        @closed=${this.onClosed}
-        @opened=${this.onOpened}
-        @keydown=${this.onKeydown}>
-      ${this.renderList()}
-    </mwc-menu-surface>`}getSurfaceClasses(){return{"mdc-menu":!0,"mdc-menu-surface":!0}}renderList(){const e="menu"===this.innerRole?"menuitem":"option",t=this.renderListClasses();return Ru`
-      <mwc-list
-          rootTabbable
-          .innerAriaLabel=${this.innerAriaLabel}
-          .innerRole=${this.innerRole}
-          .multi=${this.multi}
-          class=${om(t)}
-          .itemRoles=${e}
-          .wrapFocus=${this.wrapFocus}
-          .activatable=${this.activatable}
-          @action=${this.onAction}>
-        <slot></slot>
-      </mwc-list>`}renderListClasses(){return{"mdc-deprecated-list":!0}}createAdapter(){return{addClassToElementAtIndex:(e,t)=>{const i=this.listElement;if(!i)return;const n=i.items[e];n&&("mdc-menu-item--selected"===t?this.forceGroupSelection&&!n.selected&&i.toggle(e,!0):n.classList.add(t))},removeClassFromElementAtIndex:(e,t)=>{const i=this.listElement;if(!i)return;const n=i.items[e];n&&("mdc-menu-item--selected"===t?n.selected&&i.toggle(e,!1):n.classList.remove(t))},addAttributeToElementAtIndex:(e,t,i)=>{const n=this.listElement;if(!n)return;const o=n.items[e];o&&o.setAttribute(t,i)},removeAttributeFromElementAtIndex:(e,t)=>{const i=this.listElement;if(!i)return;const n=i.items[e];n&&n.removeAttribute(t)},getAttributeFromElementAtIndex:(e,t)=>{const i=this.listElement;if(!i)return null;const n=i.items[e];return n?n.getAttribute(t):null},elementContainsClass:(e,t)=>e.classList.contains(t),closeSurface:()=>{this.open=!1},getElementIndex:e=>{const t=this.listElement;return t?t.items.indexOf(e):-1},notifySelected:()=>{},getMenuItemCount:()=>{const e=this.listElement;return e?e.items.length:0},focusItemAtIndex:e=>{const t=this.listElement;if(!t)return;const i=t.items[e];i&&i.focus()},focusListRoot:()=>{this.listElement&&this.listElement.focus()},getSelectedSiblingOfItemAtIndex:e=>{const t=this.listElement;if(!t)return-1;const i=t.items[e];if(!i||!i.group)return-1;for(let n=0;n<t.items.length;n++){if(n===e)continue;const o=t.items[n];if(o.selected&&o.group===i.group)return n}return-1},isSelectableItemAtIndex:e=>{const t=this.listElement;if(!t)return!1;const i=t.items[e];return!!i&&i.hasAttribute("group")}}}onKeydown(e){this.mdcFoundation&&this.mdcFoundation.handleKeydown(e)}onAction(e){const t=this.listElement;if(this.mdcFoundation&&t){const i=e.detail.index,n=t.items[i];n&&this.mdcFoundation.handleItemAction(n)}}onOpened(){this.open=!0,this.mdcFoundation&&this.mdcFoundation.handleMenuSurfaceOpened()}onClosed(){this.open=!1}async getUpdateComplete(){await this._listUpdateComplete;return await super.getUpdateComplete()}async firstUpdated(){super.firstUpdated();const e=this.listElement;e&&(this._listUpdateComplete=e.updateComplete,await this._listUpdateComplete)}select(e){const t=this.listElement;t&&t.select(e)}close(){this.open=!1}show(){this.open=!0}getFocusedItemIndex(){const e=this.listElement;return e?e.getFocusedItemIndex():-1}focusItemAtIndex(e){const t=this.listElement;t&&t.focusItemAtIndex(e)}layout(e=!0){const t=this.listElement;t&&t.layout(e)}}n([Gl(".mdc-menu")],rm.prototype,"mdcRoot",void 0),n([Gl("slot")],rm.prototype,"slotElement",void 0),n([Ul({type:Object})],rm.prototype,"anchor",void 0),n([Ul({type:Boolean,reflect:!0})],rm.prototype,"open",void 0),n([Ul({type:Boolean})],rm.prototype,"quick",void 0),n([Ul({type:Boolean})],rm.prototype,"wrapFocus",void 0),n([Ul({type:String})],rm.prototype,"innerRole",void 0),n([Ul({type:String})],rm.prototype,"innerAriaLabel",void 0),n([Ul({type:String})],rm.prototype,"corner",void 0),n([Ul({type:Number})],rm.prototype,"x",void 0),n([Ul({type:Number})],rm.prototype,"y",void 0),n([Ul({type:Boolean})],rm.prototype,"absolute",void 0),n([Ul({type:Boolean})],rm.prototype,"multi",void 0),n([Ul({type:Boolean})],rm.prototype,"activatable",void 0),n([Ul({type:Boolean})],rm.prototype,"fixed",void 0),n([Ul({type:Boolean})],rm.prototype,"forceGroupSelection",void 0),n([Ul({type:Boolean})],rm.prototype,"fullwidth",void 0),n([Ul({type:String})],rm.prototype,"menuCorner",void 0),n([Ul({type:Boolean})],rm.prototype,"stayOpenOnBodyClick",void 0),n([Ul({type:String}),id(function(e){this.mdcFoundation&&this.mdcFoundation.setDefaultFocusState(au[e])})],rm.prototype,"defaultFocus",void 0);
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const sm="important",am=" !"+sm,lm=im(class extends nm{constructor(e){var t;if(super(e),e.type!==tm||"style"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((t,i)=>{const n=e[i];return null==n?t:t+`${i=i.includes("-")?i:i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${n};`},"")}update(e,[t]){const{style:i}=e.element;if(void 0===this.ht){this.ht=new Set;for(const e in t)this.ht.add(e);return this.render(t)}this.ht.forEach(e=>{null==t[e]&&(this.ht.delete(e),e.includes("-")?i.removeProperty(e):i[e]="")});for(const e in t){const n=t[e];if(null!=n){this.ht.add(e);const t="string"==typeof n&&n.endsWith(am);e.includes("-")||t?i.setProperty(e,t?n.slice(0,-11):n,t?sm:""):i[e]=n}}return zu}}),dm={TOP_LEFT:rh.TOP_LEFT,TOP_RIGHT:rh.TOP_RIGHT,BOTTOM_LEFT:rh.BOTTOM_LEFT,BOTTOM_RIGHT:rh.BOTTOM_RIGHT,TOP_START:rh.TOP_START,TOP_END:rh.TOP_END,BOTTOM_START:rh.BOTTOM_START,BOTTOM_END:rh.BOTTOM_END};
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */class cm extends Fl{constructor(){super(...arguments),this.mdcFoundationClass=uu,this.absolute=!1,this.fullwidth=!1,this.fixed=!1,this.x=null,this.y=null,this.quick=!1,this.open=!1,this.stayOpenOnBodyClick=!1,this.bitwiseCorner=rh.TOP_START,this.previousMenuCorner=null,this.menuCorner="START",this.corner="TOP_START",this.styleTop="",this.styleLeft="",this.styleRight="",this.styleBottom="",this.styleMaxHeight="",this.styleTransformOrigin="",this.anchor=null,this.previouslyFocused=null,this.previousAnchor=null,this.onBodyClickBound=()=>{}}render(){return this.renderSurface()}renderSurface(){const e=this.getRootClasses(),t=this.getRootStyles();return Ru`
-      <div
-          class=${om(e)}
-          style="${lm(t)}"
-          @keydown=${this.onKeydown}
-          @opened=${this.registerBodyClick}
-          @closed=${this.deregisterBodyClick}>
-        ${this.renderContent()}
-      </div>`}getRootClasses(){return{"mdc-menu-surface":!0,"mdc-menu-surface--fixed":this.fixed,"mdc-menu-surface--fullwidth":this.fullwidth}}getRootStyles(){return{top:this.styleTop,left:this.styleLeft,right:this.styleRight,bottom:this.styleBottom,"max-height":this.styleMaxHeight,"transform-origin":this.styleTransformOrigin}}renderContent(){return Ru`<slot></slot>`}createAdapter(){return Object.assign(Object.assign({},Ll(this.mdcRoot)),{hasAnchor:()=>!!this.anchor,notifyClose:()=>{const e=new CustomEvent("closed",{bubbles:!0,composed:!0});this.open=!1,this.mdcRoot.dispatchEvent(e)},notifyClosing:()=>{const e=new CustomEvent("closing",{bubbles:!0,composed:!0});this.mdcRoot.dispatchEvent(e)},notifyOpen:()=>{const e=new CustomEvent("opened",{bubbles:!0,composed:!0});this.open=!0,this.mdcRoot.dispatchEvent(e)},notifyOpening:()=>{const e=new CustomEvent("opening",{bubbles:!0,composed:!0});this.mdcRoot.dispatchEvent(e)},isElementInContainer:()=>!1,isRtl:()=>!!this.mdcRoot&&"rtl"===getComputedStyle(this.mdcRoot).direction,setTransformOrigin:e=>{this.mdcRoot&&(this.styleTransformOrigin=e)},isFocused:()=>Vl(this),saveFocus:()=>{const e=Dl(),t=e.length;t||(this.previouslyFocused=null),this.previouslyFocused=e[t-1]},restoreFocus:()=>{this.previouslyFocused&&"focus"in this.previouslyFocused&&this.previouslyFocused.focus()},getInnerDimensions:()=>{const e=this.mdcRoot;return e?{width:e.offsetWidth,height:e.offsetHeight}:{width:0,height:0}},getAnchorDimensions:()=>{const e=this.anchor;return e?e.getBoundingClientRect():null},getBodyDimensions:()=>({width:document.body.clientWidth,height:document.body.clientHeight}),getWindowDimensions:()=>({width:window.innerWidth,height:window.innerHeight}),getWindowScroll:()=>({x:window.pageXOffset,y:window.pageYOffset}),setPosition:e=>{this.mdcRoot&&(this.styleLeft="left"in e?`${e.left}px`:"",this.styleRight="right"in e?`${e.right}px`:"",this.styleTop="top"in e?`${e.top}px`:"",this.styleBottom="bottom"in e?`${e.bottom}px`:"")},setMaxHeight:async e=>{this.mdcRoot&&(this.styleMaxHeight=e,await this.updateComplete,this.styleMaxHeight=`var(--mdc-menu-max-height, ${e})`)}})}onKeydown(e){this.mdcFoundation&&this.mdcFoundation.handleKeydown(e)}onBodyClick(e){if(this.stayOpenOnBodyClick)return;-1===e.composedPath().indexOf(this)&&this.close()}registerBodyClick(){this.onBodyClickBound=this.onBodyClick.bind(this),document.body.addEventListener("click",this.onBodyClickBound,{passive:!0,capture:!0})}deregisterBodyClick(){document.body.removeEventListener("click",this.onBodyClickBound,{capture:!0})}onOpenChanged(e,t){this.mdcFoundation&&(e?this.mdcFoundation.open():void 0!==t&&this.mdcFoundation.close())}close(){this.open=!1}show(){this.open=!0}}n([Gl(".mdc-menu-surface")],cm.prototype,"mdcRoot",void 0),n([Gl("slot")],cm.prototype,"slotElement",void 0),n([Ul({type:Boolean}),id(function(e){this.mdcFoundation&&!this.fixed&&this.mdcFoundation.setIsHoisted(e)})],cm.prototype,"absolute",void 0),n([Ul({type:Boolean})],cm.prototype,"fullwidth",void 0),n([Ul({type:Boolean}),id(function(e){this.mdcFoundation&&!this.absolute&&this.mdcFoundation.setFixedPosition(e)})],cm.prototype,"fixed",void 0),n([Ul({type:Number}),id(function(e){this.mdcFoundation&&null!==this.y&&null!==e&&(this.mdcFoundation.setAbsolutePosition(e,this.y),this.mdcFoundation.setAnchorMargin({left:e,top:this.y,right:-e,bottom:this.y}))})],cm.prototype,"x",void 0),n([Ul({type:Number}),id(function(e){this.mdcFoundation&&null!==this.x&&null!==e&&(this.mdcFoundation.setAbsolutePosition(this.x,e),this.mdcFoundation.setAnchorMargin({left:this.x,top:e,right:-this.x,bottom:e}))})],cm.prototype,"y",void 0),n([Ul({type:Boolean}),id(function(e){this.mdcFoundation&&this.mdcFoundation.setQuickOpen(e)})],cm.prototype,"quick",void 0),n([Ul({type:Boolean,reflect:!0}),id(function(e,t){this.onOpenChanged(e,t)})],cm.prototype,"open",void 0),n([Ul({type:Boolean})],cm.prototype,"stayOpenOnBodyClick",void 0),n([jl(),id(function(e){this.mdcFoundation&&this.mdcFoundation.setAnchorCorner(e)})],cm.prototype,"bitwiseCorner",void 0),n([Ul({type:String}),id(function(e){if(this.mdcFoundation){const t="START"===e||"END"===e,i=null===this.previousMenuCorner,n=!i&&e!==this.previousMenuCorner;t&&(n||i&&"END"===e)&&(this.bitwiseCorner=this.bitwiseCorner^oh.RIGHT,this.mdcFoundation.flipCornerHorizontally(),this.previousMenuCorner=e)}})],cm.prototype,"menuCorner",void 0),n([Ul({type:String}),id(function(e){if(this.mdcFoundation&&e){let t=dm[e];"END"===this.menuCorner&&(t^=oh.RIGHT),this.bitwiseCorner=t}})],cm.prototype,"corner",void 0),n([jl()],cm.prototype,"styleTop",void 0),n([jl()],cm.prototype,"styleLeft",void 0),n([jl()],cm.prototype,"styleRight",void 0),n([jl()],cm.prototype,"styleBottom",void 0),n([jl()],cm.prototype,"styleMaxHeight",void 0),n([jl()],cm.prototype,"styleTransformOrigin",void 0);
-/**
- * @license
- * Copyright 2016 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var hm={BG_FOCUSED:"mdc-ripple-upgraded--background-focused",FG_ACTIVATION:"mdc-ripple-upgraded--foreground-activation",FG_DEACTIVATION:"mdc-ripple-upgraded--foreground-deactivation",ROOT:"mdc-ripple-upgraded",UNBOUNDED:"mdc-ripple-upgraded--unbounded"},pm={VAR_FG_SCALE:"--mdc-ripple-fg-scale",VAR_FG_SIZE:"--mdc-ripple-fg-size",VAR_FG_TRANSLATE_END:"--mdc-ripple-fg-translate-end",VAR_FG_TRANSLATE_START:"--mdc-ripple-fg-translate-start",VAR_LEFT:"--mdc-ripple-left",VAR_TOP:"--mdc-ripple-top"},um={DEACTIVATION_TIMEOUT_MS:225,FG_DEACTIVATION_MS:150,INITIAL_ORIGIN_SCALE:.6,PADDING:10,TAP_DELAY_MS:300};
-/**
- * @license
- * Copyright 2016 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var mm,fm=["touchstart","pointerdown","mousedown","keydown"],gm=["touchend","pointerup","mouseup","contextmenu"],vm=[],_m=function(e){function n(t){var o=e.call(this,i(i({},n.defaultAdapter),t))||this;return o.activationAnimationHasEnded=!1,o.activationTimer=0,o.fgDeactivationRemovalTimer=0,o.fgScale="0",o.frame={width:0,height:0},o.initialSize=0,o.layoutFrame=0,o.maxRadius=0,o.unboundedCoords={left:0,top:0},o.activationState=o.defaultActivationState(),o.activationTimerCallback=function(){o.activationAnimationHasEnded=!0,o.runDeactivationUXLogicIfReady()},o.activateHandler=function(e){o.activateImpl(e)},o.deactivateHandler=function(){o.deactivateImpl()},o.focusHandler=function(){o.handleFocus()},o.blurHandler=function(){o.handleBlur()},o.resizeHandler=function(){o.layout()},o}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return hm},enumerable:!1,configurable:!0}),Object.defineProperty(n,"strings",{get:function(){return pm},enumerable:!1,configurable:!0}),Object.defineProperty(n,"numbers",{get:function(){return um},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},browserSupportsCssVars:function(){return!0},computeBoundingRect:function(){return{top:0,right:0,bottom:0,left:0,width:0,height:0}},containsEventTarget:function(){return!0},deregisterDocumentInteractionHandler:function(){},deregisterInteractionHandler:function(){},deregisterResizeHandler:function(){},getWindowPageOffset:function(){return{x:0,y:0}},isSurfaceActive:function(){return!0},isSurfaceDisabled:function(){return!0},isUnbounded:function(){return!0},registerDocumentInteractionHandler:function(){},registerInteractionHandler:function(){},registerResizeHandler:function(){},removeClass:function(){},updateCssVariable:function(){}}},enumerable:!1,configurable:!0}),n.prototype.init=function(){var e=this,t=this.supportsPressRipple();if(this.registerRootHandlers(t),t){var i=n.cssClasses,o=i.ROOT,r=i.UNBOUNDED;requestAnimationFrame(function(){e.adapter.addClass(o),e.adapter.isUnbounded()&&(e.adapter.addClass(r),e.layoutInternal())})}},n.prototype.destroy=function(){var e=this;if(this.supportsPressRipple()){this.activationTimer&&(clearTimeout(this.activationTimer),this.activationTimer=0,this.adapter.removeClass(n.cssClasses.FG_ACTIVATION)),this.fgDeactivationRemovalTimer&&(clearTimeout(this.fgDeactivationRemovalTimer),this.fgDeactivationRemovalTimer=0,this.adapter.removeClass(n.cssClasses.FG_DEACTIVATION));var t=n.cssClasses,i=t.ROOT,o=t.UNBOUNDED;requestAnimationFrame(function(){e.adapter.removeClass(i),e.adapter.removeClass(o),e.removeCssVars()})}this.deregisterRootHandlers(),this.deregisterDeactivationHandlers()},n.prototype.activate=function(e){this.activateImpl(e)},n.prototype.deactivate=function(){this.deactivateImpl()},n.prototype.layout=function(){var e=this;this.layoutFrame&&cancelAnimationFrame(this.layoutFrame),this.layoutFrame=requestAnimationFrame(function(){e.layoutInternal(),e.layoutFrame=0})},n.prototype.setUnbounded=function(e){var t=n.cssClasses.UNBOUNDED;e?this.adapter.addClass(t):this.adapter.removeClass(t)},n.prototype.handleFocus=function(){var e=this;requestAnimationFrame(function(){return e.adapter.addClass(n.cssClasses.BG_FOCUSED)})},n.prototype.handleBlur=function(){var e=this;requestAnimationFrame(function(){return e.adapter.removeClass(n.cssClasses.BG_FOCUSED)})},n.prototype.supportsPressRipple=function(){return this.adapter.browserSupportsCssVars()},n.prototype.defaultActivationState=function(){return{activationEvent:void 0,hasDeactivationUXRun:!1,isActivated:!1,isProgrammatic:!1,wasActivatedByPointer:!1,wasElementMadeActive:!1}},n.prototype.registerRootHandlers=function(e){var t,i;if(e){try{for(var n=o(fm),r=n.next();!r.done;r=n.next()){var s=r.value;this.adapter.registerInteractionHandler(s,this.activateHandler)}}catch(e){t={error:e}}finally{try{r&&!r.done&&(i=n.return)&&i.call(n)}finally{if(t)throw t.error}}this.adapter.isUnbounded()&&this.adapter.registerResizeHandler(this.resizeHandler)}this.adapter.registerInteractionHandler("focus",this.focusHandler),this.adapter.registerInteractionHandler("blur",this.blurHandler)},n.prototype.registerDeactivationHandlers=function(e){var t,i;if("keydown"===e.type)this.adapter.registerInteractionHandler("keyup",this.deactivateHandler);else try{for(var n=o(gm),r=n.next();!r.done;r=n.next()){var s=r.value;this.adapter.registerDocumentInteractionHandler(s,this.deactivateHandler)}}catch(e){t={error:e}}finally{try{r&&!r.done&&(i=n.return)&&i.call(n)}finally{if(t)throw t.error}}},n.prototype.deregisterRootHandlers=function(){var e,t;try{for(var i=o(fm),n=i.next();!n.done;n=i.next()){var r=n.value;this.adapter.deregisterInteractionHandler(r,this.activateHandler)}}catch(t){e={error:t}}finally{try{n&&!n.done&&(t=i.return)&&t.call(i)}finally{if(e)throw e.error}}this.adapter.deregisterInteractionHandler("focus",this.focusHandler),this.adapter.deregisterInteractionHandler("blur",this.blurHandler),this.adapter.isUnbounded()&&this.adapter.deregisterResizeHandler(this.resizeHandler)},n.prototype.deregisterDeactivationHandlers=function(){var e,t;this.adapter.deregisterInteractionHandler("keyup",this.deactivateHandler);try{for(var i=o(gm),n=i.next();!n.done;n=i.next()){var r=n.value;this.adapter.deregisterDocumentInteractionHandler(r,this.deactivateHandler)}}catch(t){e={error:t}}finally{try{n&&!n.done&&(t=i.return)&&t.call(i)}finally{if(e)throw e.error}}},n.prototype.removeCssVars=function(){var e=this,t=n.strings;Object.keys(t).forEach(function(i){0===i.indexOf("VAR_")&&e.adapter.updateCssVariable(t[i],null)})},n.prototype.activateImpl=function(e){var t=this;if(!this.adapter.isSurfaceDisabled()){var i=this.activationState;if(!i.isActivated){var n=this.previousActivationEvent;if(!(n&&void 0!==e&&n.type!==e.type))i.isActivated=!0,i.isProgrammatic=void 0===e,i.activationEvent=e,i.wasActivatedByPointer=!i.isProgrammatic&&(void 0!==e&&("mousedown"===e.type||"touchstart"===e.type||"pointerdown"===e.type)),void 0!==e&&vm.length>0&&vm.some(function(e){return t.adapter.containsEventTarget(e)})?this.resetActivationState():(void 0!==e&&(vm.push(e.target),this.registerDeactivationHandlers(e)),i.wasElementMadeActive=this.checkElementMadeActive(e),i.wasElementMadeActive&&this.animateActivation(),requestAnimationFrame(function(){vm=[],i.wasElementMadeActive||void 0===e||" "!==e.key&&32!==e.keyCode||(i.wasElementMadeActive=t.checkElementMadeActive(e),i.wasElementMadeActive&&t.animateActivation()),i.wasElementMadeActive||(t.activationState=t.defaultActivationState())}))}}},n.prototype.checkElementMadeActive=function(e){return void 0===e||"keydown"!==e.type||this.adapter.isSurfaceActive()},n.prototype.animateActivation=function(){var e=this,t=n.strings,i=t.VAR_FG_TRANSLATE_START,o=t.VAR_FG_TRANSLATE_END,r=n.cssClasses,s=r.FG_DEACTIVATION,a=r.FG_ACTIVATION,l=n.numbers.DEACTIVATION_TIMEOUT_MS;this.layoutInternal();var d="",c="";if(!this.adapter.isUnbounded()){var h=this.getFgTranslationCoordinates(),p=h.startPoint,u=h.endPoint;d=p.x+"px, "+p.y+"px",c=u.x+"px, "+u.y+"px"}this.adapter.updateCssVariable(i,d),this.adapter.updateCssVariable(o,c),clearTimeout(this.activationTimer),clearTimeout(this.fgDeactivationRemovalTimer),this.rmBoundedActivationClasses(),this.adapter.removeClass(s),this.adapter.computeBoundingRect(),this.adapter.addClass(a),this.activationTimer=setTimeout(function(){e.activationTimerCallback()},l)},n.prototype.getFgTranslationCoordinates=function(){var e,t=this.activationState,i=t.activationEvent;return e=t.wasActivatedByPointer?function(e,t,i){if(!e)return{x:0,y:0};var n,o,r=t.x,s=t.y,a=r+i.left,l=s+i.top;if("touchstart"===e.type){var d=e;n=d.changedTouches[0].pageX-a,o=d.changedTouches[0].pageY-l}else{var c=e;n=c.pageX-a,o=c.pageY-l}return{x:n,y:o}}(i,this.adapter.getWindowPageOffset(),this.adapter.computeBoundingRect()):{x:this.frame.width/2,y:this.frame.height/2},{startPoint:e={x:e.x-this.initialSize/2,y:e.y-this.initialSize/2},endPoint:{x:this.frame.width/2-this.initialSize/2,y:this.frame.height/2-this.initialSize/2}}},n.prototype.runDeactivationUXLogicIfReady=function(){var e=this,t=n.cssClasses.FG_DEACTIVATION,i=this.activationState,o=i.hasDeactivationUXRun,r=i.isActivated;(o||!r)&&this.activationAnimationHasEnded&&(this.rmBoundedActivationClasses(),this.adapter.addClass(t),this.fgDeactivationRemovalTimer=setTimeout(function(){e.adapter.removeClass(t)},um.FG_DEACTIVATION_MS))},n.prototype.rmBoundedActivationClasses=function(){var e=n.cssClasses.FG_ACTIVATION;this.adapter.removeClass(e),this.activationAnimationHasEnded=!1,this.adapter.computeBoundingRect()},n.prototype.resetActivationState=function(){var e=this;this.previousActivationEvent=this.activationState.activationEvent,this.activationState=this.defaultActivationState(),setTimeout(function(){return e.previousActivationEvent=void 0},n.numbers.TAP_DELAY_MS)},n.prototype.deactivateImpl=function(){var e=this,t=this.activationState;if(t.isActivated){var n=i({},t);t.isProgrammatic?(requestAnimationFrame(function(){e.animateDeactivation(n)}),this.resetActivationState()):(this.deregisterDeactivationHandlers(),requestAnimationFrame(function(){e.activationState.hasDeactivationUXRun=!0,e.animateDeactivation(n),e.resetActivationState()}))}},n.prototype.animateDeactivation=function(e){var t=e.wasActivatedByPointer,i=e.wasElementMadeActive;(t||i)&&this.runDeactivationUXLogicIfReady()},n.prototype.layoutInternal=function(){var e=this;this.frame=this.adapter.computeBoundingRect();var t=Math.max(this.frame.height,this.frame.width);this.maxRadius=this.adapter.isUnbounded()?t:Math.sqrt(Math.pow(e.frame.width,2)+Math.pow(e.frame.height,2))+n.numbers.PADDING;var i=Math.floor(t*n.numbers.INITIAL_ORIGIN_SCALE);this.adapter.isUnbounded()&&i%2!=0?this.initialSize=i-1:this.initialSize=i,this.fgScale=""+this.maxRadius/this.initialSize,this.updateLayoutCssVars()},n.prototype.updateLayoutCssVars=function(){var e=n.strings,t=e.VAR_FG_SIZE,i=e.VAR_LEFT,o=e.VAR_TOP,r=e.VAR_FG_SCALE;this.adapter.updateCssVariable(t,this.initialSize+"px"),this.adapter.updateCssVariable(r,this.fgScale),this.adapter.isUnbounded()&&(this.unboundedCoords={left:Math.round(this.frame.width/2-this.initialSize/2),top:Math.round(this.frame.height/2-this.initialSize/2)},this.adapter.updateCssVariable(i,this.unboundedCoords.left+"px"),this.adapter.updateCssVariable(o,this.unboundedCoords.top+"px"))},n}(La),bm=_m;const ym=window,xm=ym.trustedTypes,wm=xm?xm.createPolicy("lit-html",{createHTML:e=>e}):void 0,Am="$lit$",$m=`lit$${(Math.random()+"").slice(9)}$`,Em="?"+$m,Cm=`<${Em}>`,Sm=document,km=()=>Sm.createComment(""),Tm=e=>null===e||"object"!=typeof e&&"function"!=typeof e,Im=Array.isArray,Om="[ \t\n\f\r]",Mm=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Nm=/-->/g,Rm=/>/g,zm=RegExp(`>|${Om}(?:([^\\s"'>=/]+)(${Om}*=${Om}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),Lm=/'/g,Hm=/"/g,Pm=/^(?:script|style|textarea|title)$/i,Dm=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),Vm=Symbol.for("lit-noChange"),Fm=Symbol.for("lit-nothing"),Bm=new WeakMap,Um=Sm.createTreeWalker(Sm,129,null,!1);function jm(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==wm?wm.createHTML(t):t}class Wm{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=Mm;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===Mm?"!--"===l[1]?s=Nm:void 0!==l[1]?s=Rm:void 0!==l[2]?(Pm.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=zm):void 0!==l[3]&&(s=zm):s===zm?">"===l[0]?(s=null!=o?o:Mm,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?zm:'"'===l[3]?Hm:Lm):s===Hm||s===Lm?s=zm:s===Nm||s===Rm?s=Mm:(s=zm,o=void 0);const h=s===zm&&e[t+1].startsWith("/>")?" ":"";r+=s===Mm?i+Cm:d>=0?(n.push(a),i.slice(0,d)+Am+i.slice(d)+$m+h):i+$m+(-2===d?(n.push(void 0),t):h)}return[jm(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=Wm.createElement(l,i),Um.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=Um.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(Am)||t.startsWith($m)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+Am).split($m),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?Ym:"?"===t[1]?Jm:"@"===t[1]?Qm:Km})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(Pm.test(n.tagName)){const e=n.textContent.split($m),t=e.length-1;if(t>0){n.textContent=xm?xm.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],km()),Um.nextNode(),a.push({type:2,index:++o});n.append(e[t],km())}}}else if(8===n.nodeType)if(n.data===Em)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf($m,e+1));)a.push({type:7,index:o}),e+=$m.length-1}o++}}static createElement(e,t){const i=Sm.createElement("template");return i.innerHTML=e,i}}function qm(e,t,i=e,n){var o,r,s,a;if(t===Vm)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=Tm(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=qm(e,l._$AS(e,t.values),l,n)),t}class Gm{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:Sm).importNode(i,!0);Um.currentNode=o;let r=Um.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Xm(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new ef(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=Um.nextNode(),s++)}return Um.currentNode=Sm,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Xm{constructor(e,t,i,n){var o;this.type=2,this._$AH=Fm,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=qm(this,e,t),Tm(e)?e===Fm||null==e||""===e?(this._$AH!==Fm&&this._$AR(),this._$AH=Fm):e!==this._$AH&&e!==Vm&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>Im(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==Fm&&Tm(this._$AH)?this._$AA.nextSibling.data=e:this.$(Sm.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Wm.createElement(jm(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Gm(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Bm.get(e.strings);return void 0===t&&Bm.set(e.strings,t=new Wm(e)),t}T(e){Im(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Xm(this.k(km()),this.k(km()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class Km{constructor(e,t,i,n,o){this.type=1,this._$AH=Fm,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=Fm}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=qm(this,e,t,0),r=!Tm(e)||e!==this._$AH&&e!==Vm,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=qm(this,n[i+s],t,s),a===Vm&&(a=this._$AH[s]),r||(r=!Tm(a)||a!==this._$AH[s]),a===Fm?e=Fm:e!==Fm&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===Fm?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class Ym extends Km{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===Fm?void 0:e}}const Zm=xm?xm.emptyScript:"";class Jm extends Km{constructor(){super(...arguments),this.type=4}j(e){e&&e!==Fm?this.element.setAttribute(this.name,Zm):this.element.removeAttribute(this.name)}}class Qm extends Km{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=qm(this,e,t,0))&&void 0!==i?i:Fm)===Vm)return;const n=this._$AH,o=e===Fm&&n!==Fm||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==Fm&&(n===Fm||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class ef{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){qm(this,e)}}const tf=ym.litHtmlPolyfillSupport;null==tf||tf(Wm,Xm),(null!==(mm=ym.litHtmlVersions)&&void 0!==mm?mm:ym.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var nf,of;class rf extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Xm(t.insertBefore(km(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return Vm}}rf.finalized=!0,rf._$litElement$=!0,null===(nf=globalThis.litElementHydrateSupport)||void 0===nf||nf.call(globalThis,{LitElement:rf});const sf=globalThis.litElementPolyfillSupport;null==sf||sf({LitElement:rf}),(null!==(of=globalThis.litElementVersions)&&void 0!==of?of:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const af=1,lf=e=>(...t)=>({_$litDirective$:e,values:t});class df{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const cf=lf(class extends df{constructor(e){var t;if(super(e),e.type!==af||"class"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(e){return" "+Object.keys(e).filter(t=>e[t]).join(" ")+" "}update(e,[t]){var i,n;if(void 0===this.it){this.it=new Set,void 0!==e.strings&&(this.nt=new Set(e.strings.join(" ").split(/\s/).filter(e=>""!==e)));for(const e in t)t[e]&&!(null===(i=this.nt)||void 0===i?void 0:i.has(e))&&this.it.add(e);return this.render(t)}const o=e.element.classList;this.it.forEach(e=>{e in t||(o.remove(e),this.it.delete(e))});for(const e in t){const i=!!t[e];i===this.it.has(e)||(null===(n=this.nt)||void 0===n?void 0:n.has(e))||(i?(o.add(e),this.it.add(e)):(o.remove(e),this.it.delete(e)))}return Vm}}),hf="important",pf=" !"+hf,uf=lf(class extends df{constructor(e){var t;if(super(e),e.type!==af||"style"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(e){return Object.keys(e).reduce((t,i)=>{const n=e[i];return null==n?t:t+`${i=i.includes("-")?i:i.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${n};`},"")}update(e,[t]){const{style:i}=e.element;if(void 0===this.ht){this.ht=new Set;for(const e in t)this.ht.add(e);return this.render(t)}this.ht.forEach(e=>{null==t[e]&&(this.ht.delete(e),e.includes("-")?i.removeProperty(e):i[e]="")});for(const e in t){const n=t[e];if(null!=n){this.ht.add(e);const t="string"==typeof n&&n.endsWith(pf);e.includes("-")||t?i.setProperty(e,t?n.slice(0,-11):n,t?hf:""):i[e]=n}}return Vm}});
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-class mf extends Fl{constructor(){super(...arguments),this.primary=!1,this.accent=!1,this.unbounded=!1,this.disabled=!1,this.activated=!1,this.selected=!1,this.internalUseStateLayerCustomProperties=!1,this.hovering=!1,this.bgFocused=!1,this.fgActivation=!1,this.fgDeactivation=!1,this.fgScale="",this.fgSize="",this.translateStart="",this.translateEnd="",this.leftPos="",this.topPos="",this.mdcFoundationClass=bm}get isActive(){return e=this.parentElement||this,t=":active",(e.matches||e.webkitMatchesSelector||e.msMatchesSelector).call(e,t);
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var e,t}createAdapter(){return{browserSupportsCssVars:()=>!0,isUnbounded:()=>this.unbounded,isSurfaceActive:()=>this.isActive,isSurfaceDisabled:()=>this.disabled,addClass:e=>{switch(e){case"mdc-ripple-upgraded--background-focused":this.bgFocused=!0;break;case"mdc-ripple-upgraded--foreground-activation":this.fgActivation=!0;break;case"mdc-ripple-upgraded--foreground-deactivation":this.fgDeactivation=!0}},removeClass:e=>{switch(e){case"mdc-ripple-upgraded--background-focused":this.bgFocused=!1;break;case"mdc-ripple-upgraded--foreground-activation":this.fgActivation=!1;break;case"mdc-ripple-upgraded--foreground-deactivation":this.fgDeactivation=!1}},containsEventTarget:()=>!0,registerInteractionHandler:()=>{},deregisterInteractionHandler:()=>{},registerDocumentInteractionHandler:()=>{},deregisterDocumentInteractionHandler:()=>{},registerResizeHandler:()=>{},deregisterResizeHandler:()=>{},updateCssVariable:(e,t)=>{switch(e){case"--mdc-ripple-fg-scale":this.fgScale=t;break;case"--mdc-ripple-fg-size":this.fgSize=t;break;case"--mdc-ripple-fg-translate-end":this.translateEnd=t;break;case"--mdc-ripple-fg-translate-start":this.translateStart=t;break;case"--mdc-ripple-left":this.leftPos=t;break;case"--mdc-ripple-top":this.topPos=t}},computeBoundingRect:()=>(this.parentElement||this).getBoundingClientRect(),getWindowPageOffset:()=>({x:window.pageXOffset,y:window.pageYOffset})}}startPress(e){this.waitForFoundation(()=>{this.mdcFoundation.activate(e)})}endPress(){this.waitForFoundation(()=>{this.mdcFoundation.deactivate()})}startFocus(){this.waitForFoundation(()=>{this.mdcFoundation.handleFocus()})}endFocus(){this.waitForFoundation(()=>{this.mdcFoundation.handleBlur()})}startHover(){this.hovering=!0}endHover(){this.hovering=!1}waitForFoundation(e){this.mdcFoundation?e():this.updateComplete.then(e)}update(e){e.has("disabled")&&this.disabled&&this.endHover(),super.update(e)}render(){const e=this.activated&&(this.primary||!this.accent),t=this.selected&&(this.primary||!this.accent),i={"mdc-ripple-surface--accent":this.accent,"mdc-ripple-surface--primary--activated":e,"mdc-ripple-surface--accent--activated":this.accent&&this.activated,"mdc-ripple-surface--primary--selected":t,"mdc-ripple-surface--accent--selected":this.accent&&this.selected,"mdc-ripple-surface--disabled":this.disabled,"mdc-ripple-surface--hover":this.hovering,"mdc-ripple-surface--primary":this.primary,"mdc-ripple-surface--selected":this.selected,"mdc-ripple-upgraded--background-focused":this.bgFocused,"mdc-ripple-upgraded--foreground-activation":this.fgActivation,"mdc-ripple-upgraded--foreground-deactivation":this.fgDeactivation,"mdc-ripple-upgraded--unbounded":this.unbounded,"mdc-ripple-surface--internal-use-state-layer-custom-properties":this.internalUseStateLayerCustomProperties};return Dm`
-        <div class="mdc-ripple-surface mdc-ripple-upgraded ${cf(i)}"
-          style="${uf({"--mdc-ripple-fg-scale":this.fgScale,"--mdc-ripple-fg-size":this.fgSize,"--mdc-ripple-fg-translate-end":this.translateEnd,"--mdc-ripple-fg-translate-start":this.translateStart,"--mdc-ripple-left":this.leftPos,"--mdc-ripple-top":this.topPos})}"></div>`}}n([Gl(".mdc-ripple-surface")],mf.prototype,"mdcRoot",void 0),n([Ul({type:Boolean})],mf.prototype,"primary",void 0),n([Ul({type:Boolean})],mf.prototype,"accent",void 0),n([Ul({type:Boolean})],mf.prototype,"unbounded",void 0),n([Ul({type:Boolean})],mf.prototype,"disabled",void 0),n([Ul({type:Boolean})],mf.prototype,"activated",void 0),n([Ul({type:Boolean})],mf.prototype,"selected",void 0),n([Ul({type:Boolean})],mf.prototype,"internalUseStateLayerCustomProperties",void 0),n([jl()],mf.prototype,"hovering",void 0),n([jl()],mf.prototype,"bgFocused",void 0),n([jl()],mf.prototype,"fgActivation",void 0),n([jl()],mf.prototype,"fgDeactivation",void 0),n([jl()],mf.prototype,"fgScale",void 0),n([jl()],mf.prototype,"fgSize",void 0),n([jl()],mf.prototype,"translateStart",void 0),n([jl()],mf.prototype,"translateEnd",void 0),n([jl()],mf.prototype,"leftPos",void 0),n([jl()],mf.prototype,"topPos",void 0);
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var ff,gf={NOTCH_ELEMENT_SELECTOR:".mdc-notched-outline__notch"},vf={NOTCH_ELEMENT_PADDING:8},_f={NO_LABEL:"mdc-notched-outline--no-label",OUTLINE_NOTCHED:"mdc-notched-outline--notched",OUTLINE_UPGRADED:"mdc-notched-outline--upgraded"},bf=function(e){function n(t){return e.call(this,i(i({},n.defaultAdapter),t))||this}return t(n,e),Object.defineProperty(n,"strings",{get:function(){return gf},enumerable:!1,configurable:!0}),Object.defineProperty(n,"cssClasses",{get:function(){return _f},enumerable:!1,configurable:!0}),Object.defineProperty(n,"numbers",{get:function(){return vf},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},removeClass:function(){},setNotchWidthProperty:function(){},removeNotchWidthProperty:function(){}}},enumerable:!1,configurable:!0}),n.prototype.notch=function(e){var t=n.cssClasses.OUTLINE_NOTCHED;e>0&&(e+=vf.NOTCH_ELEMENT_PADDING),this.adapter.setNotchWidthProperty(e),this.adapter.addClass(t)},n.prototype.closeNotch=function(){var e=n.cssClasses.OUTLINE_NOTCHED;this.adapter.removeClass(e),this.adapter.removeNotchWidthProperty()},n}(La);const yf=window,xf=yf.trustedTypes,wf=xf?xf.createPolicy("lit-html",{createHTML:e=>e}):void 0,Af="$lit$",$f=`lit$${(Math.random()+"").slice(9)}$`,Ef="?"+$f,Cf=`<${Ef}>`,Sf=document,kf=()=>Sf.createComment(""),Tf=e=>null===e||"object"!=typeof e&&"function"!=typeof e,If=Array.isArray,Of="[ \t\n\f\r]",Mf=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Nf=/-->/g,Rf=/>/g,zf=RegExp(`>|${Of}(?:([^\\s"'>=/]+)(${Of}*=${Of}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),Lf=/'/g,Hf=/"/g,Pf=/^(?:script|style|textarea|title)$/i,Df=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),Vf=Symbol.for("lit-noChange"),Ff=Symbol.for("lit-nothing"),Bf=new WeakMap,Uf=Sf.createTreeWalker(Sf,129,null,!1);function jf(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==wf?wf.createHTML(t):t}class Wf{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=Mf;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===Mf?"!--"===l[1]?s=Nf:void 0!==l[1]?s=Rf:void 0!==l[2]?(Pf.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=zf):void 0!==l[3]&&(s=zf):s===zf?">"===l[0]?(s=null!=o?o:Mf,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?zf:'"'===l[3]?Hf:Lf):s===Hf||s===Lf?s=zf:s===Nf||s===Rf?s=Mf:(s=zf,o=void 0);const h=s===zf&&e[t+1].startsWith("/>")?" ":"";r+=s===Mf?i+Cf:d>=0?(n.push(a),i.slice(0,d)+Af+i.slice(d)+$f+h):i+$f+(-2===d?(n.push(void 0),t):h)}return[jf(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=Wf.createElement(l,i),Uf.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=Uf.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(Af)||t.startsWith($f)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+Af).split($f),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?Yf:"?"===t[1]?Jf:"@"===t[1]?Qf:Kf})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(Pf.test(n.tagName)){const e=n.textContent.split($f),t=e.length-1;if(t>0){n.textContent=xf?xf.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],kf()),Uf.nextNode(),a.push({type:2,index:++o});n.append(e[t],kf())}}}else if(8===n.nodeType)if(n.data===Ef)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf($f,e+1));)a.push({type:7,index:o}),e+=$f.length-1}o++}}static createElement(e,t){const i=Sf.createElement("template");return i.innerHTML=e,i}}function qf(e,t,i=e,n){var o,r,s,a;if(t===Vf)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=Tf(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=qf(e,l._$AS(e,t.values),l,n)),t}class Gf{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:Sf).importNode(i,!0);Uf.currentNode=o;let r=Uf.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Xf(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new eg(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=Uf.nextNode(),s++)}return Uf.currentNode=Sf,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Xf{constructor(e,t,i,n){var o;this.type=2,this._$AH=Ff,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=qf(this,e,t),Tf(e)?e===Ff||null==e||""===e?(this._$AH!==Ff&&this._$AR(),this._$AH=Ff):e!==this._$AH&&e!==Vf&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>If(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==Ff&&Tf(this._$AH)?this._$AA.nextSibling.data=e:this.$(Sf.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Wf.createElement(jf(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Gf(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Bf.get(e.strings);return void 0===t&&Bf.set(e.strings,t=new Wf(e)),t}T(e){If(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Xf(this.k(kf()),this.k(kf()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class Kf{constructor(e,t,i,n,o){this.type=1,this._$AH=Ff,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=Ff}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=qf(this,e,t,0),r=!Tf(e)||e!==this._$AH&&e!==Vf,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=qf(this,n[i+s],t,s),a===Vf&&(a=this._$AH[s]),r||(r=!Tf(a)||a!==this._$AH[s]),a===Ff?e=Ff:e!==Ff&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===Ff?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class Yf extends Kf{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===Ff?void 0:e}}const Zf=xf?xf.emptyScript:"";class Jf extends Kf{constructor(){super(...arguments),this.type=4}j(e){e&&e!==Ff?this.element.setAttribute(this.name,Zf):this.element.removeAttribute(this.name)}}class Qf extends Kf{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=qf(this,e,t,0))&&void 0!==i?i:Ff)===Vf)return;const n=this._$AH,o=e===Ff&&n!==Ff||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==Ff&&(n===Ff||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class eg{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){qf(this,e)}}const tg=yf.litHtmlPolyfillSupport;null==tg||tg(Wf,Xf),(null!==(ff=yf.litHtmlVersions)&&void 0!==ff?ff:yf.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var ig,ng;class og extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Xf(t.insertBefore(kf(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return Vf}}og.finalized=!0,og._$litElement$=!0,null===(ig=globalThis.litElementHydrateSupport)||void 0===ig||ig.call(globalThis,{LitElement:og});const rg=globalThis.litElementPolyfillSupport;null==rg||rg({LitElement:og}),(null!==(ng=globalThis.litElementVersions)&&void 0!==ng?ng:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const sg=1;class ag{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const lg=(e=>(...t)=>({_$litDirective$:e,values:t}))(class extends ag{constructor(e){var t;if(super(e),e.type!==sg||"class"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(e){return" "+Object.keys(e).filter(t=>e[t]).join(" ")+" "}update(e,[t]){var i,n;if(void 0===this.it){this.it=new Set,void 0!==e.strings&&(this.nt=new Set(e.strings.join(" ").split(/\s/).filter(e=>""!==e)));for(const e in t)t[e]&&!(null===(i=this.nt)||void 0===i?void 0:i.has(e))&&this.it.add(e);return this.render(t)}const o=e.element.classList;this.it.forEach(e=>{e in t||(o.remove(e),this.it.delete(e))});for(const e in t){const i=!!t[e];i===this.it.has(e)||(null===(n=this.nt)||void 0===n?void 0:n.has(e))||(i?(o.add(e),this.it.add(e)):(o.remove(e),this.it.delete(e)))}return Vf}});
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */class dg extends Fl{constructor(){super(...arguments),this.mdcFoundationClass=bf,this.width=0,this.open=!1,this.lastOpen=this.open}createAdapter(){return{addClass:e=>this.mdcRoot.classList.add(e),removeClass:e=>this.mdcRoot.classList.remove(e),setNotchWidthProperty:e=>this.notchElement.style.setProperty("width",`${e}px`),removeNotchWidthProperty:()=>this.notchElement.style.removeProperty("width")}}openOrClose(e,t){this.mdcFoundation&&(e&&void 0!==t?this.mdcFoundation.notch(t):this.mdcFoundation.closeNotch())}render(){this.openOrClose(this.open,this.width);const e=lg({"mdc-notched-outline--notched":this.open});return Df`
-      <span class="mdc-notched-outline ${e}">
-        <span class="mdc-notched-outline__leading"></span>
-        <span class="mdc-notched-outline__notch">
-          <slot></slot>
-        </span>
-        <span class="mdc-notched-outline__trailing"></span>
-      </span>`}}n([Gl(".mdc-notched-outline")],dg.prototype,"mdcRoot",void 0),n([Ul({type:Number})],dg.prototype,"width",void 0),n([Ul({type:Boolean,reflect:!0})],dg.prototype,"open",void 0),n([Gl(".mdc-notched-outline__notch")],dg.prototype,"notchElement",void 0);
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */
-const cg=Ma`.mdc-floating-label{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-subtitle1-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:1rem;font-size:var(--mdc-typography-subtitle1-font-size, 1rem);font-weight:400;font-weight:var(--mdc-typography-subtitle1-font-weight, 400);letter-spacing:0.009375em;letter-spacing:var(--mdc-typography-subtitle1-letter-spacing, 0.009375em);text-decoration:inherit;text-decoration:var(--mdc-typography-subtitle1-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-subtitle1-text-transform, inherit);position:absolute;left:0;-webkit-transform-origin:left top;transform-origin:left top;line-height:1.15rem;text-align:left;text-overflow:ellipsis;white-space:nowrap;cursor:text;overflow:hidden;will-change:transform;transition:transform 150ms cubic-bezier(0.4, 0, 0.2, 1),color 150ms cubic-bezier(0.4, 0, 0.2, 1)}[dir=rtl] .mdc-floating-label,.mdc-floating-label[dir=rtl]{right:0;left:auto;-webkit-transform-origin:right top;transform-origin:right top;text-align:right}.mdc-floating-label--float-above{cursor:auto}.mdc-floating-label--required::after{margin-left:1px;margin-right:0px;content:"*"}[dir=rtl] .mdc-floating-label--required::after,.mdc-floating-label--required[dir=rtl]::after{margin-left:0;margin-right:1px}.mdc-floating-label--float-above{transform:translateY(-106%) scale(0.75)}.mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-standard 250ms 1}@keyframes mdc-floating-label-shake-float-above-standard{0%{transform:translateX(calc(0 - 0%)) translateY(-106%) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 0%)) translateY(-106%) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 0%)) translateY(-106%) scale(0.75)}100%{transform:translateX(calc(0 - 0%)) translateY(-106%) scale(0.75)}}@keyframes mdc-ripple-fg-radius-in{from{animation-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transform:translate(var(--mdc-ripple-fg-translate-start, 0)) scale(1)}to{transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}}@keyframes mdc-ripple-fg-opacity-in{from{animation-timing-function:linear;opacity:0}to{opacity:var(--mdc-ripple-fg-opacity, 0)}}@keyframes mdc-ripple-fg-opacity-out{from{animation-timing-function:linear;opacity:var(--mdc-ripple-fg-opacity, 0)}to{opacity:0}}.mdc-line-ripple::before,.mdc-line-ripple::after{position:absolute;bottom:0;left:0;width:100%;border-bottom-style:solid;content:""}.mdc-line-ripple::before{border-bottom-width:1px}.mdc-line-ripple::before{z-index:1}.mdc-line-ripple::after{transform:scaleX(0);border-bottom-width:2px;opacity:0;z-index:2}.mdc-line-ripple::after{transition:transform 180ms cubic-bezier(0.4, 0, 0.2, 1),opacity 180ms cubic-bezier(0.4, 0, 0.2, 1)}.mdc-line-ripple--active::after{transform:scaleX(1);opacity:1}.mdc-line-ripple--deactivating::after{opacity:0}.mdc-notched-outline{display:flex;position:absolute;top:0;right:0;left:0;box-sizing:border-box;width:100%;max-width:100%;height:100%;text-align:left;pointer-events:none}[dir=rtl] .mdc-notched-outline,.mdc-notched-outline[dir=rtl]{text-align:right}.mdc-notched-outline__leading,.mdc-notched-outline__notch,.mdc-notched-outline__trailing{box-sizing:border-box;height:100%;border-top:1px solid;border-bottom:1px solid;pointer-events:none}.mdc-notched-outline__leading{border-left:1px solid;border-right:none;width:12px}[dir=rtl] .mdc-notched-outline__leading,.mdc-notched-outline__leading[dir=rtl]{border-left:none;border-right:1px solid}.mdc-notched-outline__trailing{border-left:none;border-right:1px solid;flex-grow:1}[dir=rtl] .mdc-notched-outline__trailing,.mdc-notched-outline__trailing[dir=rtl]{border-left:1px solid;border-right:none}.mdc-notched-outline__notch{flex:0 0 auto;width:auto;max-width:calc(100% - 12px * 2)}.mdc-notched-outline .mdc-floating-label{display:inline-block;position:relative;max-width:100%}.mdc-notched-outline .mdc-floating-label--float-above{text-overflow:clip}.mdc-notched-outline--upgraded .mdc-floating-label--float-above{max-width:calc(100% / 0.75)}.mdc-notched-outline--notched .mdc-notched-outline__notch{padding-left:0;padding-right:8px;border-top:none}[dir=rtl] .mdc-notched-outline--notched .mdc-notched-outline__notch,.mdc-notched-outline--notched .mdc-notched-outline__notch[dir=rtl]{padding-left:8px;padding-right:0}.mdc-notched-outline--no-label .mdc-notched-outline__notch{display:none}.mdc-select{display:inline-flex;position:relative}.mdc-select:not(.mdc-select--disabled) .mdc-select__selected-text{color:rgba(0, 0, 0, 0.87)}.mdc-select.mdc-select--disabled .mdc-select__selected-text{color:rgba(0, 0, 0, 0.38)}.mdc-select:not(.mdc-select--disabled) .mdc-floating-label{color:rgba(0, 0, 0, 0.6)}.mdc-select:not(.mdc-select--disabled).mdc-select--focused .mdc-floating-label{color:rgba(98, 0, 238, 0.87)}.mdc-select.mdc-select--disabled .mdc-floating-label{color:rgba(0, 0, 0, 0.38)}.mdc-select:not(.mdc-select--disabled) .mdc-select__dropdown-icon{fill:rgba(0, 0, 0, 0.54)}.mdc-select:not(.mdc-select--disabled).mdc-select--focused .mdc-select__dropdown-icon{fill:#6200ee;fill:var(--mdc-theme-primary, #6200ee)}.mdc-select.mdc-select--disabled .mdc-select__dropdown-icon{fill:rgba(0, 0, 0, 0.38)}.mdc-select:not(.mdc-select--disabled)+.mdc-select-helper-text{color:rgba(0, 0, 0, 0.6)}.mdc-select.mdc-select--disabled+.mdc-select-helper-text{color:rgba(0, 0, 0, 0.38)}.mdc-select:not(.mdc-select--disabled) .mdc-select__icon{color:rgba(0, 0, 0, 0.54)}.mdc-select.mdc-select--disabled .mdc-select__icon{color:rgba(0, 0, 0, 0.38)}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-select.mdc-select--disabled .mdc-select__selected-text{color:GrayText}.mdc-select.mdc-select--disabled .mdc-select__dropdown-icon{fill:red}.mdc-select.mdc-select--disabled .mdc-floating-label{color:GrayText}.mdc-select.mdc-select--disabled .mdc-line-ripple::before{border-bottom-color:GrayText}.mdc-select.mdc-select--disabled .mdc-notched-outline__leading,.mdc-select.mdc-select--disabled .mdc-notched-outline__notch,.mdc-select.mdc-select--disabled .mdc-notched-outline__trailing{border-color:GrayText}.mdc-select.mdc-select--disabled .mdc-select__icon{color:GrayText}.mdc-select.mdc-select--disabled+.mdc-select-helper-text{color:GrayText}}.mdc-select .mdc-floating-label{top:50%;transform:translateY(-50%);pointer-events:none}.mdc-select .mdc-select__anchor{padding-left:16px;padding-right:0}[dir=rtl] .mdc-select .mdc-select__anchor,.mdc-select .mdc-select__anchor[dir=rtl]{padding-left:0;padding-right:16px}.mdc-select.mdc-select--with-leading-icon .mdc-select__anchor{padding-left:0;padding-right:0}[dir=rtl] .mdc-select.mdc-select--with-leading-icon .mdc-select__anchor,.mdc-select.mdc-select--with-leading-icon .mdc-select__anchor[dir=rtl]{padding-left:0;padding-right:0}.mdc-select .mdc-select__icon{width:24px;height:24px;font-size:24px}.mdc-select .mdc-select__dropdown-icon{width:24px;height:24px}.mdc-select .mdc-select__menu .mdc-deprecated-list-item{padding-left:16px;padding-right:16px}[dir=rtl] .mdc-select .mdc-select__menu .mdc-deprecated-list-item,.mdc-select .mdc-select__menu .mdc-deprecated-list-item[dir=rtl]{padding-left:16px;padding-right:16px}.mdc-select .mdc-select__menu .mdc-deprecated-list-item__graphic{margin-left:0;margin-right:12px}[dir=rtl] .mdc-select .mdc-select__menu .mdc-deprecated-list-item__graphic,.mdc-select .mdc-select__menu .mdc-deprecated-list-item__graphic[dir=rtl]{margin-left:12px;margin-right:0}.mdc-select__dropdown-icon{margin-left:12px;margin-right:12px;display:inline-flex;position:relative;align-self:center;align-items:center;justify-content:center;flex-shrink:0;pointer-events:none}.mdc-select__dropdown-icon .mdc-select__dropdown-icon-active,.mdc-select__dropdown-icon .mdc-select__dropdown-icon-inactive{position:absolute;top:0;left:0}.mdc-select__dropdown-icon .mdc-select__dropdown-icon-graphic{width:41.6666666667%;height:20.8333333333%}.mdc-select__dropdown-icon .mdc-select__dropdown-icon-inactive{opacity:1;transition:opacity 75ms linear 75ms}.mdc-select__dropdown-icon .mdc-select__dropdown-icon-active{opacity:0;transition:opacity 75ms linear}[dir=rtl] .mdc-select__dropdown-icon,.mdc-select__dropdown-icon[dir=rtl]{margin-left:12px;margin-right:12px}.mdc-select--activated .mdc-select__dropdown-icon .mdc-select__dropdown-icon-inactive{opacity:0;transition:opacity 49.5ms linear}.mdc-select--activated .mdc-select__dropdown-icon .mdc-select__dropdown-icon-active{opacity:1;transition:opacity 100.5ms linear 49.5ms}.mdc-select__anchor{width:200px;min-width:0;flex:1 1 auto;position:relative;box-sizing:border-box;overflow:hidden;outline:none;cursor:pointer}.mdc-select__anchor .mdc-floating-label--float-above{transform:translateY(-106%) scale(0.75)}.mdc-select__selected-text-container{display:flex;appearance:none;pointer-events:none;box-sizing:border-box;width:auto;min-width:0;flex-grow:1;height:28px;border:none;outline:none;padding:0;background-color:transparent;color:inherit}.mdc-select__selected-text{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-subtitle1-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:1rem;font-size:var(--mdc-typography-subtitle1-font-size, 1rem);line-height:1.75rem;line-height:var(--mdc-typography-subtitle1-line-height, 1.75rem);font-weight:400;font-weight:var(--mdc-typography-subtitle1-font-weight, 400);letter-spacing:0.009375em;letter-spacing:var(--mdc-typography-subtitle1-letter-spacing, 0.009375em);text-decoration:inherit;text-decoration:var(--mdc-typography-subtitle1-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-subtitle1-text-transform, inherit);text-overflow:ellipsis;white-space:nowrap;overflow:hidden;display:block;width:100%;text-align:left}[dir=rtl] .mdc-select__selected-text,.mdc-select__selected-text[dir=rtl]{text-align:right}.mdc-select--invalid:not(.mdc-select--disabled) .mdc-floating-label{color:#b00020;color:var(--mdc-theme-error, #b00020)}.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-floating-label{color:#b00020;color:var(--mdc-theme-error, #b00020)}.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--invalid+.mdc-select-helper-text--validation-msg{color:#b00020;color:var(--mdc-theme-error, #b00020)}.mdc-select--invalid:not(.mdc-select--disabled) .mdc-select__dropdown-icon{fill:#b00020;fill:var(--mdc-theme-error, #b00020)}.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-select__dropdown-icon{fill:#b00020;fill:var(--mdc-theme-error, #b00020)}.mdc-select--disabled{cursor:default;pointer-events:none}.mdc-select--with-leading-icon .mdc-select__menu .mdc-deprecated-list-item{padding-left:12px;padding-right:12px}[dir=rtl] .mdc-select--with-leading-icon .mdc-select__menu .mdc-deprecated-list-item,.mdc-select--with-leading-icon .mdc-select__menu .mdc-deprecated-list-item[dir=rtl]{padding-left:12px;padding-right:12px}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-select__menu::before{position:absolute;box-sizing:border-box;width:100%;height:100%;top:0;left:0;border:1px solid transparent;border-radius:inherit;content:"";pointer-events:none}}@media screen and (forced-colors: active)and (forced-colors: active),screen and (-ms-high-contrast: active)and (forced-colors: active){.mdc-select__menu::before{border-color:CanvasText}}.mdc-select__menu .mdc-deprecated-list .mdc-select__icon,.mdc-select__menu .mdc-list .mdc-select__icon{margin-left:0;margin-right:0}[dir=rtl] .mdc-select__menu .mdc-deprecated-list .mdc-select__icon,[dir=rtl] .mdc-select__menu .mdc-list .mdc-select__icon,.mdc-select__menu .mdc-deprecated-list .mdc-select__icon[dir=rtl],.mdc-select__menu .mdc-list .mdc-select__icon[dir=rtl]{margin-left:0;margin-right:0}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--activated,.mdc-select__menu .mdc-list .mdc-deprecated-list-item--selected,.mdc-select__menu .mdc-list .mdc-deprecated-list-item--activated{color:#000;color:var(--mdc-theme-on-surface, #000)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected .mdc-deprecated-list-item__graphic,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--activated .mdc-deprecated-list-item__graphic,.mdc-select__menu .mdc-list .mdc-deprecated-list-item--selected .mdc-deprecated-list-item__graphic,.mdc-select__menu .mdc-list .mdc-deprecated-list-item--activated .mdc-deprecated-list-item__graphic{color:#000;color:var(--mdc-theme-on-surface, #000)}.mdc-select__menu .mdc-list-item__start{display:inline-flex;align-items:center}.mdc-select__option{padding-left:16px;padding-right:16px}[dir=rtl] .mdc-select__option,.mdc-select__option[dir=rtl]{padding-left:16px;padding-right:16px}.mdc-select__one-line-option.mdc-list-item--with-one-line{height:48px}.mdc-select__two-line-option.mdc-list-item--with-two-lines{height:64px}.mdc-select__two-line-option.mdc-list-item--with-two-lines .mdc-list-item__start{margin-top:20px}.mdc-select__two-line-option.mdc-list-item--with-two-lines .mdc-list-item__primary-text{display:block;margin-top:0;line-height:normal;margin-bottom:-20px}.mdc-select__two-line-option.mdc-list-item--with-two-lines .mdc-list-item__primary-text::before{display:inline-block;width:0;height:28px;content:"";vertical-align:0}.mdc-select__two-line-option.mdc-list-item--with-two-lines .mdc-list-item__primary-text::after{display:inline-block;width:0;height:20px;content:"";vertical-align:-20px}.mdc-select__two-line-option.mdc-list-item--with-two-lines.mdc-list-item--with-trailing-meta .mdc-list-item__end{display:block;margin-top:0;line-height:normal}.mdc-select__two-line-option.mdc-list-item--with-two-lines.mdc-list-item--with-trailing-meta .mdc-list-item__end::before{display:inline-block;width:0;height:36px;content:"";vertical-align:0}.mdc-select__option-with-leading-content{padding-left:0;padding-right:12px}.mdc-select__option-with-leading-content.mdc-list-item{padding-left:0;padding-right:auto}[dir=rtl] .mdc-select__option-with-leading-content.mdc-list-item,.mdc-select__option-with-leading-content.mdc-list-item[dir=rtl]{padding-left:auto;padding-right:0}.mdc-select__option-with-leading-content .mdc-list-item__start{margin-left:12px;margin-right:0}[dir=rtl] .mdc-select__option-with-leading-content .mdc-list-item__start,.mdc-select__option-with-leading-content .mdc-list-item__start[dir=rtl]{margin-left:0;margin-right:12px}.mdc-select__option-with-leading-content .mdc-list-item__start{width:36px;height:24px}[dir=rtl] .mdc-select__option-with-leading-content,.mdc-select__option-with-leading-content[dir=rtl]{padding-left:12px;padding-right:0}.mdc-select__option-with-meta.mdc-list-item{padding-left:auto;padding-right:0}[dir=rtl] .mdc-select__option-with-meta.mdc-list-item,.mdc-select__option-with-meta.mdc-list-item[dir=rtl]{padding-left:0;padding-right:auto}.mdc-select__option-with-meta .mdc-list-item__end{margin-left:12px;margin-right:12px}[dir=rtl] .mdc-select__option-with-meta .mdc-list-item__end,.mdc-select__option-with-meta .mdc-list-item__end[dir=rtl]{margin-left:12px;margin-right:12px}.mdc-select--filled .mdc-select__anchor{height:56px;display:flex;align-items:baseline}.mdc-select--filled .mdc-select__anchor::before{display:inline-block;width:0;height:40px;content:"";vertical-align:0}.mdc-select--filled.mdc-select--no-label .mdc-select__anchor .mdc-select__selected-text::before{content:"​"}.mdc-select--filled.mdc-select--no-label .mdc-select__anchor .mdc-select__selected-text-container{height:100%;display:inline-flex;align-items:center}.mdc-select--filled.mdc-select--no-label .mdc-select__anchor::before{display:none}.mdc-select--filled .mdc-select__anchor{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:0;border-bottom-left-radius:0}.mdc-select--filled:not(.mdc-select--disabled) .mdc-select__anchor{background-color:whitesmoke}.mdc-select--filled.mdc-select--disabled .mdc-select__anchor{background-color:#fafafa}.mdc-select--filled:not(.mdc-select--disabled) .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.42)}.mdc-select--filled:not(.mdc-select--disabled):hover .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.87)}.mdc-select--filled:not(.mdc-select--disabled) .mdc-line-ripple::after{border-bottom-color:#6200ee;border-bottom-color:var(--mdc-theme-primary, #6200ee)}.mdc-select--filled.mdc-select--disabled .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.06)}.mdc-select--filled .mdc-floating-label{max-width:calc(100% - 64px)}.mdc-select--filled .mdc-floating-label--float-above{max-width:calc(100% / 0.75 - 64px / 0.75)}.mdc-select--filled .mdc-menu-surface--is-open-below{border-top-left-radius:0px;border-top-right-radius:0px}.mdc-select--filled.mdc-select--focused.mdc-line-ripple::after{transform:scale(1, 2);opacity:1}.mdc-select--filled .mdc-floating-label{left:16px;right:initial}[dir=rtl] .mdc-select--filled .mdc-floating-label,.mdc-select--filled .mdc-floating-label[dir=rtl]{left:initial;right:16px}.mdc-select--filled.mdc-select--with-leading-icon .mdc-floating-label{left:48px;right:initial}[dir=rtl] .mdc-select--filled.mdc-select--with-leading-icon .mdc-floating-label,.mdc-select--filled.mdc-select--with-leading-icon .mdc-floating-label[dir=rtl]{left:initial;right:48px}.mdc-select--filled.mdc-select--with-leading-icon .mdc-floating-label{max-width:calc(100% - 96px)}.mdc-select--filled.mdc-select--with-leading-icon .mdc-floating-label--float-above{max-width:calc(100% / 0.75 - 96px / 0.75)}.mdc-select--invalid:not(.mdc-select--disabled) .mdc-line-ripple::before{border-bottom-color:#b00020;border-bottom-color:var(--mdc-theme-error, #b00020)}.mdc-select--invalid:not(.mdc-select--disabled):hover .mdc-line-ripple::before{border-bottom-color:#b00020;border-bottom-color:var(--mdc-theme-error, #b00020)}.mdc-select--invalid:not(.mdc-select--disabled) .mdc-line-ripple::after{border-bottom-color:#b00020;border-bottom-color:var(--mdc-theme-error, #b00020)}.mdc-select--outlined{border:none}.mdc-select--outlined .mdc-select__anchor{height:56px}.mdc-select--outlined .mdc-select__anchor .mdc-floating-label--float-above{transform:translateY(-37.25px) scale(1)}.mdc-select--outlined .mdc-select__anchor .mdc-floating-label--float-above{font-size:.75rem}.mdc-select--outlined .mdc-select__anchor.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-select--outlined .mdc-select__anchor .mdc-notched-outline--upgraded .mdc-floating-label--float-above{transform:translateY(-34.75px) scale(0.75)}.mdc-select--outlined .mdc-select__anchor.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-select--outlined .mdc-select__anchor .mdc-notched-outline--upgraded .mdc-floating-label--float-above{font-size:1rem}.mdc-select--outlined .mdc-select__anchor .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-select-outlined-56px 250ms 1}@keyframes mdc-floating-label-shake-float-above-select-outlined-56px{0%{transform:translateX(calc(0 - 0%)) translateY(-34.75px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 0%)) translateY(-34.75px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 0%)) translateY(-34.75px) scale(0.75)}100%{transform:translateX(calc(0 - 0%)) translateY(-34.75px) scale(0.75)}}.mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__leading{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:0;border-bottom-right-radius:0;border-bottom-left-radius:4px;border-bottom-left-radius:var(--mdc-shape-small, 4px)}[dir=rtl] .mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__leading,.mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__leading[dir=rtl]{border-top-left-radius:0;border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:4px;border-bottom-right-radius:var(--mdc-shape-small, 4px);border-bottom-left-radius:0}@supports(top: max(0%)){.mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__leading{width:max(12px, var(--mdc-shape-small, 4px))}}@supports(top: max(0%)){.mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__notch{max-width:calc(100% - max(12px, var(--mdc-shape-small, 4px)) * 2)}}.mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__trailing{border-top-left-radius:0;border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:4px;border-bottom-right-radius:var(--mdc-shape-small, 4px);border-bottom-left-radius:0}[dir=rtl] .mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__trailing,.mdc-select--outlined .mdc-notched-outline .mdc-notched-outline__trailing[dir=rtl]{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:0;border-bottom-right-radius:0;border-bottom-left-radius:4px;border-bottom-left-radius:var(--mdc-shape-small, 4px)}@supports(top: max(0%)){.mdc-select--outlined .mdc-select__anchor{padding-left:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}[dir=rtl] .mdc-select--outlined .mdc-select__anchor,.mdc-select--outlined .mdc-select__anchor[dir=rtl]{padding-left:0}@supports(top: max(0%)){[dir=rtl] .mdc-select--outlined .mdc-select__anchor,.mdc-select--outlined .mdc-select__anchor[dir=rtl]{padding-right:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}@supports(top: max(0%)){.mdc-select--outlined+.mdc-select-helper-text{margin-left:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}[dir=rtl] .mdc-select--outlined+.mdc-select-helper-text,.mdc-select--outlined+.mdc-select-helper-text[dir=rtl]{margin-left:0}@supports(top: max(0%)){[dir=rtl] .mdc-select--outlined+.mdc-select-helper-text,.mdc-select--outlined+.mdc-select-helper-text[dir=rtl]{margin-right:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}.mdc-select--outlined:not(.mdc-select--disabled) .mdc-select__anchor{background-color:transparent}.mdc-select--outlined.mdc-select--disabled .mdc-select__anchor{background-color:transparent}.mdc-select--outlined:not(.mdc-select--disabled) .mdc-notched-outline__leading,.mdc-select--outlined:not(.mdc-select--disabled) .mdc-notched-outline__notch,.mdc-select--outlined:not(.mdc-select--disabled) .mdc-notched-outline__trailing{border-color:rgba(0, 0, 0, 0.38)}.mdc-select--outlined:not(.mdc-select--disabled):not(.mdc-select--focused) .mdc-select__anchor:hover .mdc-notched-outline .mdc-notched-outline__leading,.mdc-select--outlined:not(.mdc-select--disabled):not(.mdc-select--focused) .mdc-select__anchor:hover .mdc-notched-outline .mdc-notched-outline__notch,.mdc-select--outlined:not(.mdc-select--disabled):not(.mdc-select--focused) .mdc-select__anchor:hover .mdc-notched-outline .mdc-notched-outline__trailing{border-color:rgba(0, 0, 0, 0.87)}.mdc-select--outlined:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__leading,.mdc-select--outlined:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__notch,.mdc-select--outlined:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__trailing{border-width:2px}.mdc-select--outlined:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__leading,.mdc-select--outlined:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__notch,.mdc-select--outlined:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__trailing{border-color:#6200ee;border-color:var(--mdc-theme-primary, #6200ee)}.mdc-select--outlined.mdc-select--disabled .mdc-notched-outline__leading,.mdc-select--outlined.mdc-select--disabled .mdc-notched-outline__notch,.mdc-select--outlined.mdc-select--disabled .mdc-notched-outline__trailing{border-color:rgba(0, 0, 0, 0.06)}.mdc-select--outlined .mdc-select__anchor :not(.mdc-notched-outline--notched) .mdc-notched-outline__notch{max-width:calc(100% - 60px)}.mdc-select--outlined .mdc-select__anchor{display:flex;align-items:baseline;overflow:visible}.mdc-select--outlined .mdc-select__anchor .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-select-outlined 250ms 1}.mdc-select--outlined .mdc-select__anchor .mdc-floating-label--float-above{transform:translateY(-37.25px) scale(1)}.mdc-select--outlined .mdc-select__anchor .mdc-floating-label--float-above{font-size:.75rem}.mdc-select--outlined .mdc-select__anchor.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-select--outlined .mdc-select__anchor .mdc-notched-outline--upgraded .mdc-floating-label--float-above{transform:translateY(-34.75px) scale(0.75)}.mdc-select--outlined .mdc-select__anchor.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-select--outlined .mdc-select__anchor .mdc-notched-outline--upgraded .mdc-floating-label--float-above{font-size:1rem}.mdc-select--outlined .mdc-select__anchor .mdc-notched-outline--notched .mdc-notched-outline__notch{padding-top:1px}.mdc-select--outlined .mdc-select__anchor .mdc-select__selected-text::before{content:"​"}.mdc-select--outlined .mdc-select__anchor .mdc-select__selected-text-container{height:100%;display:inline-flex;align-items:center}.mdc-select--outlined .mdc-select__anchor::before{display:none}.mdc-select--outlined .mdc-select__selected-text-container{display:flex;border:none;z-index:1;background-color:transparent}.mdc-select--outlined .mdc-select__icon{z-index:2}.mdc-select--outlined .mdc-floating-label{line-height:1.15rem;left:4px;right:initial}[dir=rtl] .mdc-select--outlined .mdc-floating-label,.mdc-select--outlined .mdc-floating-label[dir=rtl]{left:initial;right:4px}.mdc-select--outlined.mdc-select--focused .mdc-notched-outline--notched .mdc-notched-outline__notch{padding-top:2px}.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled) .mdc-notched-outline__leading,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled) .mdc-notched-outline__notch,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled) .mdc-notched-outline__trailing{border-color:#b00020;border-color:var(--mdc-theme-error, #b00020)}.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled):not(.mdc-select--focused) .mdc-select__anchor:hover .mdc-notched-outline .mdc-notched-outline__leading,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled):not(.mdc-select--focused) .mdc-select__anchor:hover .mdc-notched-outline .mdc-notched-outline__notch,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled):not(.mdc-select--focused) .mdc-select__anchor:hover .mdc-notched-outline .mdc-notched-outline__trailing{border-color:#b00020;border-color:var(--mdc-theme-error, #b00020)}.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__leading,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__notch,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__trailing{border-width:2px}.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__leading,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__notch,.mdc-select--outlined.mdc-select--invalid:not(.mdc-select--disabled).mdc-select--focused .mdc-notched-outline .mdc-notched-outline__trailing{border-color:#b00020;border-color:var(--mdc-theme-error, #b00020)}.mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label{left:36px;right:initial}[dir=rtl] .mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label,.mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label[dir=rtl]{left:initial;right:36px}.mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label--float-above{transform:translateY(-37.25px) translateX(-32px) scale(1)}[dir=rtl] .mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label--float-above,.mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label--float-above[dir=rtl]{transform:translateY(-37.25px) translateX(32px) scale(1)}.mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label--float-above{font-size:.75rem}.mdc-select--outlined.mdc-select--with-leading-icon.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-select--outlined.mdc-select--with-leading-icon .mdc-notched-outline--upgraded .mdc-floating-label--float-above{transform:translateY(-34.75px) translateX(-32px) scale(0.75)}[dir=rtl] .mdc-select--outlined.mdc-select--with-leading-icon.mdc-notched-outline--upgraded .mdc-floating-label--float-above,[dir=rtl] .mdc-select--outlined.mdc-select--with-leading-icon .mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-select--outlined.mdc-select--with-leading-icon.mdc-notched-outline--upgraded .mdc-floating-label--float-above[dir=rtl],.mdc-select--outlined.mdc-select--with-leading-icon .mdc-notched-outline--upgraded .mdc-floating-label--float-above[dir=rtl]{transform:translateY(-34.75px) translateX(32px) scale(0.75)}.mdc-select--outlined.mdc-select--with-leading-icon.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-select--outlined.mdc-select--with-leading-icon .mdc-notched-outline--upgraded .mdc-floating-label--float-above{font-size:1rem}.mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-select-outlined-leading-icon-56px 250ms 1}@keyframes mdc-floating-label-shake-float-above-select-outlined-leading-icon-56px{0%{transform:translateX(calc(0 - 32px)) translateY(-34.75px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 32px)) translateY(-34.75px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 32px)) translateY(-34.75px) scale(0.75)}100%{transform:translateX(calc(0 - 32px)) translateY(-34.75px) scale(0.75)}}[dir=rtl] .mdc-select--outlined.mdc-select--with-leading-icon .mdc-floating-label--shake,.mdc-select--outlined.mdc-select--with-leading-icon[dir=rtl] .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-select-outlined-leading-icon-56px 250ms 1}@keyframes mdc-floating-label-shake-float-above-select-outlined-leading-icon-56px-rtl{0%{transform:translateX(calc(0 - -32px)) translateY(-34.75px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - -32px)) translateY(-34.75px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - -32px)) translateY(-34.75px) scale(0.75)}100%{transform:translateX(calc(0 - -32px)) translateY(-34.75px) scale(0.75)}}.mdc-select--outlined.mdc-select--with-leading-icon .mdc-select__anchor :not(.mdc-notched-outline--notched) .mdc-notched-outline__notch{max-width:calc(100% - 96px)}.mdc-select--outlined .mdc-menu-surface{margin-bottom:8px}.mdc-select--outlined.mdc-select--no-label .mdc-menu-surface,.mdc-select--outlined .mdc-menu-surface--is-open-below{margin-bottom:0}.mdc-select__anchor{--mdc-ripple-fg-size: 0;--mdc-ripple-left: 0;--mdc-ripple-top: 0;--mdc-ripple-fg-scale: 1;--mdc-ripple-fg-translate-end: 0;--mdc-ripple-fg-translate-start: 0;-webkit-tap-highlight-color:rgba(0,0,0,0);will-change:transform,opacity}.mdc-select__anchor .mdc-select__ripple::before,.mdc-select__anchor .mdc-select__ripple::after{position:absolute;border-radius:50%;opacity:0;pointer-events:none;content:""}.mdc-select__anchor .mdc-select__ripple::before{transition:opacity 15ms linear,background-color 15ms linear;z-index:1;z-index:var(--mdc-ripple-z-index, 1)}.mdc-select__anchor .mdc-select__ripple::after{z-index:0;z-index:var(--mdc-ripple-z-index, 0)}.mdc-select__anchor.mdc-ripple-upgraded .mdc-select__ripple::before{transform:scale(var(--mdc-ripple-fg-scale, 1))}.mdc-select__anchor.mdc-ripple-upgraded .mdc-select__ripple::after{top:0;left:0;transform:scale(0);transform-origin:center center}.mdc-select__anchor.mdc-ripple-upgraded--unbounded .mdc-select__ripple::after{top:var(--mdc-ripple-top, 0);left:var(--mdc-ripple-left, 0)}.mdc-select__anchor.mdc-ripple-upgraded--foreground-activation .mdc-select__ripple::after{animation:mdc-ripple-fg-radius-in 225ms forwards,mdc-ripple-fg-opacity-in 75ms forwards}.mdc-select__anchor.mdc-ripple-upgraded--foreground-deactivation .mdc-select__ripple::after{animation:mdc-ripple-fg-opacity-out 150ms;transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}.mdc-select__anchor .mdc-select__ripple::before,.mdc-select__anchor .mdc-select__ripple::after{top:calc(50% - 100%);left:calc(50% - 100%);width:200%;height:200%}.mdc-select__anchor.mdc-ripple-upgraded .mdc-select__ripple::after{width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-select__anchor .mdc-select__ripple::before,.mdc-select__anchor .mdc-select__ripple::after{background-color:rgba(0, 0, 0, 0.87);background-color:var(--mdc-ripple-color, rgba(0, 0, 0, 0.87))}.mdc-select__anchor:hover .mdc-select__ripple::before,.mdc-select__anchor.mdc-ripple-surface--hover .mdc-select__ripple::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-select__anchor.mdc-ripple-upgraded--background-focused .mdc-select__ripple::before,.mdc-select__anchor:not(.mdc-ripple-upgraded):focus .mdc-select__ripple::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-select__anchor .mdc-select__ripple{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected .mdc-deprecated-list-item__ripple::before,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected .mdc-deprecated-list-item__ripple::after{background-color:#000;background-color:var(--mdc-ripple-color, var(--mdc-theme-on-surface, #000))}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:hover .mdc-deprecated-list-item__ripple::before,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected.mdc-ripple-surface--hover .mdc-deprecated-list-item__ripple::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected.mdc-ripple-upgraded--background-focused .mdc-deprecated-list-item__ripple::before,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:not(.mdc-ripple-upgraded):focus .mdc-deprecated-list-item__ripple::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:not(.mdc-ripple-upgraded) .mdc-deprecated-list-item__ripple::after{transition:opacity 150ms linear}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:not(.mdc-ripple-upgraded):active .mdc-deprecated-list-item__ripple::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected .mdc-list-item__ripple::before,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected .mdc-list-item__ripple::after{background-color:#000;background-color:var(--mdc-ripple-color, var(--mdc-theme-on-surface, #000))}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:hover .mdc-list-item__ripple::before,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected.mdc-ripple-surface--hover .mdc-list-item__ripple::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected.mdc-ripple-upgraded--background-focused .mdc-list-item__ripple::before,.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:not(.mdc-ripple-upgraded):focus .mdc-list-item__ripple::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:not(.mdc-ripple-upgraded) .mdc-list-item__ripple::after{transition:opacity 150ms linear}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected:not(.mdc-ripple-upgraded):active .mdc-list-item__ripple::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-select__menu .mdc-deprecated-list .mdc-deprecated-list-item--selected.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-select-helper-text{margin:0;margin-left:16px;margin-right:16px;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-caption-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.75rem;font-size:var(--mdc-typography-caption-font-size, 0.75rem);line-height:1.25rem;line-height:var(--mdc-typography-caption-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-caption-font-weight, 400);letter-spacing:0.0333333333em;letter-spacing:var(--mdc-typography-caption-letter-spacing, 0.0333333333em);text-decoration:inherit;text-decoration:var(--mdc-typography-caption-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-caption-text-transform, inherit);display:block;margin-top:0;line-height:normal}[dir=rtl] .mdc-select-helper-text,.mdc-select-helper-text[dir=rtl]{margin-left:16px;margin-right:16px}.mdc-select-helper-text::before{display:inline-block;width:0;height:16px;content:"";vertical-align:0}.mdc-select-helper-text--validation-msg{opacity:0;transition:opacity 180ms cubic-bezier(0.4, 0, 0.2, 1)}.mdc-select--invalid+.mdc-select-helper-text--validation-msg,.mdc-select-helper-text--validation-msg-persistent{opacity:1}.mdc-select--with-leading-icon .mdc-select__icon{display:inline-block;box-sizing:border-box;border:none;text-decoration:none;cursor:pointer;user-select:none;flex-shrink:0;align-self:center;background-color:transparent;fill:currentColor}.mdc-select--with-leading-icon .mdc-select__icon{margin-left:12px;margin-right:12px}[dir=rtl] .mdc-select--with-leading-icon .mdc-select__icon,.mdc-select--with-leading-icon .mdc-select__icon[dir=rtl]{margin-left:12px;margin-right:12px}.mdc-select__icon:not([tabindex]),.mdc-select__icon[tabindex="-1"]{cursor:default;pointer-events:none}.material-icons{font-family:var(--mdc-icon-font, "Material Icons");font-weight:normal;font-style:normal;font-size:var(--mdc-icon-size, 24px);line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-moz-osx-font-smoothing:grayscale;font-feature-settings:"liga"}:host{display:inline-block;vertical-align:top;outline:none}.mdc-select{width:100%}[hidden]{display:none}.mdc-select__icon{z-index:2}.mdc-select--with-leading-icon{--mdc-list-item-graphic-margin: calc( 48px - var(--mdc-list-item-graphic-size, 24px) - var(--mdc-list-side-padding, 16px) )}.mdc-select .mdc-select__anchor .mdc-select__selected-text{overflow:hidden}.mdc-select .mdc-select__anchor *{display:inline-flex}.mdc-select .mdc-select__anchor .mdc-floating-label{display:inline-block}mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-select-outlined-idle-border-color, rgba(0, 0, 0, 0.38) );--mdc-notched-outline-notch-offset: 1px}:host(:not([disabled]):hover) .mdc-select:not(.mdc-select--invalid):not(.mdc-select--focused) mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-select-outlined-hover-border-color, rgba(0, 0, 0, 0.87) )}:host(:not([disabled])) .mdc-select:not(.mdc-select--disabled) .mdc-select__selected-text{color:rgba(0, 0, 0, 0.87);color:var(--mdc-select-ink-color, rgba(0, 0, 0, 0.87))}:host(:not([disabled])) .mdc-select:not(.mdc-select--disabled) .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.42);border-bottom-color:var(--mdc-select-idle-line-color, rgba(0, 0, 0, 0.42))}:host(:not([disabled])) .mdc-select:not(.mdc-select--disabled):hover .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.87);border-bottom-color:var(--mdc-select-hover-line-color, rgba(0, 0, 0, 0.87))}:host(:not([disabled])) .mdc-select:not(.mdc-select--outlined):not(.mdc-select--disabled) .mdc-select__anchor{background-color:whitesmoke;background-color:var(--mdc-select-fill-color, whitesmoke)}:host(:not([disabled])) .mdc-select.mdc-select--invalid .mdc-select__dropdown-icon{fill:var(--mdc-select-error-dropdown-icon-color, var(--mdc-select-error-color, var(--mdc-theme-error, #b00020)))}:host(:not([disabled])) .mdc-select.mdc-select--invalid .mdc-floating-label,:host(:not([disabled])) .mdc-select.mdc-select--invalid .mdc-floating-label::after{color:var(--mdc-select-error-color, var(--mdc-theme-error, #b00020))}:host(:not([disabled])) .mdc-select.mdc-select--invalid mwc-notched-outline{--mdc-notched-outline-border-color: var(--mdc-select-error-color, var(--mdc-theme-error, #b00020))}.mdc-select__menu--invalid{--mdc-theme-primary: var(--mdc-select-error-color, var(--mdc-theme-error, #b00020))}:host(:not([disabled])) .mdc-select:not(.mdc-select--invalid):not(.mdc-select--focused) .mdc-floating-label,:host(:not([disabled])) .mdc-select:not(.mdc-select--invalid):not(.mdc-select--focused) .mdc-floating-label::after{color:rgba(0, 0, 0, 0.6);color:var(--mdc-select-label-ink-color, rgba(0, 0, 0, 0.6))}:host(:not([disabled])) .mdc-select:not(.mdc-select--invalid):not(.mdc-select--focused) .mdc-select__dropdown-icon{fill:rgba(0, 0, 0, 0.54);fill:var(--mdc-select-dropdown-icon-color, rgba(0, 0, 0, 0.54))}:host(:not([disabled])) .mdc-select.mdc-select--focused mwc-notched-outline{--mdc-notched-outline-stroke-width: 2px;--mdc-notched-outline-notch-offset: 2px}:host(:not([disabled])) .mdc-select.mdc-select--focused:not(.mdc-select--invalid) mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-select-focused-label-color, var(--mdc-theme-primary, rgba(98, 0, 238, 0.87)) )}:host(:not([disabled])) .mdc-select.mdc-select--focused:not(.mdc-select--invalid) .mdc-select__dropdown-icon{fill:rgba(98,0,238,.87);fill:var(--mdc-select-focused-dropdown-icon-color, var(--mdc-theme-primary, rgba(98, 0, 238, 0.87)))}:host(:not([disabled])) .mdc-select.mdc-select--focused:not(.mdc-select--invalid) .mdc-floating-label{color:#6200ee;color:var(--mdc-theme-primary, #6200ee)}:host(:not([disabled])) .mdc-select.mdc-select--focused:not(.mdc-select--invalid) .mdc-floating-label::after{color:#6200ee;color:var(--mdc-theme-primary, #6200ee)}:host(:not([disabled])) .mdc-select-helper-text:not(.mdc-select-helper-text--validation-msg){color:var(--mdc-select-label-ink-color, rgba(0, 0, 0, 0.6))}:host([disabled]){pointer-events:none}:host([disabled]) .mdc-select:not(.mdc-select--outlined).mdc-select--disabled .mdc-select__anchor{background-color:#fafafa;background-color:var(--mdc-select-disabled-fill-color, #fafafa)}:host([disabled]) .mdc-select.mdc-select--outlined mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-select-outlined-disabled-border-color, rgba(0, 0, 0, 0.06) )}:host([disabled]) .mdc-select .mdc-select__dropdown-icon{fill:rgba(0, 0, 0, 0.38);fill:var(--mdc-select-disabled-dropdown-icon-color, rgba(0, 0, 0, 0.38))}:host([disabled]) .mdc-select:not(.mdc-select--invalid):not(.mdc-select--focused) .mdc-floating-label,:host([disabled]) .mdc-select:not(.mdc-select--invalid):not(.mdc-select--focused) .mdc-floating-label::after{color:rgba(0, 0, 0, 0.38);color:var(--mdc-select-disabled-ink-color, rgba(0, 0, 0, 0.38))}:host([disabled]) .mdc-select-helper-text{color:rgba(0, 0, 0, 0.38);color:var(--mdc-select-disabled-ink-color, rgba(0, 0, 0, 0.38))}:host([disabled]) .mdc-select__selected-text{color:rgba(0, 0, 0, 0.38);color:var(--mdc-select-disabled-ink-color, rgba(0, 0, 0, 0.38))}`
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */,hg=Ma`@keyframes mdc-ripple-fg-radius-in{from{animation-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transform:translate(var(--mdc-ripple-fg-translate-start, 0)) scale(1)}to{transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}}@keyframes mdc-ripple-fg-opacity-in{from{animation-timing-function:linear;opacity:0}to{opacity:var(--mdc-ripple-fg-opacity, 0)}}@keyframes mdc-ripple-fg-opacity-out{from{animation-timing-function:linear;opacity:var(--mdc-ripple-fg-opacity, 0)}to{opacity:0}}:host{display:block}.mdc-deprecated-list{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-subtitle1-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:1rem;font-size:var(--mdc-typography-subtitle1-font-size, 1rem);line-height:1.75rem;line-height:var(--mdc-typography-subtitle1-line-height, 1.75rem);font-weight:400;font-weight:var(--mdc-typography-subtitle1-font-weight, 400);letter-spacing:0.009375em;letter-spacing:var(--mdc-typography-subtitle1-letter-spacing, 0.009375em);text-decoration:inherit;text-decoration:var(--mdc-typography-subtitle1-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-subtitle1-text-transform, inherit);line-height:1.5rem;margin:0;padding:8px 0;list-style-type:none;color:rgba(0, 0, 0, 0.87);color:var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));padding:var(--mdc-list-vertical-padding, 8px) 0}.mdc-deprecated-list:focus{outline:none}.mdc-deprecated-list-item{height:48px}.mdc-deprecated-list--dense{padding-top:4px;padding-bottom:4px;font-size:.812rem}.mdc-deprecated-list ::slotted([divider]){height:0;margin:0;border:none;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:rgba(0, 0, 0, 0.12)}.mdc-deprecated-list ::slotted([divider][padded]){margin:0 var(--mdc-list-side-padding, 16px)}.mdc-deprecated-list ::slotted([divider][inset]){margin-left:var(--mdc-list-inset-margin, 72px);margin-right:0;width:calc( 100% - var(--mdc-list-inset-margin, 72px) )}[dir=rtl] .mdc-deprecated-list ::slotted([divider][inset]),.mdc-deprecated-list ::slotted([divider][inset][dir=rtl]){margin-left:0;margin-right:var(--mdc-list-inset-margin, 72px)}.mdc-deprecated-list ::slotted([divider][inset][padded]){width:calc( 100% - var(--mdc-list-inset-margin, 72px) - var(--mdc-list-side-padding, 16px) )}.mdc-deprecated-list--dense ::slotted([mwc-list-item]){height:40px}.mdc-deprecated-list--dense ::slotted([mwc-list]){--mdc-list-item-graphic-size: 20px}.mdc-deprecated-list--two-line.mdc-deprecated-list--dense ::slotted([mwc-list-item]),.mdc-deprecated-list--avatar-list.mdc-deprecated-list--dense ::slotted([mwc-list-item]){height:60px}.mdc-deprecated-list--avatar-list.mdc-deprecated-list--dense ::slotted([mwc-list]){--mdc-list-item-graphic-size: 36px}:host([noninteractive]){pointer-events:none;cursor:default}.mdc-deprecated-list--dense ::slotted(.mdc-deprecated-list-item__primary-text){display:block;margin-top:0;line-height:normal;margin-bottom:-20px}.mdc-deprecated-list--dense ::slotted(.mdc-deprecated-list-item__primary-text)::before{display:inline-block;width:0;height:24px;content:"";vertical-align:0}.mdc-deprecated-list--dense ::slotted(.mdc-deprecated-list-item__primary-text)::after{display:inline-block;width:0;height:20px;content:"";vertical-align:-20px}`
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */,pg=Ma`:host{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;height:48px;display:flex;position:relative;align-items:center;justify-content:flex-start;overflow:hidden;padding:0;padding-left:var(--mdc-list-side-padding, 16px);padding-right:var(--mdc-list-side-padding, 16px);outline:none;height:48px;color:rgba(0,0,0,.87);color:var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87))}:host:focus{outline:none}:host([activated]){color:#6200ee;color:var(--mdc-theme-primary, #6200ee);--mdc-ripple-color: var( --mdc-theme-primary, #6200ee )}:host([activated]) .mdc-deprecated-list-item__graphic{color:#6200ee;color:var(--mdc-theme-primary, #6200ee)}:host([activated]) .fake-activated-ripple::before{position:absolute;display:block;top:0;bottom:0;left:0;right:0;width:100%;height:100%;pointer-events:none;z-index:1;content:"";opacity:0.12;opacity:var(--mdc-ripple-activated-opacity, 0.12);background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-deprecated-list-item__graphic{flex-shrink:0;align-items:center;justify-content:center;fill:currentColor;display:inline-flex}.mdc-deprecated-list-item__graphic ::slotted(*){flex-shrink:0;align-items:center;justify-content:center;fill:currentColor;width:100%;height:100%;text-align:center}.mdc-deprecated-list-item__meta{width:var(--mdc-list-item-meta-size, 24px);height:var(--mdc-list-item-meta-size, 24px);margin-left:auto;margin-right:0;color:rgba(0, 0, 0, 0.38);color:var(--mdc-theme-text-hint-on-background, rgba(0, 0, 0, 0.38))}.mdc-deprecated-list-item__meta.multi{width:auto}.mdc-deprecated-list-item__meta ::slotted(*){width:var(--mdc-list-item-meta-size, 24px);line-height:var(--mdc-list-item-meta-size, 24px)}.mdc-deprecated-list-item__meta ::slotted(.material-icons),.mdc-deprecated-list-item__meta ::slotted(mwc-icon){line-height:var(--mdc-list-item-meta-size, 24px) !important}.mdc-deprecated-list-item__meta ::slotted(:not(.material-icons):not(mwc-icon)){-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-caption-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.75rem;font-size:var(--mdc-typography-caption-font-size, 0.75rem);line-height:1.25rem;line-height:var(--mdc-typography-caption-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-caption-font-weight, 400);letter-spacing:0.0333333333em;letter-spacing:var(--mdc-typography-caption-letter-spacing, 0.0333333333em);text-decoration:inherit;text-decoration:var(--mdc-typography-caption-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-caption-text-transform, inherit)}[dir=rtl] .mdc-deprecated-list-item__meta,.mdc-deprecated-list-item__meta[dir=rtl]{margin-left:0;margin-right:auto}.mdc-deprecated-list-item__meta ::slotted(*){width:100%;height:100%}.mdc-deprecated-list-item__text{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.mdc-deprecated-list-item__text ::slotted([for]),.mdc-deprecated-list-item__text[for]{pointer-events:none}.mdc-deprecated-list-item__primary-text{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;display:block;margin-top:0;line-height:normal;margin-bottom:-20px;display:block}.mdc-deprecated-list-item__primary-text::before{display:inline-block;width:0;height:32px;content:"";vertical-align:0}.mdc-deprecated-list-item__primary-text::after{display:inline-block;width:0;height:20px;content:"";vertical-align:-20px}.mdc-deprecated-list-item__secondary-text{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-body2-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.875rem;font-size:var(--mdc-typography-body2-font-size, 0.875rem);line-height:1.25rem;line-height:var(--mdc-typography-body2-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-body2-font-weight, 400);letter-spacing:0.0178571429em;letter-spacing:var(--mdc-typography-body2-letter-spacing, 0.0178571429em);text-decoration:inherit;text-decoration:var(--mdc-typography-body2-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-body2-text-transform, inherit);text-overflow:ellipsis;white-space:nowrap;overflow:hidden;display:block;margin-top:0;line-height:normal;display:block}.mdc-deprecated-list-item__secondary-text::before{display:inline-block;width:0;height:20px;content:"";vertical-align:0}.mdc-deprecated-list--dense .mdc-deprecated-list-item__secondary-text{font-size:inherit}* ::slotted(a),a{color:inherit;text-decoration:none}:host([twoline]){height:72px}:host([twoline]) .mdc-deprecated-list-item__text{align-self:flex-start}:host([disabled]),:host([noninteractive]){cursor:default;pointer-events:none}:host([disabled]) .mdc-deprecated-list-item__text ::slotted(*){opacity:.38}:host([disabled]) .mdc-deprecated-list-item__text ::slotted(*),:host([disabled]) .mdc-deprecated-list-item__primary-text ::slotted(*),:host([disabled]) .mdc-deprecated-list-item__secondary-text ::slotted(*){color:#000;color:var(--mdc-theme-on-surface, #000)}.mdc-deprecated-list-item__secondary-text ::slotted(*){color:rgba(0, 0, 0, 0.54);color:var(--mdc-theme-text-secondary-on-background, rgba(0, 0, 0, 0.54))}.mdc-deprecated-list-item__graphic ::slotted(*){background-color:transparent;color:rgba(0, 0, 0, 0.38);color:var(--mdc-theme-text-icon-on-background, rgba(0, 0, 0, 0.38))}.mdc-deprecated-list-group__subheader ::slotted(*){color:rgba(0, 0, 0, 0.87);color:var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87))}:host([graphic=avatar]) .mdc-deprecated-list-item__graphic{width:var(--mdc-list-item-graphic-size, 40px);height:var(--mdc-list-item-graphic-size, 40px)}:host([graphic=avatar]) .mdc-deprecated-list-item__graphic.multi{width:auto}:host([graphic=avatar]) .mdc-deprecated-list-item__graphic ::slotted(*){width:var(--mdc-list-item-graphic-size, 40px);line-height:var(--mdc-list-item-graphic-size, 40px)}:host([graphic=avatar]) .mdc-deprecated-list-item__graphic ::slotted(.material-icons),:host([graphic=avatar]) .mdc-deprecated-list-item__graphic ::slotted(mwc-icon){line-height:var(--mdc-list-item-graphic-size, 40px) !important}:host([graphic=avatar]) .mdc-deprecated-list-item__graphic ::slotted(*){border-radius:50%}:host([graphic=avatar]) .mdc-deprecated-list-item__graphic,:host([graphic=medium]) .mdc-deprecated-list-item__graphic,:host([graphic=large]) .mdc-deprecated-list-item__graphic,:host([graphic=control]) .mdc-deprecated-list-item__graphic{margin-left:0;margin-right:var(--mdc-list-item-graphic-margin, 16px)}[dir=rtl] :host([graphic=avatar]) .mdc-deprecated-list-item__graphic,[dir=rtl] :host([graphic=medium]) .mdc-deprecated-list-item__graphic,[dir=rtl] :host([graphic=large]) .mdc-deprecated-list-item__graphic,[dir=rtl] :host([graphic=control]) .mdc-deprecated-list-item__graphic,:host([graphic=avatar]) .mdc-deprecated-list-item__graphic[dir=rtl],:host([graphic=medium]) .mdc-deprecated-list-item__graphic[dir=rtl],:host([graphic=large]) .mdc-deprecated-list-item__graphic[dir=rtl],:host([graphic=control]) .mdc-deprecated-list-item__graphic[dir=rtl]{margin-left:var(--mdc-list-item-graphic-margin, 16px);margin-right:0}:host([graphic=icon]) .mdc-deprecated-list-item__graphic{width:var(--mdc-list-item-graphic-size, 24px);height:var(--mdc-list-item-graphic-size, 24px);margin-left:0;margin-right:var(--mdc-list-item-graphic-margin, 32px)}:host([graphic=icon]) .mdc-deprecated-list-item__graphic.multi{width:auto}:host([graphic=icon]) .mdc-deprecated-list-item__graphic ::slotted(*){width:var(--mdc-list-item-graphic-size, 24px);line-height:var(--mdc-list-item-graphic-size, 24px)}:host([graphic=icon]) .mdc-deprecated-list-item__graphic ::slotted(.material-icons),:host([graphic=icon]) .mdc-deprecated-list-item__graphic ::slotted(mwc-icon){line-height:var(--mdc-list-item-graphic-size, 24px) !important}[dir=rtl] :host([graphic=icon]) .mdc-deprecated-list-item__graphic,:host([graphic=icon]) .mdc-deprecated-list-item__graphic[dir=rtl]{margin-left:var(--mdc-list-item-graphic-margin, 32px);margin-right:0}:host([graphic=avatar]:not([twoLine])),:host([graphic=icon]:not([twoLine])){height:56px}:host([graphic=medium]:not([twoLine])),:host([graphic=large]:not([twoLine])){height:72px}:host([graphic=medium]) .mdc-deprecated-list-item__graphic,:host([graphic=large]) .mdc-deprecated-list-item__graphic{width:var(--mdc-list-item-graphic-size, 56px);height:var(--mdc-list-item-graphic-size, 56px)}:host([graphic=medium]) .mdc-deprecated-list-item__graphic.multi,:host([graphic=large]) .mdc-deprecated-list-item__graphic.multi{width:auto}:host([graphic=medium]) .mdc-deprecated-list-item__graphic ::slotted(*),:host([graphic=large]) .mdc-deprecated-list-item__graphic ::slotted(*){width:var(--mdc-list-item-graphic-size, 56px);line-height:var(--mdc-list-item-graphic-size, 56px)}:host([graphic=medium]) .mdc-deprecated-list-item__graphic ::slotted(.material-icons),:host([graphic=medium]) .mdc-deprecated-list-item__graphic ::slotted(mwc-icon),:host([graphic=large]) .mdc-deprecated-list-item__graphic ::slotted(.material-icons),:host([graphic=large]) .mdc-deprecated-list-item__graphic ::slotted(mwc-icon){line-height:var(--mdc-list-item-graphic-size, 56px) !important}:host([graphic=large]){padding-left:0px}`
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */,ug=Ma`.mdc-ripple-surface{--mdc-ripple-fg-size: 0;--mdc-ripple-left: 0;--mdc-ripple-top: 0;--mdc-ripple-fg-scale: 1;--mdc-ripple-fg-translate-end: 0;--mdc-ripple-fg-translate-start: 0;-webkit-tap-highlight-color:rgba(0,0,0,0);will-change:transform,opacity;position:relative;outline:none;overflow:hidden}.mdc-ripple-surface::before,.mdc-ripple-surface::after{position:absolute;border-radius:50%;opacity:0;pointer-events:none;content:""}.mdc-ripple-surface::before{transition:opacity 15ms linear,background-color 15ms linear;z-index:1;z-index:var(--mdc-ripple-z-index, 1)}.mdc-ripple-surface::after{z-index:0;z-index:var(--mdc-ripple-z-index, 0)}.mdc-ripple-surface.mdc-ripple-upgraded::before{transform:scale(var(--mdc-ripple-fg-scale, 1))}.mdc-ripple-surface.mdc-ripple-upgraded::after{top:0;left:0;transform:scale(0);transform-origin:center center}.mdc-ripple-surface.mdc-ripple-upgraded--unbounded::after{top:var(--mdc-ripple-top, 0);left:var(--mdc-ripple-left, 0)}.mdc-ripple-surface.mdc-ripple-upgraded--foreground-activation::after{animation:mdc-ripple-fg-radius-in 225ms forwards,mdc-ripple-fg-opacity-in 75ms forwards}.mdc-ripple-surface.mdc-ripple-upgraded--foreground-deactivation::after{animation:mdc-ripple-fg-opacity-out 150ms;transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}.mdc-ripple-surface::before,.mdc-ripple-surface::after{top:calc(50% - 100%);left:calc(50% - 100%);width:200%;height:200%}.mdc-ripple-surface.mdc-ripple-upgraded::after{width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-ripple-surface[data-mdc-ripple-is-unbounded],.mdc-ripple-upgraded--unbounded{overflow:visible}.mdc-ripple-surface[data-mdc-ripple-is-unbounded]::before,.mdc-ripple-surface[data-mdc-ripple-is-unbounded]::after,.mdc-ripple-upgraded--unbounded::before,.mdc-ripple-upgraded--unbounded::after{top:calc(50% - 50%);left:calc(50% - 50%);width:100%;height:100%}.mdc-ripple-surface[data-mdc-ripple-is-unbounded].mdc-ripple-upgraded::before,.mdc-ripple-surface[data-mdc-ripple-is-unbounded].mdc-ripple-upgraded::after,.mdc-ripple-upgraded--unbounded.mdc-ripple-upgraded::before,.mdc-ripple-upgraded--unbounded.mdc-ripple-upgraded::after{top:var(--mdc-ripple-top, calc(50% - 50%));left:var(--mdc-ripple-left, calc(50% - 50%));width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-ripple-surface[data-mdc-ripple-is-unbounded].mdc-ripple-upgraded::after,.mdc-ripple-upgraded--unbounded.mdc-ripple-upgraded::after{width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-ripple-surface::before,.mdc-ripple-surface::after{background-color:#000;background-color:var(--mdc-ripple-color, #000)}.mdc-ripple-surface:hover::before,.mdc-ripple-surface.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-ripple-surface.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-ripple-surface:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}@keyframes mdc-ripple-fg-radius-in{from{animation-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transform:translate(var(--mdc-ripple-fg-translate-start, 0)) scale(1)}to{transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}}@keyframes mdc-ripple-fg-opacity-in{from{animation-timing-function:linear;opacity:0}to{opacity:var(--mdc-ripple-fg-opacity, 0)}}@keyframes mdc-ripple-fg-opacity-out{from{animation-timing-function:linear;opacity:var(--mdc-ripple-fg-opacity, 0)}to{opacity:0}}:host{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;display:block}:host .mdc-ripple-surface{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;will-change:unset}.mdc-ripple-surface--primary::before,.mdc-ripple-surface--primary::after{background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-ripple-surface--primary:hover::before,.mdc-ripple-surface--primary.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-ripple-surface--primary.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--primary:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-ripple-surface--primary:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--primary:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--primary.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--primary--activated::before{opacity:0.12;opacity:var(--mdc-ripple-activated-opacity, 0.12)}.mdc-ripple-surface--primary--activated::before,.mdc-ripple-surface--primary--activated::after{background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-ripple-surface--primary--activated:hover::before,.mdc-ripple-surface--primary--activated.mdc-ripple-surface--hover::before{opacity:0.16;opacity:var(--mdc-ripple-hover-opacity, 0.16)}.mdc-ripple-surface--primary--activated.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--primary--activated:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-focus-opacity, 0.24)}.mdc-ripple-surface--primary--activated:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--primary--activated:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--primary--activated.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--primary--selected::before{opacity:0.08;opacity:var(--mdc-ripple-selected-opacity, 0.08)}.mdc-ripple-surface--primary--selected::before,.mdc-ripple-surface--primary--selected::after{background-color:#6200ee;background-color:var(--mdc-ripple-color, var(--mdc-theme-primary, #6200ee))}.mdc-ripple-surface--primary--selected:hover::before,.mdc-ripple-surface--primary--selected.mdc-ripple-surface--hover::before{opacity:0.12;opacity:var(--mdc-ripple-hover-opacity, 0.12)}.mdc-ripple-surface--primary--selected.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--primary--selected:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-focus-opacity, 0.2)}.mdc-ripple-surface--primary--selected:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--primary--selected:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--primary--selected.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--accent::before,.mdc-ripple-surface--accent::after{background-color:#018786;background-color:var(--mdc-ripple-color, var(--mdc-theme-secondary, #018786))}.mdc-ripple-surface--accent:hover::before,.mdc-ripple-surface--accent.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-ripple-surface--accent.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--accent:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-ripple-surface--accent:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--accent:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--accent.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.12)}.mdc-ripple-surface--accent--activated::before{opacity:0.12;opacity:var(--mdc-ripple-activated-opacity, 0.12)}.mdc-ripple-surface--accent--activated::before,.mdc-ripple-surface--accent--activated::after{background-color:#018786;background-color:var(--mdc-ripple-color, var(--mdc-theme-secondary, #018786))}.mdc-ripple-surface--accent--activated:hover::before,.mdc-ripple-surface--accent--activated.mdc-ripple-surface--hover::before{opacity:0.16;opacity:var(--mdc-ripple-hover-opacity, 0.16)}.mdc-ripple-surface--accent--activated.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--accent--activated:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-focus-opacity, 0.24)}.mdc-ripple-surface--accent--activated:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--accent--activated:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.24;opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--accent--activated.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.24)}.mdc-ripple-surface--accent--selected::before{opacity:0.08;opacity:var(--mdc-ripple-selected-opacity, 0.08)}.mdc-ripple-surface--accent--selected::before,.mdc-ripple-surface--accent--selected::after{background-color:#018786;background-color:var(--mdc-ripple-color, var(--mdc-theme-secondary, #018786))}.mdc-ripple-surface--accent--selected:hover::before,.mdc-ripple-surface--accent--selected.mdc-ripple-surface--hover::before{opacity:0.12;opacity:var(--mdc-ripple-hover-opacity, 0.12)}.mdc-ripple-surface--accent--selected.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--accent--selected:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-focus-opacity, 0.2)}.mdc-ripple-surface--accent--selected:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--accent--selected:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.2;opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--accent--selected.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-press-opacity, 0.2)}.mdc-ripple-surface--disabled{opacity:0}.mdc-ripple-surface--internal-use-state-layer-custom-properties::before,.mdc-ripple-surface--internal-use-state-layer-custom-properties::after{background-color:#000;background-color:var(--mdc-ripple-hover-state-layer-color, #000)}.mdc-ripple-surface--internal-use-state-layer-custom-properties:hover::before,.mdc-ripple-surface--internal-use-state-layer-custom-properties.mdc-ripple-surface--hover::before{opacity:0.04;opacity:var(--mdc-ripple-hover-state-layer-opacity, 0.04)}.mdc-ripple-surface--internal-use-state-layer-custom-properties.mdc-ripple-upgraded--background-focused::before,.mdc-ripple-surface--internal-use-state-layer-custom-properties:not(.mdc-ripple-upgraded):focus::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-state-layer-opacity, 0.12)}.mdc-ripple-surface--internal-use-state-layer-custom-properties:not(.mdc-ripple-upgraded)::after{transition:opacity 150ms linear}.mdc-ripple-surface--internal-use-state-layer-custom-properties:not(.mdc-ripple-upgraded):active::after{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-pressed-state-layer-opacity, 0.12)}.mdc-ripple-surface--internal-use-state-layer-custom-properties.mdc-ripple-upgraded{--mdc-ripple-fg-opacity:var(--mdc-ripple-pressed-state-layer-opacity, 0.12)}`
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */,mg=Ma`mwc-list ::slotted([mwc-list-item]:not([twoline])),mwc-list ::slotted([noninteractive]:not([twoline])){height:var(--mdc-menu-item-height, 48px)}`
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */,fg=Ma`.mdc-menu-surface{display:none;position:absolute;box-sizing:border-box;max-width:calc(100vw - 32px);max-width:var(--mdc-menu-max-width, calc(100vw - 32px));max-height:calc(100vh - 32px);max-height:var(--mdc-menu-max-height, calc(100vh - 32px));margin:0;padding:0;transform:scale(1);transform-origin:top left;opacity:0;overflow:auto;will-change:transform,opacity;z-index:8;transition:opacity .03s linear,transform .12s cubic-bezier(0, 0, 0.2, 1),height 250ms cubic-bezier(0, 0, 0.2, 1);box-shadow:0px 5px 5px -3px rgba(0, 0, 0, 0.2),0px 8px 10px 1px rgba(0, 0, 0, 0.14),0px 3px 14px 2px rgba(0,0,0,.12);background-color:#fff;background-color:var(--mdc-theme-surface, #fff);color:#000;color:var(--mdc-theme-on-surface, #000);border-radius:4px;border-radius:var(--mdc-shape-medium, 4px);transform-origin-left:top left;transform-origin-right:top right}.mdc-menu-surface:focus{outline:none}.mdc-menu-surface--animating-open{display:inline-block;transform:scale(0.8);opacity:0}.mdc-menu-surface--open{display:inline-block;transform:scale(1);opacity:1}.mdc-menu-surface--animating-closed{display:inline-block;opacity:0;transition:opacity .075s linear}[dir=rtl] .mdc-menu-surface,.mdc-menu-surface[dir=rtl]{transform-origin-left:top right;transform-origin-right:top left}.mdc-menu-surface--anchor{position:relative;overflow:visible}.mdc-menu-surface--fixed{position:fixed}.mdc-menu-surface--fullwidth{width:100%}:host(:not([open])){display:none}.mdc-menu-surface{z-index:8;z-index:var(--mdc-menu-z-index, 8);min-width:112px;min-width:var(--mdc-menu-min-width, 112px)}`
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */,gg=Ma`.mdc-notched-outline{display:flex;position:absolute;top:0;right:0;left:0;box-sizing:border-box;width:100%;max-width:100%;height:100%;text-align:left;pointer-events:none}[dir=rtl] .mdc-notched-outline,.mdc-notched-outline[dir=rtl]{text-align:right}.mdc-notched-outline__leading,.mdc-notched-outline__notch,.mdc-notched-outline__trailing{box-sizing:border-box;height:100%;border-top:1px solid;border-bottom:1px solid;pointer-events:none}.mdc-notched-outline__leading{border-left:1px solid;border-right:none;width:12px}[dir=rtl] .mdc-notched-outline__leading,.mdc-notched-outline__leading[dir=rtl]{border-left:none;border-right:1px solid}.mdc-notched-outline__trailing{border-left:none;border-right:1px solid;flex-grow:1}[dir=rtl] .mdc-notched-outline__trailing,.mdc-notched-outline__trailing[dir=rtl]{border-left:1px solid;border-right:none}.mdc-notched-outline__notch{flex:0 0 auto;width:auto;max-width:calc(100% - 12px * 2)}.mdc-notched-outline .mdc-floating-label{display:inline-block;position:relative;max-width:100%}.mdc-notched-outline .mdc-floating-label--float-above{text-overflow:clip}.mdc-notched-outline--upgraded .mdc-floating-label--float-above{max-width:calc(100% / 0.75)}.mdc-notched-outline--notched .mdc-notched-outline__notch{padding-left:0;padding-right:8px;border-top:none}[dir=rtl] .mdc-notched-outline--notched .mdc-notched-outline__notch,.mdc-notched-outline--notched .mdc-notched-outline__notch[dir=rtl]{padding-left:8px;padding-right:0}.mdc-notched-outline--no-label .mdc-notched-outline__notch{display:none}:host{display:block;position:absolute;right:0;left:0;box-sizing:border-box;width:100%;max-width:100%;height:100%;text-align:left;pointer-events:none}[dir=rtl] :host,:host([dir=rtl]){text-align:right}::slotted(.mdc-floating-label){display:inline-block;position:relative;top:17px;bottom:auto;max-width:100%}::slotted(.mdc-floating-label--float-above){text-overflow:clip}.mdc-notched-outline--upgraded ::slotted(.mdc-floating-label--float-above){max-width:calc(100% / 0.75)}.mdc-notched-outline .mdc-notched-outline__leading{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:0;border-bottom-right-radius:0;border-bottom-left-radius:4px;border-bottom-left-radius:var(--mdc-shape-small, 4px)}[dir=rtl] .mdc-notched-outline .mdc-notched-outline__leading,.mdc-notched-outline .mdc-notched-outline__leading[dir=rtl]{border-top-left-radius:0;border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:4px;border-bottom-right-radius:var(--mdc-shape-small, 4px);border-bottom-left-radius:0}@supports(top: max(0%)){.mdc-notched-outline .mdc-notched-outline__leading{width:max(12px, var(--mdc-shape-small, 4px))}}@supports(top: max(0%)){.mdc-notched-outline .mdc-notched-outline__notch{max-width:calc(100% - max(12px, var(--mdc-shape-small, 4px)) * 2)}}.mdc-notched-outline .mdc-notched-outline__trailing{border-top-left-radius:0;border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:4px;border-bottom-right-radius:var(--mdc-shape-small, 4px);border-bottom-left-radius:0}[dir=rtl] .mdc-notched-outline .mdc-notched-outline__trailing,.mdc-notched-outline .mdc-notched-outline__trailing[dir=rtl]{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:0;border-bottom-right-radius:0;border-bottom-left-radius:4px;border-bottom-left-radius:var(--mdc-shape-small, 4px)}.mdc-notched-outline__leading,.mdc-notched-outline__notch,.mdc-notched-outline__trailing{border-color:var(--mdc-notched-outline-border-color, var(--mdc-theme-primary, #6200ee));border-width:1px;border-width:var(--mdc-notched-outline-stroke-width, 1px)}.mdc-notched-outline--notched .mdc-notched-outline__notch{padding-top:0;padding-top:var(--mdc-notched-outline-notch-offset, 0)}`,vg={"mwc-select":class extends rp{static get styles(){return cg}},"mwc-list":class extends tu{static get styles(){return hg}},"mwc-list-item":class extends su{static get styles(){return pg}},"mwc-ripple":class extends mf{static get styles(){return ug}},"mwc-menu":class extends rm{static get styles(){return mg}},"mwc-menu-surface":class extends cm{static get styles(){return fg}},"mwc-notched-outline":class extends dg{static get styles(){return gg}}};function _g(e,t,i){if(void 0!==t)
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-return function(e,t,i){const n=e.constructor;if(!i){const e=`__${t}`;if(!(i=n.getPropertyDescriptor(t,e)))throw new Error("@ariaProperty must be used after a @property decorator")}const o=i;let r="";if(!o.set)throw new Error(`@ariaProperty requires a setter for ${t}`);if(e.dispatchWizEvent)return i;const s={configurable:!0,enumerable:!0,set(e){if(""===r){const e=n.getPropertyOptions(t);r="string"==typeof e.attribute?e.attribute:t}this.hasAttribute(r)&&this.removeAttribute(r),o.set.call(this,e)}};return o.get&&(s.get=function(){return o.get.call(this)}),s}(e,t,i);throw new Error("@ariaProperty only supports TypeScript Decorators")}
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */var bg,yg={CHECKED:"mdc-switch--checked",DISABLED:"mdc-switch--disabled"},xg={ARIA_CHECKED_ATTR:"aria-checked",NATIVE_CONTROL_SELECTOR:".mdc-switch__native-control",RIPPLE_SURFACE_SELECTOR:".mdc-switch__thumb-underlay"},wg=function(e){function n(t){return e.call(this,i(i({},n.defaultAdapter),t))||this}return t(n,e),Object.defineProperty(n,"strings",{get:function(){return xg},enumerable:!1,configurable:!0}),Object.defineProperty(n,"cssClasses",{get:function(){return yg},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},removeClass:function(){},setNativeControlChecked:function(){},setNativeControlDisabled:function(){},setNativeControlAttr:function(){}}},enumerable:!1,configurable:!0}),n.prototype.setChecked=function(e){this.adapter.setNativeControlChecked(e),this.updateAriaChecked(e),this.updateCheckedStyling(e)},n.prototype.setDisabled=function(e){this.adapter.setNativeControlDisabled(e),e?this.adapter.addClass(yg.DISABLED):this.adapter.removeClass(yg.DISABLED)},n.prototype.handleChange=function(e){var t=e.target;this.updateAriaChecked(t.checked),this.updateCheckedStyling(t.checked)},n.prototype.updateCheckedStyling=function(e){e?this.adapter.addClass(yg.CHECKED):this.adapter.removeClass(yg.CHECKED)},n.prototype.updateAriaChecked=function(e){this.adapter.setNativeControlAttr(xg.ARIA_CHECKED_ATTR,""+!!e)},n}(La);const Ag=window,$g=Ag.trustedTypes,Eg=$g?$g.createPolicy("lit-html",{createHTML:e=>e}):void 0,Cg="$lit$",Sg=`lit$${(Math.random()+"").slice(9)}$`,kg="?"+Sg,Tg=`<${kg}>`,Ig=document,Og=()=>Ig.createComment(""),Mg=e=>null===e||"object"!=typeof e&&"function"!=typeof e,Ng=Array.isArray,Rg="[ \t\n\f\r]",zg=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Lg=/-->/g,Hg=/>/g,Pg=RegExp(`>|${Rg}(?:([^\\s"'>=/]+)(${Rg}*=${Rg}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),Dg=/'/g,Vg=/"/g,Fg=/^(?:script|style|textarea|title)$/i,Bg=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),Ug=Symbol.for("lit-noChange"),jg=Symbol.for("lit-nothing"),Wg=new WeakMap,qg=Ig.createTreeWalker(Ig,129,null,!1);function Gg(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==Eg?Eg.createHTML(t):t}class Xg{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=zg;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===zg?"!--"===l[1]?s=Lg:void 0!==l[1]?s=Hg:void 0!==l[2]?(Fg.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=Pg):void 0!==l[3]&&(s=Pg):s===Pg?">"===l[0]?(s=null!=o?o:zg,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?Pg:'"'===l[3]?Vg:Dg):s===Vg||s===Dg?s=Pg:s===Lg||s===Hg?s=zg:(s=Pg,o=void 0);const h=s===Pg&&e[t+1].startsWith("/>")?" ":"";r+=s===zg?i+Tg:d>=0?(n.push(a),i.slice(0,d)+Cg+i.slice(d)+Sg+h):i+Sg+(-2===d?(n.push(void 0),t):h)}return[Gg(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]})(e,t);if(this.el=Xg.createElement(l,i),qg.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=qg.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(Cg)||t.startsWith(Sg)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+Cg).split(Sg),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?Qg:"?"===t[1]?tv:"@"===t[1]?iv:Jg})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(Fg.test(n.tagName)){const e=n.textContent.split(Sg),t=e.length-1;if(t>0){n.textContent=$g?$g.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],Og()),qg.nextNode(),a.push({type:2,index:++o});n.append(e[t],Og())}}}else if(8===n.nodeType)if(n.data===kg)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(Sg,e+1));)a.push({type:7,index:o}),e+=Sg.length-1}o++}}static createElement(e,t){const i=Ig.createElement("template");return i.innerHTML=e,i}}function Kg(e,t,i=e,n){var o,r,s,a;if(t===Ug)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=Mg(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=Kg(e,l._$AS(e,t.values),l,n)),t}class Yg{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:Ig).importNode(i,!0);qg.currentNode=o;let r=qg.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Zg(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new nv(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=qg.nextNode(),s++)}return qg.currentNode=Ig,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Zg{constructor(e,t,i,n){var o;this.type=2,this._$AH=jg,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Kg(this,e,t),Mg(e)?e===jg||null==e||""===e?(this._$AH!==jg&&this._$AR(),this._$AH=jg):e!==this._$AH&&e!==Ug&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>Ng(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==jg&&Mg(this._$AH)?this._$AA.nextSibling.data=e:this.$(Ig.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Xg.createElement(Gg(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Yg(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Wg.get(e.strings);return void 0===t&&Wg.set(e.strings,t=new Xg(e)),t}T(e){Ng(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Zg(this.k(Og()),this.k(Og()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class Jg{constructor(e,t,i,n,o){this.type=1,this._$AH=jg,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=jg}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=Kg(this,e,t,0),r=!Mg(e)||e!==this._$AH&&e!==Ug,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=Kg(this,n[i+s],t,s),a===Ug&&(a=this._$AH[s]),r||(r=!Mg(a)||a!==this._$AH[s]),a===jg?e=jg:e!==jg&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===jg?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class Qg extends Jg{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===jg?void 0:e}}const ev=$g?$g.emptyScript:"";class tv extends Jg{constructor(){super(...arguments),this.type=4}j(e){e&&e!==jg?this.element.setAttribute(this.name,ev):this.element.removeAttribute(this.name)}}class iv extends Jg{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=Kg(this,e,t,0))&&void 0!==i?i:jg)===Ug)return;const n=this._$AH,o=e===jg&&n!==jg||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==jg&&(n===jg||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class nv{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Kg(this,e)}}const ov=Ag.litHtmlPolyfillSupport;null==ov||ov(Xg,Zg),(null!==(bg=Ag.litHtmlVersions)&&void 0!==bg?bg:Ag.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var rv,sv;class av extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Zg(t.insertBefore(Og(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return Ug}}av.finalized=!0,av._$litElement$=!0,null===(rv=globalThis.litElementHydrateSupport)||void 0===rv||rv.call(globalThis,{LitElement:av});const lv=globalThis.litElementPolyfillSupport;null==lv||lv({LitElement:av}),(null!==(sv=globalThis.litElementVersions)&&void 0!==sv?sv:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const dv=e=>null!=e?e:jg;
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */class cv extends Fl{constructor(){super(...arguments),this.checked=!1,this.disabled=!1,this.shouldRenderRipple=!1,this.mdcFoundationClass=wg,this.rippleHandlers=new iu(()=>(this.shouldRenderRipple=!0,this.ripple))}changeHandler(e){this.mdcFoundation.handleChange(e),this.checked=this.formElement.checked}createAdapter(){return Object.assign(Object.assign({},Ll(this.mdcRoot)),{setNativeControlChecked:e=>{this.formElement.checked=e},setNativeControlDisabled:e=>{this.formElement.disabled=e},setNativeControlAttr:(e,t)=>{this.formElement.setAttribute(e,t)}})}renderRipple(){return this.shouldRenderRipple?Bg`
-        <mwc-ripple
-          .accent="${this.checked}"
-          .disabled="${this.disabled}"
-          unbounded>
-        </mwc-ripple>`:""}focus(){const e=this.formElement;e&&(this.rippleHandlers.startFocus(),e.focus())}blur(){const e=this.formElement;e&&(this.rippleHandlers.endFocus(),e.blur())}click(){this.formElement&&!this.disabled&&(this.formElement.focus(),this.formElement.click())}firstUpdated(){super.firstUpdated(),this.shadowRoot&&this.mdcRoot.addEventListener("change",e=>{this.dispatchEvent(new Event("change",e))})}render(){return Bg`
-      <div class="mdc-switch">
-        <div class="mdc-switch__track"></div>
-        <div class="mdc-switch__thumb-underlay">
-          ${this.renderRipple()}
-          <div class="mdc-switch__thumb">
-            <input
-              type="checkbox"
-              id="basic-switch"
-              class="mdc-switch__native-control"
-              role="switch"
-              aria-label="${dv(this.ariaLabel)}"
-              aria-labelledby="${dv(this.ariaLabelledBy)}"
-              @change="${this.changeHandler}"
-              @focus="${this.handleRippleFocus}"
-              @blur="${this.handleRippleBlur}"
-              @mousedown="${this.handleRippleMouseDown}"
-              @mouseenter="${this.handleRippleMouseEnter}"
-              @mouseleave="${this.handleRippleMouseLeave}"
-              @touchstart="${this.handleRippleTouchStart}"
-              @touchend="${this.handleRippleDeactivate}"
-              @touchcancel="${this.handleRippleDeactivate}">
-          </div>
-        </div>
-      </div>`}handleRippleMouseDown(e){const t=()=>{window.removeEventListener("mouseup",t),this.handleRippleDeactivate()};window.addEventListener("mouseup",t),this.rippleHandlers.startPress(e)}handleRippleTouchStart(e){this.rippleHandlers.startPress(e)}handleRippleDeactivate(){this.rippleHandlers.endPress()}handleRippleMouseEnter(){this.rippleHandlers.startHover()}handleRippleMouseLeave(){this.rippleHandlers.endHover()}handleRippleFocus(){this.rippleHandlers.startFocus()}handleRippleBlur(){this.rippleHandlers.endFocus()}}n([Ul({type:Boolean}),id(function(e){this.mdcFoundation.setChecked(e)})],cv.prototype,"checked",void 0),n([Ul({type:Boolean}),id(function(e){this.mdcFoundation.setDisabled(e)})],cv.prototype,"disabled",void 0),n([_g,Ul({attribute:"aria-label"})],cv.prototype,"ariaLabel",void 0),n([_g,Ul({attribute:"aria-labelledby"})],cv.prototype,"ariaLabelledBy",void 0),n([Gl(".mdc-switch")],cv.prototype,"mdcRoot",void 0),n([Gl("input")],cv.prototype,"formElement",void 0),n([Xl("mwc-ripple")],cv.prototype,"ripple",void 0),n([jl()],cv.prototype,"shouldRenderRipple",void 0),n([ql({passive:!0})],cv.prototype,"handleRippleMouseDown",null),n([ql({passive:!0})],cv.prototype,"handleRippleTouchStart",null);
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */
-const hv=Ma`.mdc-switch__thumb-underlay{left:-14px;right:initial;top:-17px;width:48px;height:48px}[dir=rtl] .mdc-switch__thumb-underlay,.mdc-switch__thumb-underlay[dir=rtl]{left:initial;right:-14px}.mdc-switch__native-control{width:64px;height:48px}.mdc-switch{display:inline-block;position:relative;outline:none;user-select:none}.mdc-switch.mdc-switch--checked .mdc-switch__track{background-color:#018786;background-color:var(--mdc-theme-secondary, #018786)}.mdc-switch.mdc-switch--checked .mdc-switch__thumb{background-color:#018786;background-color:var(--mdc-theme-secondary, #018786);border-color:#018786;border-color:var(--mdc-theme-secondary, #018786)}.mdc-switch:not(.mdc-switch--checked) .mdc-switch__track{background-color:#000;background-color:var(--mdc-theme-on-surface, #000)}.mdc-switch:not(.mdc-switch--checked) .mdc-switch__thumb{background-color:#fff;background-color:var(--mdc-theme-surface, #fff);border-color:#fff;border-color:var(--mdc-theme-surface, #fff)}.mdc-switch__native-control{left:0;right:initial;position:absolute;top:0;margin:0;opacity:0;cursor:pointer;pointer-events:auto;transition:transform 90ms cubic-bezier(0.4, 0, 0.2, 1)}[dir=rtl] .mdc-switch__native-control,.mdc-switch__native-control[dir=rtl]{left:initial;right:0}.mdc-switch__track{box-sizing:border-box;width:36px;height:14px;border:1px solid transparent;border-radius:7px;opacity:.38;transition:opacity 90ms cubic-bezier(0.4, 0, 0.2, 1),background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),border-color 90ms cubic-bezier(0.4, 0, 0.2, 1)}.mdc-switch__thumb-underlay{display:flex;position:absolute;align-items:center;justify-content:center;transform:translateX(0);transition:transform 90ms cubic-bezier(0.4, 0, 0.2, 1),background-color 90ms cubic-bezier(0.4, 0, 0.2, 1),border-color 90ms cubic-bezier(0.4, 0, 0.2, 1)}.mdc-switch__thumb{box-shadow:0px 3px 1px -2px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 1px 5px 0px rgba(0,0,0,.12);box-sizing:border-box;width:20px;height:20px;border:10px solid;border-radius:50%;pointer-events:none;z-index:1}.mdc-switch--checked .mdc-switch__track{opacity:.54}.mdc-switch--checked .mdc-switch__thumb-underlay{transform:translateX(16px)}[dir=rtl] .mdc-switch--checked .mdc-switch__thumb-underlay,.mdc-switch--checked .mdc-switch__thumb-underlay[dir=rtl]{transform:translateX(-16px)}.mdc-switch--checked .mdc-switch__native-control{transform:translateX(-16px)}[dir=rtl] .mdc-switch--checked .mdc-switch__native-control,.mdc-switch--checked .mdc-switch__native-control[dir=rtl]{transform:translateX(16px)}.mdc-switch--disabled{opacity:.38;pointer-events:none}.mdc-switch--disabled .mdc-switch__thumb{border-width:1px}.mdc-switch--disabled .mdc-switch__native-control{cursor:default;pointer-events:none}:host{display:inline-flex;outline:none;-webkit-tap-highlight-color:transparent}`,pv={"mwc-switch":class extends cv{static get styles(){return hv}},"mwc-ripple":class extends mf{static get styles(){return ug}}};
-/**
- * @license
- * Copyright 2016 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-var uv,mv={ARIA_CONTROLS:"aria-controls",ARIA_DESCRIBEDBY:"aria-describedby",INPUT_SELECTOR:".mdc-text-field__input",LABEL_SELECTOR:".mdc-floating-label",LEADING_ICON_SELECTOR:".mdc-text-field__icon--leading",LINE_RIPPLE_SELECTOR:".mdc-line-ripple",OUTLINE_SELECTOR:".mdc-notched-outline",PREFIX_SELECTOR:".mdc-text-field__affix--prefix",SUFFIX_SELECTOR:".mdc-text-field__affix--suffix",TRAILING_ICON_SELECTOR:".mdc-text-field__icon--trailing"},fv={DISABLED:"mdc-text-field--disabled",FOCUSED:"mdc-text-field--focused",HELPER_LINE:"mdc-text-field-helper-line",INVALID:"mdc-text-field--invalid",LABEL_FLOATING:"mdc-text-field--label-floating",NO_LABEL:"mdc-text-field--no-label",OUTLINED:"mdc-text-field--outlined",ROOT:"mdc-text-field",TEXTAREA:"mdc-text-field--textarea",WITH_LEADING_ICON:"mdc-text-field--with-leading-icon",WITH_TRAILING_ICON:"mdc-text-field--with-trailing-icon",WITH_INTERNAL_COUNTER:"mdc-text-field--with-internal-counter"},gv={LABEL_SCALE:.75},vv=["pattern","min","max","required","step","minlength","maxlength"],_v=["color","date","datetime-local","month","range","time","week"],bv=["mousedown","touchstart"],yv=["click","keydown"],xv=function(e){function n(t,o){void 0===o&&(o={});var r=e.call(this,i(i({},n.defaultAdapter),t))||this;return r.isFocused=!1,r.receivedUserInput=!1,r.valid=!0,r.useNativeValidation=!0,r.validateOnValueChange=!0,r.helperText=o.helperText,r.characterCounter=o.characterCounter,r.leadingIcon=o.leadingIcon,r.trailingIcon=o.trailingIcon,r.inputFocusHandler=function(){r.activateFocus()},r.inputBlurHandler=function(){r.deactivateFocus()},r.inputInputHandler=function(){r.handleInput()},r.setPointerXOffset=function(e){r.setTransformOrigin(e)},r.textFieldInteractionHandler=function(){r.handleTextFieldInteraction()},r.validationAttributeChangeHandler=function(e){r.handleValidationAttributeChange(e)},r}return t(n,e),Object.defineProperty(n,"cssClasses",{get:function(){return fv},enumerable:!1,configurable:!0}),Object.defineProperty(n,"strings",{get:function(){return mv},enumerable:!1,configurable:!0}),Object.defineProperty(n,"numbers",{get:function(){return gv},enumerable:!1,configurable:!0}),Object.defineProperty(n.prototype,"shouldAlwaysFloat",{get:function(){var e=this.getNativeInput().type;return _v.indexOf(e)>=0},enumerable:!1,configurable:!0}),Object.defineProperty(n.prototype,"shouldFloat",{get:function(){return this.shouldAlwaysFloat||this.isFocused||!!this.getValue()||this.isBadInput()},enumerable:!1,configurable:!0}),Object.defineProperty(n.prototype,"shouldShake",{get:function(){return!this.isFocused&&!this.isValid()&&!!this.getValue()},enumerable:!1,configurable:!0}),Object.defineProperty(n,"defaultAdapter",{get:function(){return{addClass:function(){},removeClass:function(){},hasClass:function(){return!0},setInputAttr:function(){},removeInputAttr:function(){},registerTextFieldInteractionHandler:function(){},deregisterTextFieldInteractionHandler:function(){},registerInputInteractionHandler:function(){},deregisterInputInteractionHandler:function(){},registerValidationAttributeChangeHandler:function(){return new MutationObserver(function(){})},deregisterValidationAttributeChangeHandler:function(){},getNativeInput:function(){return null},isFocused:function(){return!1},activateLineRipple:function(){},deactivateLineRipple:function(){},setLineRippleTransformOrigin:function(){},shakeLabel:function(){},floatLabel:function(){},setLabelRequired:function(){},hasLabel:function(){return!1},getLabelWidth:function(){return 0},hasOutline:function(){return!1},notchOutline:function(){},closeOutline:function(){}}},enumerable:!1,configurable:!0}),n.prototype.init=function(){var e,t,i,n;this.adapter.hasLabel()&&this.getNativeInput().required&&this.adapter.setLabelRequired(!0),this.adapter.isFocused()?this.inputFocusHandler():this.adapter.hasLabel()&&this.shouldFloat&&(this.notchOutline(!0),this.adapter.floatLabel(!0),this.styleFloating(!0)),this.adapter.registerInputInteractionHandler("focus",this.inputFocusHandler),this.adapter.registerInputInteractionHandler("blur",this.inputBlurHandler),this.adapter.registerInputInteractionHandler("input",this.inputInputHandler);try{for(var r=o(bv),s=r.next();!s.done;s=r.next()){var a=s.value;this.adapter.registerInputInteractionHandler(a,this.setPointerXOffset)}}catch(t){e={error:t}}finally{try{s&&!s.done&&(t=r.return)&&t.call(r)}finally{if(e)throw e.error}}try{for(var l=o(yv),d=l.next();!d.done;d=l.next()){a=d.value;this.adapter.registerTextFieldInteractionHandler(a,this.textFieldInteractionHandler)}}catch(e){i={error:e}}finally{try{d&&!d.done&&(n=l.return)&&n.call(l)}finally{if(i)throw i.error}}this.validationObserver=this.adapter.registerValidationAttributeChangeHandler(this.validationAttributeChangeHandler),this.setcharacterCounter(this.getValue().length)},n.prototype.destroy=function(){var e,t,i,n;this.adapter.deregisterInputInteractionHandler("focus",this.inputFocusHandler),this.adapter.deregisterInputInteractionHandler("blur",this.inputBlurHandler),this.adapter.deregisterInputInteractionHandler("input",this.inputInputHandler);try{for(var r=o(bv),s=r.next();!s.done;s=r.next()){var a=s.value;this.adapter.deregisterInputInteractionHandler(a,this.setPointerXOffset)}}catch(t){e={error:t}}finally{try{s&&!s.done&&(t=r.return)&&t.call(r)}finally{if(e)throw e.error}}try{for(var l=o(yv),d=l.next();!d.done;d=l.next()){a=d.value;this.adapter.deregisterTextFieldInteractionHandler(a,this.textFieldInteractionHandler)}}catch(e){i={error:e}}finally{try{d&&!d.done&&(n=l.return)&&n.call(l)}finally{if(i)throw i.error}}this.adapter.deregisterValidationAttributeChangeHandler(this.validationObserver)},n.prototype.handleTextFieldInteraction=function(){var e=this.adapter.getNativeInput();e&&e.disabled||(this.receivedUserInput=!0)},n.prototype.handleValidationAttributeChange=function(e){var t=this;e.some(function(e){return vv.indexOf(e)>-1&&(t.styleValidity(!0),t.adapter.setLabelRequired(t.getNativeInput().required),!0)}),e.indexOf("maxlength")>-1&&this.setcharacterCounter(this.getValue().length)},n.prototype.notchOutline=function(e){if(this.adapter.hasOutline()&&this.adapter.hasLabel())if(e){var t=this.adapter.getLabelWidth()*gv.LABEL_SCALE;this.adapter.notchOutline(t)}else this.adapter.closeOutline()},n.prototype.activateFocus=function(){this.isFocused=!0,this.styleFocused(this.isFocused),this.adapter.activateLineRipple(),this.adapter.hasLabel()&&(this.notchOutline(this.shouldFloat),this.adapter.floatLabel(this.shouldFloat),this.styleFloating(this.shouldFloat),this.adapter.shakeLabel(this.shouldShake)),!this.helperText||!this.helperText.isPersistent()&&this.helperText.isValidation()&&this.valid||this.helperText.showToScreenReader()},n.prototype.setTransformOrigin=function(e){if(!this.isDisabled()&&!this.adapter.hasOutline()){var t=e.touches,i=t?t[0]:e,n=i.target.getBoundingClientRect(),o=i.clientX-n.left;this.adapter.setLineRippleTransformOrigin(o)}},n.prototype.handleInput=function(){this.autoCompleteFocus(),this.setcharacterCounter(this.getValue().length)},n.prototype.autoCompleteFocus=function(){this.receivedUserInput||this.activateFocus()},n.prototype.deactivateFocus=function(){this.isFocused=!1,this.adapter.deactivateLineRipple();var e=this.isValid();this.styleValidity(e),this.styleFocused(this.isFocused),this.adapter.hasLabel()&&(this.notchOutline(this.shouldFloat),this.adapter.floatLabel(this.shouldFloat),this.styleFloating(this.shouldFloat),this.adapter.shakeLabel(this.shouldShake)),this.shouldFloat||(this.receivedUserInput=!1)},n.prototype.getValue=function(){return this.getNativeInput().value},n.prototype.setValue=function(e){if(this.getValue()!==e&&(this.getNativeInput().value=e),this.setcharacterCounter(e.length),this.validateOnValueChange){var t=this.isValid();this.styleValidity(t)}this.adapter.hasLabel()&&(this.notchOutline(this.shouldFloat),this.adapter.floatLabel(this.shouldFloat),this.styleFloating(this.shouldFloat),this.validateOnValueChange&&this.adapter.shakeLabel(this.shouldShake))},n.prototype.isValid=function(){return this.useNativeValidation?this.isNativeInputValid():this.valid},n.prototype.setValid=function(e){this.valid=e,this.styleValidity(e);var t=!e&&!this.isFocused&&!!this.getValue();this.adapter.hasLabel()&&this.adapter.shakeLabel(t)},n.prototype.setValidateOnValueChange=function(e){this.validateOnValueChange=e},n.prototype.getValidateOnValueChange=function(){return this.validateOnValueChange},n.prototype.setUseNativeValidation=function(e){this.useNativeValidation=e},n.prototype.isDisabled=function(){return this.getNativeInput().disabled},n.prototype.setDisabled=function(e){this.getNativeInput().disabled=e,this.styleDisabled(e)},n.prototype.setHelperTextContent=function(e){this.helperText&&this.helperText.setContent(e)},n.prototype.setLeadingIconAriaLabel=function(e){this.leadingIcon&&this.leadingIcon.setAriaLabel(e)},n.prototype.setLeadingIconContent=function(e){this.leadingIcon&&this.leadingIcon.setContent(e)},n.prototype.setTrailingIconAriaLabel=function(e){this.trailingIcon&&this.trailingIcon.setAriaLabel(e)},n.prototype.setTrailingIconContent=function(e){this.trailingIcon&&this.trailingIcon.setContent(e)},n.prototype.setcharacterCounter=function(e){if(this.characterCounter){var t=this.getNativeInput().maxLength;if(-1===t)throw new Error("MDCTextFieldFoundation: Expected maxlength html property on text input or textarea.");this.characterCounter.setCounterValue(e,t)}},n.prototype.isBadInput=function(){return this.getNativeInput().validity.badInput||!1},n.prototype.isNativeInputValid=function(){return this.getNativeInput().validity.valid},n.prototype.styleValidity=function(e){var t=n.cssClasses.INVALID;if(e?this.adapter.removeClass(t):this.adapter.addClass(t),this.helperText){if(this.helperText.setValidity(e),!this.helperText.isValidation())return;var i=this.helperText.isVisible(),o=this.helperText.getId();i&&o?this.adapter.setInputAttr(mv.ARIA_DESCRIBEDBY,o):this.adapter.removeInputAttr(mv.ARIA_DESCRIBEDBY)}},n.prototype.styleFocused=function(e){var t=n.cssClasses.FOCUSED;e?this.adapter.addClass(t):this.adapter.removeClass(t)},n.prototype.styleDisabled=function(e){var t=n.cssClasses,i=t.DISABLED,o=t.INVALID;e?(this.adapter.addClass(i),this.adapter.removeClass(o)):this.adapter.removeClass(i),this.leadingIcon&&this.leadingIcon.setDisabled(e),this.trailingIcon&&this.trailingIcon.setDisabled(e)},n.prototype.styleFloating=function(e){var t=n.cssClasses.LABEL_FLOATING;e?this.adapter.addClass(t):this.adapter.removeClass(t)},n.prototype.getNativeInput=function(){return(this.adapter?this.adapter.getNativeInput():null)||{disabled:!1,maxLength:-1,required:!1,type:"input",validity:{badInput:!1,valid:!0},value:""}},n}(La),wv=xv;const Av=window,$v=Av.trustedTypes,Ev=$v?$v.createPolicy("lit-html",{createHTML:e=>e}):void 0,Cv="$lit$",Sv=`lit$${(Math.random()+"").slice(9)}$`,kv="?"+Sv,Tv=`<${kv}>`,Iv=document,Ov=()=>Iv.createComment(""),Mv=e=>null===e||"object"!=typeof e&&"function"!=typeof e,Nv=Array.isArray,Rv="[ \t\n\f\r]",zv=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Lv=/-->/g,Hv=/>/g,Pv=RegExp(`>|${Rv}(?:([^\\s"'>=/]+)(${Rv}*=${Rv}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),Dv=/'/g,Vv=/"/g,Fv=/^(?:script|style|textarea|title)$/i,Bv=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),Uv=Symbol.for("lit-noChange"),jv=Symbol.for("lit-nothing"),Wv=new WeakMap,qv=Iv.createTreeWalker(Iv,129,null,!1);function Gv(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==Ev?Ev.createHTML(t):t}const Xv=(e,t)=>{const i=e.length-1,n=[];let o,r=2===t?"<svg>":"",s=zv;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,c=0;for(;c<i.length&&(s.lastIndex=c,l=s.exec(i),null!==l);)c=s.lastIndex,s===zv?"!--"===l[1]?s=Lv:void 0!==l[1]?s=Hv:void 0!==l[2]?(Fv.test(l[2])&&(o=RegExp("</"+l[2],"g")),s=Pv):void 0!==l[3]&&(s=Pv):s===Pv?">"===l[0]?(s=null!=o?o:zv,d=-1):void 0===l[1]?d=-2:(d=s.lastIndex-l[2].length,a=l[1],s=void 0===l[3]?Pv:'"'===l[3]?Vv:Dv):s===Vv||s===Dv?s=Pv:s===Lv||s===Hv?s=zv:(s=Pv,o=void 0);const h=s===Pv&&e[t+1].startsWith("/>")?" ":"";r+=s===zv?i+Tv:d>=0?(n.push(a),i.slice(0,d)+Cv+i.slice(d)+Sv+h):i+Sv+(-2===d?(n.push(void 0),t):h)}return[Gv(e,r+(e[i]||"<?>")+(2===t?"</svg>":"")),n]};class Kv{constructor({strings:e,_$litType$:t},i){let n;this.parts=[];let o=0,r=0;const s=e.length-1,a=this.parts,[l,d]=Xv(e,t);if(this.el=Kv.createElement(l,i),qv.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(n=qv.nextNode())&&a.length<s;){if(1===n.nodeType){if(n.hasAttributes()){const e=[];for(const t of n.getAttributeNames())if(t.endsWith(Cv)||t.startsWith(Sv)){const i=d[r++];if(e.push(t),void 0!==i){const e=n.getAttribute(i.toLowerCase()+Cv).split(Sv),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?e_:"?"===t[1]?i_:"@"===t[1]?n_:Qv})}else a.push({type:6,index:o})}for(const t of e)n.removeAttribute(t)}if(Fv.test(n.tagName)){const e=n.textContent.split(Sv),t=e.length-1;if(t>0){n.textContent=$v?$v.emptyScript:"";for(let i=0;i<t;i++)n.append(e[i],Ov()),qv.nextNode(),a.push({type:2,index:++o});n.append(e[t],Ov())}}}else if(8===n.nodeType)if(n.data===kv)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=n.data.indexOf(Sv,e+1));)a.push({type:7,index:o}),e+=Sv.length-1}o++}}static createElement(e,t){const i=Iv.createElement("template");return i.innerHTML=e,i}}function Yv(e,t,i=e,n){var o,r,s,a;if(t===Uv)return t;let l=void 0!==n?null===(o=i._$Co)||void 0===o?void 0:o[n]:i._$Cl;const d=Mv(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,n)),void 0!==n?(null!==(s=(a=i)._$Co)&&void 0!==s?s:a._$Co=[])[n]=l:i._$Cl=l),void 0!==l&&(t=Yv(e,l._$AS(e,t.values),l,n)),t}class Zv{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:n}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:Iv).importNode(i,!0);qv.currentNode=o;let r=qv.nextNode(),s=0,a=0,l=n[0];for(;void 0!==l;){if(s===l.index){let t;2===l.type?t=new Jv(r,r.nextSibling,this,e):1===l.type?t=new l.ctor(r,l.name,l.strings,this,e):6===l.type&&(t=new o_(r,this,e)),this._$AV.push(t),l=n[++a]}s!==(null==l?void 0:l.index)&&(r=qv.nextNode(),s++)}return qv.currentNode=Iv,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Jv{constructor(e,t,i,n){var o;this.type=2,this._$AH=jv,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=n,this._$Cp=null===(o=null==n?void 0:n.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Yv(this,e,t),Mv(e)?e===jv||null==e||""===e?(this._$AH!==jv&&this._$AR(),this._$AH=jv):e!==this._$AH&&e!==Uv&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>Nv(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==jv&&Mv(this._$AH)?this._$AA.nextSibling.data=e:this.$(Iv.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:n}=e,o="number"==typeof n?this._$AC(e):(void 0===n.el&&(n.el=Kv.createElement(Gv(n.h,n.h[0]),this.options)),n);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new Zv(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=Wv.get(e.strings);return void 0===t&&Wv.set(e.strings,t=new Kv(e)),t}T(e){Nv(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,n=0;for(const o of e)n===t.length?t.push(i=new Jv(this.k(Ov()),this.k(Ov()),this,this.options)):i=t[n],i._$AI(o),n++;n<t.length&&(this._$AR(i&&i._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class Qv{constructor(e,t,i,n,o){this.type=1,this._$AH=jv,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=jv}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,n){const o=this.strings;let r=!1;if(void 0===o)e=Yv(this,e,t,0),r=!Mv(e)||e!==this._$AH&&e!==Uv,r&&(this._$AH=e);else{const n=e;let s,a;for(e=o[0],s=0;s<o.length-1;s++)a=Yv(this,n[i+s],t,s),a===Uv&&(a=this._$AH[s]),r||(r=!Mv(a)||a!==this._$AH[s]),a===jv?e=jv:e!==jv&&(e+=(null!=a?a:"")+o[s+1]),this._$AH[s]=a}r&&!n&&this.j(e)}j(e){e===jv?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class e_ extends Qv{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===jv?void 0:e}}const t_=$v?$v.emptyScript:"";class i_ extends Qv{constructor(){super(...arguments),this.type=4}j(e){e&&e!==jv?this.element.setAttribute(this.name,t_):this.element.removeAttribute(this.name)}}class n_ extends Qv{constructor(e,t,i,n,o){super(e,t,i,n,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=Yv(this,e,t,0))&&void 0!==i?i:jv)===Uv)return;const n=this._$AH,o=e===jv&&n!==jv||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,r=e!==jv&&(n===jv||o);o&&this.element.removeEventListener(this.name,this,n),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class o_{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Yv(this,e)}}const r_=Av.litHtmlPolyfillSupport;null==r_||r_(Kv,Jv),(null!==(uv=Av.litHtmlVersions)&&void 0!==uv?uv:Av.litHtmlVersions=[]).push("2.8.0");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-var s_,a_;class l_ extends Xa{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var n,o;const r=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:t;let s=r._$litPart$;if(void 0===s){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;r._$litPart$=s=new Jv(t.insertBefore(Ov(),e),e,void 0,null!=i?i:{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return Uv}}l_.finalized=!0,l_._$litElement$=!0,null===(s_=globalThis.litElementHydrateSupport)||void 0===s_||s_.call(globalThis,{LitElement:l_});const d_=globalThis.litElementPolyfillSupport;null==d_||d_({LitElement:l_}),(null!==(a_=globalThis.litElementVersions)&&void 0!==a_?a_:globalThis.litElementVersions=[]).push("3.3.3");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const c_=1,h_=3,p_=4,u_=e=>(...t)=>({_$litDirective$:e,values:t});class m_{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,i){this._$Ct=e,this._$AM=t,this._$Ci=i}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}}
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */const f_=u_(class extends m_{constructor(e){var t;if(super(e),e.type!==c_||"class"!==e.name||(null===(t=e.strings)||void 0===t?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(e){return" "+Object.keys(e).filter(t=>e[t]).join(" ")+" "}update(e,[t]){var i,n;if(void 0===this.it){this.it=new Set,void 0!==e.strings&&(this.nt=new Set(e.strings.join(" ").split(/\s/).filter(e=>""!==e)));for(const e in t)t[e]&&!(null===(i=this.nt)||void 0===i?void 0:i.has(e))&&this.it.add(e);return this.render(t)}const o=e.element.classList;this.it.forEach(e=>{e in t||(o.remove(e),this.it.delete(e))});for(const e in t){const i=!!t[e];i===this.it.has(e)||(null===(n=this.nt)||void 0===n?void 0:n.has(e))||(i?(o.add(e),this.it.add(e)):(o.remove(e),this.it.delete(e)))}return Uv}}),g_=e=>null!=e?e:jv,v_={},__=u_(class extends m_{constructor(e){if(super(e),e.type!==h_&&e.type!==c_&&e.type!==p_)throw Error("The `live` directive is not allowed on child or event bindings");if(!(e=>void 0===e.strings)(e))throw Error("`live` bindings can only contain a single expression")}render(e){return e}update(e,[t]){if(t===Uv||t===jv)return t;const i=e.element,n=e.name;if(e.type===h_){if(t===i[n])return Uv}else if(e.type===p_){if(!!t===i.hasAttribute(n))return Uv}else if(e.type===c_&&i.getAttribute(n)===t+"")return Uv;return((e,t=v_)=>{e._$AH=t;
-/**
- * @license
- * Copyright 2020 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */})(e),t}}),b_=["touchstart","touchmove","scroll","mousewheel"],y_=(e={})=>{const t={};for(const i in e)t[i]=e[i];return Object.assign({badInput:!1,customError:!1,patternMismatch:!1,rangeOverflow:!1,rangeUnderflow:!1,stepMismatch:!1,tooLong:!1,tooShort:!1,typeMismatch:!1,valid:!0,valueMissing:!1},t)};
-/**
- * @license
- * Copyright 2018 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class x_ extends td{constructor(){super(...arguments),this.mdcFoundationClass=wv,this.value="",this.type="text",this.placeholder="",this.label="",this.icon="",this.iconTrailing="",this.disabled=!1,this.required=!1,this.minLength=-1,this.maxLength=-1,this.outlined=!1,this.helper="",this.validateOnInitialRender=!1,this.validationMessage="",this.autoValidate=!1,this.pattern="",this.min="",this.max="",this.step=null,this.size=null,this.helperPersistent=!1,this.charCounter=!1,this.endAligned=!1,this.prefix="",this.suffix="",this.name="",this.readOnly=!1,this.autocapitalize="",this.outlineOpen=!1,this.outlineWidth=0,this.isUiValid=!0,this.focused=!1,this._validity=y_(),this.validityTransform=null}get validity(){return this._checkValidity(this.value),this._validity}get willValidate(){return this.formElement.willValidate}get selectionStart(){return this.formElement.selectionStart}get selectionEnd(){return this.formElement.selectionEnd}focus(){const e=new CustomEvent("focus");this.formElement.dispatchEvent(e),this.formElement.focus()}blur(){const e=new CustomEvent("blur");this.formElement.dispatchEvent(e),this.formElement.blur()}select(){this.formElement.select()}setSelectionRange(e,t,i){this.formElement.setSelectionRange(e,t,i)}update(e){e.has("autoValidate")&&this.mdcFoundation&&this.mdcFoundation.setValidateOnValueChange(this.autoValidate),e.has("value")&&"string"!=typeof this.value&&(this.value=`${this.value}`),super.update(e)}setFormData(e){this.name&&e.append(this.name,this.value)}render(){const e=this.charCounter&&-1!==this.maxLength,t=!!this.helper||!!this.validationMessage||e,i={"mdc-text-field--disabled":this.disabled,"mdc-text-field--no-label":!this.label,"mdc-text-field--filled":!this.outlined,"mdc-text-field--outlined":this.outlined,"mdc-text-field--with-leading-icon":this.icon,"mdc-text-field--with-trailing-icon":this.iconTrailing,"mdc-text-field--end-aligned":this.endAligned};return Bv`
-      <label class="mdc-text-field ${f_(i)}">
-        ${this.renderRipple()}
-        ${this.outlined?this.renderOutline():this.renderLabel()}
-        ${this.renderLeadingIcon()}
-        ${this.renderPrefix()}
-        ${this.renderInput(t)}
-        ${this.renderSuffix()}
-        ${this.renderTrailingIcon()}
-        ${this.renderLineRipple()}
-      </label>
-      ${this.renderHelperText(t,e)}
-    `}updated(e){e.has("value")&&void 0!==e.get("value")&&(this.mdcFoundation.setValue(this.value),this.autoValidate&&this.reportValidity())}renderRipple(){return this.outlined?"":Bv`
-      <span class="mdc-text-field__ripple"></span>
-    `}renderOutline(){return this.outlined?Bv`
-      <mwc-notched-outline
-          .width=${this.outlineWidth}
-          .open=${this.outlineOpen}
-          class="mdc-notched-outline">
-        ${this.renderLabel()}
-      </mwc-notched-outline>`:""}renderLabel(){return this.label?Bv`
-      <span
-          .floatingLabelFoundation=${Zc(this.label)}
-          id="label">${this.label}</span>
-    `:""}renderLeadingIcon(){return this.icon?this.renderIcon(this.icon):""}renderTrailingIcon(){return this.iconTrailing?this.renderIcon(this.iconTrailing,!0):""}renderIcon(e,t=!1){return Bv`<i class="material-icons mdc-text-field__icon ${f_({"mdc-text-field__icon--leading":!t,"mdc-text-field__icon--trailing":t})}">${e}</i>`}renderPrefix(){return this.prefix?this.renderAffix(this.prefix):""}renderSuffix(){return this.suffix?this.renderAffix(this.suffix,!0):""}renderAffix(e,t=!1){return Bv`<span class="mdc-text-field__affix ${f_({"mdc-text-field__affix--prefix":!t,"mdc-text-field__affix--suffix":t})}">
-        ${e}</span>`}renderInput(e){const t=-1===this.minLength?void 0:this.minLength,i=-1===this.maxLength?void 0:this.maxLength,n=this.autocapitalize?this.autocapitalize:void 0,o=this.validationMessage&&!this.isUiValid,r=this.label?"label":void 0,s=e?"helper-text":void 0,a=this.focused||this.helperPersistent||o?"helper-text":void 0;return Bv`
-      <input
-          aria-labelledby=${g_(r)}
-          aria-controls="${g_(s)}"
-          aria-describedby="${g_(a)}"
-          class="mdc-text-field__input"
-          type="${this.type}"
-          .value="${__(this.value)}"
-          ?disabled="${this.disabled}"
-          placeholder="${this.placeholder}"
-          ?required="${this.required}"
-          ?readonly="${this.readOnly}"
-          minlength="${g_(t)}"
-          maxlength="${g_(i)}"
-          pattern="${g_(this.pattern?this.pattern:void 0)}"
-          min="${g_(""===this.min?void 0:this.min)}"
-          max="${g_(""===this.max?void 0:this.max)}"
-          step="${g_(null===this.step?void 0:this.step)}"
-          size="${g_(null===this.size?void 0:this.size)}"
-          name="${g_(""===this.name?void 0:this.name)}"
-          inputmode="${g_(this.inputMode)}"
-          autocapitalize="${g_(n)}"
-          @input="${this.handleInputChange}"
-          @focus="${this.onInputFocus}"
-          @blur="${this.onInputBlur}">`}renderLineRipple(){return this.outlined?"":Bv`
-      <span .lineRippleFoundation=${nh()}></span>
-    `}renderHelperText(e,t){const i=this.validationMessage&&!this.isUiValid,n={"mdc-text-field-helper-text--persistent":this.helperPersistent,"mdc-text-field-helper-text--validation-msg":i},o=this.focused||this.helperPersistent||i?void 0:"true",r=i?this.validationMessage:this.helper;return e?Bv`
-      <div class="mdc-text-field-helper-line">
-        <div id="helper-text"
-             aria-hidden="${g_(o)}"
-             class="mdc-text-field-helper-text ${f_(n)}"
-             >${r}</div>
-        ${this.renderCharCounter(t)}
-      </div>`:""}renderCharCounter(e){const t=Math.min(this.value.length,this.maxLength);return e?Bv`
-      <span class="mdc-text-field-character-counter"
-            >${t} / ${this.maxLength}</span>`:""}onInputFocus(){this.focused=!0}onInputBlur(){this.focused=!1,this.reportValidity()}checkValidity(){const e=this._checkValidity(this.value);if(!e){const e=new Event("invalid",{bubbles:!1,cancelable:!0});this.dispatchEvent(e)}return e}reportValidity(){const e=this.checkValidity();return this.mdcFoundation.setValid(e),this.isUiValid=e,e}_checkValidity(e){const t=this.formElement.validity;let i=y_(t);if(this.validityTransform){const t=this.validityTransform(e,i);i=Object.assign(Object.assign({},i),t),this.mdcFoundation.setUseNativeValidation(!1)}else this.mdcFoundation.setUseNativeValidation(!0);return this._validity=i,this._validity.valid}setCustomValidity(e){this.validationMessage=e,this.formElement.setCustomValidity(e)}handleInputChange(){this.value=this.formElement.value}createAdapter(){return Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({},this.getRootAdapterMethods()),this.getInputAdapterMethods()),this.getLabelAdapterMethods()),this.getLineRippleAdapterMethods()),this.getOutlineAdapterMethods())}getRootAdapterMethods(){return Object.assign({registerTextFieldInteractionHandler:(e,t)=>this.addEventListener(e,t),deregisterTextFieldInteractionHandler:(e,t)=>this.removeEventListener(e,t),registerValidationAttributeChangeHandler:e=>{const t=new MutationObserver(t=>{e((e=>e.map(e=>e.attributeName).filter(e=>e))(t))});return t.observe(this.formElement,{attributes:!0}),t},deregisterValidationAttributeChangeHandler:e=>e.disconnect()},Ll(this.mdcRoot))}getInputAdapterMethods(){return{getNativeInput:()=>this.formElement,setInputAttr:()=>{},removeInputAttr:()=>{},isFocused:()=>!!this.shadowRoot&&this.shadowRoot.activeElement===this.formElement,registerInputInteractionHandler:(e,t)=>this.formElement.addEventListener(e,t,{passive:e in b_}),deregisterInputInteractionHandler:(e,t)=>this.formElement.removeEventListener(e,t)}}getLabelAdapterMethods(){return{floatLabel:e=>this.labelElement&&this.labelElement.floatingLabelFoundation.float(e),getLabelWidth:()=>this.labelElement?this.labelElement.floatingLabelFoundation.getWidth():0,hasLabel:()=>Boolean(this.labelElement),shakeLabel:e=>this.labelElement&&this.labelElement.floatingLabelFoundation.shake(e),setLabelRequired:e=>{this.labelElement&&this.labelElement.floatingLabelFoundation.setRequired(e)}}}getLineRippleAdapterMethods(){return{activateLineRipple:()=>{this.lineRippleElement&&this.lineRippleElement.lineRippleFoundation.activate()},deactivateLineRipple:()=>{this.lineRippleElement&&this.lineRippleElement.lineRippleFoundation.deactivate()},setLineRippleTransformOrigin:e=>{this.lineRippleElement&&this.lineRippleElement.lineRippleFoundation.setRippleCenter(e)}}}async getUpdateComplete(){var e;const t=await super.getUpdateComplete();return await(null===(e=this.outlineElement)||void 0===e?void 0:e.updateComplete),t}firstUpdated(){var e;super.firstUpdated(),this.mdcFoundation.setValidateOnValueChange(this.autoValidate),this.validateOnInitialRender&&this.reportValidity(),null===(e=this.outlineElement)||void 0===e||e.updateComplete.then(()=>{var e;this.outlineWidth=(null===(e=this.labelElement)||void 0===e?void 0:e.floatingLabelFoundation.getWidth())||0})}getOutlineAdapterMethods(){return{closeOutline:()=>this.outlineElement&&(this.outlineOpen=!1),hasOutline:()=>Boolean(this.outlineElement),notchOutline:e=>{this.outlineElement&&!this.outlineOpen&&(this.outlineWidth=e,this.outlineOpen=!0)}}}async layout(){await this.updateComplete;const e=this.labelElement;if(!e)return void(this.outlineOpen=!1);const t=!!this.label&&!!this.value;if(e.floatingLabelFoundation.float(t),!this.outlined)return;this.outlineOpen=t,await this.updateComplete;const i=e.floatingLabelFoundation.getWidth();this.outlineOpen&&(this.outlineWidth=i,await this.updateComplete)}}n([Gl(".mdc-text-field")],x_.prototype,"mdcRoot",void 0),n([Gl("input")],x_.prototype,"formElement",void 0),n([Gl(".mdc-floating-label")],x_.prototype,"labelElement",void 0),n([Gl(".mdc-line-ripple")],x_.prototype,"lineRippleElement",void 0),n([Gl("mwc-notched-outline")],x_.prototype,"outlineElement",void 0),n([Gl(".mdc-notched-outline__notch")],x_.prototype,"notchElement",void 0),n([Ul({type:String})],x_.prototype,"value",void 0),n([Ul({type:String})],x_.prototype,"type",void 0),n([Ul({type:String})],x_.prototype,"placeholder",void 0),n([Ul({type:String}),id(function(e,t){void 0!==t&&this.label!==t&&this.layout()})],x_.prototype,"label",void 0),n([Ul({type:String})],x_.prototype,"icon",void 0),n([Ul({type:String})],x_.prototype,"iconTrailing",void 0),n([Ul({type:Boolean,reflect:!0})],x_.prototype,"disabled",void 0),n([Ul({type:Boolean})],x_.prototype,"required",void 0),n([Ul({type:Number})],x_.prototype,"minLength",void 0),n([Ul({type:Number})],x_.prototype,"maxLength",void 0),n([Ul({type:Boolean,reflect:!0}),id(function(e,t){void 0!==t&&this.outlined!==t&&this.layout()})],x_.prototype,"outlined",void 0),n([Ul({type:String})],x_.prototype,"helper",void 0),n([Ul({type:Boolean})],x_.prototype,"validateOnInitialRender",void 0),n([Ul({type:String})],x_.prototype,"validationMessage",void 0),n([Ul({type:Boolean})],x_.prototype,"autoValidate",void 0),n([Ul({type:String})],x_.prototype,"pattern",void 0),n([Ul({type:String})],x_.prototype,"min",void 0),n([Ul({type:String})],x_.prototype,"max",void 0),n([Ul({type:String})],x_.prototype,"step",void 0),n([Ul({type:Number})],x_.prototype,"size",void 0),n([Ul({type:Boolean})],x_.prototype,"helperPersistent",void 0),n([Ul({type:Boolean})],x_.prototype,"charCounter",void 0),n([Ul({type:Boolean})],x_.prototype,"endAligned",void 0),n([Ul({type:String})],x_.prototype,"prefix",void 0),n([Ul({type:String})],x_.prototype,"suffix",void 0),n([Ul({type:String})],x_.prototype,"name",void 0),n([Ul({type:String})],x_.prototype,"inputMode",void 0),n([Ul({type:Boolean})],x_.prototype,"readOnly",void 0),n([Ul({type:String})],x_.prototype,"autocapitalize",void 0),n([jl()],x_.prototype,"outlineOpen",void 0),n([jl()],x_.prototype,"outlineWidth",void 0),n([jl()],x_.prototype,"isUiValid",void 0),n([jl()],x_.prototype,"focused",void 0),n([ql({passive:!0})],x_.prototype,"handleInputChange",null);
-/**
- * @license
- * Copyright 2021 Google LLC
- * SPDX-LIcense-Identifier: Apache-2.0
- */
-const w_=Ma`.mdc-floating-label{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-subtitle1-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:1rem;font-size:var(--mdc-typography-subtitle1-font-size, 1rem);font-weight:400;font-weight:var(--mdc-typography-subtitle1-font-weight, 400);letter-spacing:0.009375em;letter-spacing:var(--mdc-typography-subtitle1-letter-spacing, 0.009375em);text-decoration:inherit;text-decoration:var(--mdc-typography-subtitle1-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-subtitle1-text-transform, inherit);position:absolute;left:0;-webkit-transform-origin:left top;transform-origin:left top;line-height:1.15rem;text-align:left;text-overflow:ellipsis;white-space:nowrap;cursor:text;overflow:hidden;will-change:transform;transition:transform 150ms cubic-bezier(0.4, 0, 0.2, 1),color 150ms cubic-bezier(0.4, 0, 0.2, 1)}[dir=rtl] .mdc-floating-label,.mdc-floating-label[dir=rtl]{right:0;left:auto;-webkit-transform-origin:right top;transform-origin:right top;text-align:right}.mdc-floating-label--float-above{cursor:auto}.mdc-floating-label--required::after{margin-left:1px;margin-right:0px;content:"*"}[dir=rtl] .mdc-floating-label--required::after,.mdc-floating-label--required[dir=rtl]::after{margin-left:0;margin-right:1px}.mdc-floating-label--float-above{transform:translateY(-106%) scale(0.75)}.mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-standard 250ms 1}@keyframes mdc-floating-label-shake-float-above-standard{0%{transform:translateX(calc(0 - 0%)) translateY(-106%) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 0%)) translateY(-106%) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 0%)) translateY(-106%) scale(0.75)}100%{transform:translateX(calc(0 - 0%)) translateY(-106%) scale(0.75)}}.mdc-line-ripple::before,.mdc-line-ripple::after{position:absolute;bottom:0;left:0;width:100%;border-bottom-style:solid;content:""}.mdc-line-ripple::before{border-bottom-width:1px}.mdc-line-ripple::before{z-index:1}.mdc-line-ripple::after{transform:scaleX(0);border-bottom-width:2px;opacity:0;z-index:2}.mdc-line-ripple::after{transition:transform 180ms cubic-bezier(0.4, 0, 0.2, 1),opacity 180ms cubic-bezier(0.4, 0, 0.2, 1)}.mdc-line-ripple--active::after{transform:scaleX(1);opacity:1}.mdc-line-ripple--deactivating::after{opacity:0}.mdc-notched-outline{display:flex;position:absolute;top:0;right:0;left:0;box-sizing:border-box;width:100%;max-width:100%;height:100%;text-align:left;pointer-events:none}[dir=rtl] .mdc-notched-outline,.mdc-notched-outline[dir=rtl]{text-align:right}.mdc-notched-outline__leading,.mdc-notched-outline__notch,.mdc-notched-outline__trailing{box-sizing:border-box;height:100%;border-top:1px solid;border-bottom:1px solid;pointer-events:none}.mdc-notched-outline__leading{border-left:1px solid;border-right:none;width:12px}[dir=rtl] .mdc-notched-outline__leading,.mdc-notched-outline__leading[dir=rtl]{border-left:none;border-right:1px solid}.mdc-notched-outline__trailing{border-left:none;border-right:1px solid;flex-grow:1}[dir=rtl] .mdc-notched-outline__trailing,.mdc-notched-outline__trailing[dir=rtl]{border-left:1px solid;border-right:none}.mdc-notched-outline__notch{flex:0 0 auto;width:auto;max-width:calc(100% - 12px * 2)}.mdc-notched-outline .mdc-floating-label{display:inline-block;position:relative;max-width:100%}.mdc-notched-outline .mdc-floating-label--float-above{text-overflow:clip}.mdc-notched-outline--upgraded .mdc-floating-label--float-above{max-width:calc(100% / 0.75)}.mdc-notched-outline--notched .mdc-notched-outline__notch{padding-left:0;padding-right:8px;border-top:none}[dir=rtl] .mdc-notched-outline--notched .mdc-notched-outline__notch,.mdc-notched-outline--notched .mdc-notched-outline__notch[dir=rtl]{padding-left:8px;padding-right:0}.mdc-notched-outline--no-label .mdc-notched-outline__notch{display:none}@keyframes mdc-ripple-fg-radius-in{from{animation-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transform:translate(var(--mdc-ripple-fg-translate-start, 0)) scale(1)}to{transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}}@keyframes mdc-ripple-fg-opacity-in{from{animation-timing-function:linear;opacity:0}to{opacity:var(--mdc-ripple-fg-opacity, 0)}}@keyframes mdc-ripple-fg-opacity-out{from{animation-timing-function:linear;opacity:var(--mdc-ripple-fg-opacity, 0)}to{opacity:0}}.mdc-text-field--filled{--mdc-ripple-fg-size: 0;--mdc-ripple-left: 0;--mdc-ripple-top: 0;--mdc-ripple-fg-scale: 1;--mdc-ripple-fg-translate-end: 0;--mdc-ripple-fg-translate-start: 0;-webkit-tap-highlight-color:rgba(0,0,0,0);will-change:transform,opacity}.mdc-text-field--filled .mdc-text-field__ripple::before,.mdc-text-field--filled .mdc-text-field__ripple::after{position:absolute;border-radius:50%;opacity:0;pointer-events:none;content:""}.mdc-text-field--filled .mdc-text-field__ripple::before{transition:opacity 15ms linear,background-color 15ms linear;z-index:1;z-index:var(--mdc-ripple-z-index, 1)}.mdc-text-field--filled .mdc-text-field__ripple::after{z-index:0;z-index:var(--mdc-ripple-z-index, 0)}.mdc-text-field--filled.mdc-ripple-upgraded .mdc-text-field__ripple::before{transform:scale(var(--mdc-ripple-fg-scale, 1))}.mdc-text-field--filled.mdc-ripple-upgraded .mdc-text-field__ripple::after{top:0;left:0;transform:scale(0);transform-origin:center center}.mdc-text-field--filled.mdc-ripple-upgraded--unbounded .mdc-text-field__ripple::after{top:var(--mdc-ripple-top, 0);left:var(--mdc-ripple-left, 0)}.mdc-text-field--filled.mdc-ripple-upgraded--foreground-activation .mdc-text-field__ripple::after{animation:mdc-ripple-fg-radius-in 225ms forwards,mdc-ripple-fg-opacity-in 75ms forwards}.mdc-text-field--filled.mdc-ripple-upgraded--foreground-deactivation .mdc-text-field__ripple::after{animation:mdc-ripple-fg-opacity-out 150ms;transform:translate(var(--mdc-ripple-fg-translate-end, 0)) scale(var(--mdc-ripple-fg-scale, 1))}.mdc-text-field--filled .mdc-text-field__ripple::before,.mdc-text-field--filled .mdc-text-field__ripple::after{top:calc(50% - 100%);left:calc(50% - 100%);width:200%;height:200%}.mdc-text-field--filled.mdc-ripple-upgraded .mdc-text-field__ripple::after{width:var(--mdc-ripple-fg-size, 100%);height:var(--mdc-ripple-fg-size, 100%)}.mdc-text-field__ripple{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}.mdc-text-field{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:0;border-bottom-left-radius:0;display:inline-flex;align-items:baseline;padding:0 16px;position:relative;box-sizing:border-box;overflow:hidden;will-change:opacity,transform,color}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label{color:rgba(0, 0, 0, 0.6)}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input{color:rgba(0, 0, 0, 0.87)}@media all{.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input::placeholder{color:rgba(0, 0, 0, 0.54)}}@media all{.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input:-ms-input-placeholder{color:rgba(0, 0, 0, 0.54)}}.mdc-text-field .mdc-text-field__input{caret-color:#6200ee;caret-color:var(--mdc-theme-primary, #6200ee)}.mdc-text-field:not(.mdc-text-field--disabled)+.mdc-text-field-helper-line .mdc-text-field-helper-text{color:rgba(0, 0, 0, 0.6)}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field-character-counter,.mdc-text-field:not(.mdc-text-field--disabled)+.mdc-text-field-helper-line .mdc-text-field-character-counter{color:rgba(0, 0, 0, 0.6)}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__icon--leading{color:rgba(0, 0, 0, 0.54)}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__icon--trailing{color:rgba(0, 0, 0, 0.54)}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__affix--prefix{color:rgba(0, 0, 0, 0.6)}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__affix--suffix{color:rgba(0, 0, 0, 0.6)}.mdc-text-field .mdc-floating-label{top:50%;transform:translateY(-50%);pointer-events:none}.mdc-text-field__input{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-subtitle1-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:1rem;font-size:var(--mdc-typography-subtitle1-font-size, 1rem);font-weight:400;font-weight:var(--mdc-typography-subtitle1-font-weight, 400);letter-spacing:0.009375em;letter-spacing:var(--mdc-typography-subtitle1-letter-spacing, 0.009375em);text-decoration:inherit;text-decoration:var(--mdc-typography-subtitle1-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-subtitle1-text-transform, inherit);height:28px;transition:opacity 150ms 0ms cubic-bezier(0.4, 0, 0.2, 1);width:100%;min-width:0;border:none;border-radius:0;background:none;appearance:none;padding:0}.mdc-text-field__input::-ms-clear{display:none}.mdc-text-field__input::-webkit-calendar-picker-indicator{display:none}.mdc-text-field__input:focus{outline:none}.mdc-text-field__input:invalid{box-shadow:none}@media all{.mdc-text-field__input::placeholder{transition:opacity 67ms 0ms cubic-bezier(0.4, 0, 0.2, 1);opacity:0}}@media all{.mdc-text-field__input:-ms-input-placeholder{transition:opacity 67ms 0ms cubic-bezier(0.4, 0, 0.2, 1);opacity:0}}@media all{.mdc-text-field--no-label .mdc-text-field__input::placeholder,.mdc-text-field--focused .mdc-text-field__input::placeholder{transition-delay:40ms;transition-duration:110ms;opacity:1}}@media all{.mdc-text-field--no-label .mdc-text-field__input:-ms-input-placeholder,.mdc-text-field--focused .mdc-text-field__input:-ms-input-placeholder{transition-delay:40ms;transition-duration:110ms;opacity:1}}.mdc-text-field__affix{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-subtitle1-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:1rem;font-size:var(--mdc-typography-subtitle1-font-size, 1rem);font-weight:400;font-weight:var(--mdc-typography-subtitle1-font-weight, 400);letter-spacing:0.009375em;letter-spacing:var(--mdc-typography-subtitle1-letter-spacing, 0.009375em);text-decoration:inherit;text-decoration:var(--mdc-typography-subtitle1-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-subtitle1-text-transform, inherit);height:28px;transition:opacity 150ms 0ms cubic-bezier(0.4, 0, 0.2, 1);opacity:0;white-space:nowrap}.mdc-text-field--label-floating .mdc-text-field__affix,.mdc-text-field--no-label .mdc-text-field__affix{opacity:1}@supports(-webkit-hyphens: none){.mdc-text-field--outlined .mdc-text-field__affix{align-items:center;align-self:center;display:inline-flex;height:100%}}.mdc-text-field__affix--prefix{padding-left:0;padding-right:2px}[dir=rtl] .mdc-text-field__affix--prefix,.mdc-text-field__affix--prefix[dir=rtl]{padding-left:2px;padding-right:0}.mdc-text-field--end-aligned .mdc-text-field__affix--prefix{padding-left:0;padding-right:12px}[dir=rtl] .mdc-text-field--end-aligned .mdc-text-field__affix--prefix,.mdc-text-field--end-aligned .mdc-text-field__affix--prefix[dir=rtl]{padding-left:12px;padding-right:0}.mdc-text-field__affix--suffix{padding-left:12px;padding-right:0}[dir=rtl] .mdc-text-field__affix--suffix,.mdc-text-field__affix--suffix[dir=rtl]{padding-left:0;padding-right:12px}.mdc-text-field--end-aligned .mdc-text-field__affix--suffix{padding-left:2px;padding-right:0}[dir=rtl] .mdc-text-field--end-aligned .mdc-text-field__affix--suffix,.mdc-text-field--end-aligned .mdc-text-field__affix--suffix[dir=rtl]{padding-left:0;padding-right:2px}.mdc-text-field--filled{height:56px}.mdc-text-field--filled .mdc-text-field__ripple::before,.mdc-text-field--filled .mdc-text-field__ripple::after{background-color:rgba(0, 0, 0, 0.87);background-color:var(--mdc-ripple-color, rgba(0, 0, 0, 0.87))}.mdc-text-field--filled:hover .mdc-text-field__ripple::before,.mdc-text-field--filled.mdc-ripple-surface--hover .mdc-text-field__ripple::before{opacity:0.04;opacity:var(--mdc-ripple-hover-opacity, 0.04)}.mdc-text-field--filled.mdc-ripple-upgraded--background-focused .mdc-text-field__ripple::before,.mdc-text-field--filled:not(.mdc-ripple-upgraded):focus .mdc-text-field__ripple::before{transition-duration:75ms;opacity:0.12;opacity:var(--mdc-ripple-focus-opacity, 0.12)}.mdc-text-field--filled::before{display:inline-block;width:0;height:40px;content:"";vertical-align:0}.mdc-text-field--filled:not(.mdc-text-field--disabled){background-color:whitesmoke}.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.42)}.mdc-text-field--filled:not(.mdc-text-field--disabled):hover .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.87)}.mdc-text-field--filled .mdc-line-ripple::after{border-bottom-color:#6200ee;border-bottom-color:var(--mdc-theme-primary, #6200ee)}.mdc-text-field--filled .mdc-floating-label{left:16px;right:initial}[dir=rtl] .mdc-text-field--filled .mdc-floating-label,.mdc-text-field--filled .mdc-floating-label[dir=rtl]{left:initial;right:16px}.mdc-text-field--filled .mdc-floating-label--float-above{transform:translateY(-106%) scale(0.75)}.mdc-text-field--filled.mdc-text-field--no-label .mdc-text-field__input{height:100%}.mdc-text-field--filled.mdc-text-field--no-label .mdc-floating-label{display:none}.mdc-text-field--filled.mdc-text-field--no-label::before{display:none}@supports(-webkit-hyphens: none){.mdc-text-field--filled.mdc-text-field--no-label .mdc-text-field__affix{align-items:center;align-self:center;display:inline-flex;height:100%}}.mdc-text-field--outlined{height:56px;overflow:visible}.mdc-text-field--outlined .mdc-floating-label--float-above{transform:translateY(-37.25px) scale(1)}.mdc-text-field--outlined .mdc-floating-label--float-above{font-size:.75rem}.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above{transform:translateY(-34.75px) scale(0.75)}.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above{font-size:1rem}.mdc-text-field--outlined .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-text-field-outlined 250ms 1}@keyframes mdc-floating-label-shake-float-above-text-field-outlined{0%{transform:translateX(calc(0 - 0%)) translateY(-34.75px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 0%)) translateY(-34.75px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 0%)) translateY(-34.75px) scale(0.75)}100%{transform:translateX(calc(0 - 0%)) translateY(-34.75px) scale(0.75)}}.mdc-text-field--outlined .mdc-text-field__input{height:100%}.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing{border-color:rgba(0, 0, 0, 0.38)}.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__leading,.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__notch,.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__trailing{border-color:rgba(0, 0, 0, 0.87)}.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading,.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch,.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing{border-color:#6200ee;border-color:var(--mdc-theme-primary, #6200ee)}.mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:0;border-bottom-right-radius:0;border-bottom-left-radius:4px;border-bottom-left-radius:var(--mdc-shape-small, 4px)}[dir=rtl] .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,.mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading[dir=rtl]{border-top-left-radius:0;border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:4px;border-bottom-right-radius:var(--mdc-shape-small, 4px);border-bottom-left-radius:0}@supports(top: max(0%)){.mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading{width:max(12px, var(--mdc-shape-small, 4px))}}@supports(top: max(0%)){.mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch{max-width:calc(100% - max(12px, var(--mdc-shape-small, 4px)) * 2)}}.mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing{border-top-left-radius:0;border-top-right-radius:4px;border-top-right-radius:var(--mdc-shape-small, 4px);border-bottom-right-radius:4px;border-bottom-right-radius:var(--mdc-shape-small, 4px);border-bottom-left-radius:0}[dir=rtl] .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing,.mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing[dir=rtl]{border-top-left-radius:4px;border-top-left-radius:var(--mdc-shape-small, 4px);border-top-right-radius:0;border-bottom-right-radius:0;border-bottom-left-radius:4px;border-bottom-left-radius:var(--mdc-shape-small, 4px)}@supports(top: max(0%)){.mdc-text-field--outlined{padding-left:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}@supports(top: max(0%)){.mdc-text-field--outlined{padding-right:max(16px, var(--mdc-shape-small, 4px))}}@supports(top: max(0%)){.mdc-text-field--outlined+.mdc-text-field-helper-line{padding-left:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}@supports(top: max(0%)){.mdc-text-field--outlined+.mdc-text-field-helper-line{padding-right:max(16px, var(--mdc-shape-small, 4px))}}.mdc-text-field--outlined.mdc-text-field--with-leading-icon{padding-left:0}@supports(top: max(0%)){.mdc-text-field--outlined.mdc-text-field--with-leading-icon{padding-right:max(16px, var(--mdc-shape-small, 4px))}}[dir=rtl] .mdc-text-field--outlined.mdc-text-field--with-leading-icon,.mdc-text-field--outlined.mdc-text-field--with-leading-icon[dir=rtl]{padding-right:0}@supports(top: max(0%)){[dir=rtl] .mdc-text-field--outlined.mdc-text-field--with-leading-icon,.mdc-text-field--outlined.mdc-text-field--with-leading-icon[dir=rtl]{padding-left:max(16px, var(--mdc-shape-small, 4px))}}.mdc-text-field--outlined.mdc-text-field--with-trailing-icon{padding-right:0}@supports(top: max(0%)){.mdc-text-field--outlined.mdc-text-field--with-trailing-icon{padding-left:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}[dir=rtl] .mdc-text-field--outlined.mdc-text-field--with-trailing-icon,.mdc-text-field--outlined.mdc-text-field--with-trailing-icon[dir=rtl]{padding-left:0}@supports(top: max(0%)){[dir=rtl] .mdc-text-field--outlined.mdc-text-field--with-trailing-icon,.mdc-text-field--outlined.mdc-text-field--with-trailing-icon[dir=rtl]{padding-right:max(16px, calc(var(--mdc-shape-small, 4px) + 4px))}}.mdc-text-field--outlined.mdc-text-field--with-leading-icon.mdc-text-field--with-trailing-icon{padding-left:0;padding-right:0}.mdc-text-field--outlined .mdc-notched-outline--notched .mdc-notched-outline__notch{padding-top:1px}.mdc-text-field--outlined .mdc-text-field__ripple::before,.mdc-text-field--outlined .mdc-text-field__ripple::after{background-color:transparent;background-color:var(--mdc-ripple-color, transparent)}.mdc-text-field--outlined .mdc-floating-label{left:4px;right:initial}[dir=rtl] .mdc-text-field--outlined .mdc-floating-label,.mdc-text-field--outlined .mdc-floating-label[dir=rtl]{left:initial;right:4px}.mdc-text-field--outlined .mdc-text-field__input{display:flex;border:none !important;background-color:transparent}.mdc-text-field--outlined .mdc-notched-outline{z-index:1}.mdc-text-field--textarea{flex-direction:column;align-items:center;width:auto;height:auto;padding:0;transition:none}.mdc-text-field--textarea .mdc-floating-label{top:19px}.mdc-text-field--textarea .mdc-floating-label:not(.mdc-floating-label--float-above){transform:none}.mdc-text-field--textarea .mdc-text-field__input{flex-grow:1;height:auto;min-height:1.5rem;overflow-x:hidden;overflow-y:auto;box-sizing:border-box;resize:none;padding:0 16px;line-height:1.5rem}.mdc-text-field--textarea.mdc-text-field--filled::before{display:none}.mdc-text-field--textarea.mdc-text-field--filled .mdc-floating-label--float-above{transform:translateY(-10.25px) scale(0.75)}.mdc-text-field--textarea.mdc-text-field--filled .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-textarea-filled 250ms 1}@keyframes mdc-floating-label-shake-float-above-textarea-filled{0%{transform:translateX(calc(0 - 0%)) translateY(-10.25px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 0%)) translateY(-10.25px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 0%)) translateY(-10.25px) scale(0.75)}100%{transform:translateX(calc(0 - 0%)) translateY(-10.25px) scale(0.75)}}.mdc-text-field--textarea.mdc-text-field--filled .mdc-text-field__input{margin-top:23px;margin-bottom:9px}.mdc-text-field--textarea.mdc-text-field--filled.mdc-text-field--no-label .mdc-text-field__input{margin-top:16px;margin-bottom:16px}.mdc-text-field--textarea.mdc-text-field--outlined .mdc-notched-outline--notched .mdc-notched-outline__notch{padding-top:0}.mdc-text-field--textarea.mdc-text-field--outlined .mdc-floating-label--float-above{transform:translateY(-27.25px) scale(1)}.mdc-text-field--textarea.mdc-text-field--outlined .mdc-floating-label--float-above{font-size:.75rem}.mdc-text-field--textarea.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-text-field--textarea.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above{transform:translateY(-24.75px) scale(0.75)}.mdc-text-field--textarea.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-text-field--textarea.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above{font-size:1rem}.mdc-text-field--textarea.mdc-text-field--outlined .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-textarea-outlined 250ms 1}@keyframes mdc-floating-label-shake-float-above-textarea-outlined{0%{transform:translateX(calc(0 - 0%)) translateY(-24.75px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 0%)) translateY(-24.75px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 0%)) translateY(-24.75px) scale(0.75)}100%{transform:translateX(calc(0 - 0%)) translateY(-24.75px) scale(0.75)}}.mdc-text-field--textarea.mdc-text-field--outlined .mdc-text-field__input{margin-top:16px;margin-bottom:16px}.mdc-text-field--textarea.mdc-text-field--outlined .mdc-floating-label{top:18px}.mdc-text-field--textarea.mdc-text-field--with-internal-counter .mdc-text-field__input{margin-bottom:2px}.mdc-text-field--textarea.mdc-text-field--with-internal-counter .mdc-text-field-character-counter{align-self:flex-end;padding:0 16px}.mdc-text-field--textarea.mdc-text-field--with-internal-counter .mdc-text-field-character-counter::after{display:inline-block;width:0;height:16px;content:"";vertical-align:-16px}.mdc-text-field--textarea.mdc-text-field--with-internal-counter .mdc-text-field-character-counter::before{display:none}.mdc-text-field__resizer{align-self:stretch;display:inline-flex;flex-direction:column;flex-grow:1;max-height:100%;max-width:100%;min-height:56px;min-width:fit-content;min-width:-moz-available;min-width:-webkit-fill-available;overflow:hidden;resize:both}.mdc-text-field--filled .mdc-text-field__resizer{transform:translateY(-1px)}.mdc-text-field--filled .mdc-text-field__resizer .mdc-text-field__input,.mdc-text-field--filled .mdc-text-field__resizer .mdc-text-field-character-counter{transform:translateY(1px)}.mdc-text-field--outlined .mdc-text-field__resizer{transform:translateX(-1px) translateY(-1px)}[dir=rtl] .mdc-text-field--outlined .mdc-text-field__resizer,.mdc-text-field--outlined .mdc-text-field__resizer[dir=rtl]{transform:translateX(1px) translateY(-1px)}.mdc-text-field--outlined .mdc-text-field__resizer .mdc-text-field__input,.mdc-text-field--outlined .mdc-text-field__resizer .mdc-text-field-character-counter{transform:translateX(1px) translateY(1px)}[dir=rtl] .mdc-text-field--outlined .mdc-text-field__resizer .mdc-text-field__input,[dir=rtl] .mdc-text-field--outlined .mdc-text-field__resizer .mdc-text-field-character-counter,.mdc-text-field--outlined .mdc-text-field__resizer .mdc-text-field__input[dir=rtl],.mdc-text-field--outlined .mdc-text-field__resizer .mdc-text-field-character-counter[dir=rtl]{transform:translateX(-1px) translateY(1px)}.mdc-text-field--with-leading-icon{padding-left:0;padding-right:16px}[dir=rtl] .mdc-text-field--with-leading-icon,.mdc-text-field--with-leading-icon[dir=rtl]{padding-left:16px;padding-right:0}.mdc-text-field--with-leading-icon.mdc-text-field--filled .mdc-floating-label{max-width:calc(100% - 48px);left:48px;right:initial}[dir=rtl] .mdc-text-field--with-leading-icon.mdc-text-field--filled .mdc-floating-label,.mdc-text-field--with-leading-icon.mdc-text-field--filled .mdc-floating-label[dir=rtl]{left:initial;right:48px}.mdc-text-field--with-leading-icon.mdc-text-field--filled .mdc-floating-label--float-above{max-width:calc(100% / 0.75 - 64px / 0.75)}.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label{left:36px;right:initial}[dir=rtl] .mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label,.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label[dir=rtl]{left:initial;right:36px}.mdc-text-field--with-leading-icon.mdc-text-field--outlined :not(.mdc-notched-outline--notched) .mdc-notched-outline__notch{max-width:calc(100% - 60px)}.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label--float-above{transform:translateY(-37.25px) translateX(-32px) scale(1)}[dir=rtl] .mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label--float-above,.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label--float-above[dir=rtl]{transform:translateY(-37.25px) translateX(32px) scale(1)}.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label--float-above{font-size:.75rem}.mdc-text-field--with-leading-icon.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above{transform:translateY(-34.75px) translateX(-32px) scale(0.75)}[dir=rtl] .mdc-text-field--with-leading-icon.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above,[dir=rtl] .mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-text-field--with-leading-icon.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above[dir=rtl],.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above[dir=rtl]{transform:translateY(-34.75px) translateX(32px) scale(0.75)}.mdc-text-field--with-leading-icon.mdc-text-field--outlined.mdc-notched-outline--upgraded .mdc-floating-label--float-above,.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above{font-size:1rem}.mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-text-field-outlined-leading-icon 250ms 1}@keyframes mdc-floating-label-shake-float-above-text-field-outlined-leading-icon{0%{transform:translateX(calc(0 - 32px)) translateY(-34.75px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - 32px)) translateY(-34.75px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - 32px)) translateY(-34.75px) scale(0.75)}100%{transform:translateX(calc(0 - 32px)) translateY(-34.75px) scale(0.75)}}[dir=rtl] .mdc-text-field--with-leading-icon.mdc-text-field--outlined .mdc-floating-label--shake,.mdc-text-field--with-leading-icon.mdc-text-field--outlined[dir=rtl] .mdc-floating-label--shake{animation:mdc-floating-label-shake-float-above-text-field-outlined-leading-icon 250ms 1}@keyframes mdc-floating-label-shake-float-above-text-field-outlined-leading-icon-rtl{0%{transform:translateX(calc(0 - -32px)) translateY(-34.75px) scale(0.75)}33%{animation-timing-function:cubic-bezier(0.5, 0, 0.701732, 0.495819);transform:translateX(calc(4% - -32px)) translateY(-34.75px) scale(0.75)}66%{animation-timing-function:cubic-bezier(0.302435, 0.381352, 0.55, 0.956352);transform:translateX(calc(-4% - -32px)) translateY(-34.75px) scale(0.75)}100%{transform:translateX(calc(0 - -32px)) translateY(-34.75px) scale(0.75)}}.mdc-text-field--with-trailing-icon{padding-left:16px;padding-right:0}[dir=rtl] .mdc-text-field--with-trailing-icon,.mdc-text-field--with-trailing-icon[dir=rtl]{padding-left:0;padding-right:16px}.mdc-text-field--with-trailing-icon.mdc-text-field--filled .mdc-floating-label{max-width:calc(100% - 64px)}.mdc-text-field--with-trailing-icon.mdc-text-field--filled .mdc-floating-label--float-above{max-width:calc(100% / 0.75 - 64px / 0.75)}.mdc-text-field--with-trailing-icon.mdc-text-field--outlined :not(.mdc-notched-outline--notched) .mdc-notched-outline__notch{max-width:calc(100% - 60px)}.mdc-text-field--with-leading-icon.mdc-text-field--with-trailing-icon{padding-left:0;padding-right:0}.mdc-text-field--with-leading-icon.mdc-text-field--with-trailing-icon.mdc-text-field--filled .mdc-floating-label{max-width:calc(100% - 96px)}.mdc-text-field--with-leading-icon.mdc-text-field--with-trailing-icon.mdc-text-field--filled .mdc-floating-label--float-above{max-width:calc(100% / 0.75 - 96px / 0.75)}.mdc-text-field-helper-line{display:flex;justify-content:space-between;box-sizing:border-box}.mdc-text-field+.mdc-text-field-helper-line{padding-right:16px;padding-left:16px}.mdc-form-field>.mdc-text-field+label{align-self:flex-start}.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label{color:rgba(98, 0, 238, 0.87)}.mdc-text-field--focused .mdc-notched-outline__leading,.mdc-text-field--focused .mdc-notched-outline__notch,.mdc-text-field--focused .mdc-notched-outline__trailing{border-width:2px}.mdc-text-field--focused+.mdc-text-field-helper-line .mdc-text-field-helper-text:not(.mdc-text-field-helper-text--validation-msg){opacity:1}.mdc-text-field--focused.mdc-text-field--outlined .mdc-notched-outline--notched .mdc-notched-outline__notch{padding-top:2px}.mdc-text-field--focused.mdc-text-field--outlined.mdc-text-field--textarea .mdc-notched-outline--notched .mdc-notched-outline__notch{padding-top:0}.mdc-text-field--invalid:not(.mdc-text-field--disabled):hover .mdc-line-ripple::before{border-bottom-color:#b00020;border-bottom-color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-line-ripple::after{border-bottom-color:#b00020;border-bottom-color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label{color:#b00020;color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--invalid+.mdc-text-field-helper-line .mdc-text-field-helper-text--validation-msg{color:#b00020;color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid .mdc-text-field__input{caret-color:#b00020;caret-color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-text-field__icon--trailing{color:#b00020;color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-line-ripple::before{border-bottom-color:#b00020;border-bottom-color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing{border-color:#b00020;border-color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__leading,.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__notch,.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline .mdc-notched-outline__trailing{border-color:#b00020;border-color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading,.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch,.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing{border-color:#b00020;border-color:var(--mdc-theme-error, #b00020)}.mdc-text-field--invalid+.mdc-text-field-helper-line .mdc-text-field-helper-text--validation-msg{opacity:1}.mdc-text-field--disabled{pointer-events:none}.mdc-text-field--disabled .mdc-text-field__input{color:rgba(0, 0, 0, 0.38)}@media all{.mdc-text-field--disabled .mdc-text-field__input::placeholder{color:rgba(0, 0, 0, 0.38)}}@media all{.mdc-text-field--disabled .mdc-text-field__input:-ms-input-placeholder{color:rgba(0, 0, 0, 0.38)}}.mdc-text-field--disabled .mdc-floating-label{color:rgba(0, 0, 0, 0.38)}.mdc-text-field--disabled+.mdc-text-field-helper-line .mdc-text-field-helper-text{color:rgba(0, 0, 0, 0.38)}.mdc-text-field--disabled .mdc-text-field-character-counter,.mdc-text-field--disabled+.mdc-text-field-helper-line .mdc-text-field-character-counter{color:rgba(0, 0, 0, 0.38)}.mdc-text-field--disabled .mdc-text-field__icon--leading{color:rgba(0, 0, 0, 0.3)}.mdc-text-field--disabled .mdc-text-field__icon--trailing{color:rgba(0, 0, 0, 0.3)}.mdc-text-field--disabled .mdc-text-field__affix--prefix{color:rgba(0, 0, 0, 0.38)}.mdc-text-field--disabled .mdc-text-field__affix--suffix{color:rgba(0, 0, 0, 0.38)}.mdc-text-field--disabled .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.06)}.mdc-text-field--disabled .mdc-notched-outline__leading,.mdc-text-field--disabled .mdc-notched-outline__notch,.mdc-text-field--disabled .mdc-notched-outline__trailing{border-color:rgba(0, 0, 0, 0.06)}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-text-field__input::placeholder{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-text-field__input:-ms-input-placeholder{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-floating-label{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled+.mdc-text-field-helper-line .mdc-text-field-helper-text{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-text-field-character-counter,.mdc-text-field--disabled+.mdc-text-field-helper-line .mdc-text-field-character-counter{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-text-field__icon--leading{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-text-field__icon--trailing{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-text-field__affix--prefix{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-text-field__affix--suffix{color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-line-ripple::before{border-bottom-color:GrayText}}@media screen and (forced-colors: active),(-ms-high-contrast: active){.mdc-text-field--disabled .mdc-notched-outline__leading,.mdc-text-field--disabled .mdc-notched-outline__notch,.mdc-text-field--disabled .mdc-notched-outline__trailing{border-color:GrayText}}@media screen and (forced-colors: active){.mdc-text-field--disabled .mdc-text-field__input{background-color:Window}.mdc-text-field--disabled .mdc-floating-label{z-index:1}}.mdc-text-field--disabled .mdc-floating-label{cursor:default}.mdc-text-field--disabled.mdc-text-field--filled{background-color:#fafafa}.mdc-text-field--disabled.mdc-text-field--filled .mdc-text-field__ripple{display:none}.mdc-text-field--disabled .mdc-text-field__input{pointer-events:auto}.mdc-text-field--end-aligned .mdc-text-field__input{text-align:right}[dir=rtl] .mdc-text-field--end-aligned .mdc-text-field__input,.mdc-text-field--end-aligned .mdc-text-field__input[dir=rtl]{text-align:left}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__input,[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__affix,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__input,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__affix{direction:ltr}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__affix--prefix,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__affix--prefix{padding-left:0;padding-right:2px}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__affix--suffix,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__affix--suffix{padding-left:12px;padding-right:0}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__icon--leading,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__icon--leading{order:1}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__affix--suffix,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__affix--suffix{order:2}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__input,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__input{order:3}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__affix--prefix,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__affix--prefix{order:4}[dir=rtl] .mdc-text-field--ltr-text .mdc-text-field__icon--trailing,.mdc-text-field--ltr-text[dir=rtl] .mdc-text-field__icon--trailing{order:5}[dir=rtl] .mdc-text-field--ltr-text.mdc-text-field--end-aligned .mdc-text-field__input,.mdc-text-field--ltr-text.mdc-text-field--end-aligned[dir=rtl] .mdc-text-field__input{text-align:right}[dir=rtl] .mdc-text-field--ltr-text.mdc-text-field--end-aligned .mdc-text-field__affix--prefix,.mdc-text-field--ltr-text.mdc-text-field--end-aligned[dir=rtl] .mdc-text-field__affix--prefix{padding-right:12px}[dir=rtl] .mdc-text-field--ltr-text.mdc-text-field--end-aligned .mdc-text-field__affix--suffix,.mdc-text-field--ltr-text.mdc-text-field--end-aligned[dir=rtl] .mdc-text-field__affix--suffix{padding-left:2px}.mdc-text-field-helper-text{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-caption-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.75rem;font-size:var(--mdc-typography-caption-font-size, 0.75rem);line-height:1.25rem;line-height:var(--mdc-typography-caption-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-caption-font-weight, 400);letter-spacing:0.0333333333em;letter-spacing:var(--mdc-typography-caption-letter-spacing, 0.0333333333em);text-decoration:inherit;text-decoration:var(--mdc-typography-caption-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-caption-text-transform, inherit);display:block;margin-top:0;line-height:normal;margin:0;opacity:0;will-change:opacity;transition:opacity 150ms 0ms cubic-bezier(0.4, 0, 0.2, 1)}.mdc-text-field-helper-text::before{display:inline-block;width:0;height:16px;content:"";vertical-align:0}.mdc-text-field-helper-text--persistent{transition:none;opacity:1;will-change:initial}.mdc-text-field-character-counter{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:Roboto, sans-serif;font-family:var(--mdc-typography-caption-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));font-size:0.75rem;font-size:var(--mdc-typography-caption-font-size, 0.75rem);line-height:1.25rem;line-height:var(--mdc-typography-caption-line-height, 1.25rem);font-weight:400;font-weight:var(--mdc-typography-caption-font-weight, 400);letter-spacing:0.0333333333em;letter-spacing:var(--mdc-typography-caption-letter-spacing, 0.0333333333em);text-decoration:inherit;text-decoration:var(--mdc-typography-caption-text-decoration, inherit);text-transform:inherit;text-transform:var(--mdc-typography-caption-text-transform, inherit);display:block;margin-top:0;line-height:normal;margin-left:auto;margin-right:0;padding-left:16px;padding-right:0;white-space:nowrap}.mdc-text-field-character-counter::before{display:inline-block;width:0;height:16px;content:"";vertical-align:0}[dir=rtl] .mdc-text-field-character-counter,.mdc-text-field-character-counter[dir=rtl]{margin-left:0;margin-right:auto}[dir=rtl] .mdc-text-field-character-counter,.mdc-text-field-character-counter[dir=rtl]{padding-left:0;padding-right:16px}.mdc-text-field__icon{align-self:center;cursor:pointer}.mdc-text-field__icon:not([tabindex]),.mdc-text-field__icon[tabindex="-1"]{cursor:default;pointer-events:none}.mdc-text-field__icon svg{display:block}.mdc-text-field__icon--leading{margin-left:16px;margin-right:8px}[dir=rtl] .mdc-text-field__icon--leading,.mdc-text-field__icon--leading[dir=rtl]{margin-left:8px;margin-right:16px}.mdc-text-field__icon--trailing{padding:12px;margin-left:0px;margin-right:0px}[dir=rtl] .mdc-text-field__icon--trailing,.mdc-text-field__icon--trailing[dir=rtl]{margin-left:0px;margin-right:0px}.material-icons{font-family:var(--mdc-icon-font, "Material Icons");font-weight:normal;font-style:normal;font-size:var(--mdc-icon-size, 24px);line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-moz-osx-font-smoothing:grayscale;font-feature-settings:"liga"}:host{display:inline-flex;flex-direction:column;outline:none}.mdc-text-field{width:100%}.mdc-text-field:not(.mdc-text-field--disabled) .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.42);border-bottom-color:var(--mdc-text-field-idle-line-color, rgba(0, 0, 0, 0.42))}.mdc-text-field:not(.mdc-text-field--disabled):hover .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.87);border-bottom-color:var(--mdc-text-field-hover-line-color, rgba(0, 0, 0, 0.87))}.mdc-text-field.mdc-text-field--disabled .mdc-line-ripple::before{border-bottom-color:rgba(0, 0, 0, 0.06);border-bottom-color:var(--mdc-text-field-disabled-line-color, rgba(0, 0, 0, 0.06))}.mdc-text-field.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-line-ripple::before{border-bottom-color:#b00020;border-bottom-color:var(--mdc-theme-error, #b00020)}.mdc-text-field__input{direction:inherit}mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-text-field-outlined-idle-border-color, rgba(0, 0, 0, 0.38) )}:host(:not([disabled]):hover) :not(.mdc-text-field--invalid):not(.mdc-text-field--focused) mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-text-field-outlined-hover-border-color, rgba(0, 0, 0, 0.87) )}:host(:not([disabled])) .mdc-text-field:not(.mdc-text-field--outlined){background-color:var(--mdc-text-field-fill-color, whitesmoke)}:host(:not([disabled])) .mdc-text-field.mdc-text-field--invalid mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-text-field-error-color, var(--mdc-theme-error, #b00020) )}:host(:not([disabled])) .mdc-text-field.mdc-text-field--invalid+.mdc-text-field-helper-line .mdc-text-field-character-counter,:host(:not([disabled])) .mdc-text-field.mdc-text-field--invalid .mdc-text-field__icon{color:var(--mdc-text-field-error-color, var(--mdc-theme-error, #b00020))}:host(:not([disabled])) .mdc-text-field:not(.mdc-text-field--invalid):not(.mdc-text-field--focused) .mdc-floating-label,:host(:not([disabled])) .mdc-text-field:not(.mdc-text-field--invalid):not(.mdc-text-field--focused) .mdc-floating-label::after{color:var(--mdc-text-field-label-ink-color, rgba(0, 0, 0, 0.6))}:host(:not([disabled])) .mdc-text-field.mdc-text-field--focused mwc-notched-outline{--mdc-notched-outline-stroke-width: 2px}:host(:not([disabled])) .mdc-text-field.mdc-text-field--focused:not(.mdc-text-field--invalid) mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-text-field-focused-label-color, var(--mdc-theme-primary, rgba(98, 0, 238, 0.87)) )}:host(:not([disabled])) .mdc-text-field.mdc-text-field--focused:not(.mdc-text-field--invalid) .mdc-floating-label{color:#6200ee;color:var(--mdc-theme-primary, #6200ee)}:host(:not([disabled])) .mdc-text-field .mdc-text-field__input{color:var(--mdc-text-field-ink-color, rgba(0, 0, 0, 0.87))}:host(:not([disabled])) .mdc-text-field .mdc-text-field__input::placeholder{color:var(--mdc-text-field-label-ink-color, rgba(0, 0, 0, 0.6))}:host(:not([disabled])) .mdc-text-field-helper-line .mdc-text-field-helper-text:not(.mdc-text-field-helper-text--validation-msg),:host(:not([disabled])) .mdc-text-field-helper-line:not(.mdc-text-field--invalid) .mdc-text-field-character-counter{color:var(--mdc-text-field-label-ink-color, rgba(0, 0, 0, 0.6))}:host([disabled]) .mdc-text-field:not(.mdc-text-field--outlined){background-color:var(--mdc-text-field-disabled-fill-color, #fafafa)}:host([disabled]) .mdc-text-field.mdc-text-field--outlined mwc-notched-outline{--mdc-notched-outline-border-color: var( --mdc-text-field-outlined-disabled-border-color, rgba(0, 0, 0, 0.06) )}:host([disabled]) .mdc-text-field:not(.mdc-text-field--invalid):not(.mdc-text-field--focused) .mdc-floating-label,:host([disabled]) .mdc-text-field:not(.mdc-text-field--invalid):not(.mdc-text-field--focused) .mdc-floating-label::after{color:var(--mdc-text-field-disabled-ink-color, rgba(0, 0, 0, 0.38))}:host([disabled]) .mdc-text-field .mdc-text-field__input,:host([disabled]) .mdc-text-field .mdc-text-field__input::placeholder{color:var(--mdc-text-field-disabled-ink-color, rgba(0, 0, 0, 0.38))}:host([disabled]) .mdc-text-field-helper-line .mdc-text-field-helper-text,:host([disabled]) .mdc-text-field-helper-line .mdc-text-field-character-counter{color:var(--mdc-text-field-disabled-ink-color, rgba(0, 0, 0, 0.38))}`,A_={"mwc-textfield":class extends x_{static get styles(){return w_}},"mwc-notched-outline":class extends dg{static get styles(){return gg}}};let $_=class extends(function(e){return class extends e{createRenderRoot(){const e=this.constructor,{registry:t,elementDefinitions:i,shadowRootOptions:n}=e;i&&!t&&(e.registry=new CustomElementRegistry,Object.entries(i).forEach(([t,i])=>e.registry.define(t,i)));const o=this.renderOptions.creationScope=this.attachShadow({...n,customElements:e.registry});return Na(o,this.constructor.elementStyles),o}}}(bt)){constructor(){super(...arguments),this._initialized=!1}setConfig(e){this._config=e,this.loadCardHelpers()}shouldUpdate(){return this._initialized||this._initialize(),!0}get _name(){var e;return(null===(e=this._config)||void 0===e?void 0:e.name)||""}get _entity(){var e;return(null===(e=this._config)||void 0===e?void 0:e.entity)||""}get _numSegments(){var e,t,i,n;return null!==(n=null!==(t=null===(e=this._config)||void 0===e?void 0:e.num_segments)&&void 0!==t?t:null===(i=this._config)||void 0===i?void 0:i.num_hours)&&void 0!==n?n:"12"}get _icons(){var e,t;return null!==(t=null===(e=this._config)||void 0===e?void 0:e.icons)&&void 0!==t&&t}get _show_wind(){var e;const t=null===(e=this._config)||void 0===e?void 0:e.show_wind;return"boolean"==typeof t?t?"true":"false":null!=t?t:"false"}get _show_precipitation_amounts(){var e,t;return null!==(t=null===(e=this._config)||void 0===e?void 0:e.show_precipitation_amounts)&&void 0!==t&&t}get _show_precipitation_probability(){var e,t;return null!==(t=null===(e=this._config)||void 0===e?void 0:e.show_precipitation_probability)&&void 0!==t&&t}get _offset(){var e,t;return null!==(t=null===(e=this._config)||void 0===e?void 0:e.offset)&&void 0!==t?t:"0"}get _labelSpacing(){var e,t;return null!==(t=null===(e=this._config)||void 0===e?void 0:e.label_spacing)&&void 0!==t?t:"2"}get _show_date(){var e,t;return null!==(t=null===(e=this._config)||void 0===e?void 0:e.show_date)&&void 0!==t?t:"false"}render(){var e,t,i;if(!this.hass||!this._helpers)return Me``;const n=Object.keys(this.hass.states).filter(e=>e.startsWith("weather.")),o=Oo(null===(e=this._config)||void 0===e?void 0:e.language,null===(i=null===(t=this.hass)||void 0===t?void 0:t.locale)||void 0===i?void 0:i.language);return Me`
-      <mwc-select
-        naturalMenuWidth
-        fixedMenuPosition
-        label=${o("editor.entity")}
-        .configValue=${"entity"}
-        .value=${this._entity}
-        @selected=${this._valueChanged}
-        @closed=${e=>e.stopPropagation()}
-      >
-        ${n.map(e=>Me`<mwc-list-item .value=${e}>${e}</mwc-list-item>`)}
-      </mwc-select>
-      <mwc-textfield
-      label=${o("editor.name")}
-        .value=${this._name}
-        .configValue=${"name"}
-        @input=${this._valueChanged}
-      ></mwc-textfield>
-      <mwc-textfield
-      label=${o("editor.segments_to_show")}
-        .value=${this._numSegments}
-        .configValue=${"num_segments"}
-        @input=${this._valueChanged}
-        .type=${"number"}
-        .min=${1}
-        .step=${1}
-        .pattern=${"[1-9][0-9]*"}
-        .autoValidate=${!0}
-        validationMessage=${o("errors.must_be_positive_int")}
-      ></mwc-textfield>
-      <mwc-textfield
-      label=${o("editor.offset")}
-        .value=${this._offset}
-        .configValue=${"offset"}
-        @input=${this._valueChanged}
-        .type=${"number"}
-        .min=${0}
-        .autoValidate=${!0}
-        validationMessage=${o("errors.must_be_positive_int")}
-      ></mwc-textfield>
-      <mwc-textfield
-      label=${o("editor.label_spacing")}
-        .value=${this._labelSpacing}
-        .configValue=${"label_spacing"}
-        @input=${this._valueChanged}
-        .type=${"number"}
-        .min=${1}
-        .step=${1}
-        .pattern=${"[1-9][0-9]*"}
-        .autoValidate=${!0}
-        validationMessage=${o("errors.must_be_positive_int")}
-      ></mwc-textfield>
-      <mwc-formfield .label=${o("editor.icons")}>
-        <mwc-switch
-          .checked=${!0===this._icons}
-          .configValue=${"icons"}
-          @change=${this._valueChanged}
-        ></mwc-switch>
-      </mwc-formfield>
-      <mwc-select
-        naturalMenuWidth
-        fixedMenuPosition
-        label=${o("editor.show_wind")}
-        .configValue=${"show_wind"}
-        .value=${this._show_wind}
-        @selected=${this._valueChanged}
-        @closed=${e=>e.stopPropagation()}
-      >
-        <mwc-list-item></mwc-list-item>
-        <mwc-list-item value="false">${o("editor.none")}</mwc-list-item>
-        <mwc-list-item value="true">${o("editor.speed_and_direction")}</mwc-list-item>
-        <mwc-list-item value="speed">${o("editor.speed_only")}</mwc-list-item>
-        <mwc-list-item value="direction">${o("editor.direction_only")}</mwc-list-item>
-        <mwc-list-item value="barb">${o("editor.barb")}</mwc-list-item>
-        <mwc-list-item value="barb-and-speed">${o("editor.barb_and_speed")}</mwc-list-item>
-        <mwc-list-item value="barb-and-direction">${o("editor.barb_and_direction")}</mwc-list-item>
-        <mwc-list-item value="barb-speed-and-direction">${o("editor.barb_speed_and_direction")}</mwc-list-item>
-      </mwc-select>
-      <mwc-select
-        naturalMenuWidth
-        fixedMenuPosition
-        label=${o("editor.show_date")}
-        .configValue=${"show_date"}
-        .value=${this._show_date}
-        @selected=${this._valueChanged}
-        @closed=${e=>e.stopPropagation()}
-      >
-        <mwc-list-item></mwc-list-item>
-        <mwc-list-item value="false">${o("editor.none")}</mwc-list-item>
-        <mwc-list-item value="all">${o("editor.all")}</mwc-list-item>
-        <mwc-list-item value="boundary">${o("editor.on_day_boundaries")}</mwc-list-item>
-      </mwc-select>
-      <mwc-formfield .label=${o("editor.show_precipitation_amounts")}>
-        <mwc-switch
-          .checked=${!0===this._show_precipitation_amounts}
-          .configValue=${"show_precipitation_amounts"}
-          @change=${this._valueChanged}
-        ></mwc-switch>
-      </mwc-formfield>
-      <mwc-formfield .label=${o("editor.show_precipitation_probability")}>
-        <mwc-switch
-          .checked=${!0===this._show_precipitation_probability}
-          .configValue=${"show_precipitation_probability"}
-          @change=${this._valueChanged}
-        ></mwc-switch>
-      </mwc-formfield>
-    `}_initialize(){void 0!==this.hass&&void 0!==this._config&&void 0!==this._helpers&&(this._initialized=!0)}async loadCardHelpers(){this._helpers=await window.loadCardHelpers()}_valueChanged(e){if(!this._config||!this.hass)return;const t=e.target;if(this[`_${t.configValue}`]!==t.value){if(t.configValue)if(""===t.value){const e=Object.assign({},this._config);delete e[t.configValue],this._config=e}else this._config=Object.assign(Object.assign({},this._config),{[t.configValue]:void 0!==t.checked?t.checked:t.value});if("num_hours"in this._config&&"num_segments"in this._config){const e=Object.assign({},this._config);delete e.num_hours,this._config=e}f(this,"config-changed",{config:this._config})}}};$_.elementDefinitions=Object.assign(Object.assign(Object.assign(Object.assign({},A_),vg),pv),Kd),$_.styles=tt`
+  `], Q([G({ type: Array })], $.prototype, "conditions", void 0), Q([G({ type: Array })], $.prototype, "temperatures", void 0), Q([G({ type: Array })], $.prototype, "wind", void 0), Q([G({ type: Array })], $.prototype, "precipitation", void 0), Q([G({ type: Boolean })], $.prototype, "icons", void 0), Q([G({ type: Object })], $.prototype, "icon_map", void 0), Q([G({ attribute: !1 })], $.prototype, "colors", void 0), Q([G({ type: Boolean })], $.prototype, "hide_hours", void 0), Q([G({ type: Boolean })], $.prototype, "hide_temperatures", void 0), Q([G({ type: Boolean })], $.prototype, "hide_bar", void 0), Q([G({ type: String })], $.prototype, "icon_fill", void 0), Q([G({ type: String })], $.prototype, "show_wind", void 0), Q([G({ type: Boolean })], $.prototype, "show_precipitation_amounts", void 0), Q([G({ type: Boolean })], $.prototype, "show_precipitation_probability", void 0), Q([G({ type: String })], $.prototype, "show_date", void 0), Q([G({ type: Number })], $.prototype, "label_spacing", void 0), Q([G({ type: Object })], $.prototype, "labels", void 0);
+//#endregion
+//#region node_modules/@lit/reactive-element/css-tag.js
+var Nl, Pl, Fl, Il = t((() => {
+	Nl = window, Pl = Nl.ShadowRoot && (Nl.ShadyCSS === void 0 || Nl.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Fl = (e, t) => {
+		Pl ? e.adoptedStyleSheets = t.map(((e) => e instanceof CSSStyleSheet ? e : e.styleSheet)) : t.forEach(((t) => {
+			let n = document.createElement("style"), r = Nl.litNonce;
+			r !== void 0 && n.setAttribute("nonce", r), n.textContent = t.cssText, e.appendChild(n);
+		}));
+	};
+}));
+//#endregion
+//#region node_modules/@lit-labs/scoped-registry-mixin/scoped-registry-mixin.js
+function Ll(e) {
+	return class extends e {
+		createRenderRoot() {
+			let e = this.constructor, { registry: t, elementDefinitions: n, shadowRootOptions: r } = e;
+			n && !t && (e.registry = new CustomElementRegistry(), Object.entries(n).forEach((([t, n]) => e.registry.define(t, n))));
+			let i = this.renderOptions.creationScope = this.attachShadow({
+				...r,
+				customElements: e.registry
+			});
+			return Fl(i, this.constructor.elementStyles), i;
+		}
+	};
+}
+var Rl = t((() => {
+	Il();
+})), zl = /* @__PURE__ */ r({ HourlyWeatherCardEditor: () => Vl }), Bl, Vl, Hl = t((() => {
+	zt(), O(), Rl(), $t(), Al(), Vl = (Bl = class extends Ll(Ft) {
+		constructor(...e) {
+			super(...e), this._initialized = !1;
+		}
+		async setConfig(e) {
+			this._config = e, await this.loadCardHelpers(), this.requestUpdate();
+		}
+		shouldUpdate() {
+			return this._initialized || this._initialize(), !0;
+		}
+		get _name() {
+			return this._config?.name || "";
+		}
+		get _entity() {
+			return this._config?.entity || "";
+		}
+		get _numSegments() {
+			return this._config?.num_segments ?? this._config?.num_hours ?? "12";
+		}
+		get _icons() {
+			return this._config?.icons ?? !1;
+		}
+		get _show_wind() {
+			let e = this._config?.show_wind;
+			return typeof e == "boolean" ? e ? "true" : "false" : e ?? "false";
+		}
+		get _show_precipitation_amounts() {
+			return this._config?.show_precipitation_amounts ?? !1;
+		}
+		get _show_precipitation_probability() {
+			return this._config?.show_precipitation_probability ?? !1;
+		}
+		get _offset() {
+			return this._config?.offset ?? "0";
+		}
+		get _labelSpacing() {
+			return this._config?.label_spacing ?? "2";
+		}
+		get _show_date() {
+			return this._config?.show_date ?? "false";
+		}
+		getSchema(e) {
+			return [
+				{
+					name: "entity",
+					selector: { entity: { domain: "weather" } }
+				},
+				{
+					name: "name",
+					selector: { text: {} }
+				},
+				{
+					name: "num_segments",
+					selector: { number: {
+						min: 1,
+						step: 1,
+						mode: "box"
+					} }
+				},
+				{
+					name: "offset",
+					selector: { number: {
+						min: 0,
+						step: 1,
+						mode: "box"
+					} }
+				},
+				{
+					name: "label_spacing",
+					selector: { number: {
+						min: 1,
+						step: 1,
+						mode: "box"
+					} }
+				},
+				{
+					name: "icons",
+					selector: { boolean: {} }
+				},
+				{
+					name: "show_wind",
+					selector: { select: {
+						mode: "dropdown",
+						options: [
+							{
+								value: "false",
+								label: e("editor.none")
+							},
+							{
+								value: "true",
+								label: e("editor.speed_and_direction")
+							},
+							{
+								value: "speed",
+								label: e("editor.speed_only")
+							},
+							{
+								value: "direction",
+								label: e("editor.direction_only")
+							},
+							{
+								value: "barb",
+								label: e("editor.barb")
+							},
+							{
+								value: "barb-and-speed",
+								label: e("editor.barb_and_speed")
+							},
+							{
+								value: "barb-and-direction",
+								label: e("editor.barb_and_direction")
+							},
+							{
+								value: "barb-speed-and-direction",
+								label: e("editor.barb_speed_and_direction")
+							}
+						]
+					} }
+				},
+				{
+					name: "show_date",
+					selector: { select: {
+						mode: "dropdown",
+						options: [
+							{
+								value: "false",
+								label: e("editor.none")
+							},
+							{
+								value: "all",
+								label: e("editor.all")
+							},
+							{
+								value: "boundary",
+								label: e("editor.on_day_boundaries")
+							}
+						]
+					} }
+				},
+				{
+					name: "show_precipitation_amounts",
+					selector: { boolean: {} }
+				},
+				{
+					name: "show_precipitation_probability",
+					selector: { boolean: {} }
+				}
+			];
+		}
+		render() {
+			if (!this.hass || !this._helpers) return V``;
+			let e = Ja(this._config?.language, this.hass?.locale?.language), t = this.getSchema(e);
+			return V`
+      <ha-form
+        .hass=${this.hass}
+        .data=${this._config}
+        .schema=${t}
+        .computeLabel=${(t) => ({
+				entity: e("editor.entity"),
+				name: e("editor.name"),
+				num_segments: e("editor.segments_to_show"),
+				offset: e("editor.offset"),
+				label_spacing: e("editor.label_spacing"),
+				icons: e("editor.icons"),
+				show_wind: e("editor.show_wind"),
+				show_date: e("editor.show_date"),
+				show_precipitation_amounts: e("editor.show_precipitation_amounts"),
+				show_precipitation_probability: e("editor.show_precipitation_probability")
+			})[t.name] || t.name}
+        @value-changed=${this._valueChanged}
+      ></ha-form>
+    `;
+		}
+		_initialize() {
+			this.hass !== void 0 && this._config !== void 0 && this._helpers !== void 0 && (this._initialized = !0);
+		}
+		async loadCardHelpers() {
+			this._helpers && customElements.get("ha-form") || (this._helpers = await window.loadCardHelpers(), this._helpers.createCardElement({
+				type: "entities",
+				entities: []
+			}), await customElements.whenDefined("ha-form"));
+		}
+		_valueChanged(e) {
+			if (!this._config || !this.hass) return;
+			let t = { ...e.detail.value };
+			Object.keys(t).forEach((e) => {
+				(t[e] === "" || t[e] === void 0) && delete t[e];
+			}), "num_hours" in t && "num_segments" in t && delete t.num_hours, this._config = t, b(this, "config-changed", { config: this._config });
+		}
+	}, Bl.styles = pt`
     mwc-select,
     mwc-textfield {
       margin-bottom: 16px;
@@ -1509,4 +5292,325 @@ const w_=Ma`.mdc-floating-label{-moz-osx-font-smoothing:grayscale;-webkit-font-s
     mwc-switch {
       --mdc-theme-secondary: var(--switch-checked-color);
     }
-  `,n([$t({attribute:!1})],$_.prototype,"hass",void 0),n([Et()],$_.prototype,"_config",void 0),n([Et()],$_.prototype,"_helpers",void 0),$_=n([xt("hourly-weather-editor")],$_);var E_=Object.freeze({__proto__:null,get HourlyWeatherCardEditor(){return $_}});export{Ca as HourlyWeatherCard};
+  `, Bl), Q([G({ attribute: !1 })], Vl.prototype, "hass", void 0), Q([Gt()], Vl.prototype, "_config", void 0), Q([Gt()], Vl.prototype, "_helpers", void 0), Vl = Q([Bt("hourly-weather-editor")], Vl);
+}));
+O(), zt(), $t(), Xa(), Al();
+var Ul;
+customElements.define("weather-bar", $);
+var Wl = Ja(void 0, void 0);
+console.info(`%c  HOURLY-WEATHER-CARD \n%c  ${Wl("common.version")} ${bn}    `, "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray"), window.customCards = window.customCards || [], window.customCards.push({
+	type: "hourly-weather",
+	name: Wl("common.title_card"),
+	description: Wl("common.description")
+});
+var Gl = Ul = class extends Ft {
+	constructor(...e) {
+		super(...e), this.configRenderPending = !1, this.localizer = void 0, this.localizerLastSettings = {
+			configuredLanguage: void 0,
+			haServerLanguage: void 0
+		}, this._labels = En, this.labelsLocalized = !1, this._directions = Object.keys(On), this.directionsLocalized = !1;
+	}
+	static async getConfigElement() {
+		return await Promise.resolve().then(() => (Hl(), zl)), document.createElement("hourly-weather-editor");
+	}
+	static getStubConfig() {
+		return {};
+	}
+	localize(e, t = "", n = "") {
+		return (!this.localizer || this.localizerSettingsChanged) && (this.localizer = Ja(this.config?.language, this.hass?.locale?.language), this.localizerLastSettings.configuredLanguage = this.config?.language, this.localizerLastSettings.haServerLanguage = this.hass?.locale?.language, this.labelsLocalized = !1, this.directionsLocalized = !1), this.localizer(e, t, n);
+	}
+	get localizerSettingsChanged() {
+		return this.localizerLastSettings.configuredLanguage !== this.config?.language || this.localizerLastSettings.haServerLanguage !== this.hass?.locale?.language;
+	}
+	get labels() {
+		return (!this.labelsLocalized || this.localizerSettingsChanged) && (this._labels = Object.fromEntries(Object.entries(En).map(([e, t]) => [e, this.localize(t)])), this.labelsLocalized = !0), this._labels;
+	}
+	get directions() {
+		return (!this.directionsLocalized || this.localizerSettingsChanged) && (this._directions = Object.values(On).map((e) => this.localize(e)), this._directions.push(this._directions[0]), this.directionsLocalized = !0), this._directions;
+	}
+	unsubscribeForecastEvents() {
+		this.subscribedToForecast && (this.subscribedToForecast.then((e) => e()), this.subscribedToForecast = void 0);
+	}
+	async subscribeToForecastEvents() {
+		if (this.unsubscribeForecastEvents(), !this.isConnected || !this.hass || !this.config || !this.config.entity || !this.hassSupportsForecastEvents() || !this.config.entity.startsWith("weather.")) return;
+		let e = this.getIdealForecastType();
+		this.subscribedToForecast = this.hass.connection.subscribeMessage((e) => this.forecastEvent = e, {
+			type: "weather/subscribe_forecast",
+			forecast_type: e,
+			entity_id: this.config.entity
+		});
+	}
+	getIdealForecastType() {
+		if (this.config?.forecast_type) return this.config.forecast_type;
+		if (!this.config?.entity) return "hourly";
+		let e = this.hass.states[this.config.entity];
+		if (!e) return "hourly";
+		let t = e.attributes.supported_features;
+		return !t || t & 2 ? "hourly" : t & 4 ? "twice_daily" : "daily";
+	}
+	setConfig(e) {
+		if (!e) throw Error(this.localize("common.invalid_configuration"));
+		if (!e.entity) throw Error(this.localize("errors.missing_entity"));
+		if (e.label_spacing) {
+			let t = parseInt(e.label_spacing, 10);
+			if (!Number.isNaN(t) && t < 1) throw Error(this.localize("errors.must_be_positive_int"));
+		}
+		e.test_gui && D().setEditMode(!0), this.config = {
+			name: this.localize("common.title"),
+			...e
+		}, this.triggerConfigRender();
+	}
+	triggerConfigRender() {
+		if (!this.hass?.connection) {
+			this.configRenderPending = !0;
+			return;
+		}
+		this.renderedConfig = this.renderConfig();
+	}
+	async renderConfig() {
+		let { config: e } = this;
+		return e && {
+			...e,
+			num_segments: await this.renderTemplate(e?.num_segments),
+			offset: await this.renderTemplate(e?.offset),
+			label_spacing: await this.renderTemplate(e?.label_spacing),
+			name: await this.renderTemplate(e?.name)
+		};
+	}
+	async renderTemplate(e) {
+		return !e || typeof e != "string" || !e.includes("{{") ? e : new Promise((t) => {
+			this.hass.connection.subscribeMessage((e) => t(e.result), {
+				type: "render_template",
+				template: e
+			});
+		});
+	}
+	connectedCallback() {
+		super.connectedCallback(), this.hasUpdated && this.subscribeToForecastEvents();
+	}
+	disconnectedCallback() {
+		super.disconnectedCallback(), this.unsubscribeForecastEvents();
+	}
+	shouldUpdate(e) {
+		if (!this.config) return !1;
+		if (e.has("hass")) {
+			let t = e.get("hass");
+			if (t && this.hass && JSON.stringify(t.locale) !== JSON.stringify(this.hass.locale)) return !0;
+		}
+		return s(this, e, !1);
+	}
+	updated(e) {
+		super.updated(e), this.hass?.connection && this.configRenderPending && (this.configRenderPending = !1, this.triggerConfigRender()), (!this.subscribedToForecast || e.has("config") && this.config?.entity !== e.get("config")?.entity) && this.subscribeToForecastEvents();
+	}
+	getForecast() {
+		let e = !this.forecastEvent?.forecast && this.hassSupportsForecastEvents();
+		return {
+			forecast: this.forecastEvent?.forecast ?? this.hass?.states[this.config.entity]?.attributes.forecast,
+			pending: e
+		};
+	}
+	hassSupportsForecastEvents() {
+		return !!this.hass?.services?.weather?.get_forecasts || !!this.hass?.services?.weather?.get_forecast;
+	}
+	render() {
+		return V`${yn(this.renderCore(), V``)}`;
+	}
+	async renderCore() {
+		let e = await this.renderedConfig;
+		if (!e) return;
+		let t = e.entity, n = this.hass.states[t], { forecast: r, pending: i } = this.getForecast(), a = n.attributes.wind_speed_unit ?? "", s = n.attributes.precipitation_unit ?? "", c = parseInt(e.num_segments ?? e.num_hours ?? "12", 10), l = parseInt(e.offset ?? "0", 10), u = parseInt(e.label_spacing ?? "2", 10), d = !r || !r.length, f = e.icon_fill, p = !!e.hide_minutes, m = !!e.round_temperatures;
+		if (c < 1) return await this._showError(this.localize("errors.offset_must_be_positive_int", "offset", "num_segments"));
+		if (l < 0) return await this._showError(this.localize("errors.offset_must_be_positive_int"));
+		if (!d && c > r.length - l) return i ? void 0 : await this._showError(this.localize("errors.too_many_segments_requested"));
+		if (u < 1) return await this._showError(this.localize("errors.offset_must_be_positive_int", "offset", "label_spacing"));
+		if (f) {
+			let t = e.icon_fill === "full", n = e.icon_fill === "single", r = Number(e.icon_fill);
+			if (!t && !n && !(Number.isInteger(r) && r > 0)) return await this._showError(this.localize("errors.invalid_value_icon_fill"));
+		}
+		let h = e.show_wind;
+		if (typeof h == "boolean" && (h = h ? "true" : "false"), d) return i ? void 0 : V`
+        <ha-card
+          .header=${e.name}
+          @action=${this._handleAction}
+          .actionHandler=${Tn({
+			hasHold: o(e.hold_action),
+			hasDoubleClick: o(e.double_tap_action)
+		})}
+          tabindex="0"
+          .label=${`Hourly Weather: ${e.entity || "No Entity Defined"}`}
+        >
+          <div class="card-content">
+            <h3>${this.localize("errors.forecast_not_available")}</h3>
+            <p>${this.localize("errors.check_entity")}</p>
+          </div>
+        </ha-card>`;
+		let g = this.getConditionListFromForecast(r, c, l), _ = this.getTemperatures(r, c, l, p, m), v = this.getWind(r, c, l, a, p), y = this.getPrecipitation(r, c, l, s, p), b = this.getColorSettings(e.colors);
+		return V`
+      <ha-card
+        .header=${e.name}
+        @action=${this._handleAction}
+        .actionHandler=${Tn({
+			hasHold: o(e.hold_action),
+			hasDoubleClick: o(e.double_tap_action)
+		})}
+        tabindex="0"
+        .label=${`Hourly Weather: ${e.entity || "No Entity Defined"}`}
+      >
+        <div class="card-content">
+          ${b.warnings.length ? this._showWarning(this.localize("errors.invalid_colors") + " " + b.warnings.join(", ")) : ""}
+          <!-- @ts-ignore -->
+          <weather-bar
+            .conditions=${g}
+            .temperatures=${_}
+            .wind=${v}
+            .precipitation=${y}
+            .icons=${!!e.icons}
+            .icon_map=${e.icon_map}
+            .colors=${b.validColors}
+            .hide_hours=${!!e.hide_hours}
+            .hide_temperatures=${!!e.hide_temperatures}
+            .hide_bar=${!!e.hide_bar}
+            .icon_fill=${e.icon_fill}
+            .show_wind=${h}
+            .show_precipitation_amounts=${!!e.show_precipitation_amounts}
+            .show_precipitation_probability=${!!e.show_precipitation_probability}
+            .show_date=${e.show_date}
+            .label_spacing=${u}
+            .labels=${this.labels}></weather-bar>
+        </div>
+      </ha-card>
+    `;
+	}
+	getConditionListFromForecast(e, t, n) {
+		let r = e[n].condition, i = 0, a = [[r, 1]];
+		for (let o = n + 1; o < t + n; o++) {
+			let t = e[o].condition;
+			t === r ? a[i][1]++ : (a.push([t, 1]), i++, r = t);
+		}
+		return a;
+	}
+	getTemperatures(e, t, n, r, i) {
+		let a = [];
+		for (let o = n; o < t + n; o++) {
+			let t = e[o], n = new Date(t.datetime), s = i && !Number.isNaN(t.temperature) ? Math.round(t.temperature) : t.temperature;
+			a.push({
+				date: u(n, this.hass.locale),
+				hour: this.formatHour(n, this.hass.locale, r),
+				temperature: _(s, this.hass.locale)
+			});
+		}
+		return a;
+	}
+	getPrecipitation(e, t, n, r, i) {
+		let a = [];
+		for (let o = n; o < t + n; o++) {
+			let t = e[o], n = "";
+			t.precipitation > 0 && (n = `${_(t.precipitation, this.hass.locale)} ${r}`.trim());
+			let s = "", c = "";
+			t.precipitation_probability > 0 && (s = `${_(t.precipitation_probability, this.hass.locale)}%`.trim(), c = this.localize("card.chance_of_precipitation", "{0}", String(t.precipitation_probability))), a.push({
+				hour: this.formatHour(new Date(t.datetime), this.hass.locale, i),
+				precipitationAmount: n,
+				precipitationProbability: s,
+				precipitationProbabilityText: c
+			});
+		}
+		return a;
+	}
+	getWind(e, t, n, r, i) {
+		let a = [];
+		for (let o = n; o < t + n; o++) {
+			let t = e[o], n = "-", s = "";
+			t.wind_speed > 0 && (n = `${Math.round(t.wind_speed)} ${r}`.trim(), s = this.formatWindDir(t.wind_bearing)), a.push({
+				hour: this.formatHour(new Date(t.datetime), this.hass.locale, i),
+				windSpeed: n,
+				windSpeedRawMS: this.getWindSpeedMS(t.wind_speed, r),
+				windDirection: s,
+				windDirectionRaw: t.wind_bearing
+			});
+		}
+		return a;
+	}
+	formatWindDir(e) {
+		if (typeof e == "string") {
+			let t = e.toLowerCase();
+			return t in On ? this.localize(On[t]) : e;
+		}
+		return this.directions[Math.floor((e + 11.25) / 22.5)];
+	}
+	getWindSpeedMS(e, t) {
+		switch (t) {
+			case "m/s": return e;
+			case "mph": return e * .44704;
+			case "km/h": return e * .27777777777778;
+			case "ft/s": return e * .3048;
+			case "kt":
+			case "kn": return e * .51444444444444;
+		}
+		return -1;
+	}
+	formatHour(e, t, n) {
+		let r = p(e, t);
+		return n || r.includes("AM") || r.includes("PM") ? r.replace(":00", "") : r;
+	}
+	getColorSettings(e) {
+		if (!e) return {
+			validColors: void 0,
+			warnings: []
+		};
+		let t = /* @__PURE__ */ new Map(), n = [];
+		return Object.entries(e).forEach(([e, r]) => {
+			this.isValidColorDefinition(e, r) ? t.set(e, Ul.toColorObject(r)) : n.push(`${e}: ${JSON.stringify(r, null, 2)}`);
+		}), {
+			validColors: t,
+			warnings: n
+		};
+	}
+	isValidColorDefinition(e, t) {
+		if (!(e in Dn)) return !1;
+		if (typeof t == "string") {
+			if (!Ul.isValidColor(t)) return !1;
+		} else if (!t.background && !t.foreground || t.background && !Ul.isValidColor(t.background) || t.foreground && !Ul.isValidColor(t.foreground)) return !1;
+		return !0;
+	}
+	static isValidColor(e) {
+		return !!((0, en.isValidRGB)(e) || (0, en.isValidColorName)(e) || (0, en.isValidHSL)(e) || Ul.isValidColorVar(e));
+	}
+	static isValidCustomPropertyName(e) {
+		if (typeof e != "string" || !e.startsWith("--")) return !1;
+		let t = e.slice(2);
+		return t.length === 0 || /^-[0-9]/.test(t) || /^[0-9]/.test(t) ? !1 : /^[A-Za-z0-9_-]+$/.test(t);
+	}
+	static isValidColorVar(e) {
+		if (typeof e != "string") return !1;
+		let t = e.trim();
+		if (!t.startsWith("var(") || !t.endsWith(")")) return !1;
+		let [n, r] = t.slice(4, -1).trim().split(","), i = n.trim();
+		if (!Ul.isValidCustomPropertyName(i)) return !1;
+		let a = r?.trim();
+		return !(a && !Ul.isValidColor(a));
+	}
+	static toColorObject(e) {
+		return typeof e == "string" ? { background: e } : e;
+	}
+	_handleAction(e) {
+		this.hass && this.config && e.detail.action && E(this, this.hass, this.config, e.detail.action);
+	}
+	_showWarning(e) {
+		return V` <hui-warning>${e}</hui-warning> `;
+	}
+	async _showError(e) {
+		await new Promise((e) => setTimeout(e, 0));
+		let t = document.createElement("hui-error-card");
+		return t.setConfig({
+			type: "error",
+			error: e,
+			origConfig: this.config
+		}), V` ${t} `;
+	}
+	static get styles() {
+		return pt``;
+	}
+};
+Q([G({ attribute: !1 })], Gl.prototype, "hass", void 0), Q([Gt()], Gl.prototype, "config", void 0), Q([Gt()], Gl.prototype, "renderedConfig", void 0), Q([Gt()], Gl.prototype, "forecastEvent", void 0), Q([Gt()], Gl.prototype, "subscribedToForecast", void 0), Gl = Ul = Q([Bt("hourly-weather")], Gl);
+//#endregion
+export { Gl as HourlyWeatherCard };
