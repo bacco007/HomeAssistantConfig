@@ -5,6 +5,10 @@
     "@AlexandrErohin"
   ],
   "config_flow": true,
+  "dependencies": [
+    "frontend",
+    "http"
+  ],
   "documentation": "https://github.com/AlexandrErohin/home-assistant-flightradar24",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/AlexandrErohin/home-assistant-flightradar24/issues",
@@ -12,5 +16,5 @@
     "FlightRadarAPI==1.5.1",
     "pycountry==24.6.1"
   ],
-  "version": "v1.34.4"
+  "version": "v2.0.0"
 }
