@@ -1,4 +1,4 @@
-/* Waterfall History Card v4.9.0 */
+/* Waterfall History Card v2026.8.3 */
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -907,13 +907,13 @@ WaterfallHistoryCard.styles = i$3 `
     }
 
     .card-header {
-      font-size: var(--header-font-size, 11px);
-      font-weight: 600;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
+      font-size: var(--waterfall-header-font-size, var(--header-font-size, 11px));
+      font-weight: var(--waterfall-header-font-weight, 600);
+      letter-spacing: var(--waterfall-header-letter-spacing, 0.10em);
+      text-transform: var(--waterfall-header-text-transform, uppercase);
       padding-bottom: 10px;
       margin-bottom: 2px;
-      color: var(--secondary-text-color, #727272);
+      color: var(--waterfall-header-color, var(--secondary-text-color, #727272));
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -950,20 +950,20 @@ WaterfallHistoryCard.styles = i$3 `
     }
 
     .entity-name {
-      font-size: var(--entity-name-font-size, 11px);
-      font-weight: 500;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--primary-text-color);
+      font-size: var(--waterfall-entity-name-font-size, var(--entity-name-font-size, 11px));
+      font-weight: var(--waterfall-entity-name-font-weight, 500);
+      letter-spacing: var(--waterfall-entity-name-letter-spacing, 0.07em);
+      text-transform: var(--waterfall-entity-name-text-transform, uppercase);
+      color: var(--waterfall-entity-name-color, var(--primary-text-color));
     }
 
     .current-value {
       margin-left: auto;
-      font-size: var(--entity-name-font-size, 11px);
-      font-weight: 500;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--primary-text-color);
+      font-size: var(--waterfall-value-font-size, var(--waterfall-entity-name-font-size, var(--entity-name-font-size, 11px)));
+      font-weight: var(--waterfall-value-font-weight, var(--waterfall-entity-name-font-weight, 500));
+      letter-spacing: var(--waterfall-value-letter-spacing, var(--waterfall-entity-name-letter-spacing, 0.07em));
+      text-transform: var(--waterfall-value-text-transform, var(--waterfall-entity-name-text-transform, uppercase));
+      color: var(--waterfall-value-color, var(--waterfall-entity-name-color, var(--primary-text-color)));
       font-variant-numeric: tabular-nums lining-nums;
       font-feature-settings: 'tnum' 1;
     }
@@ -991,18 +991,18 @@ WaterfallHistoryCard.styles = i$3 `
     .labels {
       display: flex;
       justify-content: space-between;
-      font-size: 9.5px;
-      letter-spacing: 0.04em;
-      color: var(--primary-text-color);
+      font-size: var(--waterfall-labels-font-size, 9.5px);
+      letter-spacing: var(--waterfall-labels-letter-spacing, 0.04em);
+      color: var(--waterfall-labels-color, var(--primary-text-color));
       margin-top: var(--labels-margin-top, 5px);
     }
 
     .min-max-label {
       display: block;
       width: 100%;
-      font-size: 10px;
-      letter-spacing: 0.03em;
-      color: var(--primary-text-color);
+      font-size: var(--waterfall-min-max-font-size, 10px);
+      letter-spacing: var(--waterfall-min-max-letter-spacing, 0.03em);
+      color: var(--waterfall-min-max-color, var(--primary-text-color));
       text-align: center;
     }
 
@@ -1012,11 +1012,11 @@ WaterfallHistoryCard.styles = i$3 `
 
     /* Compact mode overrides */
     :host(.compact) .card-header {
-      font-size: 10px;
+      font-size: var(--waterfall-header-font-size, 10px);
     }
 
     :host(.compact) .entity-name {
-      font-size: 10px;
+      font-size: var(--waterfall-entity-name-font-size, 10px);
     }
 
     :host(.compact) .labels {
@@ -1060,8 +1060,8 @@ WaterfallHistoryCard.styles = i$3 `
     }
 
     .entity-inline-container .entity-name {
-      font-size: var(--entity-name-font-size, 11px);
-      font-weight: 500;
+      font-size: var(--waterfall-entity-name-font-size, var(--entity-name-font-size, 11px));
+      font-weight: var(--waterfall-entity-name-font-weight, 500);
       white-space: nowrap;
       line-height: var(--waterfall-height, 60px);
     }
@@ -1082,11 +1082,11 @@ WaterfallHistoryCard.styles = i$3 `
     .entity-inline-container .entity-inline-value {
       flex-shrink: 0;
       text-align: right;
-      font-size: var(--entity-name-font-size, 11px);
-      font-weight: 500;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--primary-text-color);
+      font-size: var(--waterfall-value-font-size, var(--waterfall-entity-name-font-size, var(--entity-name-font-size, 11px)));
+      font-weight: var(--waterfall-value-font-weight, var(--waterfall-entity-name-font-weight, 500));
+      letter-spacing: var(--waterfall-value-letter-spacing, var(--waterfall-entity-name-letter-spacing, 0.07em));
+      text-transform: var(--waterfall-value-text-transform, var(--waterfall-entity-name-text-transform, uppercase));
+      color: var(--waterfall-value-color, var(--waterfall-entity-name-color, var(--primary-text-color)));
       font-variant-numeric: tabular-nums lining-nums;
       font-feature-settings: 'tnum' 1;
       white-space: nowrap;
@@ -1108,7 +1108,7 @@ WaterfallHistoryCard.styles = i$3 `
     }
 
     :host(.compact) .entity-inline-container .entity-name {
-      font-size: 10px;
+      font-size: var(--waterfall-entity-name-font-size, 10px);
     }
 
   `;
@@ -1133,7 +1133,7 @@ window.customCards.push({
     description: 'A horizontal waterfall display for historical sensor data with visual editor',
     preview: true,
 });
-console.info(`%c WATERFALL-HISTORY-CARD %c 2026.7.25 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
+console.info(`%c WATERFALL-HISTORY-CARD %c 2026.8.3 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
 
 var NumberFormat;
 (function (NumberFormat) {
