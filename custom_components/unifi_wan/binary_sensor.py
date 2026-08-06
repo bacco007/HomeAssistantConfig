@@ -48,24 +48,28 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     for desc in BINARY_SENSORS:
         entities.append(UniFiGenericBinary(device, entry_id, device_info, desc))
 
-    for wan_number in wan_numbers:
-        # The controller's last_wan_interfaces "alive" flag can stay stale for a
-        # WAN whose cable is unplugged, so a WAN with no physical link is never
-        # treated as having internet regardless of the reported alive state.
-        internet = UniFiBinaryEntityDescription(
-            key=f"wan{wan_number}_internet",
-            name=f"UniFi WAN{wan_number} Internet",
-            device_class=BinarySensorDeviceClass.CONNECTIVITY,
-            value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")) and d.wan_alive.get(wn, bool(d.wan.get(wn, {}).get("ip"))),
-        )
-        entities.append(UniFiGenericBinary(device, entry_id, device_info, internet))
-        link = UniFiBinaryEntityDescription(
-            key=f"wan{wan_number}_link",
-            name=f"UniFi WAN{wan_number} Link",
-            device_class=BinarySensorDeviceClass.CONNECTIVITY,
-            value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")),
-        )
-        entities.append(UniFiGenericBinary(device, entry_id, device_info, link))
+    # Per-WAN binary sensors are only created on a multi-WAN gateway; with a
+    # single WAN they restate the gateway-wide Internet / Active WAN Up
+    # sensors above.
+    if len(wan_numbers) > 1:
+        for wan_number in wan_numbers:
+            # The controller's last_wan_interfaces "alive" flag can stay stale for a
+            # WAN whose cable is unplugged, so a WAN with no physical link is never
+            # treated as having internet regardless of the reported alive state.
+            internet = UniFiBinaryEntityDescription(
+                key=f"wan{wan_number}_internet",
+                name=f"UniFi WAN{wan_number} Internet",
+                device_class=BinarySensorDeviceClass.CONNECTIVITY,
+                value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")) and d.wan_alive.get(wn, bool(d.wan.get(wn, {}).get("ip"))),
+            )
+            entities.append(UniFiGenericBinary(device, entry_id, device_info, internet))
+            link = UniFiBinaryEntityDescription(
+                key=f"wan{wan_number}_link",
+                name=f"UniFi WAN{wan_number} Link",
+                device_class=BinarySensorDeviceClass.CONNECTIVITY,
+                value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")),
+            )
+            entities.append(UniFiGenericBinary(device, entry_id, device_info, link))
 
     entities.append(UniFiSpeedtestInProgress(runtime, entry_id, device_info))
     async_add_entities(entities)

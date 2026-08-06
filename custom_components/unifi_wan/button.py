@@ -19,10 +19,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
     entities = [RunSpeedtestButton(runtime, entry_id, device_info)]
 
-    for wan_number in wan_numbers:
-        entities.append(
-            RunSpeedtestWanButton(runtime, entry_id, device_info, wan_number)
-        )
+    # With a single WAN the gateway-wide button already tests that WAN, so a
+    # per-WAN button would just be a second control doing the same thing.
+    if len(wan_numbers) > 1:
+        for wan_number in wan_numbers:
+            entities.append(
+                RunSpeedtestWanButton(runtime, entry_id, device_info, wan_number)
+            )
 
     async_add_entities(entities)
 
