@@ -1,0 +1,28 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Synology NAS",
+        "description": "Enter your Synology NAS connection details.",
+        "data": {
+          "host": "Host / IP Address",
+          "port": "Port",
+          "username": "Username",
+          "password": "Password",
+          "use_ssl": "Use SSL (HTTPS)",
+          "verify_ssl": "Verify SSL Certificate",
+          "dsm_version": "DSM Version",
+          "scan_interval": "Poll Interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the NAS. Check IP, port, and network.",
+      "invalid_auth": "Invalid username or password.",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This NAS is already configured."
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "synology_pro",
+  "name": "Synology Pro",
+  "codeowners": ["@N4S4"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/N4S4/homeassistant-synology-pro",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/N4S4/homeassistant-synology-pro/issues",
+  "requirements": ["synology-api>=0.7.0"],
+  "version": "0.1.0"
+}

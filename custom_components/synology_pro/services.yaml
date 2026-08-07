@@ -1,0 +1,65 @@
+create_snapshot:
+  name: Create Snapshot
+  description: Create a snapshot of a shared folder on the Synology NAS.
+  fields:
+    share:
+      name: Shared Folder
+      description: Name of the shared folder to snapshot.
+      required: true
+      example: "photos"
+      selector:
+        text:
+    description:
+      name: Description
+      description: Optional description for the snapshot.
+      required: false
+      example: "Pre-update backup"
+      selector:
+        text:
+
+delete_snapshot:
+  name: Delete Snapshot
+  description: Delete a snapshot of a shared folder.
+  fields:
+    share:
+      name: Shared Folder
+      description: Name of the shared folder.
+      required: true
+      example: "photos"
+      selector:
+        text:
+    snapshot_name:
+      name: Snapshot Name
+      description: Name of the snapshot to delete.
+      required: true
+      example: "GMT+01-2025-01-15-10-30-00"
+      selector:
+        text:
+
+restart_container:
+  name: Restart Container
+  description: Restart a Docker container on the Synology NAS.
+  fields:
+    container_id:
+      name: Container ID
+      description: ID or name of the Docker container to restart.
+      required: true
+      example: "plex"
+      selector:
+        text:
+
+update_container:
+  name: Update Container
+  description: Pull the latest image and recreate a Docker container.
+  fields:
+    container_id:
+      name: Container ID
+      description: ID or name of the Docker container to update.
+      required: true
+      example: "plex"
+      selector:
+        text:
+
+run_security_scan:
+  name: Run Security Scan
+  description: Trigger a Security Advisor scan on the Synology NAS.
