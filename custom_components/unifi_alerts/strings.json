@@ -1,0 +1,300 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to UniFi Controller",
+        "description": "Enter your UniFi Network controller address and an API key.\n\nGenerate an API key in the UniFi OS web UI; the exact location varies by firmware version. Common paths: **Settings > Admins & Users > API Keys** or **Integrations > New API Key**. See the integration README on GitHub for device-specific instructions.\n\nSSL verification is enabled by default. Disable it only if your controller uses a self-signed certificate.",
+        "data": {
+          "controller_url": "Controller URL (e.g. https://192.168.1.1)",
+          "api_key": "API Key",
+          "verify_ssl": "Verify SSL certificate"
+        },
+        "data_description": {
+          "verify_ssl": "Disable only if the controller uses a self-signed certificate. Disabling verification exposes the connection to man-in-the-middle attacks on the local network."
+        }
+      },
+      "categories": {
+        "title": "Configure Alert Categories",
+        "description": "Choose which alert types to monitor. Each enabled category gets its own sensors and a dedicated webhook URL (shown in the next step).\n\nWarning: **Network: Client connect/disconnect** and **Network: Device offline/online** fire very frequently on active home networks. Leave these OFF unless you specifically need them.\n\n**Polling interval**: how often to fetch open-alarm counts from the controller as a backup to webhooks (lower = more accurate, higher = less load).\n**Auto-clear timeout**: minutes before an active sensor automatically resets to OFF if no further alert arrives.",
+        "data": {
+          "cat_network_device": "Network: Device offline/online",
+          "min_severity_network_device": "Network: Device offline/online - Minimum severity",
+          "cat_network_wan": "Network: WAN offline/latency",
+          "min_severity_network_wan": "Network: WAN offline/latency - Minimum severity",
+          "cat_network_client": "Network: Client connect/disconnect",
+          "min_severity_network_client": "Network: Client connect/disconnect - Minimum severity",
+          "cat_security_threat": "Security: Threat / IDS detected",
+          "min_severity_security_threat": "Security: Threat / IDS detected - Minimum severity",
+          "cat_security_honeypot": "Security: Honeypot triggered",
+          "min_severity_security_honeypot": "Security: Honeypot triggered - Minimum severity",
+          "cat_security_firewall": "Security: Firewall block",
+          "min_severity_security_firewall": "Security: Firewall block - Minimum severity",
+          "cat_power": "Power: PoE / power loss",
+          "min_severity_power": "Power: PoE / power loss - Minimum severity",
+          "poll_interval": "Polling interval (seconds)",
+          "clear_timeout": "Auto-clear timeout (minutes)",
+          "site": "UniFi site name (leave as \"default\" for single-site setups)"
+        }
+      },
+      "finish": {
+        "title": "Webhook URLs",
+        "description": "**Header key:** `Authorization`\n\n**Header value:** `Bearer {webhook_secret}`\n\nAdd this custom header in each alarm's Advanced Settings in UniFi Alarm Manager first; it is the preferred authentication method. Then copy each webhook URL below into UniFi Network > Settings > Notifications > Alarm Manager **before** clicking Submit. If your Alarm Manager version has no custom-header option, append `?token={webhook_secret}` to the URL instead; this legacy method still works but is deprecated. You can retrieve these URLs and the secret later via Settings > Devices & Services > UniFi Alerts > Configure. See docs/ALARM_MANAGER_SETUP.md for a full walkthrough.",
+        "data": {
+          "webhook_url_network_device": "Network: Device offline/online webhook URL",
+          "webhook_url_network_wan": "Network: WAN offline/latency webhook URL",
+          "webhook_url_network_client": "Network: Client connect/disconnect webhook URL",
+          "webhook_url_security_threat": "Security: Threat / IDS detected webhook URL",
+          "webhook_url_security_honeypot": "Security: Honeypot triggered webhook URL",
+          "webhook_url_security_firewall": "Security: Firewall block webhook URL",
+          "webhook_url_power": "Power: PoE / power loss webhook URL"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate UniFi Alerts",
+        "description": "Enter a UniFi API key for **{name}** to restore the connection.\n\nGenerate an API key in the UniFi OS web UI (the exact path varies by firmware): **Settings > Admins & Users > API Keys**, **Integrations > New API Key**, or **Settings > Control Plane > API Keys**. See the integration README on GitHub for device-specific instructions.",
+        "data": {
+          "api_key": "API Key"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure UniFi Alerts",
+        "description": "Update the controller URL, API key, or SSL verification for this entry. Leave the URL and API key fields blank to keep their current values.\n\nCurrent controller: {current_url}\n\nAlert categories, polling, and webhook secret rotation are managed separately via Settings > Devices & Services > UniFi Alerts > Configure.",
+        "data": {
+          "controller_url": "New Controller URL (leave blank to keep current)",
+          "api_key": "New API Key (leave blank to keep current)",
+          "verify_ssl": "Verify SSL certificate"
+        },
+        "data_description": {
+          "verify_ssl": "Disable only if the controller uses a self-signed certificate. Disabling verification exposes the connection to man-in-the-middle attacks on the local network."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot reach the controller. Check the URL, port, and SSL settings. See Home Assistant logs for details.",
+      "invalid_auth": "Invalid API key. Check the key and that it has not been revoked on the controller.",
+      "invalid_ssl_cert": "SSL certificate verification failed. If this controller uses a self-signed certificate, untick \"Verify SSL certificate\" and try again.",
+      "invalid_url_scheme": "Controller URL must start with http:// or https://.",
+      "at_least_one_category": "Please enable at least one alert category.",
+      "invalid_site": "Site not found on the controller. Check the site name (the URL slug, not the display name). The default single-site name is 'default'."
+    },
+    "abort": {
+      "already_configured": "This UniFi controller is already configured.",
+      "reauth_successful": "Re-authentication was successful. The integration has been reloaded.",
+      "reconfigure_successful": "Reconfiguration was successful. The integration has been reloaded.",
+      "cannot_connect": "Could not determine the controller address from the discovery information. Set up the controller manually instead."
+    }
+  },
+  "issues": {
+    "auth_failed": {
+      "title": "UniFi Alerts: authentication failed for {name}",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Re-authenticate UniFi Alerts",
+            "description": "The API key for **{name}** is no longer valid (for example it was revoked or regenerated on the controller). Enter a new API key to restore the connection."
+          }
+        }
+      }
+    },
+    "apikey_migration_required": {
+      "title": "UniFi Alerts: API key required for {name} after upgrade",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Re-authenticate UniFi Alerts",
+            "description": "Username and password authentication has been removed. **{name}** was set up with a username and password, so an API key is now required to keep it working.\n\nGenerate an API key in the UniFi OS web UI (the exact path varies by firmware): **Settings > Admins & Users > API Keys**, **Integrations > New API Key**, or **Settings > Control Plane > API Keys**. Then enter it to restore the connection. Your existing sensors, history, and Alarm Manager webhook URLs are preserved."
+          }
+        }
+      }
+    },
+    "watermark_persist_failed": {
+      "title": "UniFi Alerts: could not save cleared-alert state",
+      "description": "Home Assistant could not write the UniFi Alerts watermark to storage, so cleared alerts may reappear and Open Count may jump back to its previous value after a restart. This usually means the disk is full or there is a storage I/O error. Check available disk space and the Home Assistant logs. This message clears automatically once a save succeeds."
+    },
+    "webhook_secret_rotated": {
+      "title": "UniFi Alerts: webhook URLs have changed for {name}",
+      "description": "The webhook secret was rotated. All previously configured URLs in UniFi Alarm Manager are now invalid.\n\nUpdate each category URL in UniFi Network: **Settings > Notifications > Alarm Manager**. The new URLs are shown in **Settings > Devices and Services > UniFi Alerts > Configure**.\n\nThis notice clears automatically when the first webhook is received after the update."
+    },
+    "webhook_urls_changed": {
+      "title": "UniFi Alerts: webhook URLs have changed for {name} — action required",
+      "description": "**Action required after upgrade.**\n\nThe integration was upgraded from a version that did not assign a unique suffix to webhook URLs. The webhook URLs for **{name}** have changed and the old URLs in UniFi Alarm Manager will no longer work.\n\nRe-paste all category webhook URLs: open **Settings > Devices and Services > UniFi Alerts > Configure** to see the new URLs, then update each one in **UniFi Network > Settings > Notifications > Alarm Manager**.\n\nWebhook event delivery will not resume until this is done."
+    },
+    "webhook_legacy_query_auth": {
+      "title": "UniFi Alerts: {name} is still using the legacy webhook token",
+      "description": "A webhook for **{name}** authenticated using the legacy `?token=` query parameter rather than the `Authorization: Bearer` header. The query-parameter method still works but is deprecated and will be removed no earlier than v3.0.0.\n\nTo migrate: open **Settings > Devices and Services > UniFi Alerts > Configure** to see each category's URL and bearer secret, then in UniFi Network's **Settings > Notifications > Alarm Manager**, add the secret as an `Authorization: Bearer` header on each alarm's webhook action and drop the `?token=` query string from the URL.\n\nThis notice clears automatically once a header-authenticated webhook is received."
+    }
+  },
+  "exceptions": {
+    "unknown_entry_id": {
+      "message": "No UniFi Alerts config entry found with entry_id \"{entry_id}\"."
+    },
+    "entry_not_loaded": {
+      "message": "The UniFi Alerts config entry \"{entry_id}\" is not currently loaded."
+    },
+    "setup_auth_failed": {
+      "message": "Invalid credentials for UniFi controller: {error}"
+    },
+    "setup_cannot_connect": {
+      "message": "Could not connect to UniFi controller: {error}"
+    },
+    "poll_auth_failed": {
+      "message": "UniFi controller rejected the API key: {error}"
+    },
+    "poll_cannot_connect": {
+      "message": "Cannot reach UniFi controller: {error}"
+    }
+  },
+  "services": {
+    "clear_category": {
+      "name": "Clear category",
+      "description": "Manually clear the alert state for a specific category on one or all UniFi Alerts entries.",
+      "fields": {
+        "category": {
+          "name": "Category",
+          "description": "The alert category to clear."
+        },
+        "entry_id": {
+          "name": "Entry ID",
+          "description": "Optional config entry ID. Leave blank to clear across all entries."
+        }
+      }
+    },
+    "clear_all": {
+      "name": "Clear all",
+      "description": "Manually clear the alert state for every active category on one or all UniFi Alerts entries.",
+      "fields": {
+        "entry_id": {
+          "name": "Entry ID",
+          "description": "Optional config entry ID. Leave blank to clear across all entries."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "network_device": {"name": "Network: Device offline/online"},
+      "network_wan": {"name": "Network: WAN offline/latency"},
+      "network_client": {"name": "Network: Client connect/disconnect"},
+      "security_threat": {"name": "Security: Threat / IDS detected"},
+      "security_honeypot": {"name": "Security: Honeypot triggered"},
+      "security_firewall": {"name": "Security: Firewall block"},
+      "power": {"name": "Power: PoE / power loss"},
+      "any_alert": {"name": "Any Alert"}
+    },
+    "sensor": {
+      "last_message_network_device": {"name": "Network: Device offline/online: Last Message"},
+      "last_message_network_wan": {"name": "Network: WAN offline/latency: Last Message"},
+      "last_message_network_client": {"name": "Network: Client connect/disconnect: Last Message"},
+      "last_message_security_threat": {"name": "Security: Threat / IDS detected: Last Message"},
+      "last_message_security_honeypot": {"name": "Security: Honeypot triggered: Last Message"},
+      "last_message_security_firewall": {"name": "Security: Firewall block: Last Message"},
+      "last_message_power": {"name": "Power: PoE / power loss: Last Message"},
+      "open_count_network_device": {"name": "Network: Device offline/online: Open Count"},
+      "open_count_network_wan": {"name": "Network: WAN offline/latency: Open Count"},
+      "open_count_network_client": {"name": "Network: Client connect/disconnect: Open Count"},
+      "open_count_security_threat": {"name": "Security: Threat / IDS detected: Open Count"},
+      "open_count_security_honeypot": {"name": "Security: Honeypot triggered: Open Count"},
+      "open_count_security_firewall": {"name": "Security: Firewall block: Open Count"},
+      "open_count_power": {"name": "Power: PoE / power loss: Open Count"},
+      "webhook_health_network_device": {"name": "Network: Device offline/online: Webhook Health", "state": {"never_received": "Never received", "healthy": "Healthy", "stale": "Stale"}},
+      "webhook_health_network_wan": {"name": "Network: WAN offline/latency: Webhook Health", "state": {"never_received": "Never received", "healthy": "Healthy", "stale": "Stale"}},
+      "webhook_health_network_client": {"name": "Network: Client connect/disconnect: Webhook Health", "state": {"never_received": "Never received", "healthy": "Healthy", "stale": "Stale"}},
+      "webhook_health_security_threat": {"name": "Security: Threat / IDS detected: Webhook Health", "state": {"never_received": "Never received", "healthy": "Healthy", "stale": "Stale"}},
+      "webhook_health_security_honeypot": {"name": "Security: Honeypot triggered: Webhook Health", "state": {"never_received": "Never received", "healthy": "Healthy", "stale": "Stale"}},
+      "webhook_health_security_firewall": {"name": "Security: Firewall block: Webhook Health", "state": {"never_received": "Never received", "healthy": "Healthy", "stale": "Stale"}},
+      "webhook_health_power": {"name": "Power: PoE / power loss: Webhook Health", "state": {"never_received": "Never received", "healthy": "Healthy", "stale": "Stale"}},
+      "total_open": {"name": "Total Open Alerts"}
+    },
+    "event": {
+      "event_network_device": {"name": "Network: Device offline/online: Event"},
+      "event_network_wan": {"name": "Network: WAN offline/latency: Event"},
+      "event_network_client": {"name": "Network: Client connect/disconnect: Event"},
+      "event_security_threat": {"name": "Security: Threat / IDS detected: Event"},
+      "event_security_honeypot": {"name": "Security: Honeypot triggered: Event"},
+      "event_security_firewall": {"name": "Security: Firewall block: Event"},
+      "event_power": {"name": "Power: PoE / power loss: Event"}
+    },
+    "button": {
+      "clear_network_device": {"name": "Clear Network: Device offline/online"},
+      "clear_network_wan": {"name": "Clear Network: WAN offline/latency"},
+      "clear_network_client": {"name": "Clear Network: Client connect/disconnect"},
+      "clear_security_threat": {"name": "Clear Security: Threat / IDS detected"},
+      "clear_security_honeypot": {"name": "Clear Security: Honeypot triggered"},
+      "clear_security_firewall": {"name": "Clear Security: Firewall block"},
+      "clear_power": {"name": "Clear Power: PoE / power loss"},
+      "clear_all": {"name": "Clear All Alerts"}
+    }
+  },
+  "options": {
+    "error": {
+      "cannot_connect": "Cannot reach the controller. Check the URL, port, and SSL settings. See Home Assistant logs for details.",
+      "invalid_auth": "Invalid API key. Check the key and that it has not been revoked on the controller.",
+      "invalid_ssl_cert": "SSL certificate verification failed. If this controller uses a self-signed certificate, untick \"Verify SSL certificate\" and try again.",
+      "invalid_url_scheme": "Controller URL must start with http:// or https://.",
+      "at_least_one_category": "Please enable at least one alert category.",
+      "invalid_site": "Site not found on the controller. Check the site name (the URL slug, not the display name). The default single-site name is 'default'."
+    },
+    "step": {
+      "credentials": {
+        "title": "Update Controller Credentials",
+        "description": "Optionally update the controller URL or API key. Leave the fields blank to skip this step and go straight to alert category settings.\n\nCurrent controller: {current_url}\n\nTick **Regenerate webhook secret** if you suspect the current token has been exposed (e.g. pasted into logs or shared issues). New webhook URLs will be shown on the final step; copy them into UniFi Alarm Manager before clicking Submit, or webhook delivery will start failing immediately.",
+        "data": {
+          "controller_url": "New Controller URL (leave blank to keep current)",
+          "api_key": "New API Key (leave blank to keep current)",
+          "verify_ssl": "Verify SSL certificate",
+          "regenerate_webhook_secret": "Regenerate webhook secret"
+        },
+        "data_description": {
+          "verify_ssl": "Disable only if the controller uses a self-signed certificate. Disabling verification exposes the connection to man-in-the-middle attacks on the local network."
+        }
+      },
+      "categories": {
+        "title": "Update Alert Categories",
+        "description": "Update which alert types to monitor and adjust polling settings. Webhook URLs will be shown in the next step.",
+        "data": {
+          "cat_network_device": "Network: Device offline/online",
+          "min_severity_network_device": "Network: Device offline/online - Minimum severity",
+          "cat_network_wan": "Network: WAN offline/latency",
+          "min_severity_network_wan": "Network: WAN offline/latency - Minimum severity",
+          "cat_network_client": "Network: Client connect/disconnect",
+          "min_severity_network_client": "Network: Client connect/disconnect - Minimum severity",
+          "cat_security_threat": "Security: Threat / IDS detected",
+          "min_severity_security_threat": "Security: Threat / IDS detected - Minimum severity",
+          "cat_security_honeypot": "Security: Honeypot triggered",
+          "min_severity_security_honeypot": "Security: Honeypot triggered - Minimum severity",
+          "cat_security_firewall": "Security: Firewall block",
+          "min_severity_security_firewall": "Security: Firewall block - Minimum severity",
+          "cat_power": "Power: PoE / power loss",
+          "min_severity_power": "Power: PoE / power loss - Minimum severity",
+          "poll_interval": "Polling interval (seconds)",
+          "clear_timeout": "Auto-clear timeout (minutes)",
+          "site": "UniFi site name"
+        }
+      },
+      "finish": {
+        "title": "Webhook URLs",
+        "description": "**Header key:** `Authorization`\n\n**Header value:** `Bearer {webhook_secret}`\n\nAdd this custom header in each alarm's Advanced Settings in UniFi Alarm Manager first; it is the preferred authentication method. Then copy each webhook URL below into UniFi Network > Settings > Notifications > Alarm Manager **before** clicking Submit. If your Alarm Manager version has no custom-header option, append `?token={webhook_secret}` to the URL instead; this legacy method still works but is deprecated. You can retrieve these URLs and the secret later via Settings > Devices & Services > UniFi Alerts > Configure. See docs/ALARM_MANAGER_SETUP.md for a full walkthrough.",
+        "data": {
+          "webhook_url_network_device": "Network: Device offline/online webhook URL",
+          "webhook_url_network_wan": "Network: WAN offline/latency webhook URL",
+          "webhook_url_network_client": "Network: Client connect/disconnect webhook URL",
+          "webhook_url_security_threat": "Security: Threat / IDS detected webhook URL",
+          "webhook_url_security_honeypot": "Security: Honeypot triggered webhook URL",
+          "webhook_url_security_firewall": "Security: Firewall block webhook URL",
+          "webhook_url_power": "Power: PoE / power loss webhook URL"
+        }
+      }
+    }
+  },
+  "selector": {
+    "min_severity": {
+      "options": {
+        "no_filter": "No Filter",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "very_high": "Very High"
+      }
+    }
+  }
+}

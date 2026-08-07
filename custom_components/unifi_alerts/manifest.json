@@ -1,0 +1,32 @@
+{
+  "domain": "unifi_alerts",
+  "name": "UniFi Alerts",
+  "codeowners": [
+    "@PHeonix25"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/PHeonix25/unifi_alerts",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/PHeonix25/unifi_alerts/issues",
+  "requirements": [],
+  "ssdp": [
+    {
+      "manufacturer": "Ubiquiti Networks",
+      "modelDescription": "UniFi Dream Machine"
+    },
+    {
+      "manufacturer": "Ubiquiti Networks",
+      "modelDescription": "UniFi Dream Machine Pro"
+    },
+    {
+      "manufacturer": "Ubiquiti Networks",
+      "modelDescription": "UniFi Dream Machine SE"
+    },
+    {
+      "manufacturer": "Ubiquiti Networks",
+      "modelDescription": "UniFi Dream Machine Pro Max"
+    }
+  ],
+  "version": "2.0.1"
+}

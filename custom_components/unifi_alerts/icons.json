@@ -1,0 +1,67 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "network_device": {
+        "default": "mdi:lan-check",
+        "state": {"on": "mdi:lan-disconnect", "off": "mdi:lan-check"}
+      },
+      "network_wan": {
+        "default": "mdi:web-check",
+        "state": {"on": "mdi:wan", "off": "mdi:web-check"}
+      },
+      "network_client": {
+        "default": "mdi:account-check",
+        "state": {"on": "mdi:account-network", "off": "mdi:account-check"}
+      },
+      "security_threat": {
+        "default": "mdi:shield-check",
+        "state": {"on": "mdi:shield-bug", "off": "mdi:shield-check"}
+      },
+      "security_honeypot": {
+        "default": "mdi:shield-check",
+        "state": {"on": "mdi:bee", "off": "mdi:shield-check"}
+      },
+      "security_firewall": {
+        "default": "mdi:shield-check",
+        "state": {"on": "mdi:firewall", "off": "mdi:shield-check"}
+      },
+      "power": {
+        "default": "mdi:power-plug",
+        "state": {"on": "mdi:lightning-bolt", "off": "mdi:power-plug"}
+      },
+      "any_alert": {
+        "default": "mdi:shield-check",
+        "state": {"on": "mdi:shield-alert", "off": "mdi:shield-check"}
+      }
+    },
+    "sensor": {
+      "open_count_network_device": {"default": "mdi:counter"},
+      "open_count_network_wan": {"default": "mdi:counter"},
+      "open_count_network_client": {"default": "mdi:counter"},
+      "open_count_security_threat": {"default": "mdi:counter"},
+      "open_count_security_honeypot": {"default": "mdi:counter"},
+      "open_count_security_firewall": {"default": "mdi:counter"},
+      "open_count_power": {"default": "mdi:counter"},
+      "total_open": {"default": "mdi:bell-alert"}
+    },
+    "event": {
+      "event_network_device": {"default": "mdi:lan-disconnect"},
+      "event_network_wan": {"default": "mdi:wan"},
+      "event_network_client": {"default": "mdi:account-network"},
+      "event_security_threat": {"default": "mdi:shield-bug"},
+      "event_security_honeypot": {"default": "mdi:bee"},
+      "event_security_firewall": {"default": "mdi:firewall"},
+      "event_power": {"default": "mdi:lightning-bolt"}
+    },
+    "button": {
+      "clear_network_device": {"default": "mdi:bell-off"},
+      "clear_network_wan": {"default": "mdi:bell-off"},
+      "clear_network_client": {"default": "mdi:bell-off"},
+      "clear_security_threat": {"default": "mdi:bell-off"},
+      "clear_security_honeypot": {"default": "mdi:bell-off"},
+      "clear_security_firewall": {"default": "mdi:bell-off"},
+      "clear_power": {"default": "mdi:bell-off"},
+      "clear_all": {"default": "mdi:shield-off"}
+    }
+  }
+}

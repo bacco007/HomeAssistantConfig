@@ -1,0 +1,52 @@
+clear_category:
+  name: Clear category
+  description: >
+    Manually clear the alert state for a specific category on one or all
+    UniFi Alerts entries. Equivalent to pressing the per-category clear button.
+  fields:
+    category:
+      name: Category
+      description: The alert category to clear.
+      required: true
+      selector:
+        select:
+          options:
+            - value: network_device
+              label: "Network: Device offline/online"
+            - value: network_wan
+              label: "Network: WAN offline/latency"
+            - value: network_client
+              label: "Network: Client connect/disconnect"
+            - value: security_threat
+              label: "Security: Threat / IDS detected"
+            - value: security_honeypot
+              label: "Security: Honeypot triggered"
+            - value: security_firewall
+              label: "Security: Firewall block"
+            - value: power
+              label: "Power: PoE / power loss"
+    entry_id:
+      name: Entry ID
+      description: >
+        Optional. Restrict the clear to a specific config entry (for
+        multi-controller households). Leave blank to clear across all entries.
+      required: false
+      selector:
+        config_entry:
+          integration: unifi_alerts
+
+clear_all:
+  name: Clear all
+  description: >
+    Manually clear the alert state for every active category on one or all
+    UniFi Alerts entries. Equivalent to pressing the "Clear All Alerts" button.
+  fields:
+    entry_id:
+      name: Entry ID
+      description: >
+        Optional. Restrict the clear to a specific config entry (for
+        multi-controller households). Leave blank to clear across all entries.
+      required: false
+      selector:
+        config_entry:
+          integration: unifi_alerts
