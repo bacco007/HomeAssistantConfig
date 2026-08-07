@@ -2,10 +2,9 @@
  * Update Action Tracker Card
  * Lists HACS integrations with pending updates and provides
  * Skip, Update, and Update & Action buttons.
- * v1.12.0
  */
 
-const CARD_VERSION = "1.13.0";
+const CARD_VERSION = "1.13.1";
 const UAT_DOMAIN = "custom_component_monitor";
 
 /* -- Helpers -------------------------------------------------- */
@@ -14,6 +13,12 @@ function uatEscapeHtml(text) {
   const el = document.createElement("span");
   el.textContent = String(text);
   return el.innerHTML;
+}
+
+// innerHTML escapes & < > in text nodes but leaves quotes alone, so an
+// already-escaped string still needs this before it goes in an attribute.
+function uatAttr(escapedText) {
+  return String(escapedText).replace(/"/g, "&quot;");
 }
 
 /* -- Editor Element ------------------------------------------- */
@@ -616,6 +621,7 @@ class UpdateActionTrackerCard extends HTMLElement {
     const name = uatEscapeHtml(attrs.friendly_name || entityId).replace(/ update$/i, "");
     const installedVer = uatEscapeHtml(attrs.installed_version || "?");
     const latestVer = uatEscapeHtml(attrs.latest_version || "?");
+    const versionText = installedVer + " → " + latestVer;
     const picture = attrs.entity_picture || "";
     const releaseUrl = attrs.release_url || "";
     const isExpanded = this._expandedEntity === entityId;
@@ -660,10 +666,10 @@ class UpdateActionTrackerCard extends HTMLElement {
       '<div class="item-header" data-toggle="' + entityId + '">' +
       pictureHtml +
       '<div class="item-info">' +
-      '<div class="item-name">' + name + '</div>' +
-      '<div class="item-version">' + installedVer + ' \u2192 ' + latestVer + '</div>' +
-      '</div>' +
+      '<div class="item-name" title="' + uatAttr(name) + '">' + name + '</div>' +
+      '<div class="item-version" title="' + uatAttr(versionText) + '">' + versionText + '</div>' +
       catBadgesHtml +
+      '</div>' +
       '<ha-icon class="expand-icon' + (isExpanded ? " open" : "") + '" icon="mdi:chevron-down"></ha-icon>' +
       '</div>';
 
@@ -846,7 +852,7 @@ class UpdateActionTrackerCard extends HTMLElement {
       ".cat-filters { margin-top:-4px; }",
       ".sort-chip ha-icon { --mdc-icon-size:16px; vertical-align:middle; }",
       /* AI category badges — text pills (not colour-coded, for colour-blind a11y) */
-      ".cat-badges { display:flex; flex-wrap:wrap; gap:4px; justify-content:flex-end; align-items:center; max-width:48%; flex-shrink:0; }",
+      ".cat-badges { display:flex; flex-wrap:wrap; gap:4px; justify-content:flex-start; align-items:center; margin-top:4px; }",
       ".cat-badge { font-size:0.66em; font-weight:600; padding:2px 7px; border-radius:10px; white-space:nowrap; color:var(--uat-secondary); background:var(--uat-row-bg, rgba(127,127,127,0.12)); border:1px solid var(--divider-color, rgba(127,127,127,0.28)); }",
       /* AI one-line summary in the expanded row */
       ".ai-summary { display:flex; align-items:flex-start; gap:6px; margin:0 0 8px 52px; font-size:0.85em; line-height:1.4; color:var(--uat-primary); font-style:italic; }",
@@ -863,7 +869,7 @@ class UpdateActionTrackerCard extends HTMLElement {
       ".entity-icon { --mdc-icon-size:28px; color:var(--uat-secondary); flex-shrink:0; width:40px; display:flex; align-items:center; justify-content:center; }",
       ".item-info { flex:1; min-width:0; }",
       ".item-name { font-size:0.95em; font-weight:500; color:var(--uat-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }",
-      ".item-version { font-size:0.8em; color:var(--uat-secondary); margin-top:2px; }",
+      ".item-version { font-size:0.8em; color:var(--uat-secondary); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }",
       ".expand-icon { --mdc-icon-size:20px; color:var(--uat-secondary); transition:transform 0.2s ease; flex-shrink:0; }",
       ".expand-icon.open { transform:rotate(180deg); }",
       /* Progress bar styles */
