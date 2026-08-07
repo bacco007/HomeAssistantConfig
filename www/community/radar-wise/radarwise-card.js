@@ -3,7 +3,7 @@
  * Home Assistant weather dashboard card with forecasts and optional radar.
  */
 
-const CARD_VERSION = "0.8.16";
+const CARD_VERSION = "0.8.17";
 const FORECAST_REFRESH_MS = 15 * 60 * 1000;
 const ENVIRONMENT_REFRESH_MS = 60 * 60 * 1000;
 const CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
@@ -1624,12 +1624,73 @@ class RadarWiseCard extends HTMLElement {
 
   _mainForecastPeriods(hourly = [], daily = [], twiceDaily = []) {
     if (this._config.forecast_mode === "daily") {
-      return daily.length ? daily : twiceDaily.length ? twiceDaily : hourly;
+      if (daily.length) return daily;
+      const combined = this._dailyPeriodsFromTwiceDaily(twiceDaily);
+      return combined.length ? combined : hourly;
     }
     if (this._config.forecast_mode === "twice_daily") {
       return twiceDaily.length ? twiceDaily : daily.length ? daily : hourly;
     }
     return twiceDaily.length ? twiceDaily : daily.length ? daily : hourly;
+  }
+
+  _dailyPeriodsFromTwiceDaily(periods = []) {
+    const groups = new Map();
+    const ordered = [...periods]
+      .filter((item) => item && !Number.isNaN(new Date(item.datetime).getTime()))
+      .sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime());
+
+    for (const item of ordered) {
+      const key = this._forecastDateKey(item.datetime);
+      if (!key) continue;
+      if (!groups.has(key)) groups.set(key, { day: null, night: null });
+      const group = groups.get(key);
+      const time = this._timeParts(item.datetime);
+      const isDaytime = item.is_daytime === true
+        || ((item.is_daytime === undefined || item.is_daytime === null) && time && time.hour >= 6 && time.hour < 18);
+      if (isDaytime) {
+        if (!group.day) group.day = item;
+      } else if (!group.night) {
+        group.night = item;
+      }
+    }
+
+    return [...groups.values()].map(({ day, night }) => {
+      const base = day || night;
+      const combined = { ...base };
+      const high = day?.temperature ?? day?.high_temperature ?? day?.native_temperature
+        ?? night?.high_temperature ?? night?.native_temperature ?? night?.temperature;
+      const low = day
+        ? night?.temperature ?? night?.low_temperature ?? night?.native_temperature
+          ?? day?.templow ?? day?.low_temperature ?? day?.native_templow
+        : night?.low_temperature ?? night?.native_templow;
+      const precipitation = [day, night]
+        .map((item) => this._precipProbability(item))
+        .filter(Number.isFinite);
+
+      combined.datetime = day?.datetime || night?.datetime;
+      if (high !== undefined && high !== null) combined.temperature = high;
+      if (low !== undefined && low !== null) combined.templow = low;
+      else delete combined.templow;
+      if (precipitation.length) combined.precipitation_probability = Math.max(...precipitation);
+      delete combined.is_daytime;
+      return combined;
+    });
+  }
+
+  _forecastDateKey(dateLike) {
+    const date = new Date(dateLike);
+    if (Number.isNaN(date.getTime())) return "";
+    const parts = new Intl.DateTimeFormat("en-US", this._timeZoneOptions({
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    })).formatToParts(date);
+    const valueFor = (type) => parts.find((part) => part.type === type)?.value;
+    const year = valueFor("year");
+    const month = valueFor("month");
+    const day = valueFor("day");
+    return year && month && day ? `${year}-${month}-${day}` : "";
   }
 
   _render() {
