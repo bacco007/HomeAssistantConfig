@@ -6,14 +6,20 @@ antenna: the route behind that number lives in a database on the ground. Every
 map that shows you a route, tar1090 included, asks someone else for it.
 
 That makes this the one part of the integration that leaves your network, and
-it is why it stays off until you pick a source. Two are on offer, and they do
-not always agree with each other, which is a fair warning about how certain
-any of this is:
+it is why it stays off until you switch it on. The source is routeset, which
+is what tar1090 itself uses: it takes every callsign in one request, and
+because it is given the position as well it can say whether the route it found
+actually fits an aircraft seen there.
 
-* adsbdb.com answers about one callsign at a time and names the airline too.
-* routeset is what tar1090 uses. It takes every callsign in one request, and
-  because it is given the position as well it can say whether the route it
-  found actually fits an aircraft seen there.
+That last part is what makes it worth trusting. A modern airline callsign is
+reused over the legs of a day, so a database keyed on the flight number alone
+answers with whichever leg it has on file, and half the time that is the one
+the aircraft has just flown. Measured against the track the aircraft is
+broadcasting, routeset points the right way for 99 of every 100 answers.
+
+The answer names the airline as well and it is not read. That name follows
+from the callsign, which means a table on your own disk can give it for every
+flight rather than for the ones a source happens to know.
 
 Only the aircraft inside your radius are ever looked up, and answers are kept
 for the day, so a station watching a busy sky still asks a handful of
@@ -33,13 +39,10 @@ import aiohttp
 from homeassistant.util import dt as dt_util
 
 from .const import (
-    ADSBDB_URL,
     ROUTE_CACHE_MAX_ENTRIES,
     ROUTE_CACHE_TTL,
     ROUTE_MAX_LOOKUPS_PER_POLL,
     ROUTE_MISS_CACHE_TTL,
-    ROUTE_SOURCE_ADSBDB,
-    ROUTE_SOURCE_ROUTESET,
     ROUTESET_MAX_PLANES,
     ROUTESET_URL,
 )
@@ -73,7 +76,6 @@ class FlightRoute:
 
     origin: Airport | None
     destination: Airport | None
-    airline: str | None = None
 
     @property
     def label(self) -> str | None:
@@ -106,19 +108,6 @@ class _CachedRoute:
     expires: datetime
 
 
-@dataclass(frozen=True, kw_only=True)
-class _Answers:
-    """What a source said when asked about a handful of callsigns."""
-
-    routes: dict[str, FlightRoute]
-    # The ones it could not be asked about at all. There is a difference
-    # between a database saying it has never heard of a flight and a server
-    # that is down, and only the first is worth remembering: holding an
-    # outage against a callsign would keep the route missing long after the
-    # source came back.
-    unanswered: frozenset[str] = frozenset()
-
-
 def _text(value: Any) -> str | None:
     """Return a non-empty string, or None."""
     if value is None:
@@ -129,8 +118,6 @@ def _text(value: Any) -> str | None:
 
 class RouteLookup:
     """Resolves callsigns to routes, remembering what it has been told."""
-
-    source: str
 
     def __init__(self, session: aiohttp.ClientSession) -> None:
         """Initialize the lookup."""
@@ -163,9 +150,8 @@ class RouteLookup:
         asking = list(pending.values())[:ROUTE_MAX_LOOKUPS_PER_POLL]
         if len(asking) < len(pending):
             _LOGGER.debug(
-                "Asking %s about %d of %d new callsigns this poll; the rest "
-                "wait for the next one",
-                self.source,
+                "Asking about %d of %d new callsigns this poll; the rest wait "
+                "for the next one",
                 len(asking),
                 len(pending),
             )
@@ -174,21 +160,15 @@ class RouteLookup:
             answers = await self._async_fetch(asking)
         except (TimeoutError, aiohttp.ClientError, ValueError) as err:
             # Nothing is cached on a failure, so the next poll tries again.
-            _LOGGER.debug("Could not reach %s for a route: %s", self.source, err)
+            _LOGGER.debug("Could not reach routeset for a route: %s", err)
             return known
 
         for flight in asking:
-            if flight.callsign in answers.unanswered:
-                continue
-            route = answers.routes.get(flight.callsign)
+            route = answers.get(flight.callsign)
             self._remember(flight.callsign, route, now)
             if route is not None:
                 known[flight.callsign] = route
         return known
-
-    async def _async_fetch(self, flights: Sequence[FlightPosition]) -> _Answers:
-        """Ask the source about callsigns we have not resolved before."""
-        raise NotImplementedError
 
     def _drop_expired(self, now: datetime) -> None:
         """Forget what we are no longer entitled to believe."""
@@ -209,67 +189,9 @@ class RouteLookup:
         ttl = ROUTE_CACHE_TTL if route is not None else ROUTE_MISS_CACHE_TTL
         self._cache[callsign] = _CachedRoute(route=route, expires=now + ttl)
 
-    async def _async_get_json(self, url: str) -> Any:
-        """GET a document, or None if the source will not say."""
-        async with asyncio.timeout(TIMEOUT):
-            response = await self._session.get(url)
-            if response.status == 404:
-                # A callsign the database has never seen, which is an answer.
-                return None
-            response.raise_for_status()
-            return await response.json(content_type=None)
-
-
-class AdsbdbLookup(RouteLookup):
-    """Resolves routes through adsbdb.com, one callsign per request."""
-
-    source = ROUTE_SOURCE_ADSBDB
-
-    async def _async_fetch(self, flights: Sequence[FlightPosition]) -> _Answers:
-        """Ask about each callsign, letting the ones that fail fall away."""
-        answers = await asyncio.gather(
-            *(self._async_one(flight.callsign) for flight in flights),
-            return_exceptions=True,
-        )
-        routes: dict[str, FlightRoute] = {}
-        unanswered: set[str] = set()
-        for flight, answer in zip(flights, answers, strict=True):
-            if isinstance(answer, BaseException):
-                _LOGGER.debug(
-                    "adsbdb could not be asked about %s: %s", flight.callsign, answer
-                )
-                unanswered.add(flight.callsign)
-            elif answer is not None:
-                routes[flight.callsign] = answer
-        return _Answers(routes=routes, unanswered=frozenset(unanswered))
-
-    async def _async_one(self, callsign: str) -> FlightRoute | None:
-        """Return what adsbdb knows about one callsign."""
-        payload = await self._async_get_json(ADSBDB_URL.format(callsign=callsign))
-        if not isinstance(payload, dict):
-            return None
-        response = payload.get("response")
-        # An unknown callsign comes back as the string "unknown callsign".
-        if not isinstance(response, dict):
-            return None
-        flightroute = response.get("flightroute")
-        if not isinstance(flightroute, dict):
-            return None
-
-        airline = flightroute.get("airline")
-        return FlightRoute(
-            origin=_adsbdb_airport(flightroute.get("origin")),
-            destination=_adsbdb_airport(flightroute.get("destination")),
-            airline=_text(airline.get("name")) if isinstance(airline, dict) else None,
-        )
-
-
-class RoutesetLookup(RouteLookup):
-    """Resolves routes through the routeset API that tar1090 uses."""
-
-    source = ROUTE_SOURCE_ROUTESET
-
-    async def _async_fetch(self, flights: Sequence[FlightPosition]) -> _Answers:
+    async def _async_fetch(
+        self, flights: Sequence[FlightPosition]
+    ) -> dict[str, FlightRoute]:
         """Ask about every callsign at once, in batches the API accepts.
 
         A batch that fails takes the whole answer with it, which costs only a
@@ -279,7 +201,7 @@ class RoutesetLookup(RouteLookup):
         for start in range(0, len(flights), ROUTESET_MAX_PLANES):
             batch = flights[start : start + ROUTESET_MAX_PLANES]
             routes.update(await self._async_batch(batch))
-        return _Answers(routes=routes)
+        return routes
 
     async def _async_batch(
         self, flights: Sequence[FlightPosition]
@@ -288,9 +210,11 @@ class RoutesetLookup(RouteLookup):
         planes = [
             {
                 "callsign": flight.callsign,
-                # The API insists on a position; the middle of nowhere is a
-                # fair stand-in for an aircraft that broadcast none, and only
-                # costs us the plausibility check.
+                # The API insists on a position and judges the route against
+                # it, so an aircraft that broadcast none gets every route it
+                # finds thrown out as implausible rather than merely going
+                # unchecked. Only aircraft with a position are ever asked
+                # about, so this stands in for nothing in practice.
                 "lat": flight.latitude or 0.0,
                 "lng": flight.longitude or 0.0,
             }
@@ -317,18 +241,6 @@ class RoutesetLookup(RouteLookup):
         return routes
 
 
-def _adsbdb_airport(payload: Any) -> Airport | None:
-    """Read one end of an adsbdb route."""
-    if not isinstance(payload, dict):
-        return None
-    return Airport(
-        iata=_text(payload.get("iata_code")),
-        icao=_text(payload.get("icao_code")),
-        name=_text(payload.get("name")),
-        location=_text(payload.get("municipality")),
-    )
-
-
 def _routeset_route(item: dict[str, Any]) -> FlightRoute | None:
     """Read one entry of a routeset answer."""
     # The API says so itself when it has nothing, and says so again by judging
@@ -353,10 +265,12 @@ def _routeset_route(item: dict[str, Any]) -> FlightRoute | None:
         return None
     # A flight with a stop on the way lists every leg. The two ends are what
     # a route means to someone watching one of the legs go over.
+    # No airline: routeset answers with the designator it read off the front
+    # of the callsign, which is the same three letters we read there ourselves
+    # and can put a name to. A code where a name belongs is worse than either.
     return FlightRoute(
         origin=airports[0],
         destination=airports[-1] if len(airports) > 1 else None,
-        airline=_text(item.get("airline_code")),
     )
 
 
@@ -370,19 +284,11 @@ def _routeset_airport(payload: dict[str, Any]) -> Airport:
     )
 
 
-LOOKUPS: dict[str, type[RouteLookup]] = {
-    ROUTE_SOURCE_ADSBDB: AdsbdbLookup,
-    ROUTE_SOURCE_ROUTESET: RoutesetLookup,
-}
-
-
 def build_route_lookup(
-    session: aiohttp.ClientSession, source: str
+    session: aiohttp.ClientSession, enabled: bool
 ) -> RouteLookup | None:
-    """Return the lookup for a source, or None when routes are switched off."""
-    if (lookup := LOOKUPS.get(source)) is None:
-        return None
-    return lookup(session)
+    """Return a lookup, or None when routes are switched off."""
+    return RouteLookup(session) if enabled else None
 
 
 def route_attributes(route: FlightRoute | None) -> dict[str, Any]:
@@ -405,6 +311,4 @@ def route_attributes(route: FlightRoute | None) -> dict[str, Any]:
             attributes[f"{key}_location"] = airport.location
         if airport.name is not None:
             attributes[f"{key}_name"] = airport.name
-    if route.airline is not None:
-        attributes["airline"] = route.airline
     return attributes

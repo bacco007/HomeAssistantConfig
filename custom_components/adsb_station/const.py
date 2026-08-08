@@ -133,21 +133,9 @@ MAX_PROXIMITY_RADIUS = 500
 # aircraft broadcasts its callsign and nothing more, so the only way to know
 # is to ask someone who keeps a database of flight numbers. That is a request
 # leaving your network, which is why it is off unless you ask for it.
-CONF_ROUTE_SOURCE = "route_source"
-ROUTE_SOURCE_NONE = "none"
-# adsbdb.com. One request per callsign, and it names the airline as well.
-ROUTE_SOURCE_ADSBDB = "adsbdb"
-# The routeset API tar1090 itself uses. Asks about every callsign at once, and
-# judges from the position whether the route it found fits the aircraft.
-ROUTE_SOURCE_ROUTESET = "routeset"
-ROUTE_SOURCES: tuple[str, ...] = (
-    ROUTE_SOURCE_NONE,
-    ROUTE_SOURCE_ADSBDB,
-    ROUTE_SOURCE_ROUTESET,
-)
-DEFAULT_ROUTE_SOURCE = ROUTE_SOURCE_NONE
+CONF_LOOK_UP_ROUTES = "look_up_routes"
+DEFAULT_LOOK_UP_ROUTES = False
 
-ADSBDB_URL = "https://api.adsbdb.com/v0/callsign/{callsign}"
 # adsb.lol serves the same API but currently answers empty, so the default
 # points at the host tar1090 itself defaults to.
 ROUTESET_URL = "https://adsb.im/api/0/routeset"

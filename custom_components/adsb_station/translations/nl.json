@@ -99,22 +99,13 @@
         "data": {
           "scan_interval": "Ververstijd",
           "proximity_radius": "Straal dichtbij",
-          "route_source": "Vluchtroutes opzoeken"
+          "look_up_routes": "Vluchtroutes opzoeken"
         },
         "data_description": {
           "scan_interval": "Hoe vaak het station uitgelezen wordt, in seconden. Alles draait op je eigen netwerk, dus een korte tijd kan prima.",
           "proximity_radius": "Hoe dichtbij een vliegtuig moet zijn om als dichtbij te tellen, in kilometers. Tien is ongeveer wat je kunt zien en horen.",
-          "route_source": "Geen enkel vliegtuig zendt uit waar het vandaan komt of heen gaat, dus dit is het enige gegeven dat aan een dienst op internet gevraagd moet worden. Alleen de vliegtuigen binnen de straal worden opgezocht, en antwoorden worden een dag bewaard."
+          "look_up_routes": "Geen enkel vliegtuig zendt uit waar het vandaan komt of heen gaat, dus dit is het enige gegeven dat aan een dienst op internet gevraagd moet worden. Het gebruikt routeset, dezelfde bron als tar1090. Alleen de vliegtuigen binnen de straal 'dichtbij' worden opgezocht, en antwoorden worden een dag bewaard."
         }
-      }
-    }
-  },
-  "selector": {
-    "route_source": {
-      "options": {
-        "none": "Uit, alles op mijn eigen netwerk houden",
-        "adsbdb": "adsbdb.com (noemt ook de maatschappij)",
-        "routeset": "routeset via adsb.im (wat tar1090 gebruikt)"
       }
     }
   },

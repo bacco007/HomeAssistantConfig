@@ -19,16 +19,17 @@ from homeassistant.util.location import distance
 from .api import AdsbStationClient, AdsbStationError, read_gain
 from .const import (
     AIRCRAFT_TYPE_GROUPS,
+    CONF_LOOK_UP_ROUTES,
     CONF_PROXIMITY_RADIUS,
-    CONF_ROUTE_SOURCE,
+    DEFAULT_LOOK_UP_ROUTES,
     DEFAULT_PROXIMITY_RADIUS,
-    DEFAULT_ROUTE_SOURCE,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     EMERGENCY_SQUAWKS,
     SECTORS,
     UNSET_RECEIVER_VERSION,
 )
+from .reference import EMPTY as EMPTY_REFERENCE, ReferenceTables
 from .route import FlightPosition, FlightRoute, build_route_lookup
 
 _LOGGER = logging.getLogger(__name__)
@@ -64,12 +65,16 @@ class AircraftSummary:
     altitude: float | None
     speed: float | None
     track: float | None
+    vertical_rate: float | None
     rssi: float | None
     seen: float | None
     registration: str | None
     aircraft_type: str | None
     description: str | None
     military: bool
+    # Read off the callsign against a table we ship, so this is filled in
+    # whether or not a route source is configured.
+    airline: str | None = None
     # Where it was heard, which no entity shows but a route lookup needs to
     # tell one flight number from the same one halfway around the world.
     position: tuple[float, float] | None = None
@@ -201,6 +206,20 @@ def _ground_speed(entry: dict[str, Any]) -> float | None:
     return None
 
 
+def _vertical_rate(entry: dict[str, Any]) -> float | None:
+    """Return the rate of climb or descent in feet per minute.
+
+    readsb and dump1090-fa report the barometric rate and, on aircraft that
+    send one, a geometric rate measured against GNSS. The barometric one is
+    what every map shows, so it comes first; the dump1090 fork that fr24feed
+    ships has neither and calls its own field 'vert_rate'.
+    """
+    for key in ("baro_rate", "geom_rate", "vert_rate"):
+        if (rate := _as_float(entry.get(key))) is not None:
+            return rate
+    return None
+
+
 def _is_military(entry: dict[str, Any]) -> bool:
     """Return True if readsb flags this aircraft as military.
 
@@ -235,23 +254,30 @@ def _summarise(
     entry: dict[str, Any],
     metres: float | None,
     position: tuple[float, float] | None = None,
+    reference: ReferenceTables = EMPTY_REFERENCE,
 ) -> AircraftSummary:
     """Turn one aircraft.json entry into the shape we expose."""
+    flight = _as_text(entry.get("flight"))
+    aircraft_type = _as_text(entry.get("t"))
     return AircraftSummary(
         hex=str(entry.get("hex", "")),
-        flight=_as_text(entry.get("flight")),
+        flight=flight,
         distance=metres,
         position=position,
         altitude=_altitude(entry),
         speed=_ground_speed(entry),
         track=_as_float(entry.get("track")),
+        vertical_rate=_vertical_rate(entry),
         rssi=_as_float(entry.get("rssi")),
         seen=_as_float(entry.get("seen")),
         # Only a decoder with an aircraft database fills these in.
         registration=_as_text(entry.get("r")),
-        aircraft_type=_as_text(entry.get("t")),
-        description=_as_text(entry.get("desc")),
+        aircraft_type=aircraft_type,
+        # A database that fills in the type code without describing it is the
+        # common case, so the table stands in where the decoder says nothing.
+        description=_as_text(entry.get("desc")) or reference.model_of(aircraft_type),
         military=_is_military(entry),
+        airline=reference.airline_of(flight),
     )
 
 
@@ -274,6 +300,7 @@ class AdsbStationDataUpdateCoordinator(DataUpdateCoordinator[AdsbStationData]):
         hass: HomeAssistant,
         config_entry: AdsbStationConfigEntry,
         client: AdsbStationClient,
+        reference: ReferenceTables = EMPTY_REFERENCE,
     ) -> None:
         """Initialize the coordinator."""
         scan_interval = config_entry.options.get(
@@ -287,12 +314,15 @@ class AdsbStationDataUpdateCoordinator(DataUpdateCoordinator[AdsbStationData]):
             update_interval=timedelta(seconds=scan_interval),
         )
         self.client = client
+        # The names for the codes an aircraft broadcasts. Empty when the tables
+        # could not be read, which costs a name and nothing else.
+        self.reference = reference
         self.receiver_version: str | None = None
         # None unless the user picked a source to look routes up with, which
         # is the only thing here that talks to anything off your own network.
         self.route_lookup = build_route_lookup(
             async_get_clientsession(hass),
-            config_entry.options.get(CONF_ROUTE_SOURCE, DEFAULT_ROUTE_SOURCE),
+            config_entry.options.get(CONF_LOOK_UP_ROUTES, DEFAULT_LOOK_UP_ROUTES),
         )
         # Filled in by the sector sensors as they are added, so the reset
         # button can reach them without going through the entity platform.
@@ -510,7 +540,7 @@ class AdsbStationDataUpdateCoordinator(DataUpdateCoordinator[AdsbStationData]):
                 with_position += 1
                 metres = distance(origin_latitude, origin_longitude, *position)
 
-            summary = _summarise(entry, metres, position)
+            summary = _summarise(entry, metres, position, self.reference)
 
             # Altitude and speed reach us from aircraft without a position too,
             # so these two are not restricted to the ones we can locate.

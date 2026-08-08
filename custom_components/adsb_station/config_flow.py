@@ -28,12 +28,12 @@ from .api import (
 from .const import (
     CONF_AIRCRAFT_URL,
     CONF_FEEDER_TYPE,
+    CONF_LOOK_UP_ROUTES,
     CONF_PROXIMITY_RADIUS,
     CONF_RECEIVER_FEATURES,
-    CONF_ROUTE_SOURCE,
     CONF_STATS_URL,
+    DEFAULT_LOOK_UP_ROUTES,
     DEFAULT_PROXIMITY_RADIUS,
-    DEFAULT_ROUTE_SOURCE,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_STATION_NAME,
     DOMAIN,
@@ -45,7 +45,6 @@ from .const import (
     MAX_SCAN_INTERVAL,
     MIN_PROXIMITY_RADIUS,
     MIN_SCAN_INTERVAL,
-    ROUTE_SOURCES,
 )
 from .coordinator import AdsbStationConfigEntry
 
@@ -107,14 +106,8 @@ OPTIONS_SCHEMA = vol.Schema(
             )
         ),
         vol.Required(
-            CONF_ROUTE_SOURCE, default=DEFAULT_ROUTE_SOURCE
-        ): selector.SelectSelector(
-            selector.SelectSelectorConfig(
-                options=list(ROUTE_SOURCES),
-                translation_key=CONF_ROUTE_SOURCE,
-                mode=selector.SelectSelectorMode.DROPDOWN,
-            )
-        ),
+            CONF_LOOK_UP_ROUTES, default=DEFAULT_LOOK_UP_ROUTES
+        ): selector.BooleanSelector(),
     }
 )
 
@@ -122,7 +115,7 @@ OPTIONS_SCHEMA = vol.Schema(
 class AdsbStationConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for an ADS-B station."""
 
-    VERSION = 2
+    VERSION = 3
 
     def __init__(self) -> None:
         """Initialize the flow."""
@@ -432,7 +425,7 @@ class AdsbStationOptionsFlow(OptionsFlow):
                 data={
                     CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
                     CONF_PROXIMITY_RADIUS: int(user_input[CONF_PROXIMITY_RADIUS]),
-                    CONF_ROUTE_SOURCE: user_input[CONF_ROUTE_SOURCE],
+                    CONF_LOOK_UP_ROUTES: user_input[CONF_LOOK_UP_ROUTES],
                 }
             )
 

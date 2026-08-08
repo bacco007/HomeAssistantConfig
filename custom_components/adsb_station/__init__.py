@@ -7,8 +7,18 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import AdsbStationClient
-from .const import CONF_AIRCRAFT_URL, CONF_FEEDER_TYPE, CONF_STATS_URL, FEEDER_FR24
+from .const import (
+    CONF_AIRCRAFT_URL,
+    CONF_FEEDER_TYPE,
+    CONF_LOOK_UP_ROUTES,
+    CONF_STATS_URL,
+    FEEDER_FR24,
+)
 from .coordinator import AdsbStationConfigEntry, AdsbStationDataUpdateCoordinator
+from .reference import async_load_reference
+
+# What the option was called while it named a source rather than a yes or no.
+LEGACY_ROUTE_SOURCE = "route_source"
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -28,7 +38,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: AdsbStationConfigEntry) 
         entry.data.get(CONF_STATS_URL),
         feeder_type=entry.data.get(CONF_FEEDER_TYPE),
     )
-    coordinator = AdsbStationDataUpdateCoordinator(hass, entry, client)
+    coordinator = AdsbStationDataUpdateCoordinator(
+        hass, entry, client, await async_load_reference(hass)
+    )
 
     await coordinator.async_config_entry_first_refresh()
 
@@ -43,22 +55,30 @@ async def async_setup_entry(hass: HomeAssistant, entry: AdsbStationConfigEntry) 
 async def async_migrate_entry(
     hass: HomeAssistant, entry: AdsbStationConfigEntry
 ) -> bool:
-    """Bring an entry made by an older version up to date.
-
-    Entries from before there was more than one kind of feeder record none,
-    and fr24feed is the only one they can be. Writing it once beats deriving
-    it on every load, where it would not appear in the entry itself and would
-    puzzle anyone reading diagnostics.
-    """
-    if entry.version >= 2:
-        return True
-
+    """Bring an entry made by an older version up to date."""
     data = {**entry.data}
-    if CONF_FEEDER_TYPE not in data:
+    options = {**entry.options}
+
+    # Entries from before there was more than one kind of feeder record none,
+    # and fr24feed is the only one they can be. Writing it once beats deriving
+    # it on every load, where it would not appear in the entry itself and
+    # would puzzle anyone reading diagnostics.
+    if entry.version < 2 and CONF_FEEDER_TYPE not in data:
         data[CONF_FEEDER_TYPE] = (
             FEEDER_FR24 if data.get(CONF_PORT) is not None else None
         )
-    hass.config_entries.async_update_entry(entry, data=data, version=2)
+
+    # Routes used to be a choice between two sources, one of which sent a
+    # sixth of the aircraft the way they had come. Anyone who picked either of
+    # them asked for routes, and that is all the setting says now.
+    if entry.version < 3 and LEGACY_ROUTE_SOURCE in options:
+        options[CONF_LOOK_UP_ROUTES] = (
+            options.pop(LEGACY_ROUTE_SOURCE) not in (None, "none")
+        )
+
+    hass.config_entries.async_update_entry(
+        entry, data=data, options=options, version=3
+    )
     return True
 
 
