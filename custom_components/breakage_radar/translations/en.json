@@ -1,0 +1,27 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Breakage Radar",
+        "description": "Breakage Radar compares the custom integrations installed on this system against a public index of Home Assistant APIs that are scheduled for removal, and tells you which release removes them.\n\nThe index is downloaded from {index_url} every 12 hours. Nothing is uploaded and no account is needed."
+      }
+    },
+    "abort": {
+      "already_configured": "Breakage Radar is already set up.",
+      "single_instance_allowed": "Breakage Radar is already set up. Only one instance is needed."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "affected": {
+        "name": "Affected"
+      }
+    }
+  },
+  "issues": {
+    "integrations_affected": {
+      "title": "{count} custom integration(s) will break in a future Home Assistant release",
+      "description": "Breakage Radar found deprecated Home Assistant APIs in these installed custom integrations: {integrations}.\n\nBy release: {releases}. The first deadline is Home Assistant {earliest}.\n\nThis cannot be fixed from here — the code lives in the integration's own repository. Open the details on `sensor.breakage_radar_affected` to see the exact file and line, then raise it with the integration's maintainer or plan a replacement before the deadline."
+    }
+  }
+}
