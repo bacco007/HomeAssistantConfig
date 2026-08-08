@@ -1,0 +1,386 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ADS-B-station",
+        "description": "Wat draait er op je ontvanger? Alles wat een aircraft.json aanbiedt werkt: dump1090, dump1090-fa met SkyAware, readsb met tar1090. Kies de Flightradar24-feeder er alleen bij als je daadwerkelijk fr24feed draait.",
+        "menu_options": {
+          "fr24feed": "Flightradar24-feeder (fr24feed)",
+          "piaware": "FlightAware-feeder (PiAware)",
+          "planefinder": "Plane Finder-feeder (pfclient)",
+          "receiver": "Alleen een ADS-B-ontvanger"
+        }
+      },
+      "fr24feed": {
+        "title": "Flightradar24-feeder",
+        "description": "Vul het adres van je Flightradar24-feeder in. Home Assistant leest de statuspagina uit die fr24feed op je eigen ontvanger aanbiedt.",
+        "data": {
+          "host": "Host",
+          "port": "Poort"
+        },
+        "data_description": {
+          "host": "Het IP-adres of de hostnaam van het apparaat waarop fr24feed draait, bijvoorbeeld 192.168.5.7.",
+          "port": "De poort van de fr24feed-statuspagina. Standaard is dat 8754."
+        }
+      },
+      "piaware": {
+        "title": "FlightAware-feeder",
+        "description": "Vul het adres in van de machine waarop PiAware draait. De poort is die waarop zijn statuspagina staat, standaard 8080.",
+        "data": {
+          "host": "Host",
+          "port": "Poort"
+        },
+        "data_description": {
+          "host": "Het IP-adres of de hostnaam van het apparaat waarop PiAware draait, bijvoorbeeld 192.168.5.7.",
+          "port": "De poort waarop status.json staat. FlightAware gebruikt zelf 8080; staat er een andere webserver op die poort, dan kan het elders zijn."
+        }
+      },
+      "planefinder": {
+        "title": "Plane Finder-feeder",
+        "description": "Vul het adres in van de machine waarop pfclient draait. De poort is die van zijn webinterface, standaard 30053.",
+        "data": {
+          "host": "Host",
+          "port": "Poort"
+        },
+        "data_description": {
+          "host": "Het IP-adres of de hostnaam van het apparaat waarop pfclient draait, bijvoorbeeld 192.168.5.7.",
+          "port": "De poort van de pfclient-webinterface. Standaard is dat 30053."
+        }
+      },
+      "receiver": {
+        "title": "ADS-B-ontvanger",
+        "description": "Vul het adres in van de machine waarop je decoder draait. Home Assistant zoekt zelf naar de aircraft.json op de gebruikelijke plekken.",
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "Het IP-adres of de hostnaam van het apparaat waarop de decoder draait, bijvoorbeeld 192.168.5.7."
+        }
+      },
+      "aircraft": {
+        "title": "ADS-B-ontvanger",
+        "description": "Home Assistant kan ook de aircraft.json van je decoder uitlezen voor het aantal ontvangen vliegtuigen, het aantal berichten per seconde en het maximale bereik. Laat het veld leeg om dit over te slaan. Laat het leeg als een andere entry op dit station de decoder al uitleest, anders tellen die vliegtuigen dubbel.",
+        "data": {
+          "aircraft_url": "aircraft.json-URL"
+        },
+        "data_description": {
+          "aircraft_url": "De volledige URL naar aircraft.json, bijvoorbeeld http://192.168.5.7:8080/dump1090/data/aircraft.json. Wordt automatisch gedetecteerd als dat lukt."
+        }
+      },
+      "receiver_url": {
+        "title": "aircraft.json",
+        "description": "Hier komt alle data vandaan, dus dit veld is verplicht. Elke decoder die een aircraft.json aanbiedt werkt, ongeacht aan welk netwerk je voedt.",
+        "data": {
+          "aircraft_url": "aircraft.json-URL"
+        },
+        "data_description": {
+          "aircraft_url": "De volledige URL naar aircraft.json, bijvoorbeeld http://192.168.5.7/tar1090/data/aircraft.json. Wordt automatisch gedetecteerd als dat lukt."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken met de feeder",
+      "invalid_response": "Op dit adres staat geen fr24feed-statuspagina",
+      "cannot_connect_aircraft": "Kan geen verbinding maken met de ADS-B-ontvanger",
+      "invalid_aircraft_response": "Op deze URL staat geen aircraft.json",
+      "aircraft_url_required": "Zonder feeder is een aircraft.json-URL verplicht",
+      "unknown": "Onverwachte fout"
+    },
+    "abort": {
+      "already_configured": "Dit station is al geconfigureerd",
+      "reconfigure_successful": "Het station is bijgewerkt",
+      "wrong_feeder": "Dit adres hoort bij een andere feeder"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opties ADS-B-station",
+        "data": {
+          "scan_interval": "Ververstijd",
+          "proximity_radius": "Straal dichtbij",
+          "route_source": "Vluchtroutes opzoeken"
+        },
+        "data_description": {
+          "scan_interval": "Hoe vaak het station uitgelezen wordt, in seconden. Alles draait op je eigen netwerk, dus een korte tijd kan prima.",
+          "proximity_radius": "Hoe dichtbij een vliegtuig moet zijn om als dichtbij te tellen, in kilometers. Tien is ongeveer wat je kunt zien en horen.",
+          "route_source": "Geen enkel vliegtuig zendt uit waar het vandaan komt of heen gaat, dus dit is het enige gegeven dat aan een dienst op internet gevraagd moet worden. Alleen de vliegtuigen binnen de straal worden opgezocht, en antwoorden worden een dag bewaard."
+        }
+      }
+    }
+  },
+  "selector": {
+    "route_source": {
+      "options": {
+        "none": "Uit, alles op mijn eigen netwerk houden",
+        "adsbdb": "adsbdb.com (noemt ook de maatschappij)",
+        "routeset": "routeset via adsb.im (wat tar1090 gebruikt)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "aircraft_tracked": {
+        "name": "Vliegtuigen gevolgd"
+      },
+      "aircraft_tracked_adsb": {
+        "name": "Vliegtuigen gevolgd via ADS-B"
+      },
+      "aircraft_uploaded": {
+        "name": "Vliegtuigen doorgestuurd"
+      },
+      "feed_status": {
+        "name": "Feedstatus"
+      },
+      "feed_mode": {
+        "name": "Feedmodus"
+      },
+      "feed_alias": {
+        "name": "Feed-alias"
+      },
+      "map_size": {
+        "name": "Kaartgrootte"
+      },
+      "resets": {
+        "name": "Herstarts"
+      },
+      "last_connected": {
+        "name": "Laatst verbonden"
+      },
+      "cpu_temperature": {
+        "name": "CPU-temperatuur"
+      },
+      "aircraft_received": {
+        "name": "Vliegtuigen ontvangen"
+      },
+      "aircraft_with_position": {
+        "name": "Vliegtuigen met positie"
+      },
+      "messages": {
+        "name": "Berichten"
+      },
+      "message_rate": {
+        "name": "Berichten per seconde"
+      },
+      "max_range": {
+        "name": "Maximaal bereik"
+      },
+      "receiver_updated": {
+        "name": "Ontvanger bijgewerkt"
+      },
+      "signal": {
+        "name": "Signaalniveau"
+      },
+      "noise": {
+        "name": "Ruisniveau"
+      },
+      "signal_to_noise": {
+        "name": "Signaal-ruisverhouding"
+      },
+      "peak_signal": {
+        "name": "Piek-signaalniveau"
+      },
+      "strong_signals": {
+        "name": "Te sterke signalen"
+      },
+      "samples_dropped": {
+        "name": "Verloren samples"
+      },
+      "messages_accepted": {
+        "name": "Geaccepteerde berichten"
+      },
+      "tracks": {
+        "name": "Tracks"
+      },
+      "single_message_tracks": {
+        "name": "Tracks met één bericht"
+      },
+      "demodulator_load": {
+        "name": "Demodulatorbelasting"
+      },
+      "closest_aircraft": {
+        "name": "Dichtstbijzijnde vliegtuig"
+      },
+      "gain": {
+        "name": "Gain"
+      },
+      "aircraft_nearby": {
+        "name": "Vliegtuigen dichtbij"
+      },
+      "highest_aircraft": {
+        "name": "Hoogste vliegtuig"
+      },
+      "fastest_aircraft": {
+        "name": "Snelste vliegtuig"
+      },
+      "clock_drift": {
+        "name": "Klokafwijking"
+      },
+      "timing_source": {
+        "name": "Tijdbron"
+      },
+      "feed_server": {
+        "name": "Feed-server"
+      },
+      "resyncs": {
+        "name": "Hersynchronisaties"
+      },
+      "error_rate": {
+        "name": "Foutratio berichten"
+      },
+      "aircraft_adsb": {
+        "name": "Vliegtuigen via ADS-B"
+      },
+      "aircraft_mlat": {
+        "name": "Vliegtuigen via MLAT"
+      },
+      "aircraft_mode_s": {
+        "name": "Vliegtuigen via Mode S"
+      },
+      "frequency_error": {
+        "name": "Frequentieafwijking"
+      },
+      "positions_decoded": {
+        "name": "Posities gedecodeerd"
+      },
+      "positions_rejected": {
+        "name": "Posities verworpen"
+      },
+      "max_range_n": {
+        "name": "Maximaal bereik noord"
+      },
+      "max_range_ne": {
+        "name": "Maximaal bereik noordoost"
+      },
+      "max_range_e": {
+        "name": "Maximaal bereik oost"
+      },
+      "max_range_se": {
+        "name": "Maximaal bereik zuidoost"
+      },
+      "max_range_s": {
+        "name": "Maximaal bereik zuid"
+      },
+      "max_range_sw": {
+        "name": "Maximaal bereik zuidwest"
+      },
+      "max_range_w": {
+        "name": "Maximaal bereik west"
+      },
+      "max_range_nw": {
+        "name": "Maximaal bereik noordwest"
+      },
+      "piaware_radio": {
+        "name": "Radio",
+        "state": {
+          "green": "OK",
+          "amber": "Waarschuwing",
+          "red": "Probleem"
+        }
+      },
+      "piaware_feed": {
+        "name": "Feed",
+        "state": {
+          "green": "OK",
+          "amber": "Waarschuwing",
+          "red": "Probleem"
+        }
+      },
+      "piaware_mlat": {
+        "name": "MLAT",
+        "state": {
+          "green": "OK",
+          "amber": "Waarschuwing",
+          "red": "Probleem"
+        }
+      },
+      "piaware_service": {
+        "name": "PiAware-dienst",
+        "state": {
+          "green": "OK",
+          "amber": "Waarschuwing",
+          "red": "Probleem"
+        }
+      },
+      "piaware_cpu_load": {
+        "name": "CPU-belasting"
+      },
+      "piaware_uptime": {
+        "name": "Bedrijfstijd"
+      },
+      "piaware_cpu_temperature": {
+        "name": "CPU-temperatuur"
+      },
+      "pf_message_rate": {
+        "name": "Berichten per seconde"
+      },
+      "pf_messages": {
+        "name": "Mode S-berichten"
+      },
+      "pf_modeac_messages": {
+        "name": "Mode A/C-berichten"
+      },
+      "pf_crc_errors": {
+        "name": "CRC-fouten"
+      },
+      "pf_uploaded": {
+        "name": "Geüpload"
+      },
+      "pf_mlat_uploaded": {
+        "name": "MLAT geüpload"
+      },
+      "pf_receiver_rate": {
+        "name": "Datasnelheid ontvanger"
+      }
+    },
+    "binary_sensor": {
+      "receiver": {
+        "name": "Ontvanger",
+        "state": {
+          "off": "Niet verbonden",
+          "on": "Verbonden"
+        }
+      },
+      "feed": {
+        "name": "Feed",
+        "state": {
+          "off": "Niet verbonden",
+          "on": "Verbonden"
+        }
+      },
+      "mlat": {
+        "name": "MLAT",
+        "state": {
+          "off": "Werkt niet",
+          "on": "Werkt"
+        }
+      },
+      "emergency": {
+        "name": "Noodsquawk",
+        "state": {
+          "off": "Geen",
+          "on": "Gedetecteerd"
+        }
+      },
+      "nearby": {
+        "name": "Vliegtuig overhead",
+        "state": {
+          "off": "Geen",
+          "on": "Overhead"
+        }
+      },
+      "pf_mlat": {
+        "name": "MLAT",
+        "state": {
+          "off": "Verstuurt niets",
+          "on": "Verstuurt"
+        }
+      }
+    },
+    "button": {
+      "reset_range": {
+        "name": "Bereikrecords wissen"
+      }
+    }
+  }
+}

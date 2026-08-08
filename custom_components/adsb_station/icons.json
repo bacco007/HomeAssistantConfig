@@ -1,0 +1,208 @@
+{
+  "entity": {
+    "sensor": {
+      "aircraft_tracked": {
+        "default": "mdi:airplane"
+      },
+      "aircraft_tracked_adsb": {
+        "default": "mdi:airplane-marker"
+      },
+      "aircraft_uploaded": {
+        "default": "mdi:cloud-upload"
+      },
+      "feed_status": {
+        "default": "mdi:transit-connection-variant"
+      },
+      "feed_mode": {
+        "default": "mdi:radio-tower"
+      },
+      "feed_alias": {
+        "default": "mdi:identifier"
+      },
+      "map_size": {
+        "default": "mdi:map-outline"
+      },
+      "resets": {
+        "default": "mdi:restart"
+      },
+      "last_connected": {
+        "default": "mdi:clock-check-outline"
+      },
+      "cpu_temperature": {
+        "default": "mdi:thermometer"
+      },
+      "aircraft_received": {
+        "default": "mdi:airplane-search"
+      },
+      "aircraft_with_position": {
+        "default": "mdi:map-marker-radius"
+      },
+      "messages": {
+        "default": "mdi:message-badge-outline"
+      },
+      "message_rate": {
+        "default": "mdi:speedometer"
+      },
+      "max_range": {
+        "default": "mdi:signal-distance-variant"
+      },
+      "receiver_updated": {
+        "default": "mdi:clock-outline"
+      },
+      "signal": {
+        "default": "mdi:signal"
+      },
+      "noise": {
+        "default": "mdi:waveform"
+      },
+      "signal_to_noise": {
+        "default": "mdi:signal-variant"
+      },
+      "peak_signal": {
+        "default": "mdi:signal-cellular-3"
+      },
+      "strong_signals": {
+        "default": "mdi:alert-decagram-outline"
+      },
+      "samples_dropped": {
+        "default": "mdi:package-variant-remove"
+      },
+      "messages_accepted": {
+        "default": "mdi:check-network-outline"
+      },
+      "tracks": {
+        "default": "mdi:vector-polyline"
+      },
+      "single_message_tracks": {
+        "default": "mdi:vector-point"
+      },
+      "demodulator_load": {
+        "default": "mdi:chip"
+      },
+      "closest_aircraft": {
+        "default": "mdi:airplane-landing"
+      },
+      "gain": {
+        "default": "mdi:tune-vertical"
+      },
+      "aircraft_nearby": {
+        "default": "mdi:radar"
+      },
+      "highest_aircraft": {
+        "default": "mdi:airplane-takeoff"
+      },
+      "fastest_aircraft": {
+        "default": "mdi:speedometer-medium"
+      },
+      "error_rate": {
+        "default": "mdi:alert-circle-outline"
+      },
+      "aircraft_adsb": {
+        "default": "mdi:antenna"
+      },
+      "aircraft_mlat": {
+        "default": "mdi:triangle-outline"
+      },
+      "aircraft_mode_s": {
+        "default": "mdi:radio-handheld"
+      },
+      "frequency_error": {
+        "default": "mdi:sine-wave"
+      },
+      "positions_decoded": {
+        "default": "mdi:map-marker-check-outline"
+      },
+      "positions_rejected": {
+        "default": "mdi:map-marker-remove-outline"
+      },
+      "clock_drift": {
+        "default": "mdi:clock-alert-outline"
+      },
+      "timing_source": {
+        "default": "mdi:clock-digital"
+      },
+      "feed_server": {
+        "default": "mdi:server-network"
+      },
+      "resyncs": {
+        "default": "mdi:sync-alert"
+      },
+      "piaware_radio": {
+        "default": "mdi:radio-tower"
+      },
+      "piaware_feed": {
+        "default": "mdi:cloud-check-outline"
+      },
+      "piaware_mlat": {
+        "default": "mdi:triangle-outline"
+      },
+      "piaware_service": {
+        "default": "mdi:cog-outline"
+      },
+      "piaware_cpu_load": {
+        "default": "mdi:cpu-64-bit"
+      },
+      "piaware_uptime": {
+        "default": "mdi:timer-outline"
+      },
+      "piaware_cpu_temperature": {
+        "default": "mdi:thermometer"
+      },
+      "pf_message_rate": {
+        "default": "mdi:speedometer"
+      },
+      "pf_messages": {
+        "default": "mdi:message-badge-outline"
+      },
+      "pf_modeac_messages": {
+        "default": "mdi:message-outline"
+      },
+      "pf_crc_errors": {
+        "default": "mdi:alert-octagon-outline"
+      },
+      "pf_uploaded": {
+        "default": "mdi:cloud-upload-outline"
+      },
+      "pf_mlat_uploaded": {
+        "default": "mdi:cloud-upload"
+      },
+      "pf_receiver_rate": {
+        "default": "mdi:download-network-outline"
+      },
+      "max_range_n": {
+        "default": "mdi:compass-outline"
+      },
+      "max_range_ne": {
+        "default": "mdi:compass-outline"
+      },
+      "max_range_e": {
+        "default": "mdi:compass-outline"
+      },
+      "max_range_se": {
+        "default": "mdi:compass-outline"
+      },
+      "max_range_s": {
+        "default": "mdi:compass-outline"
+      },
+      "max_range_sw": {
+        "default": "mdi:compass-outline"
+      },
+      "max_range_w": {
+        "default": "mdi:compass-outline"
+      },
+      "max_range_nw": {
+        "default": "mdi:compass-outline"
+      }
+    },
+    "binary_sensor": {
+      "nearby": {
+        "default": "mdi:airplane-alert"
+      }
+    },
+    "button": {
+      "reset_range": {
+        "default": "mdi:backup-restore"
+      }
+    }
+  }
+}

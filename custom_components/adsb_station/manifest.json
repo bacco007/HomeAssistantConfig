@@ -1,0 +1,12 @@
+{
+  "domain": "adsb_station",
+  "name": "ADS-B Station",
+  "codeowners": ["@mirkin-pixel"],
+  "config_flow": true,
+  "documentation": "https://github.com/mirkin-pixel/ha-adsb-station",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/mirkin-pixel/ha-adsb-station/issues",
+  "requirements": [],
+  "version": "0.6.0"
+}

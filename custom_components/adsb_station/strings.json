@@ -1,0 +1,386 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ADS-B station",
+        "description": "What runs on your receiver? Anything that serves an aircraft.json works: dump1090, dump1090-fa and SkyAware, readsb and tar1090. Add the Flightradar24 feeder on top only if you actually run fr24feed.",
+        "menu_options": {
+          "fr24feed": "Flightradar24 feeder (fr24feed)",
+          "piaware": "FlightAware feeder (PiAware)",
+          "planefinder": "Plane Finder feeder (pfclient)",
+          "receiver": "ADS-B receiver only"
+        }
+      },
+      "fr24feed": {
+        "title": "Flightradar24 feeder",
+        "description": "Enter the address of your Flightradar24 feeder. Home Assistant reads the status page that fr24feed serves on your own receiver.",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "The IP address or hostname of the device running fr24feed, for example 192.168.5.7.",
+          "port": "The port of the fr24feed status page. The default is 8754."
+        }
+      },
+      "piaware": {
+        "title": "FlightAware feeder",
+        "description": "Enter the address of the machine running PiAware. The port is the one its status page is served on, 8080 by default.",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "The IP address or hostname of the device running PiAware, for example 192.168.5.7.",
+          "port": "The port serving status.json. FlightAware's own tooling uses 8080; a station whose web server was taken over by something else may serve it elsewhere."
+        }
+      },
+      "planefinder": {
+        "title": "Plane Finder feeder",
+        "description": "Enter the address of the machine running pfclient. The port is the one its web interface is served on, 30053 by default.",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "The IP address or hostname of the device running pfclient, for example 192.168.5.7.",
+          "port": "The port of the pfclient web interface. The default is 30053."
+        }
+      },
+      "receiver": {
+        "title": "ADS-B receiver",
+        "description": "Enter the address of the machine running your decoder. Home Assistant looks for its aircraft.json in the usual places.",
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "The IP address or hostname of the device running the decoder, for example 192.168.5.7."
+        }
+      },
+      "aircraft": {
+        "title": "ADS-B receiver",
+        "description": "Home Assistant can also read the aircraft.json of your decoder for the number of aircraft received, the message rate and the maximum range. Leave the field empty to skip this. Leave it empty if another entry on this station already reads the decoder, or its aircraft will be counted twice.",
+        "data": {
+          "aircraft_url": "aircraft.json URL"
+        },
+        "data_description": {
+          "aircraft_url": "The full URL to aircraft.json, for example http://192.168.5.7:8080/dump1090/data/aircraft.json. Detected automatically when possible."
+        }
+      },
+      "receiver_url": {
+        "title": "aircraft.json",
+        "description": "This is where the data comes from, so it is required. Any decoder that serves an aircraft.json works, whichever network you feed.",
+        "data": {
+          "aircraft_url": "aircraft.json URL"
+        },
+        "data_description": {
+          "aircraft_url": "The full URL to aircraft.json, for example http://192.168.5.7/tar1090/data/aircraft.json. Detected automatically when possible."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the feeder",
+      "invalid_response": "This address does not serve an fr24feed status page",
+      "cannot_connect_aircraft": "Failed to connect to the ADS-B receiver",
+      "invalid_aircraft_response": "This URL does not serve an aircraft.json",
+      "aircraft_url_required": "Without a feeder, an aircraft.json URL is required",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This station is already configured",
+      "reconfigure_successful": "The station was updated successfully",
+      "wrong_feeder": "This address belongs to a different feeder"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ADS-B station options",
+        "data": {
+          "scan_interval": "Update interval",
+          "proximity_radius": "Nearby radius",
+          "route_source": "Look up flight routes"
+        },
+        "data_description": {
+          "scan_interval": "How often the station is read, in seconds. Everything runs on your own network, so a short interval is fine.",
+          "proximity_radius": "How close an aircraft has to be to count as nearby, in kilometres. Ten is roughly what you can see and hear.",
+          "route_source": "No aircraft broadcasts where it is flying from or to, so this is the one figure that has to be asked of a service on the internet. Only the aircraft inside the nearby radius are looked up, and answers are kept for the day."
+        }
+      }
+    }
+  },
+  "selector": {
+    "route_source": {
+      "options": {
+        "none": "Off, keep everything on my own network",
+        "adsbdb": "adsbdb.com (names the airline as well)",
+        "routeset": "routeset via adsb.im (what tar1090 uses)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "aircraft_tracked": {
+        "name": "Aircraft tracked"
+      },
+      "aircraft_tracked_adsb": {
+        "name": "Aircraft tracked via ADS-B"
+      },
+      "aircraft_uploaded": {
+        "name": "Aircraft uploaded"
+      },
+      "feed_status": {
+        "name": "Feed status"
+      },
+      "feed_mode": {
+        "name": "Feed mode"
+      },
+      "feed_alias": {
+        "name": "Feed alias"
+      },
+      "map_size": {
+        "name": "Map size"
+      },
+      "resets": {
+        "name": "Resets"
+      },
+      "last_connected": {
+        "name": "Last connected"
+      },
+      "cpu_temperature": {
+        "name": "CPU temperature"
+      },
+      "aircraft_received": {
+        "name": "Aircraft received"
+      },
+      "aircraft_with_position": {
+        "name": "Aircraft with position"
+      },
+      "messages": {
+        "name": "Messages"
+      },
+      "message_rate": {
+        "name": "Message rate"
+      },
+      "max_range": {
+        "name": "Maximum range"
+      },
+      "receiver_updated": {
+        "name": "Receiver updated"
+      },
+      "signal": {
+        "name": "Signal level"
+      },
+      "noise": {
+        "name": "Noise level"
+      },
+      "signal_to_noise": {
+        "name": "Signal-to-noise ratio"
+      },
+      "peak_signal": {
+        "name": "Peak signal level"
+      },
+      "strong_signals": {
+        "name": "Strong signals"
+      },
+      "samples_dropped": {
+        "name": "Samples dropped"
+      },
+      "messages_accepted": {
+        "name": "Messages accepted"
+      },
+      "tracks": {
+        "name": "Tracks"
+      },
+      "single_message_tracks": {
+        "name": "Single-message tracks"
+      },
+      "demodulator_load": {
+        "name": "Demodulator load"
+      },
+      "closest_aircraft": {
+        "name": "Closest aircraft"
+      },
+      "gain": {
+        "name": "Gain"
+      },
+      "aircraft_nearby": {
+        "name": "Aircraft nearby"
+      },
+      "highest_aircraft": {
+        "name": "Highest aircraft"
+      },
+      "fastest_aircraft": {
+        "name": "Fastest aircraft"
+      },
+      "clock_drift": {
+        "name": "Clock drift"
+      },
+      "timing_source": {
+        "name": "Timing source"
+      },
+      "feed_server": {
+        "name": "Feed server"
+      },
+      "resyncs": {
+        "name": "Resyncs"
+      },
+      "error_rate": {
+        "name": "Message error rate"
+      },
+      "aircraft_adsb": {
+        "name": "Aircraft via ADS-B"
+      },
+      "aircraft_mlat": {
+        "name": "Aircraft via MLAT"
+      },
+      "aircraft_mode_s": {
+        "name": "Aircraft via Mode S"
+      },
+      "frequency_error": {
+        "name": "Frequency error"
+      },
+      "positions_decoded": {
+        "name": "Positions decoded"
+      },
+      "positions_rejected": {
+        "name": "Positions rejected"
+      },
+      "max_range_n": {
+        "name": "Maximum range north"
+      },
+      "max_range_ne": {
+        "name": "Maximum range northeast"
+      },
+      "max_range_e": {
+        "name": "Maximum range east"
+      },
+      "max_range_se": {
+        "name": "Maximum range southeast"
+      },
+      "max_range_s": {
+        "name": "Maximum range south"
+      },
+      "max_range_sw": {
+        "name": "Maximum range southwest"
+      },
+      "max_range_w": {
+        "name": "Maximum range west"
+      },
+      "max_range_nw": {
+        "name": "Maximum range northwest"
+      },
+      "piaware_radio": {
+        "name": "Radio",
+        "state": {
+          "green": "OK",
+          "amber": "Warning",
+          "red": "Problem"
+        }
+      },
+      "piaware_feed": {
+        "name": "Feed",
+        "state": {
+          "green": "OK",
+          "amber": "Warning",
+          "red": "Problem"
+        }
+      },
+      "piaware_mlat": {
+        "name": "MLAT",
+        "state": {
+          "green": "OK",
+          "amber": "Warning",
+          "red": "Problem"
+        }
+      },
+      "piaware_service": {
+        "name": "PiAware service",
+        "state": {
+          "green": "OK",
+          "amber": "Warning",
+          "red": "Problem"
+        }
+      },
+      "piaware_cpu_load": {
+        "name": "CPU load"
+      },
+      "piaware_uptime": {
+        "name": "Uptime"
+      },
+      "piaware_cpu_temperature": {
+        "name": "CPU temperature"
+      },
+      "pf_message_rate": {
+        "name": "Message rate"
+      },
+      "pf_messages": {
+        "name": "Mode S messages"
+      },
+      "pf_modeac_messages": {
+        "name": "Mode A/C messages"
+      },
+      "pf_crc_errors": {
+        "name": "CRC errors"
+      },
+      "pf_uploaded": {
+        "name": "Uploaded"
+      },
+      "pf_mlat_uploaded": {
+        "name": "MLAT uploaded"
+      },
+      "pf_receiver_rate": {
+        "name": "Receiver data rate"
+      }
+    },
+    "binary_sensor": {
+      "receiver": {
+        "name": "Receiver",
+        "state": {
+          "off": "Disconnected",
+          "on": "Connected"
+        }
+      },
+      "feed": {
+        "name": "Feed",
+        "state": {
+          "off": "Disconnected",
+          "on": "Connected"
+        }
+      },
+      "mlat": {
+        "name": "MLAT",
+        "state": {
+          "off": "Not working",
+          "on": "Working"
+        }
+      },
+      "emergency": {
+        "name": "Emergency squawk",
+        "state": {
+          "off": "None",
+          "on": "Detected"
+        }
+      },
+      "nearby": {
+        "name": "Aircraft overhead",
+        "state": {
+          "off": "None",
+          "on": "Overhead"
+        }
+      },
+      "pf_mlat": {
+        "name": "MLAT",
+        "state": {
+          "off": "Not sending",
+          "on": "Sending"
+        }
+      }
+    },
+    "button": {
+      "reset_range": {
+        "name": "Reset range records"
+      }
+    }
+  }
+}
