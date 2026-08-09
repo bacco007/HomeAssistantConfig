@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 3.0.0 - Card tap action for header navigation
+// Version 3.0.1 - Usage figure now consistent across stat tile, bar, and legend
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -762,6 +762,14 @@ class SolarBarCard extends HTMLElement {
     // (self_consumption_entity on many inverters reports solar self-consumption, not total house consumption)
     const effectiveConsumption = Math.max(selfConsumption, totalHouseConsumption);
     const nonEvConsumption = Math.max(0, effectiveConsumption - evUsage);
+
+    // Single source of truth for the "Usage" figure shown on the Usage stat tile,
+    // house icon, and legend. EV charging is broken out as its own tile/segment
+    // elsewhere, so this must exclude it to avoid double-counting EV power under
+    // the "Usage" label. Prefers the user's configured self_consumption_entity
+    // (which may already exclude other loads via a helper) and otherwise falls
+    // back to the physics-derived house consumption with EV subtracted.
+    const houseUsageDisplay = self_consumption_entity ? selfConsumption : nonEvConsumption;
 
     // Calculate how much solar feeds the load directly
     const solarToLoad = Math.min(solarProduction, effectiveConsumption);
@@ -2085,7 +2093,7 @@ class SolarBarCard extends HTMLElement {
             </div>`,
             `<div class="stat" data-entity="${self_consumption_entity}" data-action-key="usage" title="${this.getLabel('click_history')}">
               <div class="stat-label">${this.getLabel('usage')}</div>
-              <div class="stat-value">${fmtPow(self_consumption_entity ? selfConsumption : totalHouseConsumption)}${isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}</div>
+              <div class="stat-value">${fmtPow(houseUsageDisplay)}${isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}</div>
               ${!isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}
             </div>`,
             exportPower > 0 ? `
@@ -2203,7 +2211,7 @@ class SolarBarCard extends HTMLElement {
                 <div class="house-icon ${hasGridImport && solarProduction <= 0 ? 'importing' : ''}"
                      data-entity="${self_consumption_entity}"
                      data-action-key="usage"
-                     title="${this.getLabel('usage')}: ${fmtPow(totalHouseConsumption)} - ${this.getLabel('click_history')}">
+                     title="${this.getLabel('usage')}: ${fmtPow(houseUsageDisplay)} - ${this.getLabel('click_history')}">
                   <ha-icon icon="mdi:home" style="color: white"></ha-icon>
                 </div>
               ` : ''}
@@ -2298,7 +2306,7 @@ class SolarBarCard extends HTMLElement {
               ${solarToHome > 0 ? `
                 <div class="legend-item" data-entity="${self_consumption_entity}" data-action-key="usage" title="${this.getLabel('click_history')}">
                   <div class="legend-color solar-home-color"></div>
-                  <span>${this.getLabel('usage')}${show_legend_values ? ` ${fmtPow(totalHouseConsumption)}` : ''}</span>
+                  <span>${this.getLabel('usage')}${show_legend_values ? ` ${fmtPow(houseUsageDisplay)}` : ''}</span>
                 </div>
               ` : ''}
               ${exportPower > 0 ? `
@@ -3255,7 +3263,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v3.0.0 ',
+  '%c SOLAR-BAR-CARD %c v3.0.1 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
