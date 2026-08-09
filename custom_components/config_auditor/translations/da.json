@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurations-auditor",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Fuld skanning",
       "automations": "Automatiseringer",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Tilføj {entity} til recorder.exclude.entities i configuration.yaml? Der oprettes en sikkerhedskopi, og filen valideres.",
       "recorder_exclude_success": "{entity} tilføjet til recorder.exclude.entities. Ændringen træder i kraft ved næste HACA-scanning.",
       "recorder_exclude_already": "{entity} er allerede ekskluderet.",
-      "recorder_exclude_error": "Kunne ikke ekskludere entiteten"
+      "recorder_exclude_error": "Kunne ikke ekskludere entiteten",
+      "noisy_ignore": "Ignorér (støj)",
+      "noisy_ignore_title": "Stop med at markere denne entitet i scanningen «Støjende entiteter» (fuld Recorder-historik bevares)",
+      "noisy_ignore_success": "{entity} tilføjet til ekskluderingslisten for støj-scanning",
+      "noisy_ignore_already": "{entity} er allerede dækket af mønsteret: {pattern}",
+      "noisy_ignore_error": "Kunne ikke tilføje til ekskluderingslisten"
     },
     "messages": {
       "no_issues": "Ingen problemer fundet i denne kategori",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Notificér ved mindre problemer og forslag",
       "dashboard_section_title": "HACA-instrumentbræt",
       "dashboard_section_hint": "Opret automatisk et komplet HACA-oversigts-dashboard i sidebjælken. Hvis det allerede findes, opdateres det.",
-      "dashboard_created": "Dashboard oprettet! Omdirigerer..."
+      "dashboard_created": "Dashboard oprettet! Omdirigerer...",
+      "noisy_exclude_title": "Skjul entiteter fra scanningen «Støjende entiteter»",
+      "noisy_exclude_info": "<b>Hvad bruges det til:</b> HACAs scanning «Støjende entiteter» markerer entiteter, der ændrer tilstand mere end 200 gange på 24 timer, så du kan beslutte, om du vil udelukke dem fra Recorderen. Men nogle entiteter er <em>nødt til</em> at ændre sig ofte (bevægelsessensorer, vejr, trackere, dør-/vindueskontakter, Browser Mod osv.) — du vil bevare deres historik, men du vil ikke have, at HACA bliver ved med at advare dig om dem.<br><br><b>Hvad du skal gøre:</b> tilføj ét <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">glob-mønster</a> per linje nedenfor. Enhver entitet, hvis <code>entity_id</code> matcher et mønster, springes lydløst over kun af scanningen «Støjende entiteter» — dens fulde Recorder-historik bevares, og de øvrige HACA-scanninger (sikkerhed, ydeevne osv.) ser den stadig. Mønstre er versalfølsomme og bruger <code>*</code> (et hvilket som helst antal tegn) og <code>?</code> (ét tegn).<br><br><b>Genvej:</b> på ethvert issue-kort for en <em>støjende entitet</em> klik på den orange knap <b>Ignorér (støj)</b> — den tilføjer entity_id direkte til listen nedenfor og skjuler issuet. Brug dette til enkeltstående entiteter; brug mønstrene ovenfor til hele familier (fx alle Browser Mod-sensorer på én gang).",
+      "noisy_exclude_examples": "<b>Eksempler</b> — <code>sensor.browser_mod_*</code> skjuler alle Browser Mod-sensorer · <code>device_tracker.*</code> skjuler alle enhedstrackere · <code>*_motion</code> skjuler alt, der ender på <code>_motion</code> · <code>binary_sensor.window_*</code> skjuler vindueskontakter.",
+      "noisy_exclude_placeholder": "Ét mønster per linje, fx\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Prøv en entity_id, fx sensor.browser_mod_abc",
+      "noisy_exclude_test": "Test",
+      "noisy_exclude_test_match": "matcher mønster: {pattern}",
+      "noisy_exclude_test_no_match": "intet mønster matcher — denne entitet vil stadig fremstå som støjende"
     },
     "ai_explain": {
       "analyzing": "🤖 Analyserer kompleksitet…",

@@ -31,6 +31,13 @@ preview_device_id:
       example: "1234567890abc"
       selector:
         text:
+    location:
+      name: Location
+      description: 'Optional. Scope the preview to a single section/index (e.g. "action[0]" or "trigger[2]"). When omitted, every device_id reference in the automation is previewed.'
+      required: false
+      example: "action[0]"
+      selector:
+        text:
 
 fix_device_id:
   name: Fix device_id
@@ -41,6 +48,13 @@ fix_device_id:
       description: The unique ID of the automation to fix.
       required: true
       example: "1234567890abc"
+      selector:
+        text:
+    location:
+      name: Location
+      description: 'Optional. Scope the fix to a single section/index (e.g. "action[0]" or "trigger[2]"). When omitted, every device_id reference in the automation is fixed.'
+      required: false
+      example: "action[0]"
       selector:
         text:
     dry_run:

@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditor de Configuração do Home Assistant",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Verificação Completa",
       "automations": "Automações",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Adicionar {entity} a recorder.exclude.entities em configuration.yaml? Será criado um backup e o ficheiro será validado.",
       "recorder_exclude_success": "{entity} adicionada a recorder.exclude.entities. Em vigor na próxima análise HACA.",
       "recorder_exclude_already": "{entity} já está excluída.",
-      "recorder_exclude_error": "Não foi possível excluir a entidade"
+      "recorder_exclude_error": "Não foi possível excluir a entidade",
+      "noisy_ignore": "Ignorar (ruído)",
+      "noisy_ignore_title": "Não sinalizar mais esta entidade na varredura «Entidades ruidosas» (o histórico Recorder completo é mantido)",
+      "noisy_ignore_success": "{entity} adicionado à lista de exclusão da varredura «ruidosas»",
+      "noisy_ignore_already": "{entity} já está coberto pelo padrão: {pattern}",
+      "noisy_ignore_error": "Não foi possível adicionar à lista de exclusão"
     },
     "messages": {
       "no_issues": "Nenhum problema detectado nesta categoria",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Notificar para problemas menores e sugestões",
       "dashboard_section_title": "Painel HACA",
       "dashboard_section_hint": "Gera automaticamente um dashboard HACA completo na barra lateral. Se já existir, será atualizado.",
-      "dashboard_created": "Dashboard criado com sucesso! Redirecionando..."
+      "dashboard_created": "Dashboard criado com sucesso! Redirecionando...",
+      "noisy_exclude_title": "Ocultar entidades da varredura «Entidades ruidosas»",
+      "noisy_exclude_info": "<b>Para que serve:</b> a varredura «Entidades ruidosas» do HACA sinaliza entidades que mudam de estado mais de 200 vezes em 24 h, para que você decida se as exclui do Recorder. Mas algumas entidades <em>devem</em> mudar com frequência (sensores de movimento, meteorologia, rastreadores, contatos porta/janela, Browser Mod, etc.) — você quer manter o histórico delas mas não quer que o HACA continue alertando sobre elas.<br><br><b>O que fazer:</b> adicione abaixo um <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">padrão glob</a> por linha. Qualquer entidade cuja <code>entity_id</code> corresponda a um padrão será silenciosamente ignorada apenas pela varredura «Entidades ruidosas» — seu histórico completo no Recorder é preservado e as outras varreduras HACA (segurança, desempenho, etc.) ainda a veem. Os padrões diferenciam maiúsculas/minúsculas e usam <code>*</code> (qualquer número de caracteres) e <code>?</code> (um único caractere).<br><br><b>Atalho:</b> em qualquer card de issue de <em>entidade ruidosa</em>, clique no botão laranja <b>Ignorar (ruído)</b> — ele adiciona o entity_id diretamente à lista abaixo e oculta a issue. Use isto para entidades pontuais; use os padrões acima para famílias inteiras (ex. todos os sensores Browser Mod de uma vez).",
+      "noisy_exclude_examples": "<b>Exemplos</b> — <code>sensor.browser_mod_*</code> oculta todos os sensores do Browser Mod · <code>device_tracker.*</code> oculta todos os rastreadores · <code>*_motion</code> oculta tudo que termina em <code>_motion</code> · <code>binary_sensor.window_*</code> oculta contatos de janela.",
+      "noisy_exclude_placeholder": "Um padrão por linha, ex.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Teste um entity_id, ex. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Testar",
+      "noisy_exclude_test_match": "corresponde ao padrão: {pattern}",
+      "noisy_exclude_test_no_match": "nenhum padrão corresponde — esta entidade ainda apareceria como ruidosa"
     },
     "ai_explain": {
       "analyzing": "🤖 Analisando complexidade…",

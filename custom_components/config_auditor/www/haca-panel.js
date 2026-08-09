@@ -1,4 +1,4 @@
-// HACA-BUILD: d1da24a9  2026-05-12T06:48:09Z
+// HACA-BUILD: a970a31b  2026-05-30T09:51:18Z
 // ── config_tab.js ──────────────────────────────────────────
 // ── config_tab.js ─────────────────────────────────────────────────────────
 // Onglet Configuration du panel HACA
@@ -15,121 +15,121 @@ var ISSUE_TYPES_BY_CATEGORY = [
   {
     id: 'automations', icon: 'mdi:robot',
     types: [
-      { id: 'device_id_in_trigger',              fixable: true  },
-      { id: 'device_trigger_platform',            fixable: true  },
-      { id: 'device_id_in_condition',             fixable: true  },
-      { id: 'device_condition_platform',          fixable: true  },
-      { id: 'device_id_in_action',                fixable: true  },
-      { id: 'device_id_in_target',                fixable: true  },
-      { id: 'template_simple_state',              fixable: true  },
-      { id: 'incorrect_mode_motion_single',       fixable: true  },
-      { id: 'deprecated_service',                 fixable: false },
-      { id: 'unknown_service',                    fixable: false },
-      { id: 'no_description',                     fixable: false },
-      { id: 'no_alias',                           fixable: false },
-      { id: 'duplicate_automation',               fixable: false },
-      { id: 'probable_duplicate_automation',      fixable: false },
-      { id: 'ghost_automation',                   fixable: false },
-      { id: 'never_triggered',                    fixable: false },
-      { id: 'excessive_delay',                    fixable: false },
-      { id: 'wait_template_vs_wait_for_trigger',  fixable: false },
-      { id: 'zone_no_entity',                     fixable: false },
-      { id: 'unknown_area_reference',             fixable: false },
-      { id: 'unknown_floor_reference',            fixable: false },
-      { id: 'unknown_label_reference',            fixable: false },
-      { id: 'template_numeric_comparison',        fixable: false },
-      { id: 'template_time_check',                fixable: false },
-      { id: 'god_automation',                     fixable: false },
-      { id: 'complex_automation',                 fixable: false },
+      { id: 'device_id_in_trigger', fixable: true },
+      { id: 'device_trigger_platform', fixable: true },
+      { id: 'device_id_in_condition', fixable: true },
+      { id: 'device_condition_platform', fixable: true },
+      { id: 'device_id_in_action', fixable: true },
+      { id: 'device_id_in_target', fixable: true },
+      { id: 'template_simple_state', fixable: true },
+      { id: 'incorrect_mode_motion_single', fixable: true },
+      { id: 'deprecated_service', fixable: false },
+      { id: 'unknown_service', fixable: false },
+      { id: 'no_description', fixable: false },
+      { id: 'no_alias', fixable: false },
+      { id: 'duplicate_automation', fixable: false },
+      { id: 'probable_duplicate_automation', fixable: false },
+      { id: 'ghost_automation', fixable: false },
+      { id: 'never_triggered', fixable: false },
+      { id: 'excessive_delay', fixable: false },
+      { id: 'wait_template_vs_wait_for_trigger', fixable: false },
+      { id: 'zone_no_entity', fixable: false },
+      { id: 'unknown_area_reference', fixable: false },
+      { id: 'unknown_floor_reference', fixable: false },
+      { id: 'unknown_label_reference', fixable: false },
+      { id: 'template_numeric_comparison', fixable: false },
+      { id: 'template_time_check', fixable: false },
+      { id: 'god_automation', fixable: false },
+      { id: 'complex_automation', fixable: false },
     ]
   },
   {
     id: 'scripts', icon: 'mdi:script-text',
     types: [
-      { id: 'script_cycle',                      fixable: false },
-      { id: 'script_call_depth',                 fixable: false },
-      { id: 'script_single_mode_loop',           fixable: false },
-      { id: 'script_orphan',                     fixable: false },
-      { id: 'script_blueprint_candidate',        fixable: false },
-      { id: 'empty_script',                      fixable: false },
+      { id: 'script_cycle', fixable: false },
+      { id: 'script_call_depth', fixable: false },
+      { id: 'script_single_mode_loop', fixable: false },
+      { id: 'script_orphan', fixable: false },
+      { id: 'script_blueprint_candidate', fixable: false },
+      { id: 'empty_script', fixable: false },
     ]
   },
   {
     id: 'scenes', icon: 'mdi:palette',
     types: [
-      { id: 'scene_entity_unavailable',          fixable: false },
-      { id: 'scene_not_triggered',               fixable: false },
-      { id: 'scene_duplicate',                   fixable: false },
-      { id: 'empty_scene',                       fixable: false },
+      { id: 'scene_entity_unavailable', fixable: false },
+      { id: 'scene_not_triggered', fixable: false },
+      { id: 'scene_duplicate', fixable: false },
+      { id: 'empty_scene', fixable: false },
     ]
   },
   {
     id: 'entities', icon: 'mdi:tag-multiple',
     types: [
-      { id: 'zombie_entity',           fixable: true  },
-      { id: 'broken_device_reference', fixable: true  },
-      { id: 'unavailable_entity',      fixable: false },
-      { id: 'unknown_state',           fixable: false },
-      { id: 'stale_entity',            fixable: false },
+      { id: 'zombie_entity', fixable: true },
+      { id: 'broken_device_reference', fixable: true },
+      { id: 'unavailable_entity', fixable: false },
+      { id: 'unknown_state', fixable: false },
+      { id: 'stale_entity', fixable: false },
       { id: 'disabled_but_referenced', fixable: false },
-      { id: 'ghost_registry_entry',    fixable: true  },
-      { id: 'unused_input_boolean',    fixable: false },
+      { id: 'ghost_registry_entry', fixable: true },
+      { id: 'unused_input_boolean', fixable: false },
     ]
   },
   {
     id: 'helpers', icon: 'mdi:cog-outline',
     types: [
-      { id: 'helper_unused',                     fixable: false },
-      { id: 'helper_orphaned_disabled_only',     fixable: false },
-      { id: 'helper_no_friendly_name',           fixable: false },
-      { id: 'input_number_invalid_range',        fixable: false },
-      { id: 'input_select_duplicate_options',    fixable: false },
-      { id: 'input_select_empty_option',         fixable: false },
-      { id: 'input_text_invalid_pattern',        fixable: false },
-      { id: 'timer_never_started',               fixable: false },
-      { id: 'timer_orphaned',                    fixable: false },
-      { id: 'timer_zero_duration',               fixable: false },
-      { id: 'template_sensor_no_metadata',       fixable: false },
-      { id: 'template_sensor_cycle',             fixable: false },
-      { id: 'template_missing_availability',     fixable: false },
-      { id: 'template_no_unavailable_check',     fixable: false },
-      { id: 'template_now_without_trigger',      fixable: false },
+      { id: 'helper_unused', fixable: false },
+      { id: 'helper_orphaned_disabled_only', fixable: false },
+      { id: 'helper_no_friendly_name', fixable: false },
+      { id: 'input_number_invalid_range', fixable: false },
+      { id: 'input_select_duplicate_options', fixable: false },
+      { id: 'input_select_empty_option', fixable: false },
+      { id: 'input_text_invalid_pattern', fixable: false },
+      { id: 'timer_never_started', fixable: false },
+      { id: 'timer_orphaned', fixable: false },
+      { id: 'timer_zero_duration', fixable: false },
+      { id: 'template_sensor_no_metadata', fixable: false },
+      { id: 'template_sensor_cycle', fixable: false },
+      { id: 'template_missing_availability', fixable: false },
+      { id: 'template_no_unavailable_check', fixable: false },
+      { id: 'template_now_without_trigger', fixable: false },
     ]
   },
   {
     id: 'groups', icon: 'mdi:group',
     types: [
-      { id: 'group_empty',                       fixable: false },
-      { id: 'group_missing_entities',            fixable: false },
-      { id: 'group_all_unavailable',             fixable: false },
-      { id: 'group_nested_deep',                 fixable: false },
+      { id: 'group_empty', fixable: false },
+      { id: 'group_missing_entities', fixable: false },
+      { id: 'group_all_unavailable', fixable: false },
+      { id: 'group_nested_deep', fixable: false },
     ]
   },
   {
     id: 'security', icon: 'mdi:shield-alert',
     types: [
-      { id: 'hardcoded_secret',         fixable: false },
-      { id: 'sensitive_data_exposure',  fixable: false },
+      { id: 'hardcoded_secret', fixable: false },
+      { id: 'sensitive_data_exposure', fixable: false },
     ]
   },
   {
     id: 'performance', icon: 'mdi:speedometer',
     types: [
-      { id: 'high_complexity_actions',          fixable: false },
-      { id: 'high_parallel_max',                fixable: false },
-      { id: 'potential_self_loop',              fixable: false },
-      { id: 'missing_state_class',              fixable: false },
-      { id: 'expensive_template_selectattr',    fixable: false },
-      { id: 'expensive_template_states_all',    fixable: false },
+      { id: 'high_complexity_actions', fixable: false },
+      { id: 'high_parallel_max', fixable: false },
+      { id: 'potential_self_loop', fixable: false },
+      { id: 'missing_state_class', fixable: false },
+      { id: 'expensive_template_selectattr', fixable: false },
+      { id: 'expensive_template_states_all', fixable: false },
     ]
   },
   {
     id: 'blueprints', icon: 'mdi:file-document-outline',
     types: [
-      { id: 'blueprint_missing_path',   fixable: false },
+      { id: 'blueprint_missing_path', fixable: false },
       { id: 'blueprint_file_not_found', fixable: false },
-      { id: 'blueprint_empty_input',    fixable: false },
-      { id: 'blueprint_no_inputs',      fixable: false },
+      { id: 'blueprint_empty_input', fixable: false },
+      { id: 'blueprint_no_inputs', fixable: false },
     ]
   },
   {
@@ -141,16 +141,16 @@ var ISSUE_TYPES_BY_CATEGORY = [
   {
     id: 'compliance', icon: 'mdi:shield-check-outline',
     types: [
-      { id: 'compliance_no_friendly_name',          fixable: false },
-      { id: 'compliance_raw_entity_name',           fixable: false },
-      { id: 'compliance_area_no_icon',              fixable: false },
-      { id: 'compliance_unused_label',              fixable: false },
+      { id: 'compliance_no_friendly_name', fixable: false },
+      { id: 'compliance_raw_entity_name', fixable: false },
+      { id: 'compliance_area_no_icon', fixable: false },
+      { id: 'compliance_unused_label', fixable: false },
       { id: 'compliance_automation_no_description', fixable: false },
-      { id: 'compliance_automation_no_unique_id',   fixable: false },
-      { id: 'compliance_script_no_description',     fixable: false },
-      { id: 'compliance_entity_no_area',            fixable: false },
-      { id: 'compliance_helper_no_icon',            fixable: false },
-      { id: 'compliance_helper_no_area',            fixable: false },
+      { id: 'compliance_automation_no_unique_id', fixable: false },
+      { id: 'compliance_script_no_description', fixable: false },
+      { id: 'compliance_entity_no_area', fixable: false },
+      { id: 'compliance_helper_no_icon', fixable: false },
+      { id: 'compliance_helper_no_area', fixable: false },
     ]
   },
 ];
@@ -160,7 +160,7 @@ var ISSUE_TYPES_BY_CATEGORY = [
 function renderConfigTab(options, lang, t) {
   // t() is the translation function passed from the panel component
   if (!t) t = (key) => key; // fallback: return key as-is
-  var _icon = window._icon || function(n,s){return '';};
+  var _icon = window._icon || function (n, s) { return ''; };
   lang = lang || 'en';
   var excludedTypes = new Set(options.excluded_issue_types || []);
 
@@ -185,7 +185,7 @@ function renderConfigTab(options, lang, t) {
     return '<div class="cfg-cat-section">' +
       '<div class="cfg-cat-section-header">' +
       '<div class="cfg-cat-header-left">' +
-      _icon((cat.icon || "").replace("mdi:",""), 18) +
+      _icon((cat.icon || "").replace("mdi:", ""), 18) +
       '<span class="cfg-cat-section-title">' + label + '</span>' +
       '<span class="cfg-cat-count" id="count-' + cat.id + '"></span>' +
       '</div>' +
@@ -328,6 +328,23 @@ function renderConfigTab(options, lang, t) {
       </div>
     </div>` +
 
+    // ── Noisy scan exclude patterns section ──
+    `<div class="cfg-section" style="padding:16px 20px;">
+      <div class="cfg-section-title">${_icon("volume-mute", 18)}${t('config.noisy_exclude_title')}</div>
+      <div class="cfg-row-hint" style="margin-top:8px;line-height:1.6;">${t('config.noisy_exclude_info')}</div>
+      <div class="cfg-row-hint" style="margin-top:6px;font-size:0.78em;">${t('config.noisy_exclude_examples')}</div>
+      <textarea id="cfg-noisy-exclude-patterns" class="cfg-textarea" rows="6" cols="100" spellcheck="false"
+        placeholder="${t('config.noisy_exclude_placeholder')}">${(options.noisy_scan_exclude_patterns || []).join('\n')}</textarea>
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="cfg-noisy-exclude-test" class="cfg-input" style="flex:1;min-width:180px;text-align:left;width:auto;"
+          placeholder="${t('config.noisy_exclude_test_placeholder')}">
+        <button class="cfg-btn cfg-btn-secondary" id="cfg-noisy-exclude-test-btn" style="height:38px;">
+          ${_icon("flask-outline", 16)} ${t('config.noisy_exclude_test')}
+        </button>
+        <span id="cfg-noisy-exclude-test-result" class="cfg-row-hint" style="margin-left:6px;font-weight:600;"></span>
+      </div>
+    </div>` +
+
     // ── Dashboard creation section ──
     `<div class="cfg-section" style="padding:16px 20px;">
       <div class="cfg-section-title">${_icon("view-dashboard-outline", 18)}${t('config.dashboard_section_title')}</div>
@@ -342,8 +359,8 @@ function renderConfigTab(options, lang, t) {
 
     // ── Boutons ──
     '<div class="cfg-actions">' +
-      '<button class="cfg-btn cfg-btn-secondary" id="cfg-reset-btn">' + _icon("restore", 18) + t('config.reset') + '</button>' +
-      '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn">' + _icon("content-save", 18) + t('config.save') + '</button>' +
+    '<button class="cfg-btn cfg-btn-secondary" id="cfg-reset-btn">' + _icon("restore", 18) + t('config.reset') + '</button>' +
+    '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn">' + _icon("content-save", 18) + t('config.save') + '</button>' +
     '</div>' +
     '<div id="cfg-save-status" class="cfg-save-status" style="display:none;"></div>' +
 
@@ -412,6 +429,8 @@ var CONFIG_TAB_CSS = `
   .cfg-save-status { padding: 12px 20px; border-radius: 8px; font-size: 0.88em; font-weight: 500; text-align: center; animation: fadeIn 0.2s ease-out; }
   .cfg-save-status.success { background: rgba(34,197,94,0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.3); }
   .cfg-save-status.error { background: rgba(239,68,68,0.12); color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+  .cfg-textarea { width: 100%; box-sizing: border-box; margin-top: 10px; padding: 10px 12px; border: 1.5px solid var(--divider-color); border-radius: 8px; background: var(--primary-background-color); color: var(--primary-text-color); font-family: var(--code-font-family, monospace); font-size: 0.85em; line-height: 1.5; resize: vertical; min-height: 96px; transition: border-color 0.2s; }
+  .cfg-textarea:focus { outline: none; border-color: var(--primary-color); }
 `;
 
 // ─── Defaults ─────────────────────────────────────────────────────────────
@@ -433,6 +452,7 @@ var DEFAULT_OPTIONS = {
   notify_high_severity: true,
   notify_medium_severity: false,
   notify_low_severity: false,
+  noisy_scan_exclude_patterns: [],
 };
 
 // ─── Collecte des valeurs ─────────────────────────────────────────────────
@@ -450,7 +470,7 @@ function collectFormOptions(root) {
   }
 
   return {
-    scan_interval: (function() { var el = q('#cfg-scan-interval'); if (!el) return 60; var v = parseInt(el.value, 10); return isNaN(v) ? 60 : Math.max(0, v); })(),
+    scan_interval: (function () { var el = q('#cfg-scan-interval'); if (!el) return 60; var v = parseInt(el.value, 10); return isNaN(v) ? 60 : Math.max(0, v); })(),
     startup_delay_seconds: num('#cfg-startup-delay', 60),
     startup_scan_enabled: bool('#cfg-startup-scan', true),
     event_monitoring_enabled: bool('#cfg-event-monitoring', true),
@@ -467,6 +487,11 @@ function collectFormOptions(root) {
     notify_medium_severity: bool('#cfg-notify-medium', false),
     notify_low_severity: bool('#cfg-notify-low', false),
     debug_mode: bool('#cfg-debug-toggle', false),
+    noisy_scan_exclude_patterns: (function () {
+      var el = q('#cfg-noisy-exclude-patterns');
+      if (!el) return [];
+      return el.value.split('\n').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 0; });
+    })(),
   };
 }
 
@@ -488,7 +513,7 @@ function _updateTypeCounts(el) {
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.7.4'; // build marker
+  const HACA_VERSION = '1.7.5'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -663,6 +688,31 @@ function _updateTypeCounts(el) {
   }
   const _HC = window._HC_HACA;
 
+  // Approximation luminance perçue d'une couleur CSS (#rgb / #rrggbb / rgb()
+  // / rgba()). Retourne 0..1 ou null si le format n'est pas reconnu. Utilisé
+  // par _isDarkMode() pour décider à partir de --primary-background-color.
+  function _colorLuminance(color) {
+    if (!color) return null;
+    color = color.trim();
+    let r, g, b;
+    if (color[0] === '#') {
+      let hex = color.slice(1);
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      if (hex.length !== 6) return null;
+      r = parseInt(hex.slice(0, 2), 16);
+      g = parseInt(hex.slice(2, 4), 16);
+      b = parseInt(hex.slice(4, 6), 16);
+      if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
+    } else if (color.startsWith('rgb')) {
+      const m = color.match(/(\d+(?:\.\d+)?)/g);
+      if (!m || m.length < 3) return null;
+      [r, g, b] = m.slice(0, 3).map(Number);
+    } else {
+      return null;
+    }
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  }
+
   // ── Surveillance log ────────────────────────────────────────────────────────
   // Persiste dans window._HACA_LOG pour survivre aux navigations dans le même
   function _hlog() {} // logging désactivé en production
@@ -712,6 +762,9 @@ function _updateTypeCounts(el) {
       // L'élément est maintenant dans le DOM — c'est ici que tout commence.
       this._connected = true;
       _hlog('INF', 'connectedCallback | fullyReady=' + this._fullyReady + ' booting=' + this._booting);
+      // Régler l'attribut dark dès l'attachement, avant le premier hass, pour
+      // que le calque CSS s'applique sans flash clair pendant le boot splash.
+      this._updateDarkAttr();
 
       // Relancer la surveillance visibilité
       if (!this._visibilityHandler) {
@@ -796,6 +849,9 @@ function _updateTypeCounts(el) {
       if (wasNull) {
         this._syncTheme(); // calcule _dark et _themeVars avant le premier render
       }
+      // Doit suivre _syncTheme : la détection lit --primary-background-color
+      // qui n'est propagé dans l'iframe qu'après l'injection des règles parent.
+      this._updateDarkAttr();
       if (wasNull) {
         _hlog('INF', 'set hass(): first hass | connected=' + this._connected + ' fullyReady=' + this._fullyReady);
         // Juste stocker. _tryBoot() vérifie que tout est prêt.
@@ -873,6 +929,17 @@ function _updateTypeCounts(el) {
             }
           } catch(_) {} // feuilles cross-origin ignorées
         }
+        // HA applique les thèmes personnalisés via des styles INLINE sur <html>
+        // (document.documentElement.style.setProperty('--…', value)), pas via
+        // stylesheets. Ces déclarations sont invisibles à l'itération ci-dessus,
+        // donc on récupère cssText du style inline parent et on l'injecte comme
+        // règle html { … } dans l'iframe.
+        try {
+          const inlineCss = parentDoc.documentElement.style.cssText;
+          if (inlineCss && inlineCss.trim()) {
+            parts.push(`html { ${inlineCss} }`);
+          }
+        } catch(_) {}
         if (!parts.length) return;
 
         // Injecter dans <head> de l'iframe
@@ -940,18 +1007,58 @@ function _updateTypeCounts(el) {
       } catch(_) {}
     }
 
+    _isDarkMode() {
+      // Detection order, most-trustworthy first:
+      //   1. hass.themes.darkMode if it's an explicit boolean. In embedded
+      //      iframes HA does not always populate the full themes sub-object,
+      //      so we accept this only when it's clearly set (typeof === boolean).
+      //   2. Luminance of --primary-background-color. _syncTheme() copies the
+      //      parent document's html/:root rules into the iframe, so this var
+      //      reflects HA's active theme even when hass.themes is incomplete.
+      //      This also Just Works with custom themes whose darkMode flag is
+      //      unreliable.
+      //   3. OS prefers-color-scheme as last resort (before _syncTheme has
+      //      had a chance to run, e.g. during connectedCallback).
+      const haDark = this._hass?.themes?.darkMode;
+      if (typeof haDark === 'boolean') return haDark;
+      try {
+        const bg = getComputedStyle(document.documentElement)
+          .getPropertyValue('--primary-background-color').trim();
+        const lum = _colorLuminance(bg);
+        if (lum !== null) return lum < 0.5;
+      } catch(_) {}
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    _updateDarkAttr() {
+      // Set data-haca-dark on the host so the CSS :host([data-haca-dark]) layer
+      // applies. Called from set hass() so it stays reactive when the user
+      // toggles HA's theme at runtime.
+      if (this._isDarkMode()) this.setAttribute('data-haca-dark', '');
+      else this.removeAttribute('data-haca-dark');
+    }
+
     _updateLogo() {
       const logo = this.shadowRoot?.querySelector('#haca-logo');
       if (!logo) return;
-      // HA exposes dark mode via hass.themes.darkMode (true/false/undefined)
-      // Fallback: check prefers-color-scheme media query
-      const hasDark = this._hass?.themes?.darkMode
-        ?? window.matchMedia('(prefers-color-scheme: dark)').matches;
       // brand/ is served at /config_auditor_brand (separate static route from www/)
-      const src = hasDark
+      const src = this._isDarkMode()
         ? '/config_auditor_brand/dark_icon.png'
         : '/config_auditor_brand/icon.png';
-      if (logo.src !== src) logo.src = src;
+      if (logo.src !== src) {
+        // Fallback gracieux : si dark_icon.png n'a pas été déployé (l'install HA
+        // n'a pas resync le dossier brand/ ou la version est antérieure à 1.7.5),
+        // on retombe sur icon.png plutôt que d'afficher une image cassée.
+        if (!logo.dataset.errorBound) {
+          logo.dataset.errorBound = '1';
+          logo.addEventListener('error', () => {
+            if (!logo.src.endsWith('/icon.png')) {
+              logo.src = '/config_auditor_brand/icon.png';
+            }
+          });
+        }
+        logo.src = src;
+      }
     }
 
     _showReconnectBanner() {
@@ -1709,6 +1816,116 @@ function _updateTypeCounts(el) {
   .cfg-save-status { padding: 12px 20px; border-radius: 8px; font-size: 0.88em; font-weight: 500; text-align: center; animation: fadeIn 0.2s ease-out; }
   .cfg-save-status.success { background: rgba(34,197,94,0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.3); }
   .cfg-save-status.error { background: rgba(239,68,68,0.12); color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+
+        /* ════════════════════════════════════════════════════════════════════
+           DARK MODE OVERRIDES
+           ────────────────────────────────────────────────────────────────────
+           Triggered when :host has the [data-haca-dark] attribute, set by
+           _updateDarkAttr() based on hass.themes.darkMode (with prefers-
+           color-scheme as fallback before the first hass arrives).
+
+           HA's structural CSS variables (--card-background-color, --primary-
+           text-color, etc.) are already injected into the iframe by
+           _syncTheme() and the panel uses them everywhere. The overrides
+           below only fix the cases that hardcoded rgba(0,0,0,X) tints
+           (invisible/inverted on dark) or dark text colors (#15803d,
+           #dc2626, #e65100) that lose contrast on dark tinted backgrounds.
+           ════════════════════════════════════════════════════════════════════ */
+
+        /* Tab hover: rgba(0,0,0,0.05) → light tint on dark */
+        :host([data-haca-dark]) .tabs .tab:hover {
+          background: rgba(255,255,255,0.06);
+        }
+
+        /* Severity tints — 0.02 opacity is invisible on dark backgrounds */
+        :host([data-haca-dark]) .issue-item.high   { background: rgba(239,83,80,0.10); }
+        :host([data-haca-dark]) .issue-item.medium { background: rgba(255,167,38,0.10); }
+        :host([data-haca-dark]) .issue-item.low    { background: rgba(38,198,218,0.10); }
+
+        /* "Recommendation" strip under each issue */
+        :host([data-haca-dark]) .issue-reco {
+          background: rgba(255,255,255,0.06);
+        }
+
+        /* Loader ring — was rgba(0,0,0,0.08), invisible on dark */
+        :host([data-haca-dark]) .loader {
+          border-color: rgba(255,255,255,0.12);
+          border-bottom-color: var(--primary-color);
+        }
+
+        /* Config tab: disabled rows + hover */
+        :host([data-haca-dark]) .cfg-type-row.disabled {
+          background: rgba(255,255,255,0.04);
+        }
+        :host([data-haca-dark]) .cfg-type-row:hover {
+          background: rgba(var(--rgb-primary-color,33,150,243),0.10);
+        }
+        :host([data-haca-dark]) .cfg-section-hint,
+        :host([data-haca-dark]) .cfg-cat-section-header {
+          background: rgba(var(--rgb-primary-color,33,150,243),0.10);
+        }
+
+        /* Success / error chips: light-mode dark text fails on dark tints */
+        :host([data-haca-dark]) .cfg-badge-fix {
+          background: rgba(34,197,94,0.20);
+          color: #4ade80;
+          border-color: rgba(34,197,94,0.45);
+        }
+        :host([data-haca-dark]) .cfg-save-status.success {
+          background: rgba(34,197,94,0.18);
+          color: #4ade80;
+          border-color: rgba(34,197,94,0.4);
+        }
+        :host([data-haca-dark]) .cfg-save-status.error {
+          background: rgba(239,68,68,0.18);
+          color: #f87171;
+          border-color: rgba(239,68,68,0.4);
+        }
+
+        /* Inline <code> blocks: hardcoded rgba(0,0,0,0.06–0.10) in templates */
+        :host([data-haca-dark]) code[style*="rgba(0,0,0"] {
+          background: rgba(255,255,255,0.08) !important;
+        }
+
+        /* Subtle warning / info banners scattered across tab files
+           (background: rgba(255,167,38,0.07–0.12), rgba(255,152,0,0.08–0.10),
+           rgba(255,87,34,0.08) — barely visible on dark, bump opacity).
+           Targeted by attribute selector so inline-styled banners adapt
+           without per-file edits. */
+        :host([data-haca-dark]) [style*="rgba(255,167,38,0.0"],
+        :host([data-haca-dark]) [style*="rgba(255,167,38,0.1"],
+        :host([data-haca-dark]) [style*="rgba(255,152,0,0.0"],
+        :host([data-haca-dark]) [style*="rgba(255,152,0,0.1"],
+        :host([data-haca-dark]) [style*="rgba(255,87,34,0.0"],
+        :host([data-haca-dark]) [style*="rgba(255,87,34,0.1"] {
+          /* CSS doesn't let us override inline background via attribute selector
+             reliably, so we bump readability via color/border instead */
+          color: var(--primary-text-color) !important;
+        }
+
+        /* Dark-orange text (#e65100) on slight orange tint is unreadable on
+           dark. Map it to the warning hue. Targeting by inline style. */
+        :host([data-haca-dark]) [style*="color:#e65100"] {
+          color: #ffb74d !important;
+        }
+        :host([data-haca-dark]) [style*="color:#ff5722"] {
+          color: #ff8a65 !important;
+        }
+        :host([data-haca-dark]) [style*="color:black"],
+        :host([data-haca-dark]) [style*="color: black"] {
+          color: var(--primary-text-color) !important;
+        }
+
+        /* utils.js modal close button: mouseleave resets color to 'black'
+           inline; force the theme text colour in dark via the class. */
+        :host([data-haca-dark]) .modal-close-btn {
+          color: var(--primary-text-color);
+        }
+
+        /* dep_graph node stroke (set via D3 .attr); the dark default
+           'rgba(0,0,0,0.15)' is invisible on dark — bump it via a CSS
+           variable consumed by dep_graph.js (see DARK_GRAPH_STROKE). */
+
         @keyframes hacarot {
           to { stroke-dashoffset: -120; }
         }      </style>
@@ -3613,6 +3830,42 @@ function _updateTypeCounts(el) {
         debugToggle.checked = !!(options.debug_mode);
         window.__haca_debug_mode = debugToggle.checked;
       }
+
+      // Noisy-scan exclude-patterns: live test button (no save needed)
+      el.querySelector('#cfg-noisy-exclude-test-btn')?.addEventListener('click', () => {
+        const input = el.querySelector('#cfg-noisy-exclude-test');
+        const ta = el.querySelector('#cfg-noisy-exclude-patterns');
+        const out = el.querySelector('#cfg-noisy-exclude-test-result');
+        if (!input || !ta || !out) return;
+        const entityId = (input.value || '').trim();
+        if (!entityId) {
+          out.textContent = '';
+          return;
+        }
+        const patterns = ta.value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+        // fnmatch-style: * matches anything, ? matches one char, [...] charset
+        const toRegex = (pat) => {
+          let re = '';
+          for (let i = 0; i < pat.length; i++) {
+            const c = pat[i];
+            if (c === '*') re += '.*';
+            else if (c === '?') re += '.';
+            else if ('\\^$+()|{}.'.indexOf(c) !== -1) re += '\\' + c;
+            else re += c;
+          }
+          return new RegExp('^' + re + '$');
+        };
+        const matched = patterns.find(p => {
+          try { return toRegex(p).test(entityId); } catch (e) { return false; }
+        });
+        if (matched) {
+          out.textContent = '✓ ' + this.t('config.noisy_exclude_test_match').replace('{pattern}', matched);
+          out.style.color = 'var(--success-color, #15803d)';
+        } else {
+          out.textContent = '✗ ' + this.t('config.noisy_exclude_test_no_match');
+          out.style.color = 'var(--error-color, #dc2626)';
+        }
+      });
 
       // Dashboard creation button (in config tab)
       el.querySelector('#cfg-create-dashboard-btn')?.addEventListener('click', async () => {
@@ -6380,7 +6633,7 @@ function _updateTypeCounts(el) {
     node.append('circle')
       .attr('r', d => this._graphNodeRadius(d))
       .attr('fill', d => this._graphNodeColor(d))
-      .attr('stroke', d => d.has_issues ? '#b71c1c' : 'rgba(0,0,0,0.15)')
+      .attr('stroke', d => d.has_issues ? '#b71c1c' : (this._isDarkMode() ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)'))
       .attr('stroke-width', d => d.has_issues ? 2.5 : 1)
       .attr('filter', d => d.has_issues ? 'drop-shadow(0 0 4px rgba(239,83,80,0.6))' : null);
 
@@ -6489,7 +6742,7 @@ function _updateTypeCounts(el) {
     if (this._d3SvgSel) {
       this._d3SvgSel.selectAll('.node-g circle')
         .attr('stroke-width', d => d.id === node.id ? 4 : (d.has_issues ? 2.5 : 1))
-        .attr('stroke', d => d.id === node.id ? 'var(--primary-color)' : (d.has_issues ? '#b71c1c' : 'rgba(0,0,0,0.15)'));
+        .attr('stroke', d => d.id === node.id ? 'var(--primary-color)' : (d.has_issues ? '#b71c1c' : (this._isDarkMode() ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)')));
     }
 
     const typeLabels = { automation:'Automation', script:'Script', scene: this.t('graph.legend_scene'),
@@ -6942,7 +7195,7 @@ function _updateTypeCounts(el) {
     });
     closeBtn.addEventListener('mouseleave', () => {
       closeBtn.style.background = 'var(--secondary-background-color)';
-      closeBtn.style.color = 'black';
+      closeBtn.style.color = 'var(--primary-text-color)';
     });
 
     card.appendChild(closeBtn);
@@ -8404,6 +8657,7 @@ function _updateTypeCounts(el) {
                 ${isFixable ? `<button class="fix-btn" data-idx="${idx}">${_icon("magic-staff")} ${this.t('actions.fix')}</button>` : ''}
                 ${isBlueprintCandidate ? `<button class="blueprint-ai-btn" data-idx="${idx}" style="background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;border:none;display:flex;align-items:center;gap:4px;" title="${this.t('actions.generate_blueprint')}">${_icon("robot", 15)} ${this.t('actions.generate_blueprint')}</button>` : ''}
                 ${i.type === 'noisy_entity' && i.entity_id ? `<button class="recorder-exclude-btn" data-entity-id="${this.escapeHtml(i.entity_id)}" title="${this.t('actions.recorder_exclude_title')}" style="background:linear-gradient(135deg,#16a34a,#15803d);color:white;border:none;display:flex;align-items:center;gap:4px;">${_icon('database-off-outline', 15)} ${this.t('actions.recorder_exclude')}</button>` : ''}
+                ${i.type === 'noisy_entity' && i.entity_id ? `<button class="noisy-ignore-btn" data-entity-id="${this.escapeHtml(i.entity_id)}" title="${this.t('actions.noisy_ignore_title')}" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;display:flex;align-items:center;gap:4px;">${_icon('volume-mute', 15)} ${this.t('actions.noisy_ignore')}</button>` : ''}
             </div>
         </div>
         <div class="issue-message">${this.escapeHtml(i.message || '')}</div>
@@ -8526,6 +8780,69 @@ function _updateTypeCounts(el) {
         } catch (err) {
           const msg = (err && (err.message || err.code || JSON.stringify(err))) || 'unknown';
           this._showToast?.(this.t('actions.recorder_exclude_error') + ': ' + msg, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = orig;
+        }
+      });
+    });
+
+    // ── Noisy-scan ignore button (noisy_entity issues only) ─────────────
+    // Adds the literal entity_id to options.noisy_scan_exclude_patterns.
+    // Dedup: if any existing pattern already matches the entity_id (literal
+    // or fnmatch glob), we no-op and tell the user which pattern covered it.
+    container.querySelectorAll('.noisy-ignore-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const entityId = e.currentTarget.dataset.entityId;
+        if (!entityId) return;
+        btn.disabled = true;
+        const orig = btn.innerHTML;
+        btn.innerHTML = `${_icon('loading', 14)} ...`;
+        // fnmatch-style glob → JS regex (same converter as the config tab test button)
+        const toRegex = (pat) => {
+          let re = '';
+          for (let i2 = 0; i2 < pat.length; i2++) {
+            const c = pat[i2];
+            if (c === '*') re += '.*';
+            else if (c === '?') re += '.';
+            else if ('\\^$+()|{}.'.indexOf(c) !== -1) re += '\\' + c;
+            else re += c;
+          }
+          return new RegExp('^' + re + '$');
+        };
+        try {
+          const opts = await this.hass.callWS({ type: 'haca/get_options' });
+          const current = (opts?.options?.noisy_scan_exclude_patterns) || [];
+          const list = Array.isArray(current) ? current.slice() : [];
+          const matched = list.find(p => {
+            try { return toRegex(p).test(entityId); } catch (_) { return false; }
+          });
+          if (matched) {
+            this._showToast?.(
+              this.t('actions.noisy_ignore_already', {entity: entityId, pattern: matched}),
+              'info',
+            );
+            this._markIssueExcluded?.(btn);
+            return;
+          }
+          list.push(entityId);
+          const save = await this.hass.callWS({
+            type: 'haca/save_options',
+            options: { noisy_scan_exclude_patterns: list },
+          });
+          if (save?.success) {
+            this._showToast?.(
+              this.t('actions.noisy_ignore_success', {entity: entityId}),
+              'success',
+            );
+            this._markIssueExcluded?.(btn);
+          } else {
+            this._showToast?.(this.t('actions.noisy_ignore_error'), 'error');
+          }
+        } catch (err) {
+          const msg = (err && (err.message || err.code || JSON.stringify(err))) || 'unknown';
+          this._showToast?.(this.t('actions.noisy_ignore_error') + ': ' + msg, 'error');
         } finally {
           btn.disabled = false;
           btn.innerHTML = orig;

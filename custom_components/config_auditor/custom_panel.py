@@ -250,6 +250,16 @@ async def async_register_panel(hass: HomeAssistant) -> None:
             _LOGGER.info("Static paths registered: /%s, /haca_reports", DOMAIN)
 
         # ── Panel : register or update ────────────────────────────────────
+        # The bundle filename embeds the content hash (haca-panel.<hash>.js)
+        # so the URL itself changes with every rebuild. This is immune to
+        # browser cache AND to the HA frontend service worker, which had been
+        # observed serving stale `haca-panel.js?v=…` to some users despite
+        # the query-string bust. If the hashed file is somehow missing on
+        # disk, fall back to the canonical filename so the panel still loads.
+        hashed_name = f"haca-panel.{cache_bust}.js"
+        hashed_path = www_dir / hashed_name
+        bundle_filename = hashed_name if hashed_path.exists() else "haca-panel.js"
+
         frontend.async_register_built_in_panel(
             hass,
             component_name="custom",
@@ -260,14 +270,14 @@ async def async_register_panel(hass: HomeAssistant) -> None:
             config={
                 "_panel_custom": {
                     "name": "haca-panel",
-                    "js_url": f"/{DOMAIN}_static/haca-panel.js?v={cache_bust}",
+                    "js_url": f"/{DOMAIN}_static/{bundle_filename}?v={cache_bust}",
                     "embed_iframe": True,
                     "trust_external": False,
                 }
             },
             update=True,
         )
-        _LOGGER.info("Panel registered: /%s (js?v=%s)", DOMAIN, cache_bust)
+        _LOGGER.info("Panel registered: /%s (bundle=%s, hash=%s)", DOMAIN, bundle_filename, cache_bust)
 
     except Exception as e:
         _LOGGER.error("Panel registration error: %s", e, exc_info=True)

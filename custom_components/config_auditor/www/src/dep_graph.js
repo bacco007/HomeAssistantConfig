@@ -204,7 +204,7 @@
     node.append('circle')
       .attr('r', d => this._graphNodeRadius(d))
       .attr('fill', d => this._graphNodeColor(d))
-      .attr('stroke', d => d.has_issues ? '#b71c1c' : 'rgba(0,0,0,0.15)')
+      .attr('stroke', d => d.has_issues ? '#b71c1c' : (this._isDarkMode() ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)'))
       .attr('stroke-width', d => d.has_issues ? 2.5 : 1)
       .attr('filter', d => d.has_issues ? 'drop-shadow(0 0 4px rgba(239,83,80,0.6))' : null);
 
@@ -313,7 +313,7 @@
     if (this._d3SvgSel) {
       this._d3SvgSel.selectAll('.node-g circle')
         .attr('stroke-width', d => d.id === node.id ? 4 : (d.has_issues ? 2.5 : 1))
-        .attr('stroke', d => d.id === node.id ? 'var(--primary-color)' : (d.has_issues ? '#b71c1c' : 'rgba(0,0,0,0.15)'));
+        .attr('stroke', d => d.id === node.id ? 'var(--primary-color)' : (d.has_issues ? '#b71c1c' : (this._isDarkMode() ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)')));
     }
 
     const typeLabels = { automation:'Automation', script:'Script', scene: this.t('graph.legend_scene'),

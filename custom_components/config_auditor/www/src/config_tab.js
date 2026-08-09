@@ -13,121 +13,121 @@ var ISSUE_TYPES_BY_CATEGORY = [
   {
     id: 'automations', icon: 'mdi:robot',
     types: [
-      { id: 'device_id_in_trigger',              fixable: true  },
-      { id: 'device_trigger_platform',            fixable: true  },
-      { id: 'device_id_in_condition',             fixable: true  },
-      { id: 'device_condition_platform',          fixable: true  },
-      { id: 'device_id_in_action',                fixable: true  },
-      { id: 'device_id_in_target',                fixable: true  },
-      { id: 'template_simple_state',              fixable: true  },
-      { id: 'incorrect_mode_motion_single',       fixable: true  },
-      { id: 'deprecated_service',                 fixable: false },
-      { id: 'unknown_service',                    fixable: false },
-      { id: 'no_description',                     fixable: false },
-      { id: 'no_alias',                           fixable: false },
-      { id: 'duplicate_automation',               fixable: false },
-      { id: 'probable_duplicate_automation',      fixable: false },
-      { id: 'ghost_automation',                   fixable: false },
-      { id: 'never_triggered',                    fixable: false },
-      { id: 'excessive_delay',                    fixable: false },
-      { id: 'wait_template_vs_wait_for_trigger',  fixable: false },
-      { id: 'zone_no_entity',                     fixable: false },
-      { id: 'unknown_area_reference',             fixable: false },
-      { id: 'unknown_floor_reference',            fixable: false },
-      { id: 'unknown_label_reference',            fixable: false },
-      { id: 'template_numeric_comparison',        fixable: false },
-      { id: 'template_time_check',                fixable: false },
-      { id: 'god_automation',                     fixable: false },
-      { id: 'complex_automation',                 fixable: false },
+      { id: 'device_id_in_trigger', fixable: true },
+      { id: 'device_trigger_platform', fixable: true },
+      { id: 'device_id_in_condition', fixable: true },
+      { id: 'device_condition_platform', fixable: true },
+      { id: 'device_id_in_action', fixable: true },
+      { id: 'device_id_in_target', fixable: true },
+      { id: 'template_simple_state', fixable: true },
+      { id: 'incorrect_mode_motion_single', fixable: true },
+      { id: 'deprecated_service', fixable: false },
+      { id: 'unknown_service', fixable: false },
+      { id: 'no_description', fixable: false },
+      { id: 'no_alias', fixable: false },
+      { id: 'duplicate_automation', fixable: false },
+      { id: 'probable_duplicate_automation', fixable: false },
+      { id: 'ghost_automation', fixable: false },
+      { id: 'never_triggered', fixable: false },
+      { id: 'excessive_delay', fixable: false },
+      { id: 'wait_template_vs_wait_for_trigger', fixable: false },
+      { id: 'zone_no_entity', fixable: false },
+      { id: 'unknown_area_reference', fixable: false },
+      { id: 'unknown_floor_reference', fixable: false },
+      { id: 'unknown_label_reference', fixable: false },
+      { id: 'template_numeric_comparison', fixable: false },
+      { id: 'template_time_check', fixable: false },
+      { id: 'god_automation', fixable: false },
+      { id: 'complex_automation', fixable: false },
     ]
   },
   {
     id: 'scripts', icon: 'mdi:script-text',
     types: [
-      { id: 'script_cycle',                      fixable: false },
-      { id: 'script_call_depth',                 fixable: false },
-      { id: 'script_single_mode_loop',           fixable: false },
-      { id: 'script_orphan',                     fixable: false },
-      { id: 'script_blueprint_candidate',        fixable: false },
-      { id: 'empty_script',                      fixable: false },
+      { id: 'script_cycle', fixable: false },
+      { id: 'script_call_depth', fixable: false },
+      { id: 'script_single_mode_loop', fixable: false },
+      { id: 'script_orphan', fixable: false },
+      { id: 'script_blueprint_candidate', fixable: false },
+      { id: 'empty_script', fixable: false },
     ]
   },
   {
     id: 'scenes', icon: 'mdi:palette',
     types: [
-      { id: 'scene_entity_unavailable',          fixable: false },
-      { id: 'scene_not_triggered',               fixable: false },
-      { id: 'scene_duplicate',                   fixable: false },
-      { id: 'empty_scene',                       fixable: false },
+      { id: 'scene_entity_unavailable', fixable: false },
+      { id: 'scene_not_triggered', fixable: false },
+      { id: 'scene_duplicate', fixable: false },
+      { id: 'empty_scene', fixable: false },
     ]
   },
   {
     id: 'entities', icon: 'mdi:tag-multiple',
     types: [
-      { id: 'zombie_entity',           fixable: true  },
-      { id: 'broken_device_reference', fixable: true  },
-      { id: 'unavailable_entity',      fixable: false },
-      { id: 'unknown_state',           fixable: false },
-      { id: 'stale_entity',            fixable: false },
+      { id: 'zombie_entity', fixable: true },
+      { id: 'broken_device_reference', fixable: true },
+      { id: 'unavailable_entity', fixable: false },
+      { id: 'unknown_state', fixable: false },
+      { id: 'stale_entity', fixable: false },
       { id: 'disabled_but_referenced', fixable: false },
-      { id: 'ghost_registry_entry',    fixable: true  },
-      { id: 'unused_input_boolean',    fixable: false },
+      { id: 'ghost_registry_entry', fixable: true },
+      { id: 'unused_input_boolean', fixable: false },
     ]
   },
   {
     id: 'helpers', icon: 'mdi:cog-outline',
     types: [
-      { id: 'helper_unused',                     fixable: false },
-      { id: 'helper_orphaned_disabled_only',     fixable: false },
-      { id: 'helper_no_friendly_name',           fixable: false },
-      { id: 'input_number_invalid_range',        fixable: false },
-      { id: 'input_select_duplicate_options',    fixable: false },
-      { id: 'input_select_empty_option',         fixable: false },
-      { id: 'input_text_invalid_pattern',        fixable: false },
-      { id: 'timer_never_started',               fixable: false },
-      { id: 'timer_orphaned',                    fixable: false },
-      { id: 'timer_zero_duration',               fixable: false },
-      { id: 'template_sensor_no_metadata',       fixable: false },
-      { id: 'template_sensor_cycle',             fixable: false },
-      { id: 'template_missing_availability',     fixable: false },
-      { id: 'template_no_unavailable_check',     fixable: false },
-      { id: 'template_now_without_trigger',      fixable: false },
+      { id: 'helper_unused', fixable: false },
+      { id: 'helper_orphaned_disabled_only', fixable: false },
+      { id: 'helper_no_friendly_name', fixable: false },
+      { id: 'input_number_invalid_range', fixable: false },
+      { id: 'input_select_duplicate_options', fixable: false },
+      { id: 'input_select_empty_option', fixable: false },
+      { id: 'input_text_invalid_pattern', fixable: false },
+      { id: 'timer_never_started', fixable: false },
+      { id: 'timer_orphaned', fixable: false },
+      { id: 'timer_zero_duration', fixable: false },
+      { id: 'template_sensor_no_metadata', fixable: false },
+      { id: 'template_sensor_cycle', fixable: false },
+      { id: 'template_missing_availability', fixable: false },
+      { id: 'template_no_unavailable_check', fixable: false },
+      { id: 'template_now_without_trigger', fixable: false },
     ]
   },
   {
     id: 'groups', icon: 'mdi:group',
     types: [
-      { id: 'group_empty',                       fixable: false },
-      { id: 'group_missing_entities',            fixable: false },
-      { id: 'group_all_unavailable',             fixable: false },
-      { id: 'group_nested_deep',                 fixable: false },
+      { id: 'group_empty', fixable: false },
+      { id: 'group_missing_entities', fixable: false },
+      { id: 'group_all_unavailable', fixable: false },
+      { id: 'group_nested_deep', fixable: false },
     ]
   },
   {
     id: 'security', icon: 'mdi:shield-alert',
     types: [
-      { id: 'hardcoded_secret',         fixable: false },
-      { id: 'sensitive_data_exposure',  fixable: false },
+      { id: 'hardcoded_secret', fixable: false },
+      { id: 'sensitive_data_exposure', fixable: false },
     ]
   },
   {
     id: 'performance', icon: 'mdi:speedometer',
     types: [
-      { id: 'high_complexity_actions',          fixable: false },
-      { id: 'high_parallel_max',                fixable: false },
-      { id: 'potential_self_loop',              fixable: false },
-      { id: 'missing_state_class',              fixable: false },
-      { id: 'expensive_template_selectattr',    fixable: false },
-      { id: 'expensive_template_states_all',    fixable: false },
+      { id: 'high_complexity_actions', fixable: false },
+      { id: 'high_parallel_max', fixable: false },
+      { id: 'potential_self_loop', fixable: false },
+      { id: 'missing_state_class', fixable: false },
+      { id: 'expensive_template_selectattr', fixable: false },
+      { id: 'expensive_template_states_all', fixable: false },
     ]
   },
   {
     id: 'blueprints', icon: 'mdi:file-document-outline',
     types: [
-      { id: 'blueprint_missing_path',   fixable: false },
+      { id: 'blueprint_missing_path', fixable: false },
       { id: 'blueprint_file_not_found', fixable: false },
-      { id: 'blueprint_empty_input',    fixable: false },
-      { id: 'blueprint_no_inputs',      fixable: false },
+      { id: 'blueprint_empty_input', fixable: false },
+      { id: 'blueprint_no_inputs', fixable: false },
     ]
   },
   {
@@ -139,16 +139,16 @@ var ISSUE_TYPES_BY_CATEGORY = [
   {
     id: 'compliance', icon: 'mdi:shield-check-outline',
     types: [
-      { id: 'compliance_no_friendly_name',          fixable: false },
-      { id: 'compliance_raw_entity_name',           fixable: false },
-      { id: 'compliance_area_no_icon',              fixable: false },
-      { id: 'compliance_unused_label',              fixable: false },
+      { id: 'compliance_no_friendly_name', fixable: false },
+      { id: 'compliance_raw_entity_name', fixable: false },
+      { id: 'compliance_area_no_icon', fixable: false },
+      { id: 'compliance_unused_label', fixable: false },
       { id: 'compliance_automation_no_description', fixable: false },
-      { id: 'compliance_automation_no_unique_id',   fixable: false },
-      { id: 'compliance_script_no_description',     fixable: false },
-      { id: 'compliance_entity_no_area',            fixable: false },
-      { id: 'compliance_helper_no_icon',            fixable: false },
-      { id: 'compliance_helper_no_area',            fixable: false },
+      { id: 'compliance_automation_no_unique_id', fixable: false },
+      { id: 'compliance_script_no_description', fixable: false },
+      { id: 'compliance_entity_no_area', fixable: false },
+      { id: 'compliance_helper_no_icon', fixable: false },
+      { id: 'compliance_helper_no_area', fixable: false },
     ]
   },
 ];
@@ -158,7 +158,7 @@ var ISSUE_TYPES_BY_CATEGORY = [
 function renderConfigTab(options, lang, t) {
   // t() is the translation function passed from the panel component
   if (!t) t = (key) => key; // fallback: return key as-is
-  var _icon = window._icon || function(n,s){return '';};
+  var _icon = window._icon || function (n, s) { return ''; };
   lang = lang || 'en';
   var excludedTypes = new Set(options.excluded_issue_types || []);
 
@@ -183,7 +183,7 @@ function renderConfigTab(options, lang, t) {
     return '<div class="cfg-cat-section">' +
       '<div class="cfg-cat-section-header">' +
       '<div class="cfg-cat-header-left">' +
-      _icon((cat.icon || "").replace("mdi:",""), 18) +
+      _icon((cat.icon || "").replace("mdi:", ""), 18) +
       '<span class="cfg-cat-section-title">' + label + '</span>' +
       '<span class="cfg-cat-count" id="count-' + cat.id + '"></span>' +
       '</div>' +
@@ -326,6 +326,23 @@ function renderConfigTab(options, lang, t) {
       </div>
     </div>` +
 
+    // ── Noisy scan exclude patterns section ──
+    `<div class="cfg-section" style="padding:16px 20px;">
+      <div class="cfg-section-title">${_icon("volume-mute", 18)}${t('config.noisy_exclude_title')}</div>
+      <div class="cfg-row-hint" style="margin-top:8px;line-height:1.6;">${t('config.noisy_exclude_info')}</div>
+      <div class="cfg-row-hint" style="margin-top:6px;font-size:0.78em;">${t('config.noisy_exclude_examples')}</div>
+      <textarea id="cfg-noisy-exclude-patterns" class="cfg-textarea" rows="6" cols="100" spellcheck="false"
+        placeholder="${t('config.noisy_exclude_placeholder')}">${(options.noisy_scan_exclude_patterns || []).join('\n')}</textarea>
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="cfg-noisy-exclude-test" class="cfg-input" style="flex:1;min-width:180px;text-align:left;width:auto;"
+          placeholder="${t('config.noisy_exclude_test_placeholder')}">
+        <button class="cfg-btn cfg-btn-secondary" id="cfg-noisy-exclude-test-btn" style="height:38px;">
+          ${_icon("flask-outline", 16)} ${t('config.noisy_exclude_test')}
+        </button>
+        <span id="cfg-noisy-exclude-test-result" class="cfg-row-hint" style="margin-left:6px;font-weight:600;"></span>
+      </div>
+    </div>` +
+
     // ── Dashboard creation section ──
     `<div class="cfg-section" style="padding:16px 20px;">
       <div class="cfg-section-title">${_icon("view-dashboard-outline", 18)}${t('config.dashboard_section_title')}</div>
@@ -340,8 +357,8 @@ function renderConfigTab(options, lang, t) {
 
     // ── Boutons ──
     '<div class="cfg-actions">' +
-      '<button class="cfg-btn cfg-btn-secondary" id="cfg-reset-btn">' + _icon("restore", 18) + t('config.reset') + '</button>' +
-      '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn">' + _icon("content-save", 18) + t('config.save') + '</button>' +
+    '<button class="cfg-btn cfg-btn-secondary" id="cfg-reset-btn">' + _icon("restore", 18) + t('config.reset') + '</button>' +
+    '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn">' + _icon("content-save", 18) + t('config.save') + '</button>' +
     '</div>' +
     '<div id="cfg-save-status" class="cfg-save-status" style="display:none;"></div>' +
 
@@ -410,6 +427,8 @@ var CONFIG_TAB_CSS = `
   .cfg-save-status { padding: 12px 20px; border-radius: 8px; font-size: 0.88em; font-weight: 500; text-align: center; animation: fadeIn 0.2s ease-out; }
   .cfg-save-status.success { background: rgba(34,197,94,0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.3); }
   .cfg-save-status.error { background: rgba(239,68,68,0.12); color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+  .cfg-textarea { width: 100%; box-sizing: border-box; margin-top: 10px; padding: 10px 12px; border: 1.5px solid var(--divider-color); border-radius: 8px; background: var(--primary-background-color); color: var(--primary-text-color); font-family: var(--code-font-family, monospace); font-size: 0.85em; line-height: 1.5; resize: vertical; min-height: 96px; transition: border-color 0.2s; }
+  .cfg-textarea:focus { outline: none; border-color: var(--primary-color); }
 `;
 
 // ─── Defaults ─────────────────────────────────────────────────────────────
@@ -431,6 +450,7 @@ var DEFAULT_OPTIONS = {
   notify_high_severity: true,
   notify_medium_severity: false,
   notify_low_severity: false,
+  noisy_scan_exclude_patterns: [],
 };
 
 // ─── Collecte des valeurs ─────────────────────────────────────────────────
@@ -448,7 +468,7 @@ function collectFormOptions(root) {
   }
 
   return {
-    scan_interval: (function() { var el = q('#cfg-scan-interval'); if (!el) return 60; var v = parseInt(el.value, 10); return isNaN(v) ? 60 : Math.max(0, v); })(),
+    scan_interval: (function () { var el = q('#cfg-scan-interval'); if (!el) return 60; var v = parseInt(el.value, 10); return isNaN(v) ? 60 : Math.max(0, v); })(),
     startup_delay_seconds: num('#cfg-startup-delay', 60),
     startup_scan_enabled: bool('#cfg-startup-scan', true),
     event_monitoring_enabled: bool('#cfg-event-monitoring', true),
@@ -465,6 +485,11 @@ function collectFormOptions(root) {
     notify_medium_severity: bool('#cfg-notify-medium', false),
     notify_low_severity: bool('#cfg-notify-low', false),
     debug_mode: bool('#cfg-debug-toggle', false),
+    noisy_scan_exclude_patterns: (function () {
+      var el = q('#cfg-noisy-exclude-patterns');
+      if (!el) return [];
+      return el.value.split('\n').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 0; });
+    })(),
   };
 }
 

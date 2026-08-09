@@ -290,7 +290,17 @@ class AutomationOptimizer:
         except Exception:
             _ap = {}
         _tmpl = _ap.get("optimizer_system", "Optimise this automation:\n\n{content}")
-        return _tmpl.format(content=self._build_content(automations, blueprints))
+        content = (
+            f"Entity: {entity_id}\n"
+            f"Alias: {alias}\n"
+            f"Score: {score}\n\n"
+            f"YAML:\n{yaml_block}\n\n"
+            f"Issues:\n{issues_block}\n\n"
+            f"Deprecated patterns:\n{patterns_block}\n\n"
+            f"Available blueprints:\n{bp_lines}"
+        )
+        return _tmpl.format(content=content)
+
     async def _call_ai(self, prompt: str) -> str:
         """Call AI with automatic provider fallback via shared _async_call_ai."""
         from .conversation import _async_call_ai

@@ -216,3 +216,70 @@ class TestMcpServerImport:
         # Should have multiple entries
         entries = re.findall(r'"(ha_\w+|haca_\w+)"\s*:\s*_tool_\w+', CONTENT)
         assert len(entries) >= 50, f"Expected ≥50 TOOL_HANDLERS entries, got {len(entries)}"
+
+
+# ── JSON serialization of tool results ────────────────────────────────────────
+
+class TestJsonSerialization:
+    """Tool results carry raw HA data — no value may abort tools/call.
+
+    Regression: "[HACA MCP] Handler error for method 'tools/call':
+    Object of type datetime is not JSON serializable".
+    """
+
+    def test_json_default_handles_ha_native_types(self):
+        from datetime import date, datetime, time, timedelta, timezone
+        from decimal import Decimal
+        from enum import Enum
+        from pathlib import Path as _Path
+
+        from custom_components.config_auditor.mcp_server import _json_default
+
+        class _Colour(Enum):
+            RED = "red"
+
+        dt = datetime(2026, 5, 30, 21, 5, 19, tzinfo=timezone.utc)
+        assert _json_default(dt) == dt.isoformat()
+        assert _json_default(date(2026, 5, 30)) == "2026-05-30"
+        assert _json_default(time(21, 5, 19)) == "21:05:19"
+        assert _json_default(timedelta(minutes=2)) == 120.0
+        assert _json_default(Decimal("1.5")) == 1.5
+        assert _json_default({"b", "a"}) == ["a", "b"]
+        assert _json_default(_Colour.RED) == "red"
+        assert _json_default(_Path("/config/secrets.yaml")).endswith("secrets.yaml")
+        assert _json_default(b"ok") == "ok"
+
+    def test_json_default_never_raises(self):
+        """Unknown objects must degrade to str(), not blow up the call."""
+        from custom_components.config_auditor.mcp_server import _json_default
+
+        class _Exploding:
+            def as_dict(self):
+                raise RuntimeError("boom")
+
+            def __str__(self):
+                return "<exploding>"
+
+        assert _json_default(_Exploding()) == "<exploding>"
+        assert isinstance(_json_default(object()), str)
+
+    def test_state_attributes_with_datetime_are_serializable(self):
+        """A datetime buried in state attributes must not break tools/call."""
+        from datetime import datetime, timezone
+
+        from custom_components.config_auditor.mcp_server import _json_default, json_safe
+
+        result = {
+            "state": "on",
+            "attributes": {"next_collection": datetime(2026, 6, 1, tzinfo=timezone.utc)},
+        }
+        encoded = json.dumps(result, ensure_ascii=False, indent=2, default=_json_default)
+        assert "2026-06-01T00:00:00+00:00" in encoded
+        assert json_safe(result)["attributes"]["next_collection"] == "2026-06-01T00:00:00+00:00"
+
+    def test_tools_call_response_uses_json_default(self):
+        """The tools/call encoder must pass default=_json_default."""
+        block = CONTENT.split('elif method == "tools/call":', 1)[1][:1200]
+        assert "default=_json_default" in block, (
+            "tools/call serializes raw tool results — it must tolerate datetime & co."
+        )

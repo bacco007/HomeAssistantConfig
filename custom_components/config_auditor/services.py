@@ -387,12 +387,13 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
         async def handle_fix_device_id(call: ServiceCall) -> dict:
             """Handle fix_device_id service."""
             automation_id = call.data.get("automation_id")
+            location = call.data.get("location")  # optional: scope fix to a single issue
             dry_run = call.data.get("dry_run", False)
-            
+
             data = hass.data[DOMAIN][entry.entry_id]
             refactoring = data["refactoring_assistant"]
-            
-            result = await refactoring.apply_device_id_fix(automation_id, dry_run=dry_run)
+
+            result = await refactoring.apply_device_id_fix(automation_id, location=location, dry_run=dry_run)
             
             if result.get("success"):
                 await _haca_notify(
@@ -609,13 +610,17 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
     if MODULE_5_REFACTORING_ASSISTANT:
         hass.services.async_register(
             DOMAIN, SERVICE_PREVIEW_DEVICE_ID, handle_preview_device_id,
-            schema=vol.Schema({vol.Required("automation_id"): cv.string}),
+            schema=vol.Schema({
+                vol.Required("automation_id"): cv.string,
+                vol.Optional("location"): vol.Any(cv.string, None),
+            }),
             supports_response=SupportsResponse.ONLY
         )
         hass.services.async_register(
             DOMAIN, SERVICE_FIX_DEVICE_ID, handle_fix_device_id,
             schema=vol.Schema({
                 vol.Required("automation_id"): cv.string,
+                vol.Optional("location"): vol.Any(cv.string, None),
                 vol.Optional("dry_run", default=False): cv.boolean
             }),
             supports_response=SupportsResponse.OPTIONAL

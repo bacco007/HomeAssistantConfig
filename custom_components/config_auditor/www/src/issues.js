@@ -210,6 +210,7 @@
                 ${isFixable ? `<button class="fix-btn" data-idx="${idx}">${_icon("magic-staff")} ${this.t('actions.fix')}</button>` : ''}
                 ${isBlueprintCandidate ? `<button class="blueprint-ai-btn" data-idx="${idx}" style="background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;border:none;display:flex;align-items:center;gap:4px;" title="${this.t('actions.generate_blueprint')}">${_icon("robot", 15)} ${this.t('actions.generate_blueprint')}</button>` : ''}
                 ${i.type === 'noisy_entity' && i.entity_id ? `<button class="recorder-exclude-btn" data-entity-id="${this.escapeHtml(i.entity_id)}" title="${this.t('actions.recorder_exclude_title')}" style="background:linear-gradient(135deg,#16a34a,#15803d);color:white;border:none;display:flex;align-items:center;gap:4px;">${_icon('database-off-outline', 15)} ${this.t('actions.recorder_exclude')}</button>` : ''}
+                ${i.type === 'noisy_entity' && i.entity_id ? `<button class="noisy-ignore-btn" data-entity-id="${this.escapeHtml(i.entity_id)}" title="${this.t('actions.noisy_ignore_title')}" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;display:flex;align-items:center;gap:4px;">${_icon('volume-mute', 15)} ${this.t('actions.noisy_ignore')}</button>` : ''}
             </div>
         </div>
         <div class="issue-message">${this.escapeHtml(i.message || '')}</div>
@@ -332,6 +333,69 @@
         } catch (err) {
           const msg = (err && (err.message || err.code || JSON.stringify(err))) || 'unknown';
           this._showToast?.(this.t('actions.recorder_exclude_error') + ': ' + msg, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = orig;
+        }
+      });
+    });
+
+    // ── Noisy-scan ignore button (noisy_entity issues only) ─────────────
+    // Adds the literal entity_id to options.noisy_scan_exclude_patterns.
+    // Dedup: if any existing pattern already matches the entity_id (literal
+    // or fnmatch glob), we no-op and tell the user which pattern covered it.
+    container.querySelectorAll('.noisy-ignore-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const entityId = e.currentTarget.dataset.entityId;
+        if (!entityId) return;
+        btn.disabled = true;
+        const orig = btn.innerHTML;
+        btn.innerHTML = `${_icon('loading', 14)} ...`;
+        // fnmatch-style glob → JS regex (same converter as the config tab test button)
+        const toRegex = (pat) => {
+          let re = '';
+          for (let i2 = 0; i2 < pat.length; i2++) {
+            const c = pat[i2];
+            if (c === '*') re += '.*';
+            else if (c === '?') re += '.';
+            else if ('\\^$+()|{}.'.indexOf(c) !== -1) re += '\\' + c;
+            else re += c;
+          }
+          return new RegExp('^' + re + '$');
+        };
+        try {
+          const opts = await this.hass.callWS({ type: 'haca/get_options' });
+          const current = (opts?.options?.noisy_scan_exclude_patterns) || [];
+          const list = Array.isArray(current) ? current.slice() : [];
+          const matched = list.find(p => {
+            try { return toRegex(p).test(entityId); } catch (_) { return false; }
+          });
+          if (matched) {
+            this._showToast?.(
+              this.t('actions.noisy_ignore_already', {entity: entityId, pattern: matched}),
+              'info',
+            );
+            this._markIssueExcluded?.(btn);
+            return;
+          }
+          list.push(entityId);
+          const save = await this.hass.callWS({
+            type: 'haca/save_options',
+            options: { noisy_scan_exclude_patterns: list },
+          });
+          if (save?.success) {
+            this._showToast?.(
+              this.t('actions.noisy_ignore_success', {entity: entityId}),
+              'success',
+            );
+            this._markIssueExcluded?.(btn);
+          } else {
+            this._showToast?.(this.t('actions.noisy_ignore_error'), 'error');
+          }
+        } catch (err) {
+          const msg = (err && (err.message || err.code || JSON.stringify(err))) || 'unknown';
+          this._showToast?.(this.t('actions.noisy_ignore_error') + ': ' + msg, 'error');
         } finally {
           btn.disabled = false;
           btn.innerHTML = orig;

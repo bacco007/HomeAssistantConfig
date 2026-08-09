@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Audytor konfiguracji Home Assistant",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Pełne skanowanie",
       "automations": "Automatyzacje",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Dodać {entity} do recorder.exclude.entities w configuration.yaml? Zostanie utworzona kopia zapasowa, a plik zostanie zweryfikowany.",
       "recorder_exclude_success": "{entity} została dodana do recorder.exclude.entities. Zmiana zacznie obowiązywać przy następnym skanowaniu HACA.",
       "recorder_exclude_already": "{entity} jest już wykluczona.",
-      "recorder_exclude_error": "Nie można wykluczyć encji"
+      "recorder_exclude_error": "Nie można wykluczyć encji",
+      "noisy_ignore": "Ignoruj (hałas)",
+      "noisy_ignore_title": "Przestań oznaczać tę encję w skanowaniu «Hałaśliwe encje» (pełna historia Recordera jest zachowana)",
+      "noisy_ignore_success": "{entity} dodano do listy wykluczeń skanowania hałasu",
+      "noisy_ignore_already": "{entity} jest już objęty wzorcem: {pattern}",
+      "noisy_ignore_error": "Nie udało się dodać do listy wykluczeń"
     },
     "messages": {
       "no_issues": "Nie wykryto problemów w tej kategorii",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Powiadamiaj o drobnych problemach i sugestiach",
       "dashboard_section_title": "Pulpit HACA",
       "dashboard_section_hint": "Automatycznie wygeneruj pełny dashboard HACA na pasku bocznym. Jeśli już istnieje, zostanie zaktualizowany.",
-      "dashboard_created": "Dashboard utworzony! Przekierowanie..."
+      "dashboard_created": "Dashboard utworzony! Przekierowanie...",
+      "noisy_exclude_title": "Ukryj encje przed skanowaniem «Hałaśliwe encje»",
+      "noisy_exclude_info": "<b>Do czego to służy:</b> skanowanie HACA «Hałaśliwe encje» oznacza encje, które zmieniają stan ponad 200 razy w ciągu 24 godzin, abyś mógł zdecydować, czy wykluczyć je z Recordera. Ale niektóre encje <em>muszą</em> zmieniać się często (czujniki ruchu, pogoda, lokalizatory, kontakty drzwi/okien, Browser Mod itp.) — chcesz zachować ich historię, ale nie chcesz, by HACA wciąż cię o nich alarmował.<br><br><b>Co robić:</b> dodaj poniżej jeden <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">wzorzec glob</a> w wierszu. Każda encja, której <code>entity_id</code> pasuje do wzorca, zostanie cicho pominięta tylko przez skanowanie «Hałaśliwe encje» — jej pełna historia Recordera jest zachowana, a inne skany HACA (bezpieczeństwo, wydajność itp.) wciąż ją widzą. Wzorce uwzględniają wielkość liter i używają <code>*</code> (dowolna liczba znaków) i <code>?</code> (jeden znak).<br><br><b>Skrót:</b> na dowolnej karcie issue <em>hałaśliwej encji</em> kliknij pomarańczowy przycisk <b>Ignoruj (hałas)</b> — dodaje on entity_id bezpośrednio do listy poniżej i ukrywa issue. Używaj tego dla pojedynczych encji; używaj wzorców powyżej dla całych rodzin (np. wszystkie czujniki Browser Mod naraz).",
+      "noisy_exclude_examples": "<b>Przykłady</b> — <code>sensor.browser_mod_*</code> ukrywa wszystkie czujniki Browser Mod · <code>device_tracker.*</code> ukrywa wszystkie lokalizatory · <code>*_motion</code> ukrywa wszystko kończące się na <code>_motion</code> · <code>binary_sensor.window_*</code> ukrywa kontakty okienne.",
+      "noisy_exclude_placeholder": "Jeden wzorzec na linię, np.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Wypróbuj entity_id, np. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Testuj",
+      "noisy_exclude_test_match": "pasuje do wzorca: {pattern}",
+      "noisy_exclude_test_no_match": "żaden wzorzec nie pasuje — ta encja nadal pojawiałaby się jako hałaśliwa"
     },
     "ai_explain": {
       "analyzing": "🤖 Analizowanie złożoności…",

@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Konfigurationsprüfer",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Vollständiger Scan",
       "automations": "Automatisierungen",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "{entity} zu recorder.exclude.entities in configuration.yaml hinzufügen? Eine Sicherung wird erstellt und die Datei validiert.",
       "recorder_exclude_success": "{entity} zu recorder.exclude.entities hinzugefügt. Die Änderung wird beim nächsten HACA-Scan wirksam.",
       "recorder_exclude_already": "{entity} ist bereits ausgeschlossen.",
-      "recorder_exclude_error": "Entität konnte nicht ausgeschlossen werden"
+      "recorder_exclude_error": "Entität konnte nicht ausgeschlossen werden",
+      "noisy_ignore": "Ignorieren (Lärm)",
+      "noisy_ignore_title": "Diese Entität nicht mehr im Scan „Lärmende Entitäten“ melden (vollständige Recorder-Historie bleibt erhalten)",
+      "noisy_ignore_success": "{entity} zur Lärm-Scan-Ausschlussliste hinzugefügt",
+      "noisy_ignore_already": "{entity} ist bereits vom Muster abgedeckt: {pattern}",
+      "noisy_ignore_error": "Hinzufügen zur Ausschlussliste fehlgeschlagen"
     },
     "messages": {
       "no_issues": "In dieser Kategorie wurden keine Probleme erkannt",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Benachrichtigung bei kleineren Problemen und Vorschlägen",
       "dashboard_section_title": "HACA-Dashboard",
       "dashboard_section_hint": "Automatisch ein vollständiges HACA-Dashboard in der Seitenleiste erstellen. Alle HACA-Sensoren werden mit Messgeräten, Zählern und Verlauf angezeigt. Falls vorhanden, wird es aktualisiert.",
-      "dashboard_created": "Dashboard erfolgreich erstellt! Weiterleitung..."
+      "dashboard_created": "Dashboard erfolgreich erstellt! Weiterleitung...",
+      "noisy_exclude_title": "Entitäten vom Scan „Lärmende Entitäten“ ausblenden",
+      "noisy_exclude_info": "<b>Zweck:</b> HACAs Scan „Lärmende Entitäten“ markiert Entitäten, die sich in 24 Stunden öfter als 200-mal ändern, damit du entscheiden kannst, ob du sie vom Recorder ausschließen willst. Aber manche Entitäten sollen sich naturgemäß häufig ändern (Bewegungsmelder, Wetter, Tracker, Tür-/Fensterkontakte, Browser Mod usw.) — du willst ihre Historie behalten, aber HACA soll dich nicht ständig dazu warnen.<br><br><b>Vorgehen:</b> Trage unten ein <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">Glob-Muster</a> pro Zeile ein. Jede Entität, deren <code>entity_id</code> einem Muster entspricht, wird stillschweigend nur vom Scan „Lärmende Entitäten“ übersprungen — ihre vollständige Recorder-Historie bleibt erhalten, und andere HACA-Scans (Sicherheit, Performance usw.) sehen sie weiterhin. Muster sind groß-/kleinschreibungssensitiv und verwenden <code>*</code> (beliebig viele Zeichen) und <code>?</code> (ein Zeichen).<br><br><b>Shortcut:</b> Auf jeder Issue-Karte einer <em>lärmenden Entität</em> klicke auf den orangen Button <b>Ignorieren (Lärm)</b> — er fügt die entity_id direkt zur Liste unten hinzu und blendet die Issue aus. Nutze das für einzelne Entitäten; nutze die Muster oben für ganze Familien (z. B. alle Browser-Mod-Sensoren auf einmal).",
+      "noisy_exclude_examples": "<b>Beispiele</b> — <code>sensor.browser_mod_*</code> blendet alle Browser-Mod-Sensoren aus · <code>device_tracker.*</code> blendet alle Geräte-Tracker aus · <code>*_motion</code> blendet alles aus, das auf <code>_motion</code> endet · <code>binary_sensor.window_*</code> blendet Fensterkontakte aus.",
+      "noisy_exclude_placeholder": "Ein Muster pro Zeile, z. B.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Eine entity_id testen, z. B. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Testen",
+      "noisy_exclude_test_match": "passt zum Muster: {pattern}",
+      "noisy_exclude_test_no_match": "kein Muster passt — diese Entität würde weiterhin als lärmend angezeigt"
     },
     "ai_explain": {
       "analyzing": "🤖 Komplexität wird analysiert…",

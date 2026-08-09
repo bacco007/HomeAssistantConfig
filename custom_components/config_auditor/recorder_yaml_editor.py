@@ -44,15 +44,20 @@ def _config_yaml_path(hass: HomeAssistant) -> Path:
     return Path(hass.config.config_dir) / "configuration.yaml"
 
 
-def _read_recorder_excluded_entities_sync(
+def _read_recorder_excludes_sync(
     config_file: Path,
-) -> tuple[set[str], bool]:
-    """Read ``recorder.exclude.entities`` from configuration.yaml. I/O.
+) -> tuple[set[str], list[str], set[str], bool]:
+    """Read the full ``recorder.exclude`` block from configuration.yaml. I/O.
 
-    Returns ``(entities, authoritative)``:
+    Returns ``(entities, entity_globs, domains, authoritative)``:
 
     - ``entities`` — set of entity ids in ``recorder.exclude.entities``
       (always a set, possibly empty).
+    - ``entity_globs`` — list of HA-native fnmatch globs in
+      ``recorder.exclude.entity_globs`` (e.g. ``camera.*``,
+      ``sensor.*_recent_table``). Always a list, possibly empty.
+    - ``domains`` — set of domain names in ``recorder.exclude.domains``
+      (e.g. ``camera``, ``binary_sensor``). Always a set, possibly empty.
     - ``authoritative`` — ``True`` iff configuration.yaml was parsed
       successfully AND the recorder section is a plain in-line mapping
       that we can read end-to-end. ``False`` if the file is missing,
@@ -60,12 +65,13 @@ def _read_recorder_excluded_entities_sync(
       (and is therefore opaque from this file).
 
     The ``authoritative`` flag matters for the noisy-entity filter:
-    when ``True``, the caller should trust this set as the *single*
-    source of truth (so removing an entity from configuration.yaml
-    immediately makes the issue reappear at the next scan, without
-    needing an HA restart). When ``False``, the caller should fall
-    back to the runtime ``recorder.is_entity_recorded`` check, which
-    reflects whatever the recorder loaded at startup.
+    when ``True``, the caller should trust this view as the *single*
+    source of truth (so editing configuration.yaml and rescanning takes
+    effect immediately, without needing an HA restart). When ``False``,
+    the caller should fall back to the runtime
+    ``recorder.is_entity_recorded`` check, which reflects whatever the
+    recorder loaded at startup AND which already honours globs+domains
+    via HA's own filter logic.
 
     Uses PyYAML (always present in HA) with a SafeLoader subclass that
     short-circuits HA's custom tags (``!include``, ``!secret``,
@@ -73,7 +79,7 @@ def _read_recorder_excluded_entities_sync(
     whole file unparseable.
     """
     if not config_file.exists():
-        return set(), False
+        return set(), [], set(), False
     try:
         import yaml as _pyyaml  # noqa: PLC0415
 
@@ -92,53 +98,59 @@ def _read_recorder_excluded_entities_sync(
             "[HACA] Could not parse configuration.yaml for recorder excludes: %s",
             exc,
         )
-        return set(), False
+        return set(), [], set(), False
 
     if not isinstance(data, dict):
-        return set(), False
+        return set(), [], set(), False
 
     if "recorder" not in data:
         # No recorder section at all → user is using HA defaults (all
         # entities recorded). Authoritative: there is nothing excluded.
-        return set(), True
+        return set(), [], set(), True
 
     rec = data["recorder"]
     if rec is None:
         # ``recorder: !include …`` (we mapped the !include tag to None)
         # or ``recorder:`` with no body. Not authoritative — defer to the
         # runtime filter.
-        return set(), False
+        return set(), [], set(), False
     if not isinstance(rec, dict):
-        return set(), False
+        return set(), [], set(), False
 
     exc_section = rec.get("exclude")
     if exc_section is None:
         # ``recorder:`` exists but has no exclude section → authoritative
         # "nothing is excluded".
-        return set(), True
+        return set(), [], set(), True
     if not isinstance(exc_section, dict):
-        return set(), False
+        return set(), [], set(), False
 
-    entities = exc_section.get("entities")
-    if entities is None:
-        return set(), True
-    if not isinstance(entities, list):
-        return set(), False
-    return {e for e in entities if isinstance(e, str)}, True
+    raw_entities = exc_section.get("entities") or []
+    raw_globs    = exc_section.get("entity_globs") or []
+    raw_domains  = exc_section.get("domains") or []
+    if not isinstance(raw_entities, list): raw_entities = []
+    if not isinstance(raw_globs, list):    raw_globs    = []
+    if not isinstance(raw_domains, list):  raw_domains  = []
+
+    entities = {e for e in raw_entities if isinstance(e, str)}
+    globs    = [g for g in raw_globs    if isinstance(g, str)]
+    domains  = {d for d in raw_domains  if isinstance(d, str)}
+    return entities, globs, domains, True
 
 
-async def async_get_recorder_excluded_entities(
+async def async_get_recorder_excludes(
     hass: HomeAssistant,
-) -> tuple[set[str], bool]:
-    """Return ``(excluded_entities, authoritative)`` for the live YAML.
+) -> tuple[set[str], list[str], set[str], bool]:
+    """Return ``(entities, entity_globs, domains, authoritative)`` for the live YAML.
 
-    See ``_read_recorder_excluded_entities_sync`` for the meaning of
-    ``authoritative``. Callers should prefer this YAML view as the
-    source of truth when ``authoritative`` is True; otherwise they may
-    fall back to ``recorder.is_entity_recorded``.
+    See ``_read_recorder_excludes_sync`` for the meaning of each element
+    and of the ``authoritative`` flag. Callers should prefer this YAML
+    view as the source of truth when ``authoritative`` is True; otherwise
+    they may fall back to ``recorder.is_entity_recorded`` (which already
+    handles globs+domains via HA's own logic).
     """
     return await hass.async_add_executor_job(
-        _read_recorder_excluded_entities_sync, _config_yaml_path(hass)
+        _read_recorder_excludes_sync, _config_yaml_path(hass)
     )
 
 

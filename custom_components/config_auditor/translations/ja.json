@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "{entity} を configuration.yaml の recorder.exclude.entities に追加しますか？バックアップが作成され、ファイルが検証されます。",
       "recorder_exclude_success": "{entity} を recorder.exclude.entities に追加しました。次回の HACA スキャンから反映されます。",
       "recorder_exclude_already": "{entity} はすでに除外されています。",
-      "recorder_exclude_error": "エンティティを除外できませんでした"
+      "recorder_exclude_error": "エンティティを除外できませんでした",
+      "noisy_ignore": "無視（ノイズ）",
+      "noisy_ignore_title": "「ノイズの多いエンティティ」スキャンでこのエンティティのフラグ付けを停止（Recorder の完全な履歴は保持されます）",
+      "noisy_ignore_success": "{entity} をノイズ・スキャン除外リストに追加しました",
+      "noisy_ignore_already": "{entity} はすでにパターンでカバーされています：{pattern}",
+      "noisy_ignore_error": "除外リストへの追加に失敗しました"
     },
     "messages": {
       "no_issues": "このカテゴリーで問題は検出されませんでした",
@@ -751,7 +756,15 @@
       "severity_low_hint": "軽微な問題と提案を通知",
       "dashboard_section_title": "HACA ダッシュボード",
       "dashboard_section_hint": "サイドバーに完全なHACA概要ダッシュボードを自動生成します。既に存在する場合は更新されます。",
-      "dashboard_created": "ダッシュボード作成成功！リダイレクト中..."
+      "dashboard_created": "ダッシュボード作成成功！リダイレクト中...",
+      "noisy_exclude_title": "「ノイズの多いエンティティ」スキャンからエンティティを非表示",
+      "noisy_exclude_info": "<b>用途：</b> HACA の「ノイズの多いエンティティ」スキャンは、24 時間で 200 回以上状態が変化するエンティティをフラグ付けし、Recorder から除外するか判断できるようにします。しかし一部のエンティティは<em>頻繁に</em>変化することが想定されています（モーションセンサー、天気、トラッカー、ドア／窓接点、Browser Mod など）— 履歴は残したいが、HACA に繰り返し警告されたくない場合に使用します。<br><br><b>使い方：</b> 下に <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">glob パターン</a>を 1 行ずつ追加してください。<code>entity_id</code> がいずれかのパターンに一致するエンティティは、「ノイズの多いエンティティ」スキャンでのみ静かにスキップされます — Recorder の完全な履歴は保持され、他の HACA スキャン（セキュリティ、パフォーマンスなど）からは引き続き参照されます。パターンは大文字小文字を区別し、<code>*</code>（任意の数の文字）と <code>?</code>（1 文字）を使用します。<br><br><b>ショートカット：</b> <em>ノイズの多いエンティティ</em>の任意のイシューカードで、オレンジ色の<b>無視（ノイズ）</b>ボタンをクリックすると、entity_id が下のリストに直接追加され、イシューが非表示になります。これは個別のエンティティに使用し、ファミリー全体（例：Browser Mod のすべてのセンサーを一括）には上のパターンを使用してください。",
+      "noisy_exclude_examples": "<b>例</b> — <code>sensor.browser_mod_*</code> はすべての Browser Mod センサーを非表示 · <code>device_tracker.*</code> はすべてのデバイストラッカーを非表示 · <code>*_motion</code> は <code>_motion</code> で終わるものすべてを非表示 · <code>binary_sensor.window_*</code> は窓接点を非表示。",
+      "noisy_exclude_placeholder": "1 行に 1 パターン、例：\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "entity_id を試す、例：sensor.browser_mod_abc",
+      "noisy_exclude_test": "テスト",
+      "noisy_exclude_test_match": "パターンに一致：{pattern}",
+      "noisy_exclude_test_no_match": "一致するパターンなし — このエンティティはノイズとして引き続き表示されます"
     },
     "ai_explain": {
       "analyzing": "🤖 複雑度を解析中…",

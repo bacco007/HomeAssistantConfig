@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Revisore di configurazione Home Assistant",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Scansione Completa",
       "automations": "Automazioni",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Aggiungere {entity} a recorder.exclude.entities in configuration.yaml? Verrà creato un backup e il file verrà validato.",
       "recorder_exclude_success": "{entity} aggiunta a recorder.exclude.entities. Effettivo dalla prossima scansione HACA.",
       "recorder_exclude_already": "{entity} è già esclusa.",
-      "recorder_exclude_error": "Impossibile escludere l'entità"
+      "recorder_exclude_error": "Impossibile escludere l'entità",
+      "noisy_ignore": "Ignora (rumore)",
+      "noisy_ignore_title": "Non segnalare più questa entità nella scansione «Entità rumorose» (la cronologia Recorder completa è mantenuta)",
+      "noisy_ignore_success": "{entity} aggiunto alla lista di esclusione della scansione «rumorose»",
+      "noisy_ignore_already": "{entity} è già coperto dal pattern: {pattern}",
+      "noisy_ignore_error": "Impossibile aggiungere alla lista di esclusione"
     },
     "messages": {
       "no_issues": "Nessun problema rilevato in questa categoria",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Notifica per problemi minori e suggerimenti",
       "dashboard_section_title": "Dashboard HACA",
       "dashboard_section_hint": "Genera automaticamente una dashboard HACA completa nella barra laterale. Se esiste già, verrà aggiornata.",
-      "dashboard_created": "Dashboard creato con successo! Reindirizzamento..."
+      "dashboard_created": "Dashboard creato con successo! Reindirizzamento...",
+      "noisy_exclude_title": "Nascondi entità dalla scansione «Entità rumorose»",
+      "noisy_exclude_info": "<b>A cosa serve:</b> la scansione «Entità rumorose» di HACA segnala le entità che cambiano stato più di 200 volte in 24 h, così puoi decidere se escluderle dal Recorder. Ma alcune entità <em>devono</em> cambiare spesso (sensori di movimento, meteo, tracker, contatti porta/finestra, Browser Mod, ecc.) — vuoi mantenere la loro cronologia ma non vuoi che HACA continui ad avvisarti su di esse.<br><br><b>Come fare:</b> aggiungi un <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">pattern glob</a> per riga qui sotto. Qualsiasi entità il cui <code>entity_id</code> corrisponde a un pattern viene silenziosamente saltata solo dalla scansione «Entità rumorose» — la sua cronologia Recorder è preservata e le altre scansioni HACA (sicurezza, performance, ecc.) la vedono ancora. I pattern sono case-sensitive e usano <code>*</code> (qualsiasi numero di caratteri) e <code>?</code> (un solo carattere).<br><br><b>Scorciatoia:</b> su qualsiasi card di issue di <em>entità rumorosa</em>, fai clic sul pulsante arancione <b>Ignora (rumore)</b> — aggiunge l'entity_id direttamente alla lista qui sotto e nasconde l'issue. Usalo per entità singole; usa i pattern qui sopra per intere famiglie (es. tutti i sensori Browser Mod in una volta).",
+      "noisy_exclude_examples": "<b>Esempi</b> — <code>sensor.browser_mod_*</code> nasconde tutti i sensori Browser Mod · <code>device_tracker.*</code> nasconde tutti i tracker · <code>*_motion</code> nasconde tutto ciò che finisce in <code>_motion</code> · <code>binary_sensor.window_*</code> nasconde i contatti finestra.",
+      "noisy_exclude_placeholder": "Un pattern per riga, es.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Prova un entity_id, es. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Testa",
+      "noisy_exclude_test_match": "corrisponde al pattern: {pattern}",
+      "noisy_exclude_test_no_match": "nessun pattern corrisponde — questa entità apparirebbe ancora come rumorosa"
     },
     "ai_explain": {
       "analyzing": "🤖 Analisi complessità in corso…",

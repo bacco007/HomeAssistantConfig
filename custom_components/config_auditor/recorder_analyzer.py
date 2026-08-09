@@ -116,27 +116,28 @@ class RecorderAnalyzer:
     def _query_orphans(self, instance) -> dict[str, Any]:
         """Run synchronous DB queries in the recorder executor thread.
 
-        Uses a fresh engine connection with BEGIN IMMEDIATE to guarantee we
-        read the latest committed data from the WAL file, not a stale pool
-        snapshot that predates a recent DELETE.
+        Starts a fresh read transaction so we see the latest committed data
+        from the WAL file, not a stale pool snapshot that predates a recent
+        DELETE.
         """
         from sqlalchemy import text
 
-        # ── Fresh connection with BEGIN IMMEDIATE ─────────────────────────
+        # ── Fresh read transaction ────────────────────────────────────────
         # SQLAlchemy's connection pool can return a connection that already has
-        # an open (idle) read transaction snapshot taken BEFORE our last purge
-        # commit.  Using engine.connect() as a context manager gives us a brand-
-        # new connection; BEGIN IMMEDIATE then acquires a shared lock and reads
-        # from the latest WAL state, ensuring post-purge data is visible.
+        # an open (idle) read transaction whose snapshot was taken BEFORE our
+        # last purge commit.  Rolling back first ends that transaction, so the
+        # first SELECT below opens a new one and sees the current WAL state.
+        #
+        # This used to issue BEGIN IMMEDIATE instead.  Don't: IMMEDIATE takes a
+        # RESERVED (write) lock straight away, and the scan below full-scans
+        # `states`.  On a large database that blocked the recorder from
+        # committing for the whole duration of the scan ("database is locked").
+        # A read transaction is all this function needs.
         with instance.engine.connect() as conn:
-            # Force SQLite to start a new read transaction from the latest
-            # committed state, bypassing any stale pool snapshot.
             try:
-                conn.execute(text("BEGIN IMMEDIATE"))
+                conn.rollback()
             except Exception:
-                # Non-SQLite backends (e.g. MariaDB): BEGIN IMMEDIATE is either
-                # not needed or uses different syntax.  Fall through — the engine
-                # will still start a read transaction on first query.
+                # Nothing to roll back, or a backend that does not need it.
                 pass
 
             try:

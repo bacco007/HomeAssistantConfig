@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditeur de configuration Home Assistant",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Scan Complet",
       "automations": "Automatisations",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Ajouter {entity} à recorder.exclude.entities dans configuration.yaml ? Une sauvegarde sera créée et le fichier validé.",
       "recorder_exclude_success": "{entity} ajoutée à recorder.exclude.entities. Le changement prendra effet au prochain scan HACA.",
       "recorder_exclude_already": "{entity} est déjà exclue.",
-      "recorder_exclude_error": "Impossible d'exclure l'entité"
+      "recorder_exclude_error": "Impossible d'exclure l'entité",
+      "noisy_ignore": "Ignorer (bruit)",
+      "noisy_ignore_title": "Ne plus signaler cette entité dans le scan « Entités bruyantes » (l'historique Recorder est conservé)",
+      "noisy_ignore_success": "{entity} ajouté à la liste d'exclusion du scan « bruit »",
+      "noisy_ignore_already": "{entity} est déjà couvert par le pattern : {pattern}",
+      "noisy_ignore_error": "Impossible d'ajouter à la liste d'exclusion"
     },
     "messages": {
       "no_issues": "Aucun problème détecté dans cette catégorie",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Notifier pour les problèmes mineurs et suggestions d'amélioration",
       "dashboard_section_title": "Tableau de bord HACA",
       "dashboard_section_hint": "Générer automatiquement un dashboard HACA complet dans la barre latérale. Tous les capteurs HACA seront affichés avec des jauges, compteurs et historique. Si le dashboard existe déjà, il sera mis à jour.",
-      "dashboard_created": "Dashboard créé avec succès ! Redirection..."
+      "dashboard_created": "Dashboard créé avec succès ! Redirection...",
+      "noisy_exclude_title": "Masquer des entités du scan « Entités bruyantes »",
+      "noisy_exclude_info": "<b>À quoi ça sert :</b> le scan « Entités bruyantes » de HACA signale les entités qui changent d'état plus de 200 fois par 24 h, pour que tu décides de les exclure du Recorder. Mais certaines entités sont <em>censées</em> changer souvent (capteurs de mouvement, météo, trackers, contacts porte/fenêtre, Browser Mod, etc.) — tu veux garder leur historique mais tu ne veux pas que HACA continue à t'alerter dessus.<br><br><b>Comment faire :</b> ajoute un <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">pattern glob</a> par ligne ci-dessous. Toute entité dont l'<code>entity_id</code> correspond à un pattern sera silencieusement ignorée par le scan « Entités bruyantes » uniquement — son historique Recorder reste complet et les autres scans HACA (sécurité, performance, etc.) continuent à la voir. Les patterns sont sensibles à la casse et utilisent <code>*</code> (n'importe quel nombre de caractères) et <code>?</code> (un seul caractère).<br><br><b>Raccourci :</b> sur n'importe quelle carte d'issue <em>entité bruyante</em>, clique sur le bouton orange <b>Ignorer (bruit)</b> — il ajoute l'entity_id directement à la liste ci-dessous et masque l'issue. Utilise ça pour les entités unitaires ; utilise les patterns ci-dessus pour des familles entières (par ex. tous les capteurs Browser Mod d'un coup).",
+      "noisy_exclude_examples": "<b>Exemples</b> — <code>sensor.browser_mod_*</code> masque tous les capteurs Browser Mod · <code>device_tracker.*</code> masque tous les trackers · <code>*_motion</code> masque tout ce qui finit par <code>_motion</code> · <code>binary_sensor.window_*</code> masque les contacts fenêtre.",
+      "noisy_exclude_placeholder": "Un pattern par ligne, ex.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Essaye un entity_id, ex. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Tester",
+      "noisy_exclude_test_match": "correspond au pattern : {pattern}",
+      "noisy_exclude_test_no_match": "aucun pattern ne correspond — cette entité apparaîtrait quand même comme bruyante"
     },
     "ai_explain": {
       "analyzing": "🤖 Analyse de complexité en cours…",

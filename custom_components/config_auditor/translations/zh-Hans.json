@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 配置审计器",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "全面扫描",
       "automations": "自动化",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "将 {entity} 添加到 configuration.yaml 的 recorder.exclude.entities？将创建备份并验证文件。",
       "recorder_exclude_success": "{entity} 已添加到 recorder.exclude.entities。将在下次 HACA 扫描时生效。",
       "recorder_exclude_already": "{entity} 已经被排除。",
-      "recorder_exclude_error": "无法排除实体"
+      "recorder_exclude_error": "无法排除实体",
+      "noisy_ignore": "忽略（嘈杂）",
+      "noisy_ignore_title": "停止在「嘈杂实体」扫描中标记此实体（保留完整的 Recorder 历史记录）",
+      "noisy_ignore_success": "{entity} 已添加到嘈杂扫描排除列表",
+      "noisy_ignore_already": "{entity} 已被模式覆盖：{pattern}",
+      "noisy_ignore_error": "无法添加到排除列表"
     },
     "messages": {
       "no_issues": "此类别未检测到问题",
@@ -751,7 +756,15 @@
       "severity_low_hint": "通知小问题和改进建议",
       "dashboard_section_title": "HACA 仪表盘",
       "dashboard_section_hint": "在侧边栏中自动生成完整的HACA概览仪表板。如果已存在，将会更新。",
-      "dashboard_created": "仪表板创建成功！重定向中..."
+      "dashboard_created": "仪表板创建成功！重定向中...",
+      "noisy_exclude_title": "从「嘈杂实体」扫描中隐藏实体",
+      "noisy_exclude_info": "<b>用途：</b> HACA 的「嘈杂实体」扫描会标记 24 小时内状态变化超过 200 次的实体，便于你决定是否将其从 Recorder 中排除。但有些实体<em>本来就</em>应该频繁变化（运动传感器、天气、追踪器、门窗触点、Browser Mod 等）— 你想保留它们的历史记录，但不希望 HACA 持续就此发出警告。<br><br><b>操作方法：</b> 在下方每行添加一个 <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">glob 模式</a>。任何 <code>entity_id</code> 匹配模式的实体将仅在「嘈杂实体」扫描中被静默跳过 — 其完整的 Recorder 历史记录将被保留，其他 HACA 扫描（安全、性能等）仍可看到它。模式区分大小写，使用 <code>*</code>（任意数量的字符）和 <code>?</code>（一个字符）。<br><br><b>快捷方式：</b>在任何<em>嘈杂实体</em>问题卡片上，点击橙色的<b>忽略（嘈杂）</b>按钮 — 它会将 entity_id 直接添加到下方列表并隐藏该问题。请将此用于单个实体；对于整个家族（例如一次性处理所有 Browser Mod 传感器），请使用上方的模式。",
+      "noisy_exclude_examples": "<b>示例</b> — <code>sensor.browser_mod_*</code> 隐藏所有 Browser Mod 传感器 · <code>device_tracker.*</code> 隐藏所有设备追踪器 · <code>*_motion</code> 隐藏所有以 <code>_motion</code> 结尾的实体 · <code>binary_sensor.window_*</code> 隐藏窗户触点。",
+      "noisy_exclude_placeholder": "每行一个模式，例如：\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "试一个 entity_id，例如：sensor.browser_mod_abc",
+      "noisy_exclude_test": "测试",
+      "noisy_exclude_test_match": "匹配模式：{pattern}",
+      "noisy_exclude_test_no_match": "没有匹配的模式 — 此实体仍会显示为嘈杂"
     },
     "ai_explain": {
       "analyzing": "🤖 正在分析复杂度…",

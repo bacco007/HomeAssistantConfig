@@ -450,6 +450,237 @@ async def handle_restore_backup(
 
 
 
+# ── Orphan purge tuning ─────────────────────────────────────────────────────
+# Rows deleted per transaction when we do direct SQL (statistics tables only).
+# Small on purpose: the write lock is only held for the duration of one batch,
+# so the recorder thread can always slip in between two of them.  Mirrors HA's
+# own MAX_ROWS_TO_PURGE.
+_PURGE_BATCH_SIZE = 1000
+# How long we wait for HA's PurgeEntitiesTask to drain the `states` rows before
+# returning a partial result.  Exceeding it is not an error — the task keeps
+# running safely inside the recorder, it just is not finished yet.
+_PURGE_STATES_TIMEOUT = 900.0
+_PURGE_POLL_INTERVAL = 2.0
+
+
+def _purge_fetch_targets(instance, entity_ids: list[str]) -> tuple[dict, dict]:
+    """Resolve entity_id → metadata ids.  Read-only: takes no write lock."""
+    from sqlalchemy import text
+
+    states_meta: dict[str, int] = {}
+    stats_meta: dict[str, int] = {}
+
+    with instance.engine.connect() as conn:
+        for eid in entity_ids:
+            row = conn.execute(
+                text("SELECT metadata_id FROM states_meta WHERE entity_id = :eid"),
+                {"eid": eid},
+            ).fetchone()
+            if row:
+                states_meta[eid] = row[0]
+
+            row = conn.execute(
+                text(
+                    "SELECT id FROM statistics_meta "
+                    "WHERE statistic_id = :eid AND source = 'recorder'"
+                ),
+                {"eid": eid},
+            ).fetchone()
+            if row:
+                stats_meta[eid] = row[0]
+
+    return states_meta, stats_meta
+
+
+def _purge_states_remaining(instance, metadata_ids: list[int]) -> list[int]:
+    """Return the metadata_ids that still have at least one row in `states`.
+
+    Uses EXISTS-style ``LIMIT 1`` rather than COUNT(*) so the check stays cheap
+    even on an entity with hundreds of thousands of rows — it is called
+    repeatedly while we poll.
+    """
+    from sqlalchemy import text
+
+    remaining: list[int] = []
+    with instance.engine.connect() as conn:
+        for mid in metadata_ids:
+            row = conn.execute(
+                text("SELECT 1 FROM states WHERE metadata_id = :mid LIMIT 1"),
+                {"mid": mid},
+            ).fetchone()
+            if row:
+                remaining.append(mid)
+    return remaining
+
+
+def _purge_delete_batched(session, table: str, pk: str, metadata_id: int) -> int:
+    """Delete every row of `table` for one metadata_id, committing per batch.
+
+    `table` and `pk` are module-local literals, never user input, so the
+    f-string interpolation is safe; every value is a bound parameter.
+
+    ``DELETE … LIMIT`` is not portable (PostgreSQL rejects it, and CPython's
+    bundled SQLite is usually built without SQLITE_ENABLE_UPDATE_DELETE_LIMIT),
+    so we page over primary keys and delete by id — the approach HA uses too.
+    """
+    from sqlalchemy import text
+
+    total = 0
+    while True:
+        ids = [
+            r[0]
+            for r in session.execute(
+                text(
+                    f"SELECT {pk} FROM {table} WHERE metadata_id = :mid "
+                    f"LIMIT {int(_PURGE_BATCH_SIZE)}"
+                ),
+                {"mid": metadata_id},
+            ).fetchall()
+        ]
+        if not ids:
+            return total
+
+        placeholders = ", ".join(f":i{i}" for i in range(len(ids)))
+        session.execute(
+            text(f"DELETE FROM {table} WHERE {pk} IN ({placeholders})"),
+            {f"i{i}": v for i, v in enumerate(ids)},
+        )
+        # Commit per batch — this is what keeps the write lock short-lived.
+        session.commit()
+
+        total += len(ids)
+        if len(ids) < _PURGE_BATCH_SIZE:
+            return total
+
+
+def _purge_open_session(instance):
+    """Open a DB session, supporting both the old and the new recorder API."""
+    if hasattr(instance, "get_session"):
+        return instance.get_session()
+    from sqlalchemy.orm import Session as _Session
+
+    return _Session(bind=instance.engine)
+
+
+def _purge_statistics_sql(instance, stats_meta: dict[str, int]) -> dict[str, dict]:
+    """Delete long-term statistics for the given entities, in small batches.
+
+    This is the half ``recorder.purge_entities`` cannot do: it only looks at
+    states_meta, so an entity that survives *only* as long-term statistics is
+    invisible to it.
+
+    On error the current batch is rolled back and the exception propagates.
+    Batches already committed stay deleted — that is intentional and harmless,
+    the rows are orphaned data either way, and it is the price of never holding
+    one long transaction.
+    """
+    from sqlalchemy import text
+
+    session = _purge_open_session(instance)
+    deleted: dict[str, dict] = {}
+    try:
+        for eid, mid in stats_meta.items():
+            counts = {
+                "statistics": _purge_delete_batched(session, "statistics", "id", mid),
+                "statistics_short_term": _purge_delete_batched(
+                    session, "statistics_short_term", "id", mid
+                ),
+            }
+            session.execute(
+                text("DELETE FROM statistics_meta WHERE id = :mid"), {"mid": mid}
+            )
+            session.commit()
+            counts["statistics_meta"] = 1
+            _LOGGER.info("[HACA Purge] statistics purged for '%s': %s", eid, counts)
+            deleted[eid] = counts
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+    return deleted
+
+
+def _purge_drop_states_meta(instance, states_meta: dict[str, int]) -> list[str]:
+    """Drop states_meta rows whose `states` rows are all gone (one row each)."""
+    from sqlalchemy import text
+
+    session = _purge_open_session(instance)
+    dropped: list[str] = []
+    try:
+        for eid, mid in states_meta.items():
+            still_there = session.execute(
+                text("SELECT 1 FROM states WHERE metadata_id = :mid LIMIT 1"),
+                {"mid": mid},
+            ).fetchone()
+            if still_there:
+                # Purge still running for this entity — leaving the meta row is
+                # harmless, HA reuses it if the entity ever comes back.
+                continue
+            session.execute(
+                text("DELETE FROM states_meta WHERE metadata_id = :mid"), {"mid": mid}
+            )
+            session.commit()
+            dropped.append(eid)
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+    return dropped
+
+
+def _purge_wal_checkpoint(instance) -> None:
+    """PASSIVE checkpoint so readers see the deletes, without blocking anyone.
+
+    Deliberately not TRUNCATE: TRUNCATE waits for every reader to finish and can
+    stall for a long time while the recorder is active.  PASSIVE returns right
+    away and checkpoints whatever it can, which is all we need here.
+    """
+    from sqlalchemy import text
+
+    try:
+        with instance.engine.connect() as conn:
+            row = conn.execute(text("PRAGMA wal_checkpoint(PASSIVE)")).fetchone()
+        _LOGGER.debug("[HACA Purge] WAL checkpoint: %s", tuple(row) if row else None)
+    except Exception as exc:
+        # Non-SQLite backend, or checkpoint refused. Neither undoes our commits.
+        _LOGGER.debug("[HACA Purge] WAL checkpoint skipped: %s", exc)
+
+
+async def _purge_await_states(instance, states_meta: dict[str, int]) -> list[str]:
+    """Wait for HA's PurgeEntitiesTask to drain `states`, bounded by a timeout.
+
+    ``Recorder.async_block_till_done()`` is not enough on its own: the purge task
+    re-queues itself whenever it hits its row cap, so the wait token can be
+    processed while work is still pending.  We poll the states table instead.
+
+    Returns the entity_ids that still have rows when we stop waiting.  That is
+    not a failure — the recorder keeps purging them in the background, without
+    ever holding the write lock.
+    """
+    import time
+
+    by_mid = {mid: eid for eid, mid in states_meta.items()}
+    pending = list(states_meta.values())
+    deadline = time.monotonic() + _PURGE_STATES_TIMEOUT
+
+    while True:
+        pending = await instance.async_add_executor_job(
+            _purge_states_remaining, instance, pending
+        )
+        if not pending:
+            return []
+        if time.monotonic() >= deadline:
+            _LOGGER.warning(
+                "[HACA Purge] %d entity(ies) still pending after %.0fs — the "
+                "recorder will finish them in the background",
+                len(pending), _PURGE_STATES_TIMEOUT,
+            )
+            return [by_mid[mid] for mid in pending]
+        await asyncio.sleep(_PURGE_POLL_INTERVAL)
+
+
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "haca/purge_recorder_orphans",
@@ -463,24 +694,34 @@ async def handle_purge_recorder_orphans(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Purge orphaned entity data directly via SQL in the recorder DB thread.
+    """Purge orphaned entity data from the recorder database.
 
-    ⚠️  DIRECT SQL ACCESS — WHY AND RISKS
-    ──────────────────────────────────────
-    We use direct SQL because ``recorder.purge_entities`` only touches the
-    ``states`` / ``states_meta`` tables and cannot remove entries that exist
-    *only* in ``statistics_meta`` (long-term statistics without a matching
-    state history).  Direct SQL is the only reliable approach for full orphan
-    removal.
+    Split in two stages on purpose, because the two halves carry very different
+    risk:
 
-    Known risks (user is warned in the UI before confirming):
-    - Internal Recorder DB schema may change between HA versions.
-    - On schema mismatch the whole transaction is rolled back, leaving the
-      DB in a clean state.  No partial deletions are committed.
-    - WAL checkpoint after commit ensures subsequent readers see our changes.
+    1. `states` / `state_attributes` / `old_state_id` are handled by HA's own
+       ``recorder.purge_entities`` service.  It runs inside the recorder thread
+       and commits every ~1000 rows, so the SQLite write lock is never held for
+       more than a few milliseconds at a time, and it already knows how to
+       honour the foreign keys HA enables on SQLite.
+    2. `statistics` / `statistics_short_term` / `statistics_meta` are deleted
+       here in direct SQL, also batched with a commit after every batch.  This
+       part cannot be delegated: ``purge_entities`` only looks at states_meta,
+       so an entity that survives *only* as long-term statistics is invisible
+       to it.  This was the original reason for going direct-SQL at all.
+
+    ⚠️  Do not reintroduce a single long transaction here.  The previous
+    implementation staged every DELETE for every entity and committed once at
+    the end.  On a large database the first statement took the SQLite write
+    lock and held it for the whole run, so the recorder could no longer commit
+    ("Error in database connectivity during commit: database is locked") until
+    Home Assistant was restarted.  Batch size and per-batch commits are the
+    load-bearing part of this handler.
     """
     entity_ids: list[str] = msg.get("entity_ids", [])
-    _LOGGER.warning("[HACA Purge] request for %d entity(ies): %s", len(entity_ids), entity_ids)
+    _LOGGER.info(
+        "[HACA Purge] request for %d entity(ies): %s", len(entity_ids), entity_ids
+    )
 
     if not entity_ids:
         connection.send_error(msg["id"], "no_entities", "No entity_ids provided")
@@ -494,217 +735,123 @@ async def handle_purge_recorder_orphans(
         connection.send_error(msg["id"], "recorder_unavailable", str(exc))
         return
 
-    def _do_purge(instance) -> dict:
-        """Execute DELETE statements in the recorder DB thread + WAL checkpoint.
-
-        Runs inside instance.async_add_executor_job so we are on the recorder's
-        own DB thread.
-
-        Supports both old API (get_session) and new API (session_scope).
-        """
-        from sqlalchemy import text
-
-        deleted = {}
-        
-        # Get a session — try modern API first, fallback to legacy
-        session = None
-        session_ctx = None
-        try:
-            if hasattr(instance, "get_session"):
-                session = instance.get_session()
-            else:
-                # HA 2024+: use session_scope or create from engine
-                from sqlalchemy.orm import Session as _Session
-                session = _Session(bind=instance.engine)
-                _LOGGER.debug("[HACA Purge] Using direct SQLAlchemy Session (modern HA)")
-        except Exception as sess_exc:
-            _LOGGER.warning("[HACA Purge] Cannot create DB session: %s", sess_exc)
-            raise
-
-        try:
-            for eid in entity_ids:
-                counts = {}
-
-                # ── 1. states / states_meta ───────────────────────────────
-                row = session.execute(
-                    text("SELECT metadata_id FROM states_meta WHERE entity_id = :eid"),
-                    {"eid": eid},
-                ).fetchone()
-
-                if row:
-                    metadata_id = row[0]
-
-                    # Find attributes_id values used ONLY by this entity
-                    # (safe to delete — not shared with other entities)
-                    orphan_attrs = session.execute(
-                        text(
-                            "SELECT DISTINCT s.attributes_id FROM states s "
-                            "WHERE s.metadata_id = :mid "
-                            "  AND s.attributes_id IS NOT NULL "
-                            "  AND NOT EXISTS ("
-                            "    SELECT 1 FROM states s2 "
-                            "    WHERE s2.attributes_id = s.attributes_id "
-                            "      AND s2.metadata_id != :mid"
-                            "  )"
-                        ),
-                        {"mid": metadata_id},
-                    ).fetchall()
-                    attr_ids = [r[0] for r in orphan_attrs]
-
-                    # Delete states rows
-                    # MySQL/MariaDB: old_state_id FK constraint requires nullifying
-                    # references before deletion. SQLite doesn't enforce FKs by default
-                    # so this is a no-op there but essential for MySQL.
-                    session.execute(
-                        text(
-                            "UPDATE states SET old_state_id = NULL "
-                            "WHERE old_state_id IN ("
-                            "  SELECT state_id FROM (SELECT state_id FROM states WHERE metadata_id = :mid) AS t"
-                            ")"
-                        ),
-                        {"mid": metadata_id},
-                    )
-                    r = session.execute(
-                        text("DELETE FROM states WHERE metadata_id = :mid"),
-                        {"mid": metadata_id},
-                    )
-                    counts["states"] = r.rowcount
-
-                    # Delete orphaned state_attributes (only after states are gone)
-                    if attr_ids:
-                        # Use bound parameters to prevent SQL injection.
-                        # Build named placeholders :a0, :a1, … for each id.
-                        ph = ", ".join(f":a{i}" for i in range(len(attr_ids)))
-                        params = {f"a{i}": aid for i, aid in enumerate(attr_ids)}
-                        r = session.execute(
-                            text(
-                                f"DELETE FROM state_attributes "
-                                f"WHERE attributes_id IN ({ph})"
-                            ),
-                            params,
-                        )
-                        counts["state_attributes"] = r.rowcount
-
-                    # Delete states_meta row
-                    r = session.execute(
-                        text("DELETE FROM states_meta WHERE metadata_id = :mid"),
-                        {"mid": metadata_id},
-                    )
-                    counts["states_meta"] = r.rowcount
-
-                # ── 2. statistics / statistics_short_term / statistics_meta ─
-                stat_row = session.execute(
-                    text(
-                        "SELECT id FROM statistics_meta "
-                        "WHERE statistic_id = :eid AND source = 'recorder'"
-                    ),
-                    {"eid": eid},
-                ).fetchone()
-
-                if stat_row:
-                    stat_meta_id = stat_row[0]
-                    r = session.execute(
-                        text("DELETE FROM statistics WHERE metadata_id = :mid"),
-                        {"mid": stat_meta_id},
-                    )
-                    counts["statistics"] = r.rowcount
-                    r = session.execute(
-                        text("DELETE FROM statistics_short_term WHERE metadata_id = :mid"),
-                        {"mid": stat_meta_id},
-                    )
-                    counts["statistics_short_term"] = r.rowcount
-                    r = session.execute(
-                        text("DELETE FROM statistics_meta WHERE id = :mid"),
-                        {"mid": stat_meta_id},
-                    )
-                    counts["statistics_meta"] = r.rowcount
-
-                _LOGGER.warning("[HACA Purge] Staged '%s': %s", eid, counts)
-                deleted[eid] = counts
-
-            # ── Single atomic commit for ALL entities ────────────────────
-            # Committing here (not inside the loop) means either ALL deletions
-            # land together or none do if an exception occurs above.
-            session.commit()
-            _LOGGER.warning("[HACA Purge] Committed %d entities: %s", len(deleted), list(deleted.keys()))
-
-            # ── Force WAL checkpoint so next DB readers see our deletes ──
-            # Without this, SQLite WAL mode means our committed deletes stay in
-            # the WAL file and other sessions may still read old data until the
-            # automatic checkpoint threshold (1000 pages) is reached.
-            try:
-                with instance.engine.connect() as conn:
-                    result = conn.execute(text("PRAGMA wal_checkpoint(TRUNCATE)"))
-                    row = result.fetchone()
-                    _LOGGER.warning(
-                        "[HACA Purge] WAL checkpoint: busy=%s, log=%s, checkpointed=%s",
-                        row[0] if row else "?",
-                        row[1] if row else "?",
-                        row[2] if row else "?",
-                    )
-            except Exception as wal_exc:
-                # Non-fatal: checkpoint failure doesn't undo our already-committed deletes
-                _LOGGER.warning("[HACA Purge] WAL checkpoint failed (non-fatal): %s", wal_exc)
-
-        except Exception as exc:
-            session.rollback()
-            _LOGGER.warning("[HACA Purge] SQL error — rolled back ALL %d entities: %s", len(entity_ids), exc, exc_info=True)
-            raise
-        finally:
-            session.close()
-
-        return deleted
+    if not hass.services.has_service("recorder", "purge_entities"):
+        # We deliberately do not fall back to deleting `states` ourselves:
+        # doing that safely means honouring the old_state_id / attributes_id
+        # foreign keys HA enables on SQLite, which is exactly the code path
+        # that used to lock the database.
+        _LOGGER.warning("[HACA Purge] recorder.purge_entities service unavailable")
+        connection.send_error(
+            msg["id"],
+            "purge_unavailable",
+            "The recorder.purge_entities service is not available",
+        )
+        return
 
     try:
-        result = await instance.async_add_executor_job(_do_purge, instance)
-        _LOGGER.warning("[HACA Purge] Complete. Summary: %s", result)
-
-        purged_set = set(entity_ids)
-
-        try:
-            entries = hass.config_entries.async_entries(DOMAIN)
-            if entries:
-                domain_data = hass.data.get(DOMAIN, {}).get(entries[0].entry_id, {})
-
-                # ── 1. Mark purged in RecorderAnalyzer cache ──────────────
-                # Protects against stale WAL reads on the next scheduled scan
-                # (belt-and-suspenders alongside the BEGIN IMMEDIATE fix).
-                rec_analyzer = domain_data.get("recorder_analyzer")
-                if rec_analyzer:
-                    rec_analyzer.mark_purged(entity_ids)
-
-                # ── 2. Patch coordinator.data immediately ─────────────────
-                # Any haca/get_data call between now and the next full scan
-                # would otherwise return stale orphan data from coordinator.data.
-                # We remove the purged entities from the cached list right now
-                # so the frontend sees clean data without waiting for a rescan.
-                coordinator = domain_data.get("coordinator")
-                if coordinator and coordinator.data:
-                    cached = coordinator.data
-                    old_orphans = cached.get("recorder_orphans", [])
-                    new_orphans = [o for o in old_orphans if o["entity_id"] not in purged_set]
-                    new_mb = round(sum(o["est_mb"] for o in new_orphans), 2)
-                    coordinator.data = {
-                        **cached,
-                        "recorder_orphans":      new_orphans,
-                        "recorder_orphan_count": len(new_orphans),
-                        "recorder_wasted_mb":    new_mb,
-                    }
-                    _LOGGER.debug(
-                        "[HACA Purge] coordinator.data patched: %d → %d orphan(s)",
-                        len(old_orphans), len(new_orphans),
-                    )
-
-        except Exception as cache_exc:
-            _LOGGER.debug("[HACA Purge] Could not patch coordinator cache: %s", cache_exc)
-
-        connection.send_result(
-            msg["id"],
-            {"purged": len(entity_ids), "entity_ids": entity_ids, "detail": result},
+        states_meta, stats_meta = await instance.async_add_executor_job(
+            _purge_fetch_targets, instance, entity_ids
         )
     except Exception as exc:
-        _LOGGER.warning("[HACA Purge] Executor error: %s", exc)
+        _LOGGER.warning("[HACA Purge] could not resolve metadata ids: %s", exc)
         connection.send_error(msg["id"], "purge_failed", str(exc))
+        return
+
+    detail: dict[str, dict] = {}
+    pending: list[str] = []
+
+    try:
+        # ── 1. states / state_attributes — delegated to HA, batched ───────
+        if states_meta:
+            await hass.services.async_call(
+                "recorder",
+                "purge_entities",
+                {"entity_id": list(states_meta), "keep_days": 0},
+                blocking=True,
+            )
+            pending = await _purge_await_states(instance, states_meta)
+            for eid in states_meta:
+                detail.setdefault(eid, {})["states"] = (
+                    "pending" if eid in pending else "purged"
+                )
+
+            # states_meta rows are only dropped once their states are gone.
+            dropped = await instance.async_add_executor_job(
+                _purge_drop_states_meta,
+                instance,
+                {eid: mid for eid, mid in states_meta.items() if eid not in pending},
+            )
+            for eid in dropped:
+                detail[eid]["states_meta"] = 1
+
+        # ── 2. statistics — direct SQL, batched ───────────────────────────
+        if stats_meta:
+            stats_detail = await instance.async_add_executor_job(
+                _purge_statistics_sql, instance, stats_meta
+            )
+            for eid, counts in stats_detail.items():
+                detail.setdefault(eid, {}).update(counts)
+
+        await instance.async_add_executor_job(_purge_wal_checkpoint, instance)
+
+    except Exception as exc:
+        _LOGGER.warning("[HACA Purge] failed: %s", exc, exc_info=True)
+        connection.send_error(msg["id"], "purge_failed", str(exc))
+        return
+
+    _LOGGER.info(
+        "[HACA Purge] complete. pending=%s detail=%s", pending, detail
+    )
+
+    purged_set = set(entity_ids)
+
+    try:
+        entries = hass.config_entries.async_entries(DOMAIN)
+        if entries:
+            domain_data = hass.data.get(DOMAIN, {}).get(entries[0].entry_id, {})
+
+            # ── Mark purged in RecorderAnalyzer cache ─────────────────────
+            # Covers the pending entities too: the recorder will finish them,
+            # and the TTL is long enough that the next scan does not re-list
+            # rows that are on their way out.
+            rec_analyzer = domain_data.get("recorder_analyzer")
+            if rec_analyzer:
+                rec_analyzer.mark_purged(entity_ids)
+
+            # ── Patch coordinator.data immediately ────────────────────────
+            # Any haca/get_data call between now and the next full scan would
+            # otherwise return stale orphan data from coordinator.data.
+            coordinator = domain_data.get("coordinator")
+            if coordinator and coordinator.data:
+                cached = coordinator.data
+                old_orphans = cached.get("recorder_orphans", [])
+                new_orphans = [
+                    o for o in old_orphans if o["entity_id"] not in purged_set
+                ]
+                new_mb = round(sum(o["est_mb"] for o in new_orphans), 2)
+                coordinator.data = {
+                    **cached,
+                    "recorder_orphans":      new_orphans,
+                    "recorder_orphan_count": len(new_orphans),
+                    "recorder_wasted_mb":    new_mb,
+                }
+                _LOGGER.debug(
+                    "[HACA Purge] coordinator.data patched: %d → %d orphan(s)",
+                    len(old_orphans), len(new_orphans),
+                )
+
+    except Exception as cache_exc:
+        _LOGGER.debug("[HACA Purge] could not patch coordinator cache: %s", cache_exc)
+
+    connection.send_result(
+        msg["id"],
+        {
+            "purged": len(entity_ids),
+            "entity_ids": entity_ids,
+            "detail": detail,
+            "pending": pending,
+        },
+    )
 
 
 
@@ -1274,6 +1421,7 @@ async def handle_save_options(
         "notify_medium_severity",  # false (default) — persistent notification for MEDIUM issues
         "notify_low_severity",     # false (default) — persistent notification for LOW issues
         "battery_last_replaced",   # dict {entity_id: ISO datetime} — battery replacement tracking
+        "noisy_scan_exclude_patterns",  # list[str] — glob patterns to skip in noisy entity scan
     }
     for key, value in incoming.items():
         if key in ALLOWED_KEYS and value is not None:  # ignorer les None (token non modifié)

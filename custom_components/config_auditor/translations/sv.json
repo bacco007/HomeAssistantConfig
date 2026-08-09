@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurationsgranskare",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Fullständig skanning",
       "automations": "Automationer",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Lägg till {entity} i recorder.exclude.entities i configuration.yaml? En säkerhetskopia skapas och filen valideras.",
       "recorder_exclude_success": "{entity} har lagts till i recorder.exclude.entities. Ändringen träder i kraft vid nästa HACA-skanning.",
       "recorder_exclude_already": "{entity} är redan exkluderad.",
-      "recorder_exclude_error": "Kunde inte exkludera entiteten"
+      "recorder_exclude_error": "Kunde inte exkludera entiteten",
+      "noisy_ignore": "Ignorera (brus)",
+      "noisy_ignore_title": "Sluta flagga den här entiteten i skanningen «Brusiga entiteter» (fullständig Recorder-historik behålls)",
+      "noisy_ignore_success": "{entity} tillagd i exkluderingslistan för brus-skanning",
+      "noisy_ignore_already": "{entity} täcks redan av mönstret: {pattern}",
+      "noisy_ignore_error": "Kunde inte lägga till i exkluderingslistan"
     },
     "messages": {
       "no_issues": "Inga problem hittades i denna kategori",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Avisera vid mindre problem och förslag",
       "dashboard_section_title": "HACA-instrumentpanel",
       "dashboard_section_hint": "Skapa automatiskt en komplett HACA-översiktspanel i sidofältet. Om den redan finns uppdateras den.",
-      "dashboard_created": "Dashboard skapat! Omdirigerar..."
+      "dashboard_created": "Dashboard skapat! Omdirigerar...",
+      "noisy_exclude_title": "Dölj entiteter från skanningen «Brusiga entiteter»",
+      "noisy_exclude_info": "<b>Vad gör detta:</b> HACAs skanning «Brusiga entiteter» flaggar entiteter som ändrar tillstånd mer än 200 gånger på 24 timmar, så att du kan välja om du vill utesluta dem från Recorder. Men vissa entiteter <em>ska</em> ändras ofta (rörelsesensorer, väder, spårare, dörr-/fönsterkontakter, Browser Mod osv.) — du vill behålla deras historik men inte att HACA fortsätter varna om dem.<br><br><b>Vad du ska göra:</b> lägg till ett <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">glob-mönster</a> per rad nedan. Varje entitet vars <code>entity_id</code> matchar ett mönster hoppas tyst över endast av skanningen «Brusiga entiteter» — dess fullständiga Recorder-historik behålls och andra HACA-skanningar (säkerhet, prestanda osv.) ser den fortfarande. Mönster är skiftlägeskänsliga och använder <code>*</code> (valfritt antal tecken) och <code>?</code> (ett tecken).<br><br><b>Genväg:</b> på vilket issue-kort som helst för en <em>brusig entitet</em> klicka på den orange knappen <b>Ignorera (brus)</b> — den lägger entity_id direkt i listan nedan och döljer issuet. Använd detta för enskilda entiteter; använd mönstren ovan för hela familjer (t.ex. alla Browser Mod-sensorer på en gång).",
+      "noisy_exclude_examples": "<b>Exempel</b> — <code>sensor.browser_mod_*</code> döljer alla Browser Mod-sensorer · <code>device_tracker.*</code> döljer alla enhetsspårare · <code>*_motion</code> döljer allt som slutar på <code>_motion</code> · <code>binary_sensor.window_*</code> döljer fönsterkontakter.",
+      "noisy_exclude_placeholder": "Ett mönster per rad, t.ex.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Prova en entity_id, t.ex. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Testa",
+      "noisy_exclude_test_match": "matchar mönstret: {pattern}",
+      "noisy_exclude_test_no_match": "inget mönster matchar — denna entitet skulle fortfarande visas som brusig"
     },
     "ai_explain": {
       "analyzing": "🤖 Analyserar komplexitet…",

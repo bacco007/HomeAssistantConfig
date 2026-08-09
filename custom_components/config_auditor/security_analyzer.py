@@ -24,6 +24,31 @@ URL_PATTERN       = re.compile(r"^https?://")                      # URLs
 TEMPLATE_PATTERN  = re.compile(r"\{[%{]")                          # Jinja2 templates
 SECRET_REF_PATTERN = re.compile(r"!secret\s+\w+")                  # already using !secret
 
+# Pure snake_case identifier (lowercase + digits + underscores, but NO uppercase).
+# Real tokens/keys almost always contain uppercase letters; HA protocol constants
+# and user-chosen identifiers (tags, slugs, event names) do not. This is the
+# discriminator that filters out things like ``clear_notification`` (HA mobile
+# app dismiss-by-tag constant), ``mobile_app_notification_action`` (event type),
+# user-chosen automation tags, etc.
+SNAKE_CASE_PATTERN = re.compile(r"^[a-z][a-z0-9_]*$")
+
+# Known protocol / convention strings that look secret-shaped but are public
+# constants. Add new ones here when they show up as false positives.
+KNOWN_NON_SECRETS = frozenset({
+    "clear_notification",       # mobile_app: dismiss notification by tag
+    "command_notification",     # mobile_app: legacy command
+    "command_screen_on",
+    "command_screen_off",
+    "command_broadcast_intent",
+    "command_activity",
+    "command_webview",
+    "command_update_sensors",
+    "command_high_accuracy_mode",
+    "request_location_update",
+    "ha_dashboard",
+    "ha_url",
+})
+
 SENSITIVE_DATA_REGEX = re.compile("|".join(SECRET_PATTERNS), re.IGNORECASE)
 
 class SecurityAnalyzer:
@@ -62,13 +87,16 @@ class SecurityAnalyzer:
 
     def _is_likely_secret(self, value: str) -> bool:
         """Return True if a string value looks like a hardcoded secret.
-        
+
         Excludes:
         - Entity IDs  (domain.name)
         - URLs        (http://...)
         - Jinja2 templates  ({{ ... }} / {% ... %})
         - Values that are too short (< 16 chars)
         - Values that contain spaces (likely a human-readable string)
+        - Pure snake_case identifiers (no uppercase) — HA protocol constants
+          and user-chosen tags/slugs land here
+        - Known HA mobile-app protocol values (allowlist)
         """
         if not isinstance(value, str):
             return False
@@ -84,6 +112,10 @@ class SecurityAnalyzer:
         if TEMPLATE_PATTERN.search(v):
             return False
         if SECRET_REF_PATTERN.search(v):
+            return False
+        if v in KNOWN_NON_SECRETS:
+            return False
+        if SNAKE_CASE_PATTERN.match(v):
             return False
         # Must be long alphanumeric (possible raw key/token)
         return bool(SENSITIVE_DATA_REGEX.match(v))
@@ -146,8 +178,11 @@ class SecurityAnalyzer:
                 if "notify" in service or "persistent_notification" in service:
                     data = action.get("data", {})
                     message = str(data.get("message", ""))
-                    
-                    if SENSITIVE_DATA_REGEX.search(message):
+
+                    # Re-use the same heuristic as hardcoded-secret scan so
+                    # HA protocol constants (clear_notification, ...) and
+                    # snake_case identifiers don't trigger this.
+                    if self._is_likely_secret(message):
                         self.issues.append({
                             "entity_id": entity_id,
                             "alias": config.get("alias", entity_id),

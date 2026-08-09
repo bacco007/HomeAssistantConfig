@@ -26,6 +26,10 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from datetime import date, datetime, time, timedelta
+from decimal import Decimal
+from enum import Enum
+from pathlib import Path
 from typing import Any
 
 from aiohttp import web
@@ -39,6 +43,47 @@ _LOGGER = logging.getLogger(__name__)
 MCP_PROTOCOL_VERSION = "2024-11-05"
 MCP_SERVER_NAME = "haca-mcp"
 MCP_SERVER_VERSION = "1.6.1"
+
+
+def _json_default(obj: Any) -> Any:
+    """Fallback serializer for values json.dumps() cannot encode natively.
+
+    Tool results carry raw Home Assistant data — state attributes, logbook
+    entries, registry entries, backup metadata — and integrations are free to
+    put datetime, date, timedelta, Enum or set values in there. A single such
+    value used to abort the whole tools/call with
+    "Object of type datetime is not JSON serializable" (-32603).
+    """
+    if isinstance(obj, (datetime, date, time)):
+        return obj.isoformat()
+    if isinstance(obj, timedelta):
+        return obj.total_seconds()
+    if isinstance(obj, Decimal):
+        return float(obj)
+    if isinstance(obj, (set, frozenset)):
+        return sorted(str(v) for v in obj)
+    if isinstance(obj, Enum):
+        return obj.value
+    if isinstance(obj, Path):
+        return str(obj)
+    if isinstance(obj, bytes):
+        return obj.decode("utf-8", "replace")
+    as_dict = getattr(obj, "as_dict", None)
+    if callable(as_dict):  # HA State, Event, Context, registry entries…
+        try:
+            return as_dict()
+        except Exception:  # noqa: BLE001 — never let serialization kill the call
+            pass
+    return str(obj)
+
+
+def json_safe(value: Any) -> Any:
+    """Return `value` with every non-JSON-native object converted in place.
+
+    Used by callers that must hand a plain dict to someone else's serializer
+    (HA's LLM API), where `default=` is not an option.
+    """
+    return json.loads(json.dumps(value, default=_json_default))
 
 
 def _slugify(text: str, max_length: int = 60) -> str:
@@ -1822,7 +1867,9 @@ async def _handle_jsonrpc(hass: HomeAssistant, body: dict) -> dict:
                 "content": [
                     {
                         "type": "text",
-                        "text": json.dumps(result, ensure_ascii=False, indent=2),
+                        "text": json.dumps(
+                            result, ensure_ascii=False, indent=2, default=_json_default
+                        ),
                     }
                 ],
                 "isError": "error" in result,
@@ -1835,7 +1882,15 @@ async def _handle_jsonrpc(hass: HomeAssistant, body: dict) -> dict:
             return _err(-32601, f"Method '{method}' not supported")
 
     except Exception as exc:
-        _LOGGER.error("[HACA MCP] Handler error for method '%s': %s", method, exc)
+        # Le nom de l'outil est indispensable pour diagnostiquer : sans lui,
+        # "Handler error for method 'tools/call'" ne dit pas quel outil a cassé.
+        context = method
+        if method == "tools/call":
+            name = params.get("name", "?") if isinstance(params, dict) else "?"
+            context = f"tools/call({name})"
+        _LOGGER.error(
+            "[HACA MCP] Handler error for method '%s': %s", context, exc, exc_info=True
+        )
         return _err(-32603, f"Internal error: {exc}")
 
 
@@ -1887,7 +1942,7 @@ class HacaMcpView(HomeAssistantView):
                 if resp:
                     responses.append(resp)
             return web.Response(
-                text=json.dumps(responses, ensure_ascii=False),
+                text=json.dumps(responses, ensure_ascii=False, default=_json_default),
                 content_type="application/json",
             )
 
@@ -1899,7 +1954,7 @@ class HacaMcpView(HomeAssistantView):
             return web.Response(status=204)
 
         return web.Response(
-            text=json.dumps(result, ensure_ascii=False),
+            text=json.dumps(result, ensure_ascii=False, default=_json_default),
             content_type="application/json",
         )
 

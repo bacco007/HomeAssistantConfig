@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant configuratie-auditor",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Volledige scan",
       "automations": "Automatiseringen",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "{entity} toevoegen aan recorder.exclude.entities in configuration.yaml? Er wordt een back-up gemaakt en het bestand wordt gevalideerd.",
       "recorder_exclude_success": "{entity} toegevoegd aan recorder.exclude.entities. De wijziging is van kracht bij de volgende HACA-scan.",
       "recorder_exclude_already": "{entity} is al uitgesloten.",
-      "recorder_exclude_error": "Kan entiteit niet uitsluiten"
+      "recorder_exclude_error": "Kan entiteit niet uitsluiten",
+      "noisy_ignore": "Negeren (lawaai)",
+      "noisy_ignore_title": "Deze entiteit niet meer markeren in de scan «Lawaaierige entiteiten» (volledige Recorder-geschiedenis blijft behouden)",
+      "noisy_ignore_success": "{entity} toegevoegd aan uitsluitingslijst voor lawaai-scan",
+      "noisy_ignore_already": "{entity} valt al onder patroon: {pattern}",
+      "noisy_ignore_error": "Toevoegen aan uitsluitingslijst mislukt"
     },
     "messages": {
       "no_issues": "Geen problemen gedetecteerd in deze categorie",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Melden bij kleine problemen en suggesties",
       "dashboard_section_title": "HACA-dashboard",
       "dashboard_section_hint": "Maak automatisch een volledig HACA-overzichtsdashboard in de zijbalk aan. Als het al bestaat, wordt het bijgewerkt.",
-      "dashboard_created": "Dashboard succesvol aangemaakt! Doorsturen..."
+      "dashboard_created": "Dashboard succesvol aangemaakt! Doorsturen...",
+      "noisy_exclude_title": "Entiteiten verbergen voor de scan «Lawaaierige entiteiten»",
+      "noisy_exclude_info": "<b>Waar dient dit voor:</b> de scan «Lawaaierige entiteiten» van HACA markeert entiteiten die meer dan 200 keer per 24 uur van toestand veranderen, zodat je kunt beslissen of je ze uitsluit van de Recorder. Maar sommige entiteiten <em>moeten</em> vaak veranderen (bewegingssensoren, weer, trackers, deur-/raamcontacten, Browser Mod, enz.) — je wilt hun geschiedenis behouden, maar je wilt niet dat HACA je er steeds over waarschuwt.<br><br><b>Wat te doen:</b> voeg hieronder één <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">glob-patroon</a> per regel toe. Elke entiteit waarvan de <code>entity_id</code> overeenkomt met een patroon wordt stilletjes alleen overgeslagen door de scan «Lawaaierige entiteiten» — de volledige Recorder-geschiedenis blijft behouden en de andere HACA-scans (beveiliging, prestaties, enz.) zien hem nog steeds. Patronen zijn hoofdlettergevoelig en gebruiken <code>*</code> (elk aantal tekens) en <code>?</code> (één teken).<br><br><b>Snelkoppeling:</b> klik op elke issue-kaart van een <em>lawaaierige entiteit</em> op de oranje knop <b>Negeren (lawaai)</b> — die voegt de entity_id direct toe aan de lijst hieronder en verbergt de issue. Gebruik dit voor losse entiteiten; gebruik de patronen hierboven voor hele families (bijv. alle Browser Mod-sensoren tegelijk).",
+      "noisy_exclude_examples": "<b>Voorbeelden</b> — <code>sensor.browser_mod_*</code> verbergt alle Browser Mod-sensoren · <code>device_tracker.*</code> verbergt alle apparaattrackers · <code>*_motion</code> verbergt alles dat eindigt op <code>_motion</code> · <code>binary_sensor.window_*</code> verbergt raamcontacten.",
+      "noisy_exclude_placeholder": "Eén patroon per regel, bijv.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Probeer een entity_id, bijv. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Testen",
+      "noisy_exclude_test_match": "komt overeen met patroon: {pattern}",
+      "noisy_exclude_test_no_match": "geen patroon komt overeen — deze entiteit zou nog steeds als lawaaierig verschijnen"
     },
     "ai_explain": {
       "analyzing": "🤖 Complexiteit analyseren…",

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.7.4'; // build marker
+  const HACA_VERSION = '1.7.5'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -176,6 +176,31 @@
   }
   const _HC = window._HC_HACA;
 
+  // Approximation luminance perçue d'une couleur CSS (#rgb / #rrggbb / rgb()
+  // / rgba()). Retourne 0..1 ou null si le format n'est pas reconnu. Utilisé
+  // par _isDarkMode() pour décider à partir de --primary-background-color.
+  function _colorLuminance(color) {
+    if (!color) return null;
+    color = color.trim();
+    let r, g, b;
+    if (color[0] === '#') {
+      let hex = color.slice(1);
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      if (hex.length !== 6) return null;
+      r = parseInt(hex.slice(0, 2), 16);
+      g = parseInt(hex.slice(2, 4), 16);
+      b = parseInt(hex.slice(4, 6), 16);
+      if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
+    } else if (color.startsWith('rgb')) {
+      const m = color.match(/(\d+(?:\.\d+)?)/g);
+      if (!m || m.length < 3) return null;
+      [r, g, b] = m.slice(0, 3).map(Number);
+    } else {
+      return null;
+    }
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  }
+
   // ── Surveillance log ────────────────────────────────────────────────────────
   // Persiste dans window._HACA_LOG pour survivre aux navigations dans le même
   function _hlog() {} // logging désactivé en production
@@ -225,6 +250,9 @@
       // L'élément est maintenant dans le DOM — c'est ici que tout commence.
       this._connected = true;
       _hlog('INF', 'connectedCallback | fullyReady=' + this._fullyReady + ' booting=' + this._booting);
+      // Régler l'attribut dark dès l'attachement, avant le premier hass, pour
+      // que le calque CSS s'applique sans flash clair pendant le boot splash.
+      this._updateDarkAttr();
 
       // Relancer la surveillance visibilité
       if (!this._visibilityHandler) {
@@ -309,6 +337,9 @@
       if (wasNull) {
         this._syncTheme(); // calcule _dark et _themeVars avant le premier render
       }
+      // Doit suivre _syncTheme : la détection lit --primary-background-color
+      // qui n'est propagé dans l'iframe qu'après l'injection des règles parent.
+      this._updateDarkAttr();
       if (wasNull) {
         _hlog('INF', 'set hass(): first hass | connected=' + this._connected + ' fullyReady=' + this._fullyReady);
         // Juste stocker. _tryBoot() vérifie que tout est prêt.
@@ -386,6 +417,17 @@
             }
           } catch(_) {} // feuilles cross-origin ignorées
         }
+        // HA applique les thèmes personnalisés via des styles INLINE sur <html>
+        // (document.documentElement.style.setProperty('--…', value)), pas via
+        // stylesheets. Ces déclarations sont invisibles à l'itération ci-dessus,
+        // donc on récupère cssText du style inline parent et on l'injecte comme
+        // règle html { … } dans l'iframe.
+        try {
+          const inlineCss = parentDoc.documentElement.style.cssText;
+          if (inlineCss && inlineCss.trim()) {
+            parts.push(`html { ${inlineCss} }`);
+          }
+        } catch(_) {}
         if (!parts.length) return;
 
         // Injecter dans <head> de l'iframe
@@ -453,18 +495,58 @@
       } catch(_) {}
     }
 
+    _isDarkMode() {
+      // Detection order, most-trustworthy first:
+      //   1. hass.themes.darkMode if it's an explicit boolean. In embedded
+      //      iframes HA does not always populate the full themes sub-object,
+      //      so we accept this only when it's clearly set (typeof === boolean).
+      //   2. Luminance of --primary-background-color. _syncTheme() copies the
+      //      parent document's html/:root rules into the iframe, so this var
+      //      reflects HA's active theme even when hass.themes is incomplete.
+      //      This also Just Works with custom themes whose darkMode flag is
+      //      unreliable.
+      //   3. OS prefers-color-scheme as last resort (before _syncTheme has
+      //      had a chance to run, e.g. during connectedCallback).
+      const haDark = this._hass?.themes?.darkMode;
+      if (typeof haDark === 'boolean') return haDark;
+      try {
+        const bg = getComputedStyle(document.documentElement)
+          .getPropertyValue('--primary-background-color').trim();
+        const lum = _colorLuminance(bg);
+        if (lum !== null) return lum < 0.5;
+      } catch(_) {}
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    _updateDarkAttr() {
+      // Set data-haca-dark on the host so the CSS :host([data-haca-dark]) layer
+      // applies. Called from set hass() so it stays reactive when the user
+      // toggles HA's theme at runtime.
+      if (this._isDarkMode()) this.setAttribute('data-haca-dark', '');
+      else this.removeAttribute('data-haca-dark');
+    }
+
     _updateLogo() {
       const logo = this.shadowRoot?.querySelector('#haca-logo');
       if (!logo) return;
-      // HA exposes dark mode via hass.themes.darkMode (true/false/undefined)
-      // Fallback: check prefers-color-scheme media query
-      const hasDark = this._hass?.themes?.darkMode
-        ?? window.matchMedia('(prefers-color-scheme: dark)').matches;
       // brand/ is served at /config_auditor_brand (separate static route from www/)
-      const src = hasDark
+      const src = this._isDarkMode()
         ? '/config_auditor_brand/dark_icon.png'
         : '/config_auditor_brand/icon.png';
-      if (logo.src !== src) logo.src = src;
+      if (logo.src !== src) {
+        // Fallback gracieux : si dark_icon.png n'a pas été déployé (l'install HA
+        // n'a pas resync le dossier brand/ ou la version est antérieure à 1.7.5),
+        // on retombe sur icon.png plutôt que d'afficher une image cassée.
+        if (!logo.dataset.errorBound) {
+          logo.dataset.errorBound = '1';
+          logo.addEventListener('error', () => {
+            if (!logo.src.endsWith('/icon.png')) {
+              logo.src = '/config_auditor_brand/icon.png';
+            }
+          });
+        }
+        logo.src = src;
+      }
     }
 
     _showReconnectBanner() {
@@ -1222,6 +1304,116 @@
   .cfg-save-status { padding: 12px 20px; border-radius: 8px; font-size: 0.88em; font-weight: 500; text-align: center; animation: fadeIn 0.2s ease-out; }
   .cfg-save-status.success { background: rgba(34,197,94,0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.3); }
   .cfg-save-status.error { background: rgba(239,68,68,0.12); color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+
+        /* ════════════════════════════════════════════════════════════════════
+           DARK MODE OVERRIDES
+           ────────────────────────────────────────────────────────────────────
+           Triggered when :host has the [data-haca-dark] attribute, set by
+           _updateDarkAttr() based on hass.themes.darkMode (with prefers-
+           color-scheme as fallback before the first hass arrives).
+
+           HA's structural CSS variables (--card-background-color, --primary-
+           text-color, etc.) are already injected into the iframe by
+           _syncTheme() and the panel uses them everywhere. The overrides
+           below only fix the cases that hardcoded rgba(0,0,0,X) tints
+           (invisible/inverted on dark) or dark text colors (#15803d,
+           #dc2626, #e65100) that lose contrast on dark tinted backgrounds.
+           ════════════════════════════════════════════════════════════════════ */
+
+        /* Tab hover: rgba(0,0,0,0.05) → light tint on dark */
+        :host([data-haca-dark]) .tabs .tab:hover {
+          background: rgba(255,255,255,0.06);
+        }
+
+        /* Severity tints — 0.02 opacity is invisible on dark backgrounds */
+        :host([data-haca-dark]) .issue-item.high   { background: rgba(239,83,80,0.10); }
+        :host([data-haca-dark]) .issue-item.medium { background: rgba(255,167,38,0.10); }
+        :host([data-haca-dark]) .issue-item.low    { background: rgba(38,198,218,0.10); }
+
+        /* "Recommendation" strip under each issue */
+        :host([data-haca-dark]) .issue-reco {
+          background: rgba(255,255,255,0.06);
+        }
+
+        /* Loader ring — was rgba(0,0,0,0.08), invisible on dark */
+        :host([data-haca-dark]) .loader {
+          border-color: rgba(255,255,255,0.12);
+          border-bottom-color: var(--primary-color);
+        }
+
+        /* Config tab: disabled rows + hover */
+        :host([data-haca-dark]) .cfg-type-row.disabled {
+          background: rgba(255,255,255,0.04);
+        }
+        :host([data-haca-dark]) .cfg-type-row:hover {
+          background: rgba(var(--rgb-primary-color,33,150,243),0.10);
+        }
+        :host([data-haca-dark]) .cfg-section-hint,
+        :host([data-haca-dark]) .cfg-cat-section-header {
+          background: rgba(var(--rgb-primary-color,33,150,243),0.10);
+        }
+
+        /* Success / error chips: light-mode dark text fails on dark tints */
+        :host([data-haca-dark]) .cfg-badge-fix {
+          background: rgba(34,197,94,0.20);
+          color: #4ade80;
+          border-color: rgba(34,197,94,0.45);
+        }
+        :host([data-haca-dark]) .cfg-save-status.success {
+          background: rgba(34,197,94,0.18);
+          color: #4ade80;
+          border-color: rgba(34,197,94,0.4);
+        }
+        :host([data-haca-dark]) .cfg-save-status.error {
+          background: rgba(239,68,68,0.18);
+          color: #f87171;
+          border-color: rgba(239,68,68,0.4);
+        }
+
+        /* Inline <code> blocks: hardcoded rgba(0,0,0,0.06–0.10) in templates */
+        :host([data-haca-dark]) code[style*="rgba(0,0,0"] {
+          background: rgba(255,255,255,0.08) !important;
+        }
+
+        /* Subtle warning / info banners scattered across tab files
+           (background: rgba(255,167,38,0.07–0.12), rgba(255,152,0,0.08–0.10),
+           rgba(255,87,34,0.08) — barely visible on dark, bump opacity).
+           Targeted by attribute selector so inline-styled banners adapt
+           without per-file edits. */
+        :host([data-haca-dark]) [style*="rgba(255,167,38,0.0"],
+        :host([data-haca-dark]) [style*="rgba(255,167,38,0.1"],
+        :host([data-haca-dark]) [style*="rgba(255,152,0,0.0"],
+        :host([data-haca-dark]) [style*="rgba(255,152,0,0.1"],
+        :host([data-haca-dark]) [style*="rgba(255,87,34,0.0"],
+        :host([data-haca-dark]) [style*="rgba(255,87,34,0.1"] {
+          /* CSS doesn't let us override inline background via attribute selector
+             reliably, so we bump readability via color/border instead */
+          color: var(--primary-text-color) !important;
+        }
+
+        /* Dark-orange text (#e65100) on slight orange tint is unreadable on
+           dark. Map it to the warning hue. Targeting by inline style. */
+        :host([data-haca-dark]) [style*="color:#e65100"] {
+          color: #ffb74d !important;
+        }
+        :host([data-haca-dark]) [style*="color:#ff5722"] {
+          color: #ff8a65 !important;
+        }
+        :host([data-haca-dark]) [style*="color:black"],
+        :host([data-haca-dark]) [style*="color: black"] {
+          color: var(--primary-text-color) !important;
+        }
+
+        /* utils.js modal close button: mouseleave resets color to 'black'
+           inline; force the theme text colour in dark via the class. */
+        :host([data-haca-dark]) .modal-close-btn {
+          color: var(--primary-text-color);
+        }
+
+        /* dep_graph node stroke (set via D3 .attr); the dark default
+           'rgba(0,0,0,0.15)' is invisible on dark — bump it via a CSS
+           variable consumed by dep_graph.js (see DARK_GRAPH_STROKE). */
+
         @keyframes hacarot {
           to { stroke-dashoffset: -120; }
         }      </style>
@@ -3126,6 +3318,42 @@
         debugToggle.checked = !!(options.debug_mode);
         window.__haca_debug_mode = debugToggle.checked;
       }
+
+      // Noisy-scan exclude-patterns: live test button (no save needed)
+      el.querySelector('#cfg-noisy-exclude-test-btn')?.addEventListener('click', () => {
+        const input = el.querySelector('#cfg-noisy-exclude-test');
+        const ta = el.querySelector('#cfg-noisy-exclude-patterns');
+        const out = el.querySelector('#cfg-noisy-exclude-test-result');
+        if (!input || !ta || !out) return;
+        const entityId = (input.value || '').trim();
+        if (!entityId) {
+          out.textContent = '';
+          return;
+        }
+        const patterns = ta.value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+        // fnmatch-style: * matches anything, ? matches one char, [...] charset
+        const toRegex = (pat) => {
+          let re = '';
+          for (let i = 0; i < pat.length; i++) {
+            const c = pat[i];
+            if (c === '*') re += '.*';
+            else if (c === '?') re += '.';
+            else if ('\\^$+()|{}.'.indexOf(c) !== -1) re += '\\' + c;
+            else re += c;
+          }
+          return new RegExp('^' + re + '$');
+        };
+        const matched = patterns.find(p => {
+          try { return toRegex(p).test(entityId); } catch (e) { return false; }
+        });
+        if (matched) {
+          out.textContent = '✓ ' + this.t('config.noisy_exclude_test_match').replace('{pattern}', matched);
+          out.style.color = 'var(--success-color, #15803d)';
+        } else {
+          out.textContent = '✗ ' + this.t('config.noisy_exclude_test_no_match');
+          out.style.color = 'var(--error-color, #dc2626)';
+        }
+      });
 
       // Dashboard creation button (in config tab)
       el.querySelector('#cfg-create-dashboard-btn')?.addEventListener('click', async () => {

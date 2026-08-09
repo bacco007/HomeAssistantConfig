@@ -399,12 +399,20 @@ class RefactoringAssistant:
             "new_yaml": new_yaml
         }
 
-    async def apply_device_id_fix(self, automation_id: str, preview: dict = None, dry_run: bool = False) -> dict[str, Any]:
-        """Apply device_id to entity_id conversion with backup."""
-        
-        # Get preview if not provided
+    async def apply_device_id_fix(self, automation_id: str, preview: dict = None, dry_run: bool = False, location: str | None = None) -> dict[str, Any]:
+        """Apply device_id to entity_id conversion with backup.
+
+        When *location* is provided (e.g. ``"action[0]"``), only the matching
+        section/index is fixed — consistent with the location-scoped preview
+        shown to the user when they click "Corriger" on a single issue card.
+        Without it, every device_id reference in the automation is rewritten.
+        """
+
+        # Get preview if not provided — scoped to the same location the caller
+        # asked for, otherwise the apply would fix more actions than the user
+        # was shown in the preview modal.
         if not preview:
-            preview = await self.preview_device_id_fix(automation_id)
+            preview = await self.preview_device_id_fix(automation_id, location=location)
         
         if not preview.get("success"):
             return preview

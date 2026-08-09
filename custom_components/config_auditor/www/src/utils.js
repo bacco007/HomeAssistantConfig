@@ -64,7 +64,7 @@
     });
     closeBtn.addEventListener('mouseleave', () => {
       closeBtn.style.background = 'var(--secondary-background-color)';
-      closeBtn.style.color = 'black';
+      closeBtn.style.color = 'var(--primary-text-color)';
     });
 
     card.appendChild(closeBtn);

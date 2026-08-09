@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Аудитор конфигураций Home Assistant",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Полное сканирование",
       "automations": "Автоматизации",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Добавить {entity} в recorder.exclude.entities в configuration.yaml? Будет создана резервная копия, и файл будет проверен.",
       "recorder_exclude_success": "{entity} добавлена в recorder.exclude.entities. Изменение вступит в силу при следующем сканировании HACA.",
       "recorder_exclude_already": "{entity} уже исключена.",
-      "recorder_exclude_error": "Не удалось исключить сущность"
+      "recorder_exclude_error": "Не удалось исключить сущность",
+      "noisy_ignore": "Игнорировать (шум)",
+      "noisy_ignore_title": "Перестать помечать эту сущность в сканировании «Шумные сущности» (полная история Recorder сохраняется)",
+      "noisy_ignore_success": "{entity} добавлено в список исключений шум-сканирования",
+      "noisy_ignore_already": "{entity} уже покрывается шаблоном: {pattern}",
+      "noisy_ignore_error": "Не удалось добавить в список исключений"
     },
     "messages": {
       "no_issues": "В этой категории проблем не обнаружено",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Уведомлять о мелких проблемах и предложениях",
       "dashboard_section_title": "Панель HACA",
       "dashboard_section_hint": "Автоматически создать полную обзорную панель HACA в боковом меню. Если панель уже существует, она будет обновлена.",
-      "dashboard_created": "Панель успешно создана! Перенаправление..."
+      "dashboard_created": "Панель успешно создана! Перенаправление...",
+      "noisy_exclude_title": "Скрыть сущности из сканирования «Шумные сущности»",
+      "noisy_exclude_info": "<b>Для чего это:</b> сканирование HACA «Шумные сущности» помечает сущности, которые меняют состояние более 200 раз за 24 часа, чтобы ты решил, исключать ли их из Recorder. Но некоторые сущности <em>должны</em> меняться часто (датчики движения, погода, трекеры, контакты двери/окна, Browser Mod и т. д.) — ты хочешь сохранить их историю, но не хочешь, чтобы HACA продолжал предупреждать о них.<br><br><b>Что делать:</b> добавь ниже один <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">glob-шаблон</a> на строку. Любая сущность, чей <code>entity_id</code> соответствует шаблону, будет молча пропущена только сканированием «Шумные сущности» — её полная история Recorder сохраняется, и другие сканирования HACA (безопасность, производительность и т. д.) её всё ещё видят. Шаблоны чувствительны к регистру и используют <code>*</code> (любое количество символов) и <code>?</code> (один символ).<br><br><b>Быстрый способ:</b> на любой карточке issue <em>шумной сущности</em> нажми оранжевую кнопку <b>Игнорировать (шум)</b> — она добавляет entity_id напрямую в список ниже и скрывает issue. Используй это для единичных сущностей; используй шаблоны выше для целых семейств (напр. все датчики Browser Mod сразу).",
+      "noisy_exclude_examples": "<b>Примеры</b> — <code>sensor.browser_mod_*</code> скрывает все датчики Browser Mod · <code>device_tracker.*</code> скрывает все трекеры · <code>*_motion</code> скрывает всё, что заканчивается на <code>_motion</code> · <code>binary_sensor.window_*</code> скрывает оконные контакты.",
+      "noisy_exclude_placeholder": "Один шаблон на строку, напр.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Проверь entity_id, напр. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Проверить",
+      "noisy_exclude_test_match": "соответствует шаблону: {pattern}",
+      "noisy_exclude_test_no_match": "ни один шаблон не подходит — эта сущность всё равно отобразится как шумная"
     },
     "ai_explain": {
       "analyzing": "🤖 Анализ сложности…",

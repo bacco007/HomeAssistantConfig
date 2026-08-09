@@ -89,7 +89,7 @@ class HacaTool(llm.Tool):
         llm_context: llm.LLMContext,
     ) -> JsonObjectType:
         """Exécute l'outil HACA via TOOL_HANDLERS."""
-        from .mcp_server import TOOL_HANDLERS
+        from .mcp_server import TOOL_HANDLERS, json_safe
 
         handler = TOOL_HANDLERS.get(self.name)
         if not handler:
@@ -98,7 +98,10 @@ class HacaTool(llm.Tool):
         try:
             result = await handler(hass, tool_input.tool_args)
             _LOGGER.debug("[HACA LLM] Tool %s → %s", self.name, str(result)[:200])
-            return result  # type: ignore[return-value]
+            # Les résultats portent des données HA brutes (attributs d'état,
+            # logbook…) où un datetime peut traîner : l'agent qui sérialise
+            # derrière nous n'a pas de `default=`, on normalise ici.
+            return json_safe(result)  # type: ignore[return-value]
         except Exception as exc:
             _LOGGER.error("[HACA LLM] Tool %s failed: %s", self.name, exc)
             return {"error": str(exc)}

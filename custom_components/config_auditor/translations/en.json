@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "v1.7.4",
+    "version": "v1.7.5",
     "buttons": {
       "scan_all": "Full Scan",
       "automations": "Automations",
@@ -227,7 +227,12 @@
       "recorder_exclude_confirm": "Add {entity} to recorder.exclude.entities in configuration.yaml? A backup will be taken and the new file will be validated.",
       "recorder_exclude_success": "{entity} added to recorder.exclude.entities. The change will take effect at the next HACA scan.",
       "recorder_exclude_already": "{entity} is already excluded.",
-      "recorder_exclude_error": "Could not exclude entity"
+      "recorder_exclude_error": "Could not exclude entity",
+      "noisy_ignore": "Ignore (noisy)",
+      "noisy_ignore_title": "Stop flagging this entity in the Noisy Entity scan (keeps full Recorder history)",
+      "noisy_ignore_success": "{entity} added to Noisy-scan exclusion list",
+      "noisy_ignore_already": "{entity} is already covered by pattern: {pattern}",
+      "noisy_ignore_error": "Could not add to exclusion list"
     },
     "messages": {
       "no_issues": "No issues detected in this category",
@@ -751,7 +756,15 @@
       "severity_low_hint": "Notify for minor issues and suggestions for improvement",
       "dashboard_section_title": "HACA Dashboard",
       "dashboard_section_hint": "Auto-generate a complete HACA overview dashboard in the sidebar. All HACA sensors will be displayed with gauges, counters and history. If the dashboard already exists, it will be updated.",
-      "dashboard_created": "Dashboard created successfully! Redirecting..."
+      "dashboard_created": "Dashboard created successfully! Redirecting...",
+      "noisy_exclude_title": "Hide entities from the Noisy Entity scan",
+      "noisy_exclude_info": "<b>What this does:</b> HACA's Noisy Entity scan flags entities that change state more than 200 times in 24 hours, so you can decide whether to exclude them from the Recorder. But some entities are <em>supposed</em> to change frequently (motion sensors, weather, trackers, door/window contacts, Browser Mod, etc.) — you want to keep their history but you don't want HACA to keep alerting you on them.<br><br><b>What to do:</b> add one <a href=\"https://docs.python.org/3/library/fnmatch.html\" target=\"_blank\">glob pattern</a> per line below. Any entity whose <code>entity_id</code> matches a pattern will be silently skipped by the Noisy Entity scan only — its full Recorder history is preserved and other HACA scans (security, performance, etc.) still see it. Patterns are case-sensitive and use <code>*</code> (any chars) and <code>?</code> (one char).<br><br><b>Shortcut:</b> on any <em>noisy entity</em> issue card, click the orange <b>Ignore (noisy)</b> button — it adds the entity_id directly to the list below and hides the issue. Use this for one-off entities; use the patterns above for whole families (e.g. all Browser Mod sensors at once).",
+      "noisy_exclude_examples": "<b>Examples</b> — <code>sensor.browser_mod_*</code> hides every Browser Mod sensor · <code>device_tracker.*</code> hides every device tracker · <code>*_motion</code> hides anything ending in <code>_motion</code> · <code>binary_sensor.window_*</code> hides window contacts.",
+      "noisy_exclude_placeholder": "One pattern per line, e.g.\nsensor.browser_mod_*\ndevice_tracker.*\n*_motion",
+      "noisy_exclude_test_placeholder": "Try an entity_id, e.g. sensor.browser_mod_abc",
+      "noisy_exclude_test": "Test",
+      "noisy_exclude_test_match": "matches pattern: {pattern}",
+      "noisy_exclude_test_no_match": "no pattern matches — this entity would still show up as noisy"
     },
     "ai_explain": {
       "analyzing": "🤖 Analysing complexity…",
