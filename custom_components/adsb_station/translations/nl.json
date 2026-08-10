@@ -198,6 +198,12 @@
       "aircraft_nearby": {
         "name": "Vliegtuigen dichtbij"
       },
+      "overhead_flight": {
+        "name": "Vlucht overhead"
+      },
+      "passages_today": {
+        "name": "Passages vandaag"
+      },
       "highest_aircraft": {
         "name": "Hoogste vliegtuig"
       },
@@ -238,28 +244,28 @@
         "name": "Posities verworpen"
       },
       "max_range_n": {
-        "name": "Maximaal bereik noord"
+        "name": "Bereikrecord noord"
       },
       "max_range_ne": {
-        "name": "Maximaal bereik noordoost"
+        "name": "Bereikrecord noordoost"
       },
       "max_range_e": {
-        "name": "Maximaal bereik oost"
+        "name": "Bereikrecord oost"
       },
       "max_range_se": {
-        "name": "Maximaal bereik zuidoost"
+        "name": "Bereikrecord zuidoost"
       },
       "max_range_s": {
-        "name": "Maximaal bereik zuid"
+        "name": "Bereikrecord zuid"
       },
       "max_range_sw": {
-        "name": "Maximaal bereik zuidwest"
+        "name": "Bereikrecord zuidwest"
       },
       "max_range_w": {
-        "name": "Maximaal bereik west"
+        "name": "Bereikrecord west"
       },
       "max_range_nw": {
-        "name": "Maximaal bereik noordwest"
+        "name": "Bereikrecord noordwest"
       },
       "piaware_radio": {
         "name": "Radio",

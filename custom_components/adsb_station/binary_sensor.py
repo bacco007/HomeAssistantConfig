@@ -17,9 +17,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import FEEDER_FR24, FEEDER_PLANEFINDER
-from .coordinator import AdsbStationConfigEntry, AdsbStationDataUpdateCoordinator
+from .coordinator import (
+    AdsbStationConfigEntry,
+    AdsbStationDataUpdateCoordinator,
+    aircraft_attributes,
+)
 from .entity import AdsbStationAircraftEntity, AdsbStationEntity
-from .sensor import aircraft_attributes
 
 _LOGGER = logging.getLogger(__name__)
 

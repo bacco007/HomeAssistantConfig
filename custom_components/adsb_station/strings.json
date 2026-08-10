@@ -198,6 +198,12 @@
       "aircraft_nearby": {
         "name": "Aircraft nearby"
       },
+      "overhead_flight": {
+        "name": "Overhead flight"
+      },
+      "passages_today": {
+        "name": "Passages today"
+      },
       "highest_aircraft": {
         "name": "Highest aircraft"
       },

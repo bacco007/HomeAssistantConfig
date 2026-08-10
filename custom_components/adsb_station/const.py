@@ -128,6 +128,58 @@ DEFAULT_PROXIMITY_RADIUS = 10
 MIN_PROXIMITY_RADIUS = 1
 MAX_PROXIMITY_RADIUS = 500
 
+# One aircraft crossing the sky above you, from the moment it comes inside the
+# radius to the moment it leaves. An automation wants to hear about that once,
+# so a passage fires an event of its own rather than leaving a template to work
+# out what changed in a list of attributes.
+EVENT_AIRCRAFT_PASSAGE = f"{DOMAIN}_aircraft_passage"
+
+# How long an aircraft has to stay away before coming back counts as a second
+# passage. Reception drops out, aircraft circle, and an aircraft flickering on
+# the edge of the radius would otherwise ring the doorbell every poll.
+PASSAGE_GAP = timedelta(minutes=10)
+
+# How many passages the board keeps. Long enough to be a record of the
+# afternoon, short enough that writing the whole list to the database on every
+# arrival stays cheap.
+PASSAGE_BOARD_LENGTH = 20
+
+# What an altitude in feet is in metres, for measuring the real distance to an
+# aircraft rather than the distance to the ground beneath it.
+FEET_TO_METRES = 0.3048
+
+# How far an aircraft at a given height can possibly be heard from, and the
+# room left over for the antenna being up a hill.
+#
+# ADS-B is line of sight, so the horizon is the limit: about 1.23 nautical
+# miles times the square root of the height in feet, which is this many metres
+# times that square root. An aircraft at 37,000 feet reaches roughly 438 km,
+# and one at 2,000 feet roughly 102 km. The allowance is what a receiver adds
+# by standing high, and 80 km of it covers a site 350 metres above everything
+# around it, which is more than any rooftop.
+#
+# This is not a limit on what the integration reports. It is a limit on what a
+# position has to satisfy to be believed at all: a mis-decoded position lands
+# somewhere impossible, and a sector record only ever grows, so one of those
+# would stand for good.
+RADIO_HORIZON_METRES_PER_ROOT_FOOT = 2278.0
+RADIO_HORIZON_ALLOWANCE = 80_000
+# And a ceiling for aircraft that report no height at all. Nothing on earth
+# has heard an aircraft from this far, so a position beyond it is not one.
+MAX_PLAUSIBLE_RANGE = 700_000
+
+# What every decoder puts in the altitude field of an aircraft that is on the
+# ground. It is a string where a number belongs, which is the only way an
+# aircraft says it is not flying.
+GROUND_ALTITUDE = "ground"
+
+# How often to ask for receiver.json before accepting that it will not answer.
+# What it holds cannot change while the decoder runs, so one answer settles it
+# for good; a request that fails is not an answer, and letting a single timeout
+# decide that every range is measured from the wrong place would be both silent
+# and permanent.
+RECEIVER_READ_ATTEMPTS = 5
+
 # Where a flight came from and where it is going. This is the one thing that
 # cannot come off your own network: no ADS-B message carries a route. An
 # aircraft broadcasts its callsign and nothing more, so the only way to know

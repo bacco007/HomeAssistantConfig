@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 import logging
 from typing import Any
@@ -38,6 +38,7 @@ from .const import (
     FEEDER_FR24,
     FEEDER_PIAWARE,
     FEEDER_PLANEFINDER,
+    PASSAGE_BOARD_LENGTH,
     SECTORS,
 )
 from .coordinator import (
@@ -45,14 +46,15 @@ from .coordinator import (
     AdsbStationDataUpdateCoordinator,
     AircraftStats,
     AircraftSummary,
+    Passage,
     ReceiverStats,
+    aircraft_attributes,
 )
 from .entity import (
     AdsbStationAircraftEntity,
     AdsbStationEntity,
     AdsbStationReceptionEntity,
 )
-from .route import route_attributes
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -99,46 +101,6 @@ def _as_text(value: Any) -> str | None:
         return None
     text = str(value).strip()
     return text or None
-
-
-def aircraft_attributes(
-    summary: AircraftSummary, *, include_distance: bool = False
-) -> dict[str, Any]:
-    """Describe one aircraft for the attributes of an entity.
-
-    The distance is left out where the entity state already is the distance.
-    """
-    attributes: dict[str, Any] = {
-        "hex": summary.hex,
-        "flight": summary.flight,
-        "altitude": summary.altitude,
-        "speed": summary.speed,
-        "track": summary.track,
-        # Feet per minute, positive climbing. Absent from aircraft on the
-        # ground and from the ones we only ever hear over Mode S.
-        "vertical_rate": summary.vertical_rate,
-        "rssi": summary.rssi,
-        "seen": summary.seen,
-    }
-    if include_distance:
-        attributes["distance"] = (
-            None if summary.distance is None else round(summary.distance / 1000, 1)
-        )
-    # Decoders without an aircraft database send none of this, and empty
-    # attributes are worse than absent ones on a dashboard.
-    if summary.registration is not None:
-        attributes["registration"] = summary.registration
-    if summary.aircraft_type is not None:
-        attributes["aircraft_type"] = summary.aircraft_type
-    if summary.description is not None:
-        attributes["description"] = summary.description
-    if summary.military:
-        attributes["military"] = True
-    if summary.airline is not None:
-        attributes["airline"] = summary.airline
-    # Empty unless a route source is configured and it recognised the flight.
-    attributes.update(route_attributes(summary.route))
-    return attributes
 
 
 def _cpu_temperature(monitor: dict[str, Any]) -> float | None:
@@ -668,6 +630,8 @@ async def async_setup_entry(
         entities.append(AdsbStationHighestAircraftSensor(coordinator))
         entities.append(AdsbStationFastestAircraftSensor(coordinator))
         entities.append(AdsbStationNearbySensor(coordinator))
+        entities.append(AdsbStationOverheadSensor(coordinator))
+        entities.append(AdsbStationPassagesSensor(coordinator))
         entities.extend(
             AdsbStationSectorRangeSensor(coordinator, sector) for sector in SECTORS
         )
@@ -974,6 +938,232 @@ class AdsbStationNearbySensor(AdsbStationAircraftEntity, SensorEntity):
                 for summary in aircraft.nearby
             ],
         }
+
+
+def _passage_entry(passage: Passage) -> dict[str, Any]:
+    """Describe one passage for a board of what has come over.
+
+    The closest approach rather than the arrival, and lean rather than
+    complete: twenty of these are written to the database every time an
+    aircraft comes past, and a board is read at a glance.
+    """
+    entry: dict[str, Any] = {
+        "at": passage.started_at.isoformat(),
+        "hex": passage.hex,
+        "flight": passage.closest.flight,
+        "altitude": passage.closest.altitude,
+        "distance": round(passage.closest_distance / 1000, 1),
+    }
+    for key, value in (
+        ("airline", passage.closest.airline),
+        ("registration", passage.closest.registration),
+        ("aircraft_type", passage.closest.aircraft_type),
+        ("description", passage.closest.description),
+        (
+            "route",
+            None if passage.closest.route is None else passage.closest.route.label,
+        ),
+    ):
+        if value is not None:
+            entry[key] = value
+    return entry
+
+
+@dataclass
+class RememberedPassage(ExtraStoredData):
+    """The aircraft a panel is showing, so a restart does not blank it."""
+
+    flight: str | None = None
+    seen_at: str | None = None
+    details: dict[str, Any] | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return the reading as the registry stores it."""
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> RememberedPassage:
+        """Rebuild a reading that was restored from the registry."""
+        details = data.get("details")
+        return cls(
+            flight=_as_text(data.get("flight")),
+            seen_at=_as_text(data.get("seen_at")),
+            details=details if isinstance(details, dict) else None,
+        )
+
+
+class AdsbStationOverheadSensor(
+    AdsbStationAircraftEntity, RestoreEntity, SensorEntity
+):
+    """The one aircraft above you, which is what a panel shows.
+
+    Nearest first, measured through the air rather than across the ground, and
+    it keeps the last one rather than blanking the moment the sky empties. A
+    panel that goes empty between aircraft is a panel nobody hangs on a wall,
+    and the seen_at attribute says how long ago it was.
+    """
+
+    _attr_translation_key = "overhead_flight"
+
+    def __init__(self, coordinator: AdsbStationDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, "overhead_flight")
+        self._remembered = RememberedPassage()
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the aircraft this was showing."""
+        await super().async_added_to_hass()
+        if (stored := await self.async_get_last_extra_data()) is not None:
+            self._remembered = RememberedPassage.from_dict(stored.as_dict())
+        self._absorb()
+
+    @property
+    def extra_restore_state_data(self) -> RememberedPassage:
+        """Return the reading for Home Assistant to store."""
+        return self._remembered
+
+    @property
+    def available(self) -> bool:
+        """Return True with an empty sky, so the panel stays readable."""
+        return self.coordinator.last_update_success
+
+    def _handle_coordinator_update(self) -> None:
+        """Take over whatever is overhead now, if anything is."""
+        self._absorb()
+        super()._handle_coordinator_update()
+
+    def _absorb(self) -> None:
+        """Show what is up there, leaving the last one if nothing is."""
+        if (passage := self.coordinator.overhead) is None:
+            return
+        self._remembered = RememberedPassage(
+            # An aircraft that broadcasts no callsign is still something
+            # overhead, and its hex code is the only name it has.
+            flight=passage.current.flight or passage.hex,
+            seen_at=dt_util.utcnow().isoformat(),
+            details={
+                **aircraft_attributes(passage.current, include_distance=True),
+                "slant_distance": round(passage.current_distance / 1000, 1),
+                "since": passage.started_at.isoformat(),
+            },
+        )
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the callsign of the aircraft the panel is showing."""
+        return self._remembered.flight
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Return everything a panel puts under the callsign."""
+        details = self._remembered.details
+        if details is None:
+            return None
+        return {
+            **details,
+            "seen_at": self._remembered.seen_at,
+            # Whether it is up there now or is the one that last was.
+            "overhead": self.coordinator.overhead is not None,
+        }
+
+
+@dataclass
+class PassageBoard(ExtraStoredData):
+    """What has come over, and how many did today."""
+
+    count: int = 0
+    day: str | None = None
+    passages: list[dict[str, Any]] = field(default_factory=list)
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return the board as the registry stores it."""
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> PassageBoard:
+        """Rebuild a board that was restored from the registry."""
+        passages = data.get("passages")
+        return cls(
+            count=_as_int(data.get("count")) or 0,
+            day=_as_text(data.get("day")),
+            passages=[entry for entry in passages if isinstance(entry, dict)]
+            if isinstance(passages, list)
+            else [],
+        )
+
+
+class AdsbStationPassagesSensor(
+    AdsbStationAircraftEntity, RestoreEntity, SensorEntity
+):
+    """How many aircraft came over today, and which ones.
+
+    A departure board rather than a counter: the state is the tally, and the
+    attributes are the aircraft themselves, most recent first. Both survive a
+    restart, because a board that empties every time Home Assistant is updated
+    is not a record of anything.
+    """
+
+    _attr_translation_key = "passages_today"
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+
+    def __init__(self, coordinator: AdsbStationDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, "passages_today")
+        self._board = PassageBoard()
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the board."""
+        await super().async_added_to_hass()
+        if (stored := await self.async_get_last_extra_data()) is not None:
+            self._board = PassageBoard.from_dict(stored.as_dict())
+        self._absorb()
+
+    @property
+    def extra_restore_state_data(self) -> PassageBoard:
+        """Return the board for Home Assistant to store."""
+        return self._board
+
+    @property
+    def available(self) -> bool:
+        """Return True on a quiet day, when the tally is a real zero."""
+        return self.coordinator.last_update_success
+
+    def _handle_coordinator_update(self) -> None:
+        """Take in whatever came over since the last poll."""
+        self._absorb()
+        super()._handle_coordinator_update()
+
+    def _absorb(self) -> None:
+        """Add what is passing, and refresh what is still passing.
+
+        An entry is written as soon as the aircraft arrives, so the board is
+        current, and rewritten while it is still in view, because the closest
+        approach is not known until it has been made.
+        """
+        today = dt_util.now().date().isoformat()
+        if self._board.day != today:
+            self._board = PassageBoard(day=today)
+
+        for passage in self.coordinator.passages.values():
+            entry = _passage_entry(passage)
+            for index, existing in enumerate(self._board.passages):
+                if existing["hex"] == entry["hex"] and existing["at"] == entry["at"]:
+                    self._board.passages[index] = entry
+                    break
+            else:
+                self._board.count += 1
+                self._board.passages.insert(0, entry)
+        del self._board.passages[PASSAGE_BOARD_LENGTH:]
+
+    @property
+    def native_value(self) -> int:
+        """Return how many aircraft have come over today."""
+        return self._board.count
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return the board itself, most recent first."""
+        return {"passages": self._board.passages}
 
 
 @dataclass

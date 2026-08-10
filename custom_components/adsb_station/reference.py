@@ -41,30 +41,40 @@ class ReferenceTables:
     models: dict[str, str] = field(default_factory=dict)
 
     def airline_of(self, callsign: str | None) -> str | None:
-        """Return the airline a callsign belongs to, if it names one.
-
-        A flight number is an airline designator followed by the number of the
-        flight, as in KLM1234. Anything else that reaches us here is not one:
-        a business jet and most general aviation fly under their registration,
-        and the military under a name of its own. Reading the first three
-        letters of those would map PHABC onto whatever PHA happens to be, so
-        a callsign that is not shaped like a flight number gets no airline.
-        """
-        if callsign is None:
-            return None
-        text = callsign.strip().upper()
-        if len(text) <= _DESIGNATOR_LENGTH:
-            return None
-        designator, rest = text[:_DESIGNATOR_LENGTH], text[_DESIGNATOR_LENGTH:]
-        if not (designator.isascii() and designator.isalpha() and rest[0].isdigit()):
-            return None
-        return self.airlines.get(designator)
+        """Return the airline a callsign belongs to, if this table knows it."""
+        designator = designator_of(callsign)
+        return None if designator is None else self.airlines.get(designator)
 
     def model_of(self, type_code: str | None) -> str | None:
         """Return what an ICAO type code stands for, as far as we know it."""
         if type_code is None:
             return None
         return self.models.get(type_code.strip().upper())
+
+
+def designator_of(callsign: str | None) -> str | None:
+    """Return the airline designator a callsign opens with, if it is one.
+
+    A flight number is an airline designator followed by the number of the
+    flight, as in KLM1234. Anything else that reaches us here is not one: a
+    business jet and most general aviation fly under their registration, and
+    the military under a name of its own. Reading the first three letters of
+    those would turn PHABC into whatever PHA happens to be, so a callsign that
+    is not shaped like a flight number has no designator to give.
+
+    The table is not consulted, deliberately. This is what the aircraft itself
+    broadcast, and an airline the table has never heard of still has a code
+    worth passing on: it is what a dashboard looks a logo up by.
+    """
+    if callsign is None:
+        return None
+    text = callsign.strip().upper()
+    if len(text) <= _DESIGNATOR_LENGTH:
+        return None
+    designator, rest = text[:_DESIGNATOR_LENGTH], text[_DESIGNATOR_LENGTH:]
+    if not (designator.isascii() and designator.isalpha() and rest[0].isdigit()):
+        return None
+    return designator
 
 
 EMPTY: Final = ReferenceTables()

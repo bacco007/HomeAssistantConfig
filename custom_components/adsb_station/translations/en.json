@@ -198,6 +198,12 @@
       "aircraft_nearby": {
         "name": "Aircraft nearby"
       },
+      "overhead_flight": {
+        "name": "Overhead flight"
+      },
+      "passages_today": {
+        "name": "Passages today"
+      },
       "highest_aircraft": {
         "name": "Highest aircraft"
       },
@@ -238,28 +244,28 @@
         "name": "Positions rejected"
       },
       "max_range_n": {
-        "name": "Maximum range north"
+        "name": "Range record north"
       },
       "max_range_ne": {
-        "name": "Maximum range northeast"
+        "name": "Range record northeast"
       },
       "max_range_e": {
-        "name": "Maximum range east"
+        "name": "Range record east"
       },
       "max_range_se": {
-        "name": "Maximum range southeast"
+        "name": "Range record southeast"
       },
       "max_range_s": {
-        "name": "Maximum range south"
+        "name": "Range record south"
       },
       "max_range_sw": {
-        "name": "Maximum range southwest"
+        "name": "Range record southwest"
       },
       "max_range_w": {
-        "name": "Maximum range west"
+        "name": "Range record west"
       },
       "max_range_nw": {
-        "name": "Maximum range northwest"
+        "name": "Range record northwest"
       },
       "piaware_radio": {
         "name": "Radio",
