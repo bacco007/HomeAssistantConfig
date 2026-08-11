@@ -19,7 +19,6 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 try:
@@ -77,21 +76,12 @@ if _HAS_EVENT:
             super().__init__(coordinator)
             self._entry = entry
             self._attr_unique_id = f"{entry.entry_id}_rain_event"
-            self._attr_suggested_object_id = f"{prefix}_rain_event"
+            self.entity_id = f"event.{prefix}_rain_event"
             self._prev_raining: bool | None = None
 
         @property
         def device_info(self):
             return {"identifiers": {(DOMAIN, self._entry.entry_id)}}
-
-        async def async_added_to_hass(self) -> None:
-            await super().async_added_to_hass()
-            desired = f"event.{self._attr_suggested_object_id}"
-            if self.entity_id and self.entity_id != desired:
-                reg = er.async_get(self.hass)
-                current = reg.async_get(self.entity_id)
-                if current and current.unique_id == self.unique_id and reg.async_get(desired) is None:
-                    reg.async_update_entity(self.entity_id, new_entity_id=desired)
 
         def check_and_fire(self, data: dict[str, Any]) -> None:
             """Called from coordinator on each compute cycle."""
@@ -132,21 +122,12 @@ if _HAS_EVENT:
             super().__init__(coordinator)
             self._entry = entry
             self._attr_unique_id = f"{entry.entry_id}_frost_event"
-            self._attr_suggested_object_id = f"{prefix}_frost_event"
+            self.entity_id = f"event.{prefix}_frost_event"
             self._prev_frozen: bool | None = None
 
         @property
         def device_info(self):
             return {"identifiers": {(DOMAIN, self._entry.entry_id)}}
-
-        async def async_added_to_hass(self) -> None:
-            await super().async_added_to_hass()
-            desired = f"event.{self._attr_suggested_object_id}"
-            if self.entity_id and self.entity_id != desired:
-                reg = er.async_get(self.hass)
-                current = reg.async_get(self.entity_id)
-                if current and current.unique_id == self.unique_id and reg.async_get(desired) is None:
-                    reg.async_update_entity(self.entity_id, new_entity_id=desired)
 
         def check_and_fire(self, data: dict[str, Any], threshold_c: float = 2.0) -> None:
             tc = data.get("norm_temperature_c")
@@ -188,22 +169,13 @@ if _HAS_EVENT:
             super().__init__(coordinator)
             self._entry = entry
             self._attr_unique_id = f"{entry.entry_id}_lightning_event"
-            self._attr_suggested_object_id = f"{prefix}_lightning_event"
+            self.entity_id = f"event.{prefix}_lightning_event"
             self._prev_count_1h: float = 0.0
             self._prev_proximity: str = "clear"
 
         @property
         def device_info(self):
             return {"identifiers": {(DOMAIN, self._entry.entry_id)}}
-
-        async def async_added_to_hass(self) -> None:
-            await super().async_added_to_hass()
-            desired = f"event.{self._attr_suggested_object_id}"
-            if self.entity_id and self.entity_id != desired:
-                reg = er.async_get(self.hass)
-                current = reg.async_get(self.entity_id)
-                if current and current.unique_id == self.unique_id and reg.async_get(desired) is None:
-                    reg.async_update_entity(self.entity_id, new_entity_id=desired)
 
         def check_and_fire(self, data: dict[str, Any]) -> None:
             count_1h = data.get("lightning_count_1h", 0) or 0

@@ -510,6 +510,7 @@ from .const import (
     PRESSURE_HISTORY_INTERVAL_MIN,
     PRESSURE_HISTORY_SAMPLES,
     RAIN_RATE_PHYSICAL_CAP_MMPH,
+    RAIN_RATE_WINDOW_H,
     REQUIRED_SOURCES,
     SPIKE_MIN_SAMPLES,
     SPIKE_SIGMA_THRESHOLD,
@@ -1464,6 +1465,40 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 total += dv
         return total
 
+    @staticmethod
+    def _rain_rate_from_totals_window(history: deque, now: Any, window_h: float) -> float:
+        """Rain rate (mm/h) averaged over a short sliding window.
+
+        Using the delta since only the *previous* poll cycle makes the rate
+        track individual bucket-tip increments: when the rain-total source
+        only updates in discrete steps, a tip that lands inside one ~60s poll
+        produces a brief huge spike that decays back to zero before the next
+        tip, i.e. a sawtooth (issue #132). Averaging accumulation over the
+        last ``window_h`` hours instead smooths that out.
+
+        The window naturally shrinks to however much history is actually
+        available (e.g. right after startup or right as rain begins), so
+        this doesn't under-report the rate before a full window has
+        accumulated.
+        """
+        from datetime import timedelta
+
+        cutoff = now - timedelta(hours=window_h)
+        vals = [(ts, v) for ts, v in history if ts >= cutoff]
+        if len(vals) < 2:
+            return 0.0
+        accum = 0.0
+        for (_, prev), (_, cur) in zip(vals, vals[1:], strict=False):
+            dv = cur - prev
+            if dv < -0.1:
+                dv = 0.0
+            if dv > 0:
+                accum += dv
+        span_h = (vals[-1][0] - vals[0][0]).total_seconds() / 3600.0
+        if span_h <= 1e-6:
+            return 0.0
+        return accum / span_h
+
     # ------------------------------------------------------------------
     # Unit conversion helpers
     # ------------------------------------------------------------------
@@ -2010,11 +2045,8 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 rt.last_rain_ts = now
                 data[KEY_RAIN_RATE_FILT] = 0.0
             else:
-                dv = float(rain_total_mm) - float(rt.last_rain_total_mm)
-                dt_h = max(1e-6, (now - rt.last_rain_ts).total_seconds() / 3600.0)
-                if dv < -0.1:
-                    dv = 0.0
-                raw = max(0.0, min(dv / dt_h, RAIN_RATE_PHYSICAL_CAP_MMPH))
+                raw = self._rain_rate_from_totals_window(rt.rain_total_history_24h, now, RAIN_RATE_WINDOW_H)
+                raw = max(0.0, min(raw, RAIN_RATE_PHYSICAL_CAP_MMPH))
                 filtered = rt.kalman.update(raw)
                 rt.last_rain_total_mm = float(rain_total_mm)
                 rt.last_rain_ts = now
@@ -5408,7 +5440,12 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                             "&fields=code_station,libelle_station,libelle_cours_eau"
                         )
                         async with session.get(url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
-                            if resp.status != 200:
+                            # Hub'Eau's referentiel/stations endpoint returns
+                            # HTTP 206 (Partial Content) whenever the result set
+                            # doesn't include every matching station -- routine,
+                            # not an error. Treat it the same as 200, matching
+                            # the observations_tr fetch below (see issue #133).
+                            if resp.status not in (200, 206):
                                 _LOGGER.warning("ws_core Vigicrues: auto-detect HTTP %s", resp.status)
                                 return
                             sdata = await resp.json()

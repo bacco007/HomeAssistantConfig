@@ -363,6 +363,12 @@ PRESSURE_TREND_FALLING: float = -0.8
 PRESSURE_TREND_FALLING_RAPID: float = -1.6
 
 RAIN_RATE_PHYSICAL_CAP_MMPH: float = 500.0
+# Sliding window used to compute rain rate from cumulative rain-total deltas
+# (issue #132). A single poll-cycle delta spikes and decays in a sawtooth
+# whenever the underlying sensor only updates in discrete bucket-tip
+# increments; averaging over a short window instead smooths that out while
+# still reacting quickly to real changes in intensity.
+RAIN_RATE_WINDOW_H: float = 10.0 / 60.0
 WIND_SMOOTH_ALPHA: float = 0.3
 
 ZAMBRETTI_UPPER_PRESSURE: float = 1050.0

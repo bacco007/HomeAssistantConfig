@@ -5,7 +5,6 @@ from __future__ import annotations
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
@@ -37,7 +36,7 @@ class WSGraphRangeSelect(RestoreEntity, SelectEntity):
     def __init__(self, entry: ConfigEntry, prefix: str) -> None:
         self._entry = entry
         self._attr_unique_id = f"{entry.entry_id}_graph_range"
-        self._attr_suggested_object_id = f"{prefix}_graph_range"
+        self.entity_id = f"select.{prefix}_graph_range"
         self._attr_current_option = GRAPH_RANGE_DEFAULT
 
     @property
@@ -47,12 +46,6 @@ class WSGraphRangeSelect(RestoreEntity, SelectEntity):
     async def async_added_to_hass(self) -> None:
         """Restore last state."""
         await super().async_added_to_hass()
-        desired = f"select.{self._attr_suggested_object_id}"
-        if self.entity_id and self.entity_id != desired:
-            reg = er.async_get(self.hass)
-            current = reg.async_get(self.entity_id)
-            if current and current.unique_id == self.unique_id and reg.async_get(desired) is None:
-                reg.async_update_entity(self.entity_id, new_entity_id=desired)
         last_state = await self.async_get_last_state()
         if last_state and last_state.state in GRAPH_RANGE_OPTIONS:
             self._attr_current_option = last_state.state

@@ -2826,7 +2826,12 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         self._restored_value: Any = None  # populated by async_added_to_hass for restore-capable sensors
 
         self._attr_unique_id = f"{entry.entry_id}_{desc.key}"
-        self._attr_suggested_object_id = f"{prefix}_{self._slug_for_key(desc.key)}"
+        # Setting entity_id directly (rather than _attr_suggested_object_id) makes
+        # HA use it verbatim as the object_id on first registration. With
+        # has_entity_name=True, _attr_suggested_object_id is treated as
+        # object_id_base, which HA prefixes with the device name ("Weather
+        # Station") instead of the configured prefix -- see issue #134.
+        self.entity_id = f"sensor.{prefix}_{self._slug_for_key(desc.key)}"
         if desc.translation_key:
             self._attr_translation_key = desc.translation_key
             if desc.translation_placeholders:
@@ -2861,13 +2866,12 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
-        # The entity_id is set once at creation from _attr_suggested_object_id
-        # (Home Assistant honours it the first time the entity is registered),
-        # which yields sensor.{prefix}_{key} on a fresh install. We deliberately
-        # do NOT force the entity_id back to that value on later startups: once
-        # an entity exists in the registry, its entity_id belongs to the user,
-        # and rewriting it here would silently revert any manual rename on every
-        # restart and split the entity's recorder history.
+        # The entity_id is set once at creation from self.entity_id (assigned in
+        # __init__), which yields sensor.{prefix}_{key} on a fresh install. We
+        # deliberately do NOT force the entity_id back to that value on later
+        # startups: once an entity exists in the registry, its entity_id belongs
+        # to the user, and rewriting it here would silently revert any manual
+        # rename on every restart and split the entity's recorder history.
 
         # Restore last known value for sensors that are slow to warm up
         if self._desc.key in self._RESTORE_KEYS:
@@ -3209,7 +3213,7 @@ class WSRiverSensor(CoordinatorEntity, SensorEntity):
             if name_slug
             else (f"river_level_{uid_suffix}" if uid_suffix != "auto" else "river_level")
         )
-        self._attr_suggested_object_id = f"{prefix}_{slug}"
+        self.entity_id = f"sensor.{prefix}_{slug}"
 
     @property
     def _cache_key(self) -> str:
@@ -3295,7 +3299,7 @@ class WSRiverFlowSensor(CoordinatorEntity, SensorEntity):
             if name_slug
             else (f"river_flow_{uid_suffix}" if uid_suffix != "auto" else "river_flow")
         )
-        self._attr_suggested_object_id = f"{prefix}_{slug}"
+        self.entity_id = f"sensor.{prefix}_{slug}"
 
     @property
     def _resolved_code(self) -> str:

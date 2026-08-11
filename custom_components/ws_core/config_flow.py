@@ -319,7 +319,11 @@ async def _fetch_vigicrues_station_options(lat: float, lon: float) -> list[dict]
         )
         async with aiohttp.ClientSession() as session:
             async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
-                if resp.status != 200:
+                # Hub'Eau's referentiel/stations endpoint returns HTTP 206
+                # (Partial Content) whenever the result set doesn't include
+                # every matching station -- routine, not an error. Treat it
+                # the same as 200 (see issue #133).
+                if resp.status not in (200, 206):
                     return options
                 data = await resp.json()
     except (aiohttp.ClientError, TimeoutError, ValueError):
@@ -730,8 +734,18 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_location()
 
         # fmt: off
+        # Use description={"suggested_value": ...} rather than default=... here.
+        # A vol.Optional default is "sticky" in the frontend entity picker: the
+        # user cannot clear it back to empty, which blocks saving whenever the
+        # auto-detected guess is wrong, unavailable, or the wrong type
+        # (issue #135). suggested_value pre-fills the same way but the field
+        # stays genuinely clearable.
         fields = {
-            (vol.Optional(k, default=defaults[k]) if k in defaults else vol.Optional(k)): _ENTITY_SELECTOR
+            (
+                vol.Optional(k, description={"suggested_value": defaults[k]})
+                if k in defaults
+                else vol.Optional(k)
+            ): _ENTITY_SELECTOR
             for k in OPTIONAL_SOURCES
         }
         # fmt: on
@@ -1443,7 +1457,10 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         }
         for field in ("temp", "humidity", "co2"):
             cur = src.get(field)
-            key = vol.Optional(field, default=cur) if cur else vol.Optional(field)
+            # suggested_value (not default) keeps the field clearable when
+            # editing a room to remove a previously-assigned sensor -- see
+            # issue #135.
+            key = vol.Optional(field, description={"suggested_value": cur}) if cur else vol.Optional(field)
             schema[key] = sensor_sel
         return vol.Schema(schema)
 
@@ -2164,8 +2181,12 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                     return await self.async_step_forecast_api_key_opt()
                 return await self.async_step_features_opt()
 
+        # See async_step_optional_sources for why suggested_value is used
+        # instead of default (issue #135: unclearable, unsaveable fields).
         fields = {
-            (vol.Optional(k, default=defaults[k]) if k in defaults else vol.Optional(k)): _ENTITY_SELECTOR
+            (
+                vol.Optional(k, description={"suggested_value": defaults[k]}) if k in defaults else vol.Optional(k)
+            ): _ENTITY_SELECTOR
             for k in OPTIONAL_SOURCES
         }
         return self.async_show_form(
@@ -2469,7 +2490,10 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
         }
         for field in ("temp", "humidity", "co2"):
             cur = src.get(field)
-            key = vol.Optional(field, default=cur) if cur else vol.Optional(field)
+            # suggested_value (not default) keeps the field clearable when
+            # editing a room to remove a previously-assigned sensor -- see
+            # issue #135.
+            key = vol.Optional(field, description={"suggested_value": cur}) if cur else vol.Optional(field)
             schema[key] = sensor_sel
         return vol.Schema(schema)
 
