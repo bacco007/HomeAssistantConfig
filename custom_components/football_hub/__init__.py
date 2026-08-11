@@ -14,7 +14,7 @@ from .const import DOMAIN
 PLATFORMS = ["sensor"]
 PANEL_URL = "football-hub"
 PANEL_NAME = "football-hub-panel"
-PANEL_VERSION = "0.5.11-developer-key-sanitising"
+PANEL_VERSION = "0.5.47-exclusive-match-status-pages"
 PANEL_STATIC_URL = "/football_hub/football-hub-panel.js"
 PANEL_MODULE_URL = f"{PANEL_STATIC_URL}?v={PANEL_VERSION}"
 PANEL_SCRIPT_PATH = Path(__file__).parent / "frontend" / "football-hub-panel.js"
@@ -95,6 +95,18 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             await coordinator.async_remove_favourite_club(team, competition)
             hass.async_create_task(hass.config_entries.async_reload(coordinator.entry.entry_id))
 
+    async def async_save_ui_preferences(call: ServiceCall) -> None:
+        preferences = call.data.get("preferences") or {}
+        if isinstance(preferences, str):
+            import json
+            preferences = json.loads(preferences)
+        async for coordinator in _coordinators(call):
+            await coordinator.async_set_ui_preferences(preferences if isinstance(preferences, dict) else {})
+
+    async def async_refresh(call: ServiceCall) -> None:
+        async for coordinator in _coordinators(call):
+            await coordinator.async_request_refresh()
+
     services = {
         "select_live_team": async_select_live_team,
         "select_live_match": async_select_live_match,
@@ -102,6 +114,8 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         "select_cup": async_select_cup,
         "select_my_club": async_select_my_club,
         "remove_favourite_club": async_remove_favourite_club,
+        "save_ui_preferences": async_save_ui_preferences,
+        "refresh": async_refresh,
     }
     for name, handler in services.items():
         if not hass.services.has_service(DOMAIN, name):

@@ -60,32 +60,45 @@ FM_LEAGUES = {
     1101: 132,   # FA Cup
     1102: 133,   # EFL Cup
     1103: 247,   # Community Shield
-    1201: 65,    # Scottish Cup
-    1202: 66,    # Scottish League Cup
+    1201: 137,   # Scottish Cup
+    1202: 180,   # Scottish League Cup
     1301: 9166,  # Welsh Cup
     3101: 9441,  # US Open Cup
     3102: 10654, # USL Cup
     3103: 10167, # NWSL Challenge Cup
-    1401: 113,   # Irish Cup
-    1501: 128,   # FAI Cup
+    1401: 9389,  # Irish Cup
+    1501: 219,   # FAI Cup
     1601: 138,   # Copa del Rey
     1602: 139,   # Spanish Super Cup
     1701: 209,   # DFB-Pokal
-    1702: 210,   # German Super Cup
+    1702: 8924,  # German Super Cup
     1801: 141,   # Coppa Italia
     1802: 222,   # Supercoppa Italiana
     1901: 134,   # Coupe de France
     1902: 219,   # Trophée des Champions
-    2001: 58,    # KNVB Cup
-    2002: 189,   # Johan Cruyff Shield
+    2001: 235,   # KNVB Cup
+    2002: 237,   # Johan Cruyff Shield
     2101: 96,    # Taça de Portugal
-    2102: 228,   # Portuguese League Cup
-    2103: 129,   # Portuguese Super Cup
-    2201: 112,   # Belgian Cup
-    2202: 174,   # Belgian Super Cup
-    2301: 193,   # Turkish Cup
-    2302: 194,   # Turkish Super Cup
+    2102: 187,   # Portuguese League Cup
+    2103: 188,   # Portuguese Super Cup
+    2201: 149,   # Belgian Cup
+    2202: 266,   # Belgian Super Cup
+    2301: 151,   # Turkish Cup
+    2302: 166,   # Turkish Super Cup
+    1902: 207,   # Trophee des Champions (correct FotMob ID)
+    2101: 186,   # Taca de Portugal (correct FotMob ID)
 }
+
+FM_CUP_LEAGUES = {
+    1001, 1002, 1003, 1101, 1102, 1103, 1201, 1202, 1301,
+    1401, 1501, 1601, 1602, 1701, 1702, 1801, 1802, 1901,
+    1902, 2001, 2002, 2101, 2102, 2103, 2201, 2202, 2301, 2302,
+    3101, 3102, 3103,
+}
+
+# These cups run inside a single calendar year rather than a European-style
+# July-to-June season.
+FM_CALENDAR_YEAR_CUPS = {1501, 3101, 3102, 3103}
 
 FM_COUNTRY_CODES = {
     39: "ENG", 40: "ENG", 41: "ENG", 42: "ENG", 43: "ENG",
@@ -450,10 +463,27 @@ class FMProvider:
         return self._normalise_market_transfers(data)[:40]
 
     async def get_competition_catalogue(self) -> Any:
-        return await self._global_fetch(
+        data = await self._global_fetch(
             "competition_catalogue", ("api/data/allLeagues", "api/allLeagues"),
             {"locale": "en-GB", "country": "GBR"}, COMPETITION_CATALOGUE_TTL,
         )
+        competitions: list[dict[str, Any]] = []
+        seen: set[tuple[str, str]] = set()
+        country_groups = data.get("countries", []) if isinstance(data, dict) else []
+        for group in country_groups if isinstance(country_groups, list) else []:
+            if not isinstance(group, dict):
+                continue
+            country = self._name(group.get("country") or group.get("countryName") or group.get("name"))
+            leagues = group.get("leagues") or group.get("competitions") or group.get("tournaments") or []
+            for league in leagues if isinstance(leagues, list) else []:
+                if not isinstance(league, dict):
+                    continue
+                name = self._name(league.get("name") or league.get("leagueName") or league.get("competitionName"))
+                key = (country.casefold(), name.casefold())
+                if country and name and key not in seen:
+                    seen.add(key)
+                    competitions.append({"country": country, "name": name, "id": league.get("id") or league.get("leagueId")})
+        return competitions
 
     @staticmethod
     def _walk(value: Any):
@@ -539,6 +569,16 @@ class FMProvider:
 
         home_score = home.get("score")
         away_score = away.get("score")
+        # Some league payload sections omit team score fields but retain the
+        # authoritative full-time score in status.scoreStr.
+        if home_score in (None, "") or away_score in (None, ""):
+            score_text = str(status.get("scoreStr") or match.get("scoreStr") or "")
+            score_parts = score_text.split("(", 1)[0].replace("–", "-").split("-", 1)
+            if len(score_parts) == 2:
+                if home_score in (None, ""):
+                    home_score = score_parts[0].strip()
+                if away_score in (None, ""):
+                    away_score = score_parts[1].strip()
         try:
             home_score = int(home_score) if home_score not in (None, "") else None
         except (TypeError, ValueError):
@@ -559,21 +599,22 @@ class FMProvider:
                     "city": None,
                 },
             },
-            "league": {
+        "league": {
                 "id": match.get("leagueId"),
                 "name": league_name or match.get("leagueName"),
-                "country_code": country_code or match.get("ccode"),
-                "round": match.get("roundName") or match.get("round"),
+            "country_code": country_code or match.get("ccode"),
+            "country": country_code or match.get("ccode"),
+                "round": match.get("roundName") or match.get("round") or match.get("tournamentStage") or ((match.get("tournament") or {}).get("stage")),
             },
             "teams": {
-                "home": {
-                    "id": home.get("id"),
-                    "name": home.get("name"),
+            "home": {
+                "id": home.get("id"),
+                "name": home.get("longName") or home.get("name"),
                     "logo": self._logo(home.get("id")),
                 },
-                "away": {
-                    "id": away.get("id"),
-                    "name": away.get("name"),
+            "away": {
+                "id": away.get("id"),
+                "name": away.get("longName") or away.get("name"),
                     "logo": self._logo(away.get("id")),
                 },
             },
@@ -585,13 +626,17 @@ class FMProvider:
         }
 
         self._fixture_context[str(match_id)] = {
-            "home": home.get("name"),
-            "away": away.get("name"),
+            "home": home.get("longName") or home.get("name"),
+            "away": away.get("longName") or away.get("name"),
             "date": date,
         }
         for team in (home, away):
-            if team.get("id") is not None and team.get("name"):
-                self._team_names[str(team["id"])] = team["name"]
+            canonical_name = team.get("longName") or team.get("name")
+            if team.get("id") is not None and canonical_name:
+                team_key = str(team["id"])
+                existing_name = self._team_names.get(team_key, "")
+                if len(str(canonical_name)) >= len(existing_name):
+                    self._team_names[team_key] = canonical_name
         return item
 
     @staticmethod
@@ -603,15 +648,19 @@ class FMProvider:
 
     async def _league_data(self, league_id: Any) -> dict:
         fm_id = self._league_id(league_id)
-        key = f"league:{fm_id}"
+        # v7 invalidates older cup responses that were cached before the
+        # season-specific cup-ID parser accepted every match in the feed.
+        cache_version = "v7" if int(league_id) in FM_CUP_LEAGUES else "v1"
+        key = f"league:{cache_version}:{fm_id}"
         cached = self._cache_get(key, LEAGUE_TTL)
         if cached is not None:
             return cached
-        persisted = await self._persistent_get("league_data", str(fm_id), LEAGUE_TTL)
+        persistent_key = f"{cache_version}:{fm_id}"
+        persisted = await self._persistent_get("league_data", persistent_key, LEAGUE_TTL)
         if isinstance(persisted, dict):
             return self._cache_put(key, persisted)
         data = await self._get_first(("api/data/leagues", "api/leagues"), {"id": fm_id, "ccode3": "GBR"})
-        await self._persistent_put("league_data", str(fm_id), data)
+        await self._persistent_put("league_data", persistent_key, data)
         return self._cache_put(key, data)
 
     async def _all_wales_data(self, league_id: Any) -> dict:
@@ -647,6 +696,17 @@ class FMProvider:
             for match in league.get("matches") or []:
                 item = self._fixture(match, league_name, country_code)
                 if item:
+                    # Daily feeds use a season-specific league ID for cups
+                    # (for example 938221), while league feeds and our mapping
+                    # use the permanent primary ID (for example EFL Cup 133).
+                    # Normalise it so today's cup fixtures reach Live/Fixtures.
+                    primary_league_id = (
+                        league.get("primaryId")
+                        or league.get("parentLeagueId")
+                        or league.get("id")
+                    )
+                    if primary_league_id not in (None, ""):
+                        item.setdefault("league", {})["id"] = primary_league_id
                     output.append(item)
         return self._cache_put(key, output)
 
@@ -751,25 +811,10 @@ class FMProvider:
         return is_selected_country or is_uefa_club_competition or is_international
 
     async def get_live_feed(self, league_id, season):
-        """Return today's configured competitions and supported friendlies."""
+        """Return every match in FotMob's worldwide feed for today."""
         matches = await self._matches_for_date(datetime.now(timezone.utc))
         await self._remember_finished_friendlies(matches)
-        output = []
-        for item in matches:
-            league = item.get("league") or {}
-            competition_id = str(league.get("id") or "")
-            name = str(league.get("name") or "").casefold()
-            is_uefa_or_international = any(
-                label in name
-                for label in (
-                    "champions league", "europa league", "conference league",
-                    "nations league", "european championship", "euro qualification",
-                    "world cup", "international friendly", "friendlies",
-                )
-            )
-            if competition_id in LIVE_COMPETITION_IDS or is_uefa_or_international:
-                output.append(item)
-        return output
+        return matches
 
     async def get_live(self, league_id, season):
         feed = await self.get_live_feed(league_id, season)
@@ -799,18 +844,94 @@ class FMProvider:
             if match_id in (None, "") or not isinstance(home, dict) or not isinstance(away, dict):
                 continue
             node_league = node.get("leagueId")
-            if node_league not in (None, fm_id, str(fm_id)):
+            if int(league_id) not in FM_CUP_LEAGUES and node_league not in (None, fm_id, str(fm_id)):
                 continue
             item = self._fixture(node, data.get("details", {}).get("name"))
             if item:
-                output[str(match_id)] = item
+                fixture_key = str(match_id)
+                existing = output.get(fixture_key)
+                existing_goals = (existing or {}).get("goals") or {}
+                candidate_goals = item.get("goals") or {}
+                existing_has_score = existing_goals.get("home") is not None and existing_goals.get("away") is not None
+                candidate_has_score = candidate_goals.get("home") is not None and candidate_goals.get("away") is not None
+                # League responses can contain duplicate copies of a match. Never
+                # let a later, scoreless summary overwrite the completed version.
+                if existing is None or candidate_has_score or not existing_has_score:
+                    output[fixture_key] = item
 
         # Include today's matches so live/new fixtures are not missed.
         for item in await self._matches_for_date(datetime.now(timezone.utc)):
-            if (item.get("league") or {}).get("id") in (fm_id, str(fm_id), None):
+            if (item.get("league") or {}).get("id") in (fm_id, str(fm_id)):
                 output[str((item.get("fixture") or {}).get("id"))] = item
 
-        return await self._merge_friendly_results(list(output.values()))
+        # FotMob can mix short and full names for one team. Use the permanent
+        # team ID to retain one canonical (normally longest) club name.
+        canonical_names: dict[str, str] = dict(self._team_names)
+        for item in output.values():
+            for side in ("home", "away"):
+                team = ((item.get("teams") or {}).get(side) or {})
+                team_id, team_name = team.get("id"), str(team.get("name") or "")
+                if team_id not in (None, "") and team_name:
+                    team_key = str(team_id)
+                    if len(team_name) >= len(canonical_names.get(team_key, "")):
+                        canonical_names[team_key] = team_name
+        for item in output.values():
+            for side in ("home", "away"):
+                team = ((item.get("teams") or {}).get(side) or {})
+                team_key = str(team.get("id"))
+                if team_key in canonical_names:
+                    team["name"] = canonical_names[team_key]
+
+        fixtures = sorted(
+            output.values(),
+            key=lambda item: ((item.get("fixture") or {}).get("timestamp") or 0),
+        )
+        if int(league_id) in FM_CUP_LEAGUES:
+            now = datetime.now(timezone.utc)
+            current_season_year = now.year if now.month >= 7 else now.year - 1
+            season_year = max(int(season), current_season_year)
+            if int(league_id) in FM_CALENDAR_YEAR_CUPS:
+                season_start = datetime(season_year, 1, 1, tzinfo=timezone.utc).timestamp()
+                season_end = datetime(season_year + 1, 1, 1, tzinfo=timezone.utc).timestamp()
+            else:
+                season_start = datetime(season_year, 7, 1, tzinfo=timezone.utc).timestamp()
+                season_end = datetime(season_year + 1, 7, 1, tzinfo=timezone.utc).timestamp()
+            cup_fixtures = [
+                item for item in fixtures
+                if season_start <= (((item.get("fixture") or {}).get("timestamp")) or 0) < season_end
+            ]
+            completed_matches = [
+                item for item in reversed(cup_fixtures)
+                if (((item.get("fixture") or {}).get("status") or {}).get("short")) in {"FT", "AET", "PEN"}
+            ][:24]
+            if completed_matches:
+                details = await asyncio.gather(
+                    *(self.get_fixture_details((item.get("fixture") or {}).get("id")) for item in completed_matches),
+                    return_exceptions=True,
+                )
+                for item, detail in zip(completed_matches, details):
+                    if isinstance(detail, dict) and detail.get("stadium") not in (None, "", "Venue TBC"):
+                        venue = (item.get("fixture") or {}).setdefault("venue", {})
+                        venue["name"] = detail["stadium"]
+                        venue["city"] = detail.get("city") or venue.get("city")
+                    if not isinstance(detail, dict):
+                        continue
+                    teams = item.get("teams") or {}
+                    goals = item.get("goals") or {}
+                    winner = detail.get("winner")
+                    if not winner and goals.get("home") is not None and goals.get("away") is not None:
+                        if goals["home"] > goals["away"]:
+                            winner = (teams.get("home") or {}).get("name")
+                        elif goals["away"] > goals["home"]:
+                            winner = (teams.get("away") or {}).get("name")
+                    if winner:
+                        status_short = (((item.get("fixture") or {}).get("status") or {}).get("short"))
+                        method = detail.get("qualification_method") or ("extra time" if status_short == "AET" else "full time")
+                        penalty_score = detail.get("penalty_score")
+                        suffix = f" ({penalty_score[0]}-{penalty_score[1]})" if method == "penalties" and isinstance(penalty_score, list) and len(penalty_score) == 2 else ""
+                        item["qualification"] = {"winner": winner, "method": method, "penalty_score": penalty_score, "text": f"{winner} through on {method}{suffix}" if method != "full time" else f"{winner} through"}
+            return cup_fixtures
+        return await self._merge_friendly_results(fixtures)
 
     async def get_standings(self, league_id, season):
         """Return the current FM league table."""
@@ -1100,6 +1221,9 @@ class FMProvider:
 
     async def _match_details(self, fixture_id: Any) -> dict:
         key = f"match:{fixture_id}"
+        finished_cached = self._cache_get(f"{key}:finished", MATCH_TTL_FINISHED)
+        if finished_cached is not None:
+            return finished_cached
         cached = self._cache_get(key, MATCH_TTL_LIVE)
         if cached is not None:
             return cached
@@ -1177,6 +1301,17 @@ class FMProvider:
         if isinstance(venue, str):
             venue = {"name": venue}
         live_time = status.get("liveTime") or {}
+        reason = status.get("reason") or {}
+        if not isinstance(reason, dict):
+            reason = {}
+        penalty_score = reason.get("penalties")
+        home_name = self._name(general.get("homeTeam"))
+        away_name = self._name(general.get("awayTeam"))
+        penalty_loser = status.get("whoLostOnPenalties")
+        aggregate_loser = status.get("whoLostOnAggregated")
+        loser = penalty_loser or aggregate_loser
+        winner = away_name if loser and loser == home_name else home_name if loser and loser == away_name else None
+        qualification_method = "penalties" if penalty_loser or penalty_score else "aggregate" if aggregate_loser else None
         elapsed = live_time.get("short") if isinstance(live_time, dict) else live_time
         if elapsed in (None, ""):
             elapsed = status.get("elapsed") or status.get("minutes")
@@ -1193,6 +1328,9 @@ class FMProvider:
             "temperature": weather.get("temperature"),
             "humidity": weather.get("relativeHumidity"),
             "wind_speed": weather.get("windSpeed"),
+            "winner": winner,
+            "qualification_method": qualification_method,
+            "penalty_score": penalty_score,
         }
 
     async def get_fixture_statistics(self, fixture_id):

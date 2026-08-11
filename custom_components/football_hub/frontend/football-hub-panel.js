@@ -1,5 +1,22 @@
-const PANEL_VERSION = "0.15.4-paid-private-reminders";
+const PANEL_VERSION = "0.19.1-exclusive-match-status-pages";
 const LMS_SHARE_SERVICE = "https://football-hub-lms.zesty-flame-5295.chatgpt.site";
+const FULL_COMPETITION_CATALOGUE = {
+  England: ["Premier League", "Championship", "League One", "League Two", "National League", "FA Cup", "EFL Cup", "Community Shield"],
+  Scotland: ["Scottish Premiership", "Scottish Championship", "Scottish League One", "Scottish League Two", "Highland / Lowland Leagues", "Scottish Cup", "Scottish League Cup"],
+  Wales: ["Cymru Premier", "Cymru North", "Cymru South", "Welsh Cup"],
+  "Northern Ireland": ["Premiership", "Irish Cup"],
+  Ireland: ["Premier Division", "FAI Cup"],
+  Spain: ["La Liga", "Copa del Rey", "Spanish Super Cup"],
+  Germany: ["Bundesliga", "DFB-Pokal", "German Super Cup"],
+  Italy: ["Serie A", "Coppa Italia", "Supercoppa Italiana"],
+  France: ["Ligue 1", "Coupe de France", "Trophée des Champions"],
+  Netherlands: ["Eredivisie", "KNVB Cup", "Johan Cruyff Shield"],
+  Portugal: ["Primeira Liga", "Taça de Portugal", "Portuguese League Cup", "Portuguese Super Cup"],
+  Belgium: ["Jupiler Pro League", "Belgian Cup", "Belgian Super Cup"],
+  Türkiye: ["Süper Lig", "Turkish Cup", "Turkish Super Cup"],
+  "United States": ["MLS", "USL Championship", "USL League One", "MLS Next Pro", "NISA", "NWSL", "US Open Cup", "USL Cup", "NWSL Challenge Cup"],
+  Europe: ["UEFA Champions League", "UEFA Europa League", "UEFA Conference League"],
+};
 
 class FootballHubPanel extends HTMLElement {
   constructor() {
@@ -40,8 +57,33 @@ class FootballHubPanel extends HTMLElement {
       : "overview";
     this._selectedFixtureTeam = localStorage.getItem("football_hub_fixture_team") || "__all__";
     this._fixturePage = 0;
-    this._selectedLiveMatch = localStorage.getItem("football_hub_live_match") || "";
+    this._selectedLiveMatch = "";
     this._selectedLiveTeam = localStorage.getItem("football_hub_live_team") || "";
+    try {
+      this._hiddenLiveCompetitions = new Set(JSON.parse(localStorage.getItem("football_hub_hidden_live_competitions") || "[]"));
+    } catch (_error) {
+      this._hiddenLiveCompetitions = new Set();
+    }
+    try {
+      this._hiddenLiveCountries = new Set(JSON.parse(localStorage.getItem("football_hub_hidden_live_countries") || "[]"));
+    } catch (_error) {
+      this._hiddenLiveCountries = new Set();
+    }
+    try {
+      this._hiddenLiveGenders = new Set(JSON.parse(localStorage.getItem("football_hub_hidden_live_genders") || "[]"));
+    } catch (_error) {
+      this._hiddenLiveGenders = new Set();
+    }
+    this._liveFilterSearch = "";
+    this._liveDisplayMode = localStorage.getItem("football_hub_live_display_mode") || "cards";
+    this._liveStatusFilter = localStorage.getItem("football_hub_live_status_filter") || "all";
+    this._liveTimezone = localStorage.getItem("football_hub_live_timezone") || "local";
+    this._liveFiltersOpen = localStorage.getItem("football_hub_live_filters_open") !== "false";
+    try { this._favouriteLiveCompetitions = new Set(JSON.parse(localStorage.getItem("football_hub_favourite_live_competitions") || "[]")); }
+    catch (_error) { this._favouriteLiveCompetitions = new Set(); }
+    try { this._liveNotifications = { kickoff: false, goals: false, halftime: false, fulltime: false, selectedClubOnly: false, ...JSON.parse(localStorage.getItem("football_hub_live_notifications") || "{}") }; }
+    catch (_error) { this._liveNotifications = { kickoff: false, goals: false, halftime: false, fulltime: false, selectedClubOnly: false }; }
+    this._prefsHydrated = false;
     this._selectedPrefix = localStorage.getItem("football_hub_selected_prefix") || "";
     this._selectedCountry = localStorage.getItem("football_hub_selected_country") || "";
     this._selectedCupCountry = localStorage.getItem("football_hub_cup_country") || "Europe";
@@ -60,6 +102,7 @@ class FootballHubPanel extends HTMLElement {
     this._lmsMode = localStorage.getItem("football_hub_lms_mode") || "private";
     this._lmsActiveLeague = localStorage.getItem("football_hub_lms_active_league") || "";
     this._lmsPageView = localStorage.getItem("football_hub_lms_page_view") || "picks";
+    this._lmsAdminPassword = "";
     this._globalDeveloperKey = (String(localStorage.getItem("football_hub_global_developer_key") || "").match(/\b[a-f0-9]{64}\b/i) || [""])[0];
     try {
       this._lmsCompetition = JSON.parse(localStorage.getItem(this._lmsMode === "global" ? "football_hub_lms_global" : "football_hub_lms_private") || "null");
@@ -101,6 +144,7 @@ class FootballHubPanel extends HTMLElement {
   set hass(hass) {
     this._hass = hass;
     this._ensureCompetition();
+    this._processLiveNotifications();
     if (this._pendingCompetition && this._statusInfo().competition_key === this._pendingCompetition) {
       this._pendingCompetition = "";
     }
@@ -155,7 +199,7 @@ class FootballHubPanel extends HTMLElement {
     this._lmsReminderTimer = setInterval(() => this._checkLmsEmailReminders(), 60000);
     queueMicrotask(() => this._checkLmsEmailReminders());
     clearInterval(this._lmsSharePullTimer);
-    this._lmsSharePullTimer = setInterval(() => this._pullLmsSharePicks(), 30000);
+    this._lmsSharePullTimer = setInterval(() => this._pullLmsSharePicks(), 2000);
     queueMicrotask(() => this._pullLmsSharePicks());
   }
 
@@ -317,11 +361,11 @@ class FootballHubPanel extends HTMLElement {
     return `<article class="supporter-card"><div class="supporter-avatar">${this._countryFlag(country, "supporter-avatar-flag")}</div><div class="supporter-copy"><strong>${this._escape(name || "Anonymous Supporter")}</strong><div class="supporter-meta">${country ? `<span class="supporter-country">${this._escape(country)}</span>` : ""}${date ? `<span>${this._escape(date)}</span>` : ""}</div>${message ? `<p>${this._escape(message)}</p>` : ""}</div></article>`;
   }
 
-  _saveLms() {
+  _saveLms(sync = true) {
     const storageKey = this._lmsMode === "global" ? "football_hub_lms_global" : "football_hub_lms_private";
     if (this._lmsCompetition) {
       localStorage.setItem(storageKey, JSON.stringify(this._lmsCompetition));
-      this._queueLmsShareSync();
+      if (sync) this._queueLmsShareSync();
     } else {
       localStorage.removeItem(storageKey);
     }
@@ -359,6 +403,7 @@ class FootballHubPanel extends HTMLElement {
     for (const player of competition.players || []) {
       const link = byId.get(String(player.id));
       if (link?.url) player.pickUrl = link.url;
+      if (link?.email && !player.email) player.email = link.email;
     }
   }
 
@@ -392,13 +437,34 @@ class FootballHubPanel extends HTMLElement {
 
   _lmsEmailServices() {
     const services = this._hass?.services?.notify || {};
-    return Object.entries(services)
+    const entities = Object.entries(this._hass?.states || {})
+      .filter(([entityId]) => entityId.startsWith("notify."))
+      .map(([entityId, state]) => ({
+        value: entityId,
+        label: `${state?.attributes?.friendly_name || entityId.slice(7).replaceAll("_", " ")} · notify entity`,
+        modern: true,
+      }));
+    const legacy = Object.entries(services)
       .filter(([service]) => service !== "send_message")
       .map(([service, details]) => ({
         value: `notify.${service}`,
-        label: details?.name || details?.description || service.replaceAll("_", " "),
-      }))
+        label: `${details?.name || details?.description || service.replaceAll("_", " ")} · legacy`,
+        modern: false,
+      }));
+    return [{ value: "__auto__", label: "Automatically match each player email · recommended", modern: true }, ...entities, ...legacy.filter((item) => !entities.some((entity) => entity.value === item.value))]
       .sort((a, b) => String(a.label).localeCompare(String(b.label)));
+  }
+
+  _lmsNotifyEntityForEmail(email) {
+    const normalise = (value) => String(value || "").toLocaleLowerCase().replace(/[^a-z0-9]/g, "");
+    const wanted = normalise(email);
+    if (!wanted) return "";
+    return Object.entries(this._hass?.states || {}).find(([entityId, state]) => {
+      if (!entityId.startsWith("notify.")) return false;
+      const entityName = normalise(entityId.slice(7));
+      const friendlyName = normalise(state?.attributes?.friendly_name);
+      return entityName.includes(wanted) || friendlyName.includes(wanted);
+    })?.[0] || "";
   }
 
   _lmsEmailDeadline() {
@@ -428,14 +494,19 @@ class FootballHubPanel extends HTMLElement {
 
   async _sendLmsPlayerEmail(player, quiet = false, reminderKind = "") {
     const competition = this._lmsCompetition;
-    const action = String(competition?.emailNotifyService || "");
+    const action = String(competition?.emailNotifyService || "__auto__");
     if (!player?.email || !player?.pickUrl || !action || !this._hass?.callService) {
       if (!quiet) window.alert(!player?.email ? "Add an email address for this player first." : !player?.pickUrl ? "Generate the public competition link first." : "Choose a Home Assistant email service first.");
       return false;
     }
+    const matchedEntity = this._lmsNotifyEntityForEmail(player.email);
     const [domain, ...serviceParts] = action.split(".");
     const service = serviceParts.join(".");
-    if (domain !== "notify" || !service) {
+    if (!matchedEntity && action === "__auto__") {
+      if (!quiet) window.alert(`No Home Assistant SMTP recipient entity matches ${player.email}. Add this recipient to the SMTP integration first.`);
+      return false;
+    }
+    if (!matchedEntity && (domain !== "notify" || !service)) {
       if (!quiet) window.alert("The selected email service is not valid.");
       return false;
     }
@@ -446,11 +517,15 @@ class FootballHubPanel extends HTMLElement {
         : reminderKind === "hours"
           ? "Final reminder: only a few hours remain"
           : "Choose your Last Man Standing team";
-      await this._hass.callService(domain, service, {
+      const messageData = {
         title: `${reminderKind ? "Reminder: " : ""}${competition.name} - Round ${competition.round} team selection`,
         message: `Hi ${player.name},\n\n${reminderIntro} for Round ${competition.round}:\n${player.pickUrl}\n\nYour deadline is ${this._lmsEmailDeadline()} local time. Teams already used cannot be selected again.\n\nROUND ${competition.round} FIXTURES\n\n${fixtures}\n\nUse your private link above to make your selection.\n\nFootball Hub`,
-        target: [player.email],
-      });
+      };
+      if (matchedEntity || this._hass.states?.[action]) {
+        await this._hass.callService("notify", "send_message", messageData, { entity_id: matchedEntity || action });
+      } else {
+        await this._hass.callService(domain, service, { ...messageData, target: [player.email] });
+      }
       player.lastEmailSent = Math.floor(Date.now() / 1000);
       this._saveLms();
       if (!quiet) window.alert(`Pick link emailed to ${player.name}.`);
@@ -492,7 +567,7 @@ class FootballHubPanel extends HTMLElement {
           "content-type": "application/json",
           ...(this._lmsMode === "global" ? { "x-football-hub-owner": this._globalDeveloperKey } : {}),
         },
-        body: JSON.stringify({ competition: this._lmsSharePayload() }),
+        body: JSON.stringify({ competition: this._lmsSharePayload(), ...(this._lmsMode === "private" ? { adminPassword: this._lmsAdminPassword } : {}) }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Unable to generate share link");
@@ -516,40 +591,52 @@ class FootballHubPanel extends HTMLElement {
   }
 
   _queueLmsShareSync() {
-    if (!this._lmsCompetition?.shareId || !this._lmsCompetition?.shareEditToken || !LMS_SHARE_SERVICE) return;
+    if (!this._lmsCompetition?.shareId || (!this._lmsCompetition?.shareEditToken && !this._lmsAdminPassword) || !LMS_SHARE_SERVICE) return;
+    this._lmsShareSyncPending = true;
     clearTimeout(this._lmsShareSyncTimer);
-    this._lmsShareSyncTimer = setTimeout(() => this._syncLmsShare(), 1200);
+    this._lmsShareSyncTimer = setTimeout(() => this._syncLmsShare(), 250);
   }
 
   async _syncLmsShare() {
     const competition = this._lmsCompetition;
-    if (!competition?.shareId || !competition?.shareEditToken || !LMS_SHARE_SERVICE || this._lmsShareBusy) return;
+    if (!competition?.shareId || (!competition?.shareEditToken && !this._lmsAdminPassword) || !LMS_SHARE_SERVICE) return;
+    if (this._lmsShareBusy) {
+      clearTimeout(this._lmsShareSyncTimer);
+      this._lmsShareSyncTimer = setTimeout(() => this._syncLmsShare(), 1500);
+      return;
+    }
     this._lmsShareBusy = true;
     try {
       const response = await fetch(`${LMS_SHARE_SERVICE}/api/competitions/${encodeURIComponent(competition.shareId)}`, {
         method: "PUT",
         headers: {
           "content-type": "application/json",
-          "authorization": `Bearer ${competition.shareEditToken}`,
+          ...(competition.shareEditToken ? { "authorization": `Bearer ${competition.shareEditToken}` } : {}),
+          ...(this._lmsAdminPassword ? { "x-admin-password": this._lmsAdminPassword } : {}),
           ...(competition.mode === "global" ? { "x-football-hub-owner": this._globalDeveloperKey } : {}),
         },
-        body: JSON.stringify({ competition: this._lmsSharePayload() }),
+        body: JSON.stringify({ competition: this._lmsSharePayload(), ...(competition.mode === "private" && this._lmsAdminPassword ? { adminPassword: this._lmsAdminPassword } : {}) }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Share update failed");
       this._applyLmsPlayerLinks(result.playerLinks);
       localStorage.setItem(this._lmsMode === "global" ? "football_hub_lms_global" : "football_hub_lms_private", JSON.stringify(competition));
+      this._lmsShareSyncPending = false;
     } catch (error) {
       console.warn("Football Hub LMS share update failed", error);
     } finally {
       this._lmsShareBusy = false;
+      if (this._lmsShareSyncPending) {
+        clearTimeout(this._lmsShareSyncTimer);
+        this._lmsShareSyncTimer = setTimeout(() => this._syncLmsShare(), 1500);
+      }
     }
   }
 
   async _pullLmsSharePicks(force = false) {
     const competition = this._lmsCompetition;
-    if (this._activeTab !== "last-man-standing" || !competition?.shareId || !LMS_SHARE_SERVICE || this._lmsShareBusy) return;
-    if (!force && Date.now() - this._lmsShareLastPull < 25000) return;
+    if (this._activeTab !== "last-man-standing" || !competition?.shareId || !LMS_SHARE_SERVICE || this._lmsShareBusy || this._lmsShareSyncPending) return;
+    if (!force && Date.now() - this._lmsShareLastPull < 1500) return;
     this._lmsShareLastPull = Date.now();
     this._lmsShareBusy = true;
     try {
@@ -557,11 +644,30 @@ class FootballHubPanel extends HTMLElement {
         cache: "no-store",
         headers: {
           ...(competition.shareEditToken ? { "authorization": `Bearer ${competition.shareEditToken}` } : {}),
+          ...(this._lmsAdminPassword ? { "x-admin-password": this._lmsAdminPassword } : {}),
           ...(competition.mode === "global" && this._globalDeveloperKey ? { "x-football-hub-owner": this._globalDeveloperKey } : {}),
         },
       });
       if (!response.ok) return;
-      const remote = (await response.json()).competition;
+      const result = await response.json();
+      const remote = result.competition;
+      if (competition.mode === "private" && Object.prototype.hasOwnProperty.call(result, "playerLinks")) {
+        const localAccess = {
+          shareId: competition.shareId,
+          shareUrl: competition.shareUrl,
+          shareEditToken: competition.shareEditToken,
+          adminPasswordHash: competition.adminPasswordHash,
+        };
+        Object.assign(competition, remote, localAccess);
+        this._applyLmsPlayerLinks(result.playerLinks || []);
+        if (!(competition.leagues || []).some((league) => league.key === this._lmsActiveLeague)) {
+          this._lmsActiveLeague = competition.leagues?.[0]?.key || "";
+          localStorage.setItem("football_hub_lms_active_league", this._lmsActiveLeague);
+        }
+        localStorage.setItem("football_hub_lms_private", JSON.stringify(competition));
+        this._render();
+        return;
+      }
       const remotePlayers = new Map((remote?.players || []).map((player) => [String(player.id), player]));
       let changed = false;
       if (competition.mode === "global") {
@@ -638,7 +744,51 @@ class FootballHubPanel extends HTMLElement {
       return;
     }
     this._lmsAdminUnlocked = true;
+    this._lmsAdminPassword = String(password || "");
     this._render();
+  }
+
+  async _openRemoteLmsGame(value, password) {
+    const entered = String(value || "").trim();
+    const adminPassword = String(password || "");
+    if (!entered || adminPassword.length < 4 || !LMS_SHARE_SERVICE) {
+      window.alert("Enter the competition link or ID and its administrator password.");
+      return;
+    }
+    let shareId = entered;
+    try {
+      const url = new URL(entered);
+      shareId = url.searchParams.get("competition") || url.pathname.match(/\/lms\/([^/?#]+)/)?.[1] || entered;
+    } catch (_error) {
+      shareId = entered;
+    }
+    shareId = decodeURIComponent(String(shareId).trim());
+    try {
+      const response = await fetch(`${LMS_SHARE_SERVICE}/api/competitions/${encodeURIComponent(shareId)}`, {
+        cache: "no-store",
+        headers: { "x-admin-password": adminPassword },
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Competition could not be opened");
+      const competition = result.competition || {};
+      if (competition.mode && competition.mode !== "private") throw new Error("This is not a private LMS competition.");
+      competition.shareId = shareId;
+      competition.shareUrl = `${LMS_SHARE_SERVICE}/lms/${encodeURIComponent(shareId)}`;
+      competition.adminPasswordHash = await this._lmsPasswordHash(adminPassword);
+      this._lmsCompetition = competition;
+      this._lmsMode = "private";
+      this._lmsAdminPassword = adminPassword;
+      this._lmsAdminUnlocked = true;
+      this._lmsActiveLeague = competition.leagues?.[0]?.key || "";
+      this._applyLmsPlayerLinks(result.playerLinks || []);
+      localStorage.setItem("football_hub_lms_mode", "private");
+      localStorage.setItem("football_hub_lms_private", JSON.stringify(competition));
+      if (this._lmsActiveLeague) localStorage.setItem("football_hub_lms_active_league", this._lmsActiveLeague);
+      this._render();
+      window.alert(`Opened ${competition.name || "the competition"}. Changes will stay synced across devices.`);
+    } catch (error) {
+      window.alert(error?.message || "Competition could not be opened. Check the link and password.");
+    }
   }
 
   _lmsFixtureTimestamp(fixture) {
@@ -794,8 +944,8 @@ class FootballHubPanel extends HTMLElement {
       window.alert("Enter the private Football Hub developer key.");
       return;
     }
-    if (String(password).length < 4) {
-      window.alert("Choose an administrator password with at least 4 characters.");
+    if (String(password).length < 6) {
+      window.alert("Choose an administrator password with at least 6 characters.");
       return;
     }
     if (password !== confirmation) {
@@ -824,13 +974,14 @@ class FootballHubPanel extends HTMLElement {
     };
     this._lmsActiveLeague = selectedLeagues[0].key;
     this._lmsAdminUnlocked = true;
+    this._lmsAdminPassword = String(password);
     localStorage.setItem("football_hub_lms_active_league", this._lmsActiveLeague);
     this._saveLms();
     if (status.competition_key !== this._lmsActiveLeague) this._setLeague(this._lmsActiveLeague);
     this._render();
-    if (this._lmsMode === "global") {
+    if (this._lmsMode === "global" || this._lmsMode === "private") {
       const published = await this._createLmsShare();
-      if (!published) {
+      if (!published && this._lmsMode === "global") {
         this._lmsCompetition = null;
         this._saveLms();
         this._render();
@@ -879,13 +1030,43 @@ class FootballHubPanel extends HTMLElement {
     this._render();
   }
 
-  _toggleLmsPaid(playerId) {
+  async _toggleLmsPaid(playerId) {
     if (!this._isLmsAdmin()) return;
     const player = this._lmsCompetition?.players?.find((item) => item.id === playerId);
     if (!player) return;
-    player.paid = !player.paid;
-    this._saveLms();
+    const previous = Boolean(player.paid);
+    player.paid = !previous;
+    this._saveLms(false);
     this._render();
+    const competition = this._lmsCompetition;
+    if (!competition?.shareId || (!competition.shareEditToken && !this._lmsAdminPassword)) {
+      player.paid = previous;
+      this._saveLms(false);
+      this._render();
+      window.alert("This payment was not saved. Reopen the shared game with its link and administrator password.");
+      return;
+    }
+    this._lmsShareBusy = true;
+    try {
+      const response = await fetch(`${LMS_SHARE_SERVICE}/api/competitions/${encodeURIComponent(competition.shareId)}`, {
+        method: "PATCH",
+        headers: {
+          "content-type": "application/json",
+          ...(competition.shareEditToken ? { "authorization": `Bearer ${competition.shareEditToken}` } : {}),
+          ...(this._lmsAdminPassword ? { "x-admin-password": this._lmsAdminPassword } : {}),
+        },
+        body: JSON.stringify({ action: "set-player-paid", playerId, paid: player.paid }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Payment status could not be shared");
+    } catch (error) {
+      player.paid = previous;
+      this._saveLms(false);
+      this._render();
+      window.alert(error?.message || "Payment status could not be shared.");
+    } finally {
+      this._lmsShareBusy = false;
+    }
   }
 
   _editLmsPlayerEmail(playerId) {
@@ -1129,7 +1310,7 @@ class FootballHubPanel extends HTMLElement {
     const roundFixtureGroups = this._lmsRoundFixtureGroups();
     const roundFixtureCount = roundFixtureGroups.reduce((total, league) => total + league.roundFixtures.length, 0);
     const emailServices = this._lmsEmailServices();
-    const selectedEmailService = String(competition?.emailNotifyService || "");
+    const selectedEmailService = String(competition?.emailNotifyService || "__auto__");
     const deadlineLocal = deadline.timestamp ? new Date(deadline.timestamp * 1000).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Waiting for fixture times";
     return `
       <section class="page-heading"><div><span class="eyebrow">SURVIVE EVERY ROUND</span><h2>Last Man Standing</h2></div>${competition ? `<div class="count-badge">${alive} remaining</div>` : ""}</section>
@@ -1137,6 +1318,8 @@ class FootballHubPanel extends HTMLElement {
         <button class="page-card lms-mode ${this._lmsMode === "private" ? "active" : ""}" data-lms-mode="private"><ha-icon icon="mdi:account-group-lock-outline"></ha-icon><strong>Private Competition</strong><span>Create a competition for friends and manage their weekly picks.</span></button>
         <button class="page-card lms-mode ${this._lmsMode === "global" ? "active" : ""}" data-lms-mode="global"><ha-icon icon="mdi:earth"></ha-icon><strong>Football Hub Global</strong><span>Free public points tournaments for Football Hub players worldwide.</span></button>
       </section>
+      <section class="page-card lms-share lms-external-organiser"><ha-icon icon="mdi:open-in-new"></ha-icon><div><span class="eyebrow">EXTERNAL LMS ORGANISER</span><strong>Create a private competition outside Home Assistant</strong><small>Open the standalone Football Hub LMS, then copy its competition and player links to share with friends.</small><a href="${LMS_SHARE_SERVICE}/organise" target="_blank" rel="noopener noreferrer">Football_hub_External</a></div><a class="button-link" href="${LMS_SHARE_SERVICE}/organise" target="_blank" rel="noopener noreferrer">Open organiser</a><button id="lms-copy-external-organiser"><ha-icon icon="mdi:content-copy"></ha-icon> Copy link</button></section>
+      ${this._lmsMode === "private" ? `<section class="page-card lms-remote-login"><ha-icon icon="mdi:devices"></ha-icon><div><span class="eyebrow">OPEN ON THIS DEVICE</span><strong>Open or switch to an existing private game</strong><small>Paste its competition or admin link and enter the administrator password. The game will sync between devices.</small></div><input id="lms-remote-game" autocomplete="off" placeholder="Paste competition link or ID here"><input id="lms-remote-password" type="password" autocomplete="current-password" placeholder="Administrator password"><button id="lms-remote-open">Open game</button></section>` : ""}
       ${this._lmsMode === "global" ? !competition ? `
         <section class="page-card lms-create"><div><span class="eyebrow">OFFICIAL FOOTBALL HUB GLOBAL</span><h2>Developer-controlled tournament</h2><p>Only the Football Hub developer can create and administer this official competition. Everyone else can join when entries are open.</p><a href="${LMS_SHARE_SERVICE}/lms/football-hub-global" target="_blank" rel="noopener noreferrer">Open official Global LMS page</a></div><div class="lms-form"><input id="lms-global-developer-key" type="password" autocomplete="off" placeholder="Private developer key" value="${this._escape(this._globalDeveloperKey)}"><input id="lms-name" maxlength="60" placeholder="Tournament name"></div><div class="lms-password-setup"><label><span>Administrator password</span><input id="lms-admin-password" type="password" minlength="4" autocomplete="new-password" placeholder="Create password"></label><label><span>Confirm password</span><input id="lms-admin-confirm" type="password" minlength="4" autocomplete="new-password" placeholder="Repeat password"></label></div><div class="lms-league-heading"><strong>Choose the leagues included</strong><span>Players can pick from every selected league</span></div><div class="lms-league-groups">${leagueCountries.map((country) => `<fieldset><legend>${this._escape(country)}</legend>${leagueCatalogue.filter((item) => item.country === country).map((item) => `<label><input type="checkbox" class="lms-league-check" value="${this._escape(item.key)}" ${item.key === status.competition_key ? "checked" : ""}><span>${this._escape(item.name)}</span></label>`).join("")}</fieldset>`).join("")}</div><button id="lms-create" class="lms-create-button">Create Official Global LMS</button></section>
       ` : `
@@ -1148,7 +1331,7 @@ class FootballHubPanel extends HTMLElement {
         <section class="page-card lms-league-switch"><label><span>Load league data</span><select id="lms-active-league">${(competition.leagues || []).map((league) => `<option value="${this._escape(league.key)}" ${league.key === selectedLmsLeague ? "selected" : ""}>${this._escape(league.country)} · ${this._escape(league.name)}</option>`).join("")}</select></label><button id="lms-settle">Check scores & award points</button></section>
         <section class="page-card lms-standings"><header><div><span class="eyebrow">GLOBAL LEADERBOARD</span><h2>Points table</h2></div><b>${competition.players.length} players</b></header><div class="lms-standings-table"><div class="lms-standings-row heading"><span>#</span><span>Player</span><span>Points</span><span>Current pick</span><span>Teams used</span><span>Round</span></div>${[...competition.players].sort((a,b) => Number(b.points || 0) - Number(a.points || 0) || String(a.name).localeCompare(String(b.name))).map((player,index) => `<div class="lms-standings-row through"><span>${index+1}</span><strong>${this._escape(player.name)}</strong><span><b>${Number(player.points || 0)} pts</b></span><span>${this._escape(player.picks?.[roundKey] || "Awaiting pick")}</span><span>${this._escape(Object.entries(player.picks || {}).map(([round,team]) => `R${round}: ${team}`).join(" · ") || "None")}</span><span>${competition.round}</span></div>`).join("") || `<div class="empty">Publish the tournament and share its link so players can join.</div>`}</div></section>
       ` : !competition ? `
-        <section class="page-card lms-create"><div><span class="eyebrow">NEW PRIVATE GAME</span><h2>Create your competition</h2><p>Win to survive. A draw or defeat eliminates the player, and a team cannot be selected twice.</p></div><div class="lms-form"><input id="lms-name" maxlength="60" placeholder="Competition name"><label class="lms-fee-input"><span>Entry fee</span><b>£</b><input id="lms-entry-fee" type="number" min="0" step="0.50" value="5"></label></div><div class="lms-password-setup"><label><span>Administrator password</span><input id="lms-admin-password" type="password" minlength="4" autocomplete="new-password" placeholder="Create password"></label><label><span>Confirm password</span><input id="lms-admin-confirm" type="password" minlength="4" autocomplete="new-password" placeholder="Repeat password"></label><small>Only the administrator can change players, picks or results.</small></div><div class="lms-league-heading"><strong>Choose the leagues included</strong><span>Tick one or more leagues</span></div><div class="lms-league-groups">${leagueCountries.map((country) => `<fieldset><legend>${this._escape(country)}</legend>${leagueCatalogue.filter((item) => item.country === country).map((item) => `<label><input type="checkbox" class="lms-league-check" value="${this._escape(item.key)}" ${item.key === status.competition_key ? "checked" : ""}><span>${this._escape(item.name)}</span></label>`).join("")}</fieldset>`).join("")}</div><button id="lms-create" class="lms-create-button">Create competition</button><small>Football Hub will use the selected leagues for team picks and results.</small></section>
+        <section class="page-card lms-create"><div><span class="eyebrow">NEW PRIVATE GAME</span><h2>Create your competition</h2><p>Win to survive. A draw or defeat eliminates the player, and a team cannot be selected twice.</p></div><div class="lms-form"><input id="lms-name" maxlength="60" placeholder="Competition name"><label class="lms-fee-input"><span>Entry fee</span><b>£</b><input id="lms-entry-fee" type="number" min="0" step="0.50" value="5"></label></div><div class="lms-password-setup"><label><span>Administrator password</span><input id="lms-admin-password" type="password" minlength="6" autocomplete="new-password" placeholder="Create password"></label><label><span>Confirm password</span><input id="lms-admin-confirm" type="password" minlength="6" autocomplete="new-password" placeholder="Repeat password"></label><small>Use this password with the competition link to manage the same game on another device.</small></div><div class="lms-league-heading"><strong>Choose the leagues included</strong><span>Tick one or more leagues</span></div><div class="lms-league-groups">${leagueCountries.map((country) => `<fieldset><legend>${this._escape(country)}</legend>${leagueCatalogue.filter((item) => item.country === country).map((item) => `<label><input type="checkbox" class="lms-league-check" value="${this._escape(item.key)}" ${item.key === status.competition_key ? "checked" : ""}><span>${this._escape(item.name)}</span></label>`).join("")}</fieldset>`).join("")}</div><button id="lms-create" class="lms-create-button">Create competition</button><small>Football Hub will use the selected leagues for team picks and results.</small></section>
       ` : `
         <section class="page-card lms-summary"><div><span class="eyebrow">PRIVATE COMPETITION · EDITION ${Number(competition.edition || 1)}</span><h2>${this._escape(competition.name)}</h2><p>${this._escape((competition.leagues || []).map((item) => item.name).join(" · ") || competition.competitionName)} · Round ${competition.round}</p></div><div class="lms-summary-stats"><span><b>${(competition.leagues || []).length || 1}</b> leagues</span><span><b>${competition.players.length}</b> players</span><span><b>${alive}</b> remaining</span><span class="lms-picked-total"><b>${pickedThisRound}/${alive}</b> selected</span>${adminUnlocked ? `<button id="lms-admin-lock"><ha-icon icon="mdi:lock-outline"></ha-icon> Lock admin</button><button id="lms-delete" class="danger">Delete</button>` : `<span class="lms-admin-status"><ha-icon icon="mdi:shield-lock-outline"></ha-icon> ${needsAdminPassword ? "Password setup required" : "Admin locked"}</span>`}</div></section>
         <section class="page-card lms-prize"><div><span class="eyebrow">PRIZE FUND</span><strong>£${prizeFund.toFixed(2)}</strong><small>${paidCount} entries${buyBackCount ? ` + ${buyBackCount} buy-back${buyBackCount === 1 ? "" : "s"}` : ""} × £${entryFee.toFixed(2)}${carriedPrize ? ` + £${carriedPrize.toFixed(2)} rollover` : ""}</small></div>${adminUnlocked ? `<label><span>Entry fee</span><b>£</b><input id="lms-edit-entry-fee" type="number" min="0" step="0.50" value="${entryFee.toFixed(2)}"></label><button id="lms-rollover"><ha-icon icon="mdi:cash-sync"></ha-icon> Rollover competition</button>` : `<span>${paidCount}/${competition.players.length} players paid</span>`}</section>
@@ -1246,6 +1429,59 @@ class FootballHubPanel extends HTMLElement {
     };
   }
 
+  _hydrateSharedPreferences() {
+    if (this._prefsHydrated) return;
+    const prefs = this._statusInfo().ui_preferences;
+    if (!prefs || typeof prefs !== "object" || !Object.keys(prefs).length) return;
+    this._hiddenLiveCountries = new Set(prefs.hiddenCountries || []);
+    this._hiddenLiveCompetitions = new Set(prefs.hiddenCompetitions || []);
+    this._hiddenLiveGenders = new Set(prefs.hiddenGenders || []);
+    this._favouriteLiveCompetitions = new Set(prefs.favouriteCompetitions || []);
+    this._liveDisplayMode = prefs.displayMode || this._liveDisplayMode;
+    this._liveStatusFilter = prefs.statusFilter || this._liveStatusFilter;
+    this._liveTimezone = prefs.timezone || this._liveTimezone;
+    if (typeof prefs.filtersOpen === "boolean") this._liveFiltersOpen = prefs.filtersOpen;
+    this._liveNotifications = { ...this._liveNotifications, ...(prefs.notifications || {}) };
+    this._prefsHydrated = true;
+  }
+
+  _saveSharedPreferences() {
+    const preferences = {
+      hiddenCountries: [...this._hiddenLiveCountries], hiddenCompetitions: [...this._hiddenLiveCompetitions],
+      hiddenGenders: [...this._hiddenLiveGenders], favouriteCompetitions: [...this._favouriteLiveCompetitions],
+      displayMode: this._liveDisplayMode, statusFilter: this._liveStatusFilter,
+      timezone: this._liveTimezone, filtersOpen: this._liveFiltersOpen, notifications: this._liveNotifications,
+    };
+    this._hass?.callService("football_hub", "save_ui_preferences", {
+      entry_id: this._statusInfo().config_entry_id || "", preferences: JSON.stringify(preferences),
+    }).catch(() => {});
+  }
+
+  _processLiveNotifications() {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    const enabled = this._liveNotifications || {};
+    if (!enabled.kickoff && !enabled.goals && !enabled.halftime && !enabled.fulltime) return;
+    const matches = this._attrs("matches_today").matches || [];
+    let previous = {};
+    try { previous = JSON.parse(localStorage.getItem("football_hub_notification_match_states") || "{}"); } catch (_error) {}
+    const next = {};
+    matches.forEach((match) => {
+      const id = String(match.fixture_id || `${match.home_team}-${match.away_team}`);
+      const state = { status: match.status_short, home: match.home_goals, away: match.away_goals };
+      next[id] = state;
+      const old = previous[id];
+      if (!old) return;
+      if (enabled.selectedClubOnly && this._selectedClub && ![match.home_team, match.away_team].includes(this._selectedClub)) return;
+      let title = "", body = `${match.home_team} ${this._score(match.home_goals)}–${this._score(match.away_goals)} ${match.away_team}`;
+      if (enabled.goals && (old.home !== state.home || old.away !== state.away)) title = "Goal update";
+      else if (enabled.halftime && old.status !== "HT" && state.status === "HT") title = "Half-time";
+      else if (enabled.fulltime && !["FT", "AET", "PEN"].includes(old.status) && ["FT", "AET", "PEN"].includes(state.status)) title = "Full-time";
+      else if (enabled.kickoff && ["NS", "TBD"].includes(old.status) && !["NS", "TBD"].includes(state.status)) title = "Kickoff";
+      if (title) new Notification(title, { body });
+    });
+    localStorage.setItem("football_hub_notification_match_states", JSON.stringify(next));
+  }
+
   _setCompetition(prefix) {
     this._selectedPrefix = prefix;
     localStorage.setItem("football_hub_selected_prefix", prefix);
@@ -1253,6 +1489,10 @@ class FootballHubPanel extends HTMLElement {
   }
 
   _setTab(tab) {
+    if (tab === "live" && this._activeTab !== "live") {
+      this._selectedLiveMatch = "";
+      localStorage.removeItem("football_hub_live_match");
+    }
     this._activeTab = tab;
     localStorage.setItem("football_hub_active_page", tab);
     this._render();
@@ -1594,6 +1834,7 @@ class FootballHubPanel extends HTMLElement {
       day: "numeric",
       month: "short",
       ...(includeTime ? { hour: "2-digit", minute: "2-digit" } : {}),
+      ...(this._liveTimezone !== "local" ? { timeZone: this._liveTimezone } : {}),
     }).format(date);
   }
 
@@ -1648,14 +1889,18 @@ class FootballHubPanel extends HTMLElement {
     if (!match) return `<div class="empty">No match data available.</div>`;
 
     const isResult = mode === "result";
+    const competitionText = this._matchText(match.league || match.competition) || "Football";
     const roundText = this._matchText(match.round) || "Fixture";
-    const statusText = this._matchText(match.status) || this._matchText(match.status_short);
+    const statusLabels = { NS: "Upcoming", TBD: "Time TBC", "1H": "Live · First half", HT: "Half-time", "2H": "Live · Second half", ET: "Extra-time", BT: "Extra-time break", P: "Penalties", FT: "Full-time", AET: "After extra-time", PEN: "After penalties", PST: "Postponed", CANC: "Cancelled", ABD: "Abandoned", SUSP: "Suspended", AWD: "Awarded", WO: "Walkover" };
+    const statusText = statusLabels[match.status_short] || this._matchText(match.status) || this._matchText(match.status_short);
     const score = isResult || match.status_short !== "NS"
       ? `<div class="match-score">${this._score(match.home_goals)} <span>–</span> ${this._score(match.away_goals)}</div>`
       : `<div class="match-time">${this._formatDate(match.kickoff)}</div>`;
+    const venueText = match.stadium || (!isResult ? "Venue TBC" : "");
 
     return `
       <article class="match-card">
+        <div class="match-competition"><ha-icon icon="mdi:trophy-outline"></ha-icon><strong>${this._escape(competitionText)}</strong></div>
         <div class="match-meta">
           <span>${this._escape(roundText)}</span>
           <span>${this._escape(statusText)}</span>
@@ -1671,10 +1916,11 @@ class FootballHubPanel extends HTMLElement {
             <strong>${this._escape(match.away_team || "Away")}</strong>
           </div>
         </div>
-        <div class="match-footer">
-          <span>${this._escape(match.stadium || "Venue TBC")}</span>
+        ${isResult && match.qualification?.text ? `<div class="match-qualification"><ha-icon icon="mdi:check-decagram"></ha-icon><strong>${this._escape(match.qualification.text)}</strong></div>` : ""}
+        ${venueText || match.city ? `<div class="match-footer">
+          <span>${this._escape(venueText)}</span>
           <span>${this._escape(match.city || "")}</span>
-        </div>
+        </div>` : ""}
       </article>
     `;
   }
@@ -2056,8 +2302,74 @@ class FootballHubPanel extends HTMLElement {
   }
 
   _livePage() {
+    this._hydrateSharedPreferences();
     const primary = this._attrs("live_match");
-    const matches = this._attrs("live_matches").matches || [];
+    const allLiveMatches = this._attrs("live_matches").matches || [];
+    const allTodayMatches = this._attrs("matches_today").matches || [];
+    const builtInCatalogue = Object.entries(FULL_COMPETITION_CATALOGUE).flatMap(([country, names]) => names.map((name) => ({ country, name })));
+    const providerCatalogue = this._attrs("competition_catalogue").competitions || [];
+    const catalogue = [...builtInCatalogue, ...(this._statusInfo().available_competitions || []), ...providerCatalogue].filter((item) => item?.name && item?.country);
+    const competitionName = (match) => this._matchText(match.league || match.competition) || "Other matches";
+    const catalogueCountries = new Map();
+    catalogue.forEach((item) => { if (!catalogueCountries.has(item.name)) catalogueCountries.set(item.name, new Set()); catalogueCountries.get(item.name).add(item.country); });
+    const countryCodes = { ENG:"England", SCO:"Scotland", WAL:"Wales", NIR:"Northern Ireland", IRL:"Ireland", GBR:"United Kingdom", USA:"United States", BRA:"Brazil", ARG:"Argentina", ESP:"Spain", GER:"Germany", ITA:"Italy", FRA:"France", NED:"Netherlands", POR:"Portugal", BEL:"Belgium", TUR:"Türkiye", MEX:"Mexico", CAN:"Canada", AUS:"Australia", JPN:"Japan", KOR:"South Korea", CHN:"China", IND:"India", AUT:"Austria", SUI:"Switzerland", DEN:"Denmark", SWE:"Sweden", NOR:"Norway", FIN:"Finland", POL:"Poland", CZE:"Czech Republic", GRE:"Greece", CRO:"Croatia", SRB:"Serbia", UKR:"Ukraine", RUS:"Russia", ROU:"Romania", BUL:"Bulgaria", HUN:"Hungary", ISR:"Israel", KSA:"Saudi Arabia", UAE:"United Arab Emirates", QAT:"Qatar", EGY:"Egypt", MAR:"Morocco", RSA:"South Africa", NGA:"Nigeria", COL:"Colombia", CHI:"Chile", URU:"Uruguay", PAR:"Paraguay", ECU:"Ecuador", PER:"Peru", VEN:"Venezuela", INT:"International", FIFA:"International", UEFA:"Europe" };
+    [...this._hiddenLiveCountries].forEach((savedCountry) => {
+      const migratedCountry = countryCodes[String(savedCountry).toUpperCase()];
+      if (migratedCountry && migratedCountry !== savedCountry) {
+        this._hiddenLiveCountries.delete(savedCountry);
+        this._hiddenLiveCountries.add(migratedCountry);
+      }
+    });
+    const countryName = (match) => {
+      const raw = this._matchText(match.country || match.country_code).trim();
+      if (!raw) return "International";
+      const code = raw.toUpperCase();
+      if (/^[A-Z]{3,4}$/.test(code)) {
+        const inferred = [...(catalogueCountries.get(competitionName(match)) || [])];
+        if (inferred.length === 1) return inferred[0];
+        return countryCodes[code] || "International";
+      }
+      return raw;
+    };
+    const genderName = (match) => /\b(women|women's|womens|female|feminine|femenina|frauen|dames)\b/i.test(`${competitionName(match)} ${match.home_team || ""} ${match.away_team || ""}`) ? "Women's" : "Men's";
+    const competitionCountries = new Map();
+    catalogue.forEach((item) => {
+      if (!competitionCountries.has(item.name)) competitionCountries.set(item.name, new Set());
+      competitionCountries.get(item.name).add(item.country);
+    });
+    [...allTodayMatches, ...allLiveMatches].forEach((match) => {
+      const competition = competitionName(match);
+      if (!competitionCountries.has(competition)) competitionCountries.set(competition, new Set());
+      competitionCountries.get(competition).add(countryName(match));
+    });
+    const competitionNames = [...competitionCountries.keys()].sort((a, b) => {
+      const favouriteDiff = Number(this._favouriteLiveCompetitions.has(b)) - Number(this._favouriteLiveCompetitions.has(a));
+      return favouriteDiff || a.localeCompare(b);
+    });
+    const countryNames = [...new Set([...catalogue.map((item) => item.country), ...allTodayMatches.map(countryName), ...allLiveMatches.map(countryName)])].sort((a, b) => a.localeCompare(b));
+    const statusGroup = (match) => ["FT", "AET", "PEN", "CANC", "PST", "ABD", "AWD", "WO"].includes(match.status_short) ? "completed" : ["1H", "HT", "2H", "ET", "BT", "P", "SUSP", "INT", "LIVE"].includes(match.status_short) ? "live" : "upcoming";
+    const competitionFilterKey = (match) => `${countryName(match)}|||${competitionName(match)}`;
+    const isVisible = (match) => !this._hiddenLiveCompetitions.has(competitionFilterKey(match)) && !this._hiddenLiveCompetitions.has(competitionName(match)) && !this._hiddenLiveCountries.has(countryName(match)) && !this._hiddenLiveGenders.has(genderName(match)) && (this._liveStatusFilter === "all" || statusGroup(match) === this._liveStatusFilter);
+    const matches = allLiveMatches.filter(isVisible);
+    const todayMatches = allTodayMatches.filter(isVisible);
+    const search = this._liveFilterSearch.trim().toLowerCase();
+    const filterChecks = (items, kind, hidden) => items.filter((name) => !search || name.toLowerCase().includes(search)).map((name) => `<label class="${kind === "competition" && this._favouriteLiveCompetitions.has(name) ? "favourite" : ""}"><input type="checkbox" data-live-filter-kind="${kind}" data-live-filter-value="${this._escape(name)}" ${kind === "competition" ? `data-live-filter-countries="${this._escape([...(competitionCountries.get(name) || [])].join("|"))}"` : ""} ${hidden.has(name) ? "" : "checked"}><span>${this._escape(name)}</span>${kind === "competition" ? `<button type="button" data-live-favourite="${this._escape(name)}" title="Pin competition">${this._favouriteLiveCompetitions.has(name) ? "★" : "☆"}</button>` : ""}</label>`).join("");
+    const filterActions = (kind) => `<span class="live-filter-actions"><button type="button" data-live-filter-action="all" data-live-filter-target="${kind}">Select all</button><button type="button" data-live-filter-action="none" data-live-filter-target="${kind}">Clear all</button></span>`;
+    const toolbar = `<section class="page-card live-toolbar"><label>Search filters<input id="live-filter-search" type="search" value="${this._escape(this._liveFilterSearch)}" placeholder="Country, league, cup or club"></label><label>Matches<select id="live-status-filter"><option value="all" ${this._liveStatusFilter === "all" ? "selected" : ""}>All today</option><option value="upcoming" ${this._liveStatusFilter === "upcoming" ? "selected" : ""}>Upcoming only</option><option value="live" ${this._liveStatusFilter === "live" ? "selected" : ""}>Live only</option><option value="completed" ${this._liveStatusFilter === "completed" ? "selected" : ""}>Completed only</option></select></label><label>Display<select id="live-display-mode"><option value="cards" ${this._liveDisplayMode === "cards" ? "selected" : ""}>Cards</option><option value="compact" ${this._liveDisplayMode === "compact" ? "selected" : ""}>Compact list</option></select></label><label>Timezone<select id="live-timezone"><option value="local" ${this._liveTimezone === "local" ? "selected" : ""}>Home Assistant / device</option><option value="Europe/London" ${this._liveTimezone === "Europe/London" ? "selected" : ""}>UK</option><option value="UTC" ${this._liveTimezone === "UTC" ? "selected" : ""}>UTC</option><option value="Europe/Paris" ${this._liveTimezone === "Europe/Paris" ? "selected" : ""}>Central Europe</option><option value="America/New_York" ${this._liveTimezone === "America/New_York" ? "selected" : ""}>US Eastern</option></select></label><button type="button" id="football-hub-refresh"><ha-icon icon="mdi:refresh"></ha-icon> Refresh</button></section>`;
+    const countryCompetitionFilters = countryNames.filter((country) => !search || country.toLowerCase().includes(search) || competitionNames.some((competition) => competitionCountries.get(competition)?.has(country) && competition.toLowerCase().includes(search))).map((country) => {
+      const competitions = competitionNames.filter((competition) => competitionCountries.get(competition)?.has(country) && (!search || country.toLowerCase().includes(search) || competition.toLowerCase().includes(search)));
+      const countryChecked = !this._hiddenLiveCountries.has(country);
+      return `<details class="country-filter-tree"><summary><label><input type="checkbox" data-live-filter-kind="country" data-live-filter-value="${this._escape(country)}" ${countryChecked ? "checked" : ""}><strong>${this._escape(this._displayCountry(country))}</strong></label><span>${competitions.length} competitions</span></summary><div class="live-filter-options">${competitions.map((competition) => { const key = `${country}|||${competition}`; return `<label class="${this._favouriteLiveCompetitions.has(competition) ? "favourite" : ""}"><input type="checkbox" data-live-filter-kind="competition" data-live-filter-value="${this._escape(key)}" data-live-filter-countries="${this._escape(country)}" ${this._hiddenLiveCompetitions.has(key) || this._hiddenLiveCompetitions.has(competition) || !countryChecked ? "" : "checked"}><span>${this._escape(competition)}</span><button type="button" data-live-favourite="${this._escape(competition)}" title="Pin competition">${this._favouriteLiveCompetitions.has(competition) ? "★" : "☆"}</button></label>`; }).join("")}</div></details>`;
+    }).join("");
+    const selectedCompetitionCount = [...competitionCountries.entries()].reduce((total, [competition, countries]) => total + [...countries].filter((country) => !this._hiddenLiveCountries.has(country) && !this._hiddenLiveCompetitions.has(`${country}|||${competition}`) && !this._hiddenLiveCompetitions.has(competition)).length, 0);
+    const liveFilters = `${toolbar}<details id="live-filter-panel" class="page-card live-competition-filter live-filter-panel" ${this._liveFiltersOpen ? "open" : ""}><summary><div><span class="eyebrow">MATCH FILTERS</span><h2>Countries and competitions</h2></div><span class="live-filter-summary-count">${selectedCompetitionCount} selected <ha-icon icon="mdi:chevron-down"></ha-icon></span></summary><div class="live-filter-panel-body"><p>Expand a country to choose its leagues and cups. Favourites are pinned first and settings synchronise through Home Assistant.</p><div class="live-filter-groups"><details open><summary>Men's and women's football ${filterActions("gender")}</summary><div class="live-filter-options">${filterChecks(["Men's", "Women's"], "gender", this._hiddenLiveGenders)}</div></details>${countryCompetitionFilters}</div></div></details>`;
+    const statusInfo = this._statusInfo();
+    const notifyChecks = [["kickoff", "Kickoff"], ["goals", "Goals"], ["halftime", "Half-time"], ["fulltime", "Full-time"], ["selectedClubOnly", "Selected club only"]].map(([key, label]) => `<label><input type="checkbox" data-live-notification="${key}" ${this._liveNotifications[key] ? "checked" : ""}><span>${label}</span></label>`).join("");
+    const liveExtras = `<section class="live-utility-grid compact"><article class="page-card live-alerts-compact"><header><span class="eyebrow">BROWSER ALERTS</span><strong>Match notifications</strong></header><div class="live-alert-options">${notifyChecks}</div></article><article class="page-card live-diagnostics compact"><header><span class="eyebrow">DATA STATUS</span><strong>${this._escape(statusInfo.state)}</strong></header><div><span>Matches</span><strong>${allTodayMatches.length}</strong></div><div><span>Live</span><strong>${allLiveMatches.length}</strong></div><div><span>Competitions</span><strong>${competitionNames.length}</strong></div><div><span>Updated</span><strong>${this._escape(statusInfo.last_updated ? this._formatDate(statusInfo.last_updated) : "Waiting")}</strong></div></article></section>`;
+    const grouped = new Map();
+    todayMatches.forEach((match) => { const key = `${countryName(match)}|||${competitionName(match)}`; if (!grouped.has(key)) grouped.set(key, []); grouped.get(key).push(match); });
+    const groupedMatches = [...grouped.entries()].sort(([a], [b]) => { const ac = a.split("|||")[1], bc = b.split("|||")[1]; return Number(this._favouriteLiveCompetitions.has(bc)) - Number(this._favouriteLiveCompetitions.has(ac)) || a.localeCompare(b); }).map(([key, games]) => { const [country, competition] = key.split("|||"); return `<article class="live-schedule-group"><header><div><span>${this._escape(this._displayCountry(country))}</span><strong>${this._escape(competition)}</strong></div><span>${games.length} match${games.length === 1 ? "" : "es"}</span></header><div class="match-list ${this._liveDisplayMode === "compact" ? "compact" : ""}">${games.map((match) => this._matchCard(match, statusGroup(match) === "completed" ? "result" : undefined)).join("")}</div></article>`; }).join("");
+    const todaySection = `<section class="section"><div class="section-title-row"><div><span class="eyebrow">TODAY'S WORLDWIDE SCHEDULE</span><h2>Today's fixtures and results</h2></div><span class="pill">${todayMatches.length} of ${allTodayMatches.length} shown</span></div>${groupedMatches || `<div class="empty">No matches are shown. Change the filters above to add them.</div>`}</section>`;
     const leagueTeams = [...new Set((this._attrs("standings").table || [])
       .map((row) => row.team || row.team_name)
       .filter(Boolean))].sort((a, b) => a.localeCompare(b));
@@ -2072,6 +2384,7 @@ class FootballHubPanel extends HTMLElement {
 
     if (!primary.is_live) {
       return `
+        ${liveFilters}${liveExtras}
         <section class="page-card live-control-empty">
           <div><span class="live-kicker">⚽ MATCHDAY CONTROL ROOM</span><h2>Live Centre</h2><p>The feed updates automatically when a match begins.</p></div>
           ${teamOptions()}
@@ -2081,19 +2394,23 @@ class FootballHubPanel extends HTMLElement {
           <h2>Current live feed</h2>
           <div class="match-list">${matches.length ? matches.map((m) => this._matchCard(m, "result")).join("") : ""}</div>
         </section>
+        ${todaySection}
       `;
     }
 
     const liveMatches = matches.length ? matches : [primary];
     const matchId = (match, index = 0) => String(match.fixture_id ?? match.id ?? `${match.home_team}-${match.away_team}-${index}`);
     const availableIds = liveMatches.map((match, index) => matchId(match, index));
-    const selectedTeamMatchIndex = liveMatches.findIndex((match) =>
-      match.home_team === this._selectedLiveTeam || match.away_team === this._selectedLiveTeam
-    );
-    if (!availableIds.includes(this._selectedLiveMatch)) {
-      this._selectedLiveMatch = selectedTeamMatchIndex >= 0
-        ? availableIds[selectedTeamMatchIndex]
-        : (availableIds[0] || "");
+    if (!availableIds.includes(this._selectedLiveMatch)) this._selectedLiveMatch = "";
+    const totalLiveGoals = liveMatches.reduce((total, match) => {
+      const home = Number(match.home_goals);
+      const away = Number(match.away_goals);
+      return total + (Number.isFinite(home) ? home : 0) + (Number.isFinite(away) ? away : 0);
+    }, 0);
+    if (!this._selectedLiveMatch) {
+      return `${liveFilters}${liveExtras}
+        <section class="page-card live-control-hero"><div><span class="live-kicker">⚽ MATCHDAY CONTROL ROOM</span><h2>Live Centre <b>LIVE</b></h2><p>Select any match below to open its full live details.</p></div>${teamOptions(this._selectedLiveTeam)}<div class="live-control-stats"><div><strong>${liveMatches.length}</strong><span>Live now</span></div><div><strong>${totalLiveGoals}</strong><span>Goals</span></div><div><strong>0</strong><span>Selected</span></div></div></section>
+        <section class="section country-live-section"><div class="page-heading"><div><span class="eyebrow">LIVE AROUND THE WORLD</span><h2>All live scores</h2></div><div class="count-badge">${liveMatches.length} live</div></div>${this._liveCompetitionGroups(liveMatches, "")}</section>${todaySection}`;
     }
     const selectedIndex = Math.max(0, availableIds.indexOf(this._selectedLiveMatch));
     const selectedBasic = liveMatches[selectedIndex] || primary;
@@ -2104,19 +2421,14 @@ class FootballHubPanel extends HTMLElement {
     const events = selectedIsPrimary ? (primary.events || []) : (selectedBasic.events || []);
     const stats = selectedIsPrimary ? (primary.statistics || []) : (selectedBasic.statistics || []);
     const lineups = selectedIsPrimary ? (primary.lineups || []) : (selectedBasic.lineups || []);
-    const totalLiveGoals = liveMatches.reduce((total, match) => {
-      const home = Number(match.home_goals);
-      const away = Number(match.away_goals);
-      return total + (Number.isFinite(home) ? home : 0) + (Number.isFinite(away) ? away : 0);
-    }, 0);
-
     return `
+      ${liveFilters}${liveExtras}
       <section class="page-card live-control-hero">
         <div><span class="live-kicker">⚽ MATCHDAY CONTROL ROOM</span><h2>Live Centre <b>LIVE</b></h2><p>Scores, incidents, statistics and team sheets update automatically.</p></div>
         ${teamOptions(this._selectedLiveTeam || live.home_team)}
         <div class="live-control-stats"><div><strong>${liveMatches.length}</strong><span>Live now</span></div><div><strong>${totalLiveGoals}</strong><span>Goals</span></div><div><strong>${events.length}</strong><span>Selected events</span></div></div>
       </section>
-      <section class="live-centre-card" id="selected-live-match">
+      <section class="live-centre-card" id="selected-live-match"><button type="button" id="live-close-match" class="live-close-match"><ha-icon icon="mdi:arrow-left"></ha-icon> All live matches</button>
         <div class="live-banner"><span class="pulse"></span> LIVE · ${this._escape(
           live.elapsed ? `${String(live.elapsed).replace(/'+$/, "")}'` : (live.status_short || "")
         )}</div>
@@ -2151,19 +2463,30 @@ class FootballHubPanel extends HTMLElement {
         <article class="page-card lineup-panel"><h2>Starting line-ups</h2>${this._lineupCards(lineups)}</article>
       </section>
       <section class="section country-live-section"><div class="page-heading"><div><span class="eyebrow">LIVE AROUND THE WORLD</span><h2>All live scores</h2></div><div class="count-badge">${liveMatches.length} live</div></div>${this._liveCompetitionGroups(liveMatches, this._selectedLiveMatch)}</section>
+      ${todaySection}
     `;
   }
 
   _fixturesPage() {
     const fixtures = this._attrs("fixtures");
-    const today = this._attrs("matches_today").matches || [];
-    const allFixtures = fixtures.fixtures || fixtures.next_5 || [];
+    const liveStatuses = new Set(["LIVE", "1H", "HT", "2H", "ET", "BT", "P", "SUSP", "INT"]);
+    const completedStatuses = new Set(["FT", "AET", "PEN", "AWD", "WO", "CANC", "ABD"]);
+    const statusOf = (match) => String(match.status_short || match.status || "NS").toUpperCase();
+    const today = (this._attrs("matches_today").matches || []).filter((match) => !liveStatuses.has(statusOf(match)) && !completedStatuses.has(statusOf(match)));
+    const allFixtures = (fixtures.fixtures || fixtures.next_5 || []).filter((match) => !liveStatuses.has(statusOf(match)) && !completedStatuses.has(statusOf(match)));
     const standingsTeams = (this._attrs("standings").table || [])
       .map((row) => row.team || row.team_name)
       .filter(Boolean);
-    const fixtureTeams = [...new Set(
-      allFixtures.flatMap((match) => [match.home_team, match.away_team]).filter(Boolean)
-    )];
+    const clubsById = new Map();
+    allFixtures.forEach((match) => [
+      [match.home_team_id, match.home_team],
+      [match.away_team_id, match.away_team],
+    ].forEach(([id, name]) => {
+      if (!name) return;
+      const key = id == null ? `name:${String(name).toLowerCase()}` : `id:${id}`;
+      if (!clubsById.has(key) || String(name).length > String(clubsById.get(key)).length) clubsById.set(key, name);
+    }));
+    const fixtureTeams = [...new Set(clubsById.values())];
     const teams = (fixtureTeams.length > 10 ? fixtureTeams : [...new Set([...fixtureTeams, ...standingsTeams])])
       .sort((a, b) => a.localeCompare(b));
     const normaliseTeam = (name) => String(name || "").trim().toLowerCase();
@@ -2187,17 +2510,9 @@ class FootballHubPanel extends HTMLElement {
       </section>
       <div class="fixture-filter">
         <label for="fixture-team-select">Show fixtures for</label>
-        <select id="fixture-team-select" aria-label="Choose a team">
-          <option value="__all__" ${this._selectedFixtureTeam === "__all__" ? "selected" : ""}>All fixtures (${this._escape(allFixtures.length)})</option>
-          <option value="">Next 6 fixtures</option>
-          ${teams.map((team) => {
-            const gameCount = allFixtures.filter((match) =>
-              normaliseTeam(match.home_team) === normaliseTeam(team) ||
-              normaliseTeam(match.away_team) === normaliseTeam(team)
-            ).length;
-            return `<option value="${this._escape(team)}" ${team === this._selectedFixtureTeam ? "selected" : ""}>${this._escape(team)} (${gameCount} games)</option>`;
-          }).join("")}
-        </select>
+        <input id="fixture-team-select" type="search" list="fixture-team-options" value="${this._escape(["__all__", ""].includes(this._selectedFixtureTeam) ? "" : this._selectedFixtureTeam)}" placeholder="Search for a club" aria-label="Search for a team">
+        <datalist id="fixture-team-options">${teams.map((team) => `<option value="${this._escape(team)}"></option>`).join("")}</datalist>
+        <div><button type="button" data-fixture-team-quick="__all__">All fixtures (${this._escape(allFixtures.length)})</button><button type="button" data-fixture-team-quick="">Next 6</button></div>
       </div>
       ${
         today.length
@@ -2226,7 +2541,8 @@ class FootballHubPanel extends HTMLElement {
 
   _resultsPage() {
     const attrs = this._attrs("results");
-    const results = attrs.latest_5 || [];
+    const completedStatuses = new Set(["FT", "AET", "PEN", "AWD", "WO", "CANC", "ABD"]);
+    const results = (attrs.latest_5 || []).filter((match) => completedStatuses.has(String(match.status_short || match.status || "").toUpperCase()));
     const rawTotal = attrs.total_results;
     const totalResults = rawTotal && typeof rawTotal === "object"
       ? rawTotal.total ?? rawTotal.count ?? rawTotal.value ?? results.length
@@ -2348,7 +2664,7 @@ class FootballHubPanel extends HTMLElement {
   }
 
   _myClubPage() {
-    const club = this._selectedClub;
+    let club = this._selectedClub;
     const favourites = Array.isArray(this._statusInfo().favourite_clubs)
       ? this._statusInfo().favourite_clubs
       : [];
@@ -2402,11 +2718,28 @@ class FootballHubPanel extends HTMLElement {
       if (!Number.isFinite(amount) || amount <= 0) return "";
       return new Intl.NumberFormat(this._language || "en", { style: "currency", currency: "EUR", notation: "compact", maximumFractionDigits: 1 }).format(amount);
     };
-    const teams = [...new Set([
-      this._selectedClub,
-      ...table.map((row) => row.team || row.team_name),
-      ...fixtures.flatMap((match) => [match.home_team, match.away_team]),
-    ].filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    const selectorClubs = new Map();
+    const addSelectorClub = (id, name) => {
+      if (!name) return;
+      const key = id == null ? `name:${String(name).toLowerCase()}` : `id:${id}`;
+      if (!selectorClubs.has(key) || String(name).length > String(selectorClubs.get(key)).length) selectorClubs.set(key, name);
+    };
+    table.forEach((row) => addSelectorClub(row.team_id || row.id, row.team || row.team_name));
+    fixtures.forEach((match) => {
+      addSelectorClub(match.home_team_id, match.home_team);
+      addSelectorClub(match.away_team_id, match.away_team);
+    });
+    const canonicalSelection = club && [...selectorClubs.values()].find((name) => {
+      const selected = String(club).trim().toLowerCase();
+      const candidate = String(name).trim().toLowerCase();
+      return candidate === selected || candidate.startsWith(`${selected} `);
+    });
+    if (canonicalSelection) {
+      club = canonicalSelection;
+      this._selectedClub = canonicalSelection;
+      localStorage.setItem("football_hub_my_club", canonicalSelection);
+    } else if (club) addSelectorClub(null, club);
+    const teams = [...new Set(selectorClubs.values())].sort((a, b) => a.localeCompare(b));
 
     const clubFixtures = fixtures.filter((match) => match.home_team === club || match.away_team === club);
     const clubResults = results.filter((match) => match.home_team === club || match.away_team === club);
@@ -2429,10 +2762,8 @@ class FootballHubPanel extends HTMLElement {
       <section class="page-card live-picker">
         <div class="live-picker-control">
           <label for="my-club-select">${this._t("chooseClub")}</label>
-          <select id="my-club-select" aria-label="Choose your club">
-            <option value="">Select a team</option>
-            ${teams.map((team) => `<option value="${this._escape(team)}" ${team === club ? "selected" : ""}>${this._escape(team)}</option>`).join("")}
-          </select>
+          <input id="my-club-select" type="search" list="my-club-options" value="${this._escape(club || "")}" placeholder="Search for a club" aria-label="Search for your club">
+          <datalist id="my-club-options">${teams.map((team) => `<option value="${this._escape(team)}"></option>`).join("")}</datalist>
         </div>
         <div class="favourite-club-list">
           <strong>My Clubs (${favourites.length}/5)</strong>
@@ -2500,21 +2831,30 @@ class FootballHubPanel extends HTMLElement {
     const selectedCupKey = this._pendingCup || cupData.competition_key || "";
     const activeCup = catalogue.find((item) => item.key === selectedCupKey);
     const cupDataReady = Boolean(activeCup && cupData.competition_key === activeCup.key && !this._pendingCup);
-    const fixtures = cupDataReady && Array.isArray(cupData.fixtures) ? cupData.fixtures : [];
-    const results = cupDataReady && Array.isArray(cupData.results) ? cupData.results : [];
+    const liveStatuses = new Set(["LIVE", "1H", "HT", "2H", "ET", "BT", "P", "SUSP", "INT"]);
+    const completedStatuses = new Set(["FT", "AET", "PEN", "AWD", "WO", "CANC", "ABD"]);
+    const cupStatus = (match) => String(match.status_short || match.status || "NS").toUpperCase();
+    const fixtures = cupDataReady && Array.isArray(cupData.fixtures) ? cupData.fixtures.filter((match) => !liveStatuses.has(cupStatus(match)) && !completedStatuses.has(cupStatus(match))) : [];
+    const live = cupDataReady && Array.isArray(cupData.live) ? cupData.live.filter((match) => liveStatuses.has(cupStatus(match))) : [];
+    const cupMatchKey = (match) => String(match.fixture_id ?? match.id ?? `${match.home_team}-${match.away_team}-${match.timestamp || ""}`);
+    const allCupFixtures = [...new Map(fixtures.map((match) => [cupMatchKey(match), match])).values()]
+      .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+    const results = cupDataReady && Array.isArray(cupData.results) ? cupData.results.filter((match) => completedStatuses.has(cupStatus(match))) : [];
     const table = cupDataReady && Array.isArray(cupData.table) ? cupData.table : [];
     const scorers = cupDataReady && Array.isArray(cupData.top_scorers) ? cupData.top_scorers : [];
     let cupContent = `<article class="page-card"><div class="empty">Choose a cup competition to load its data.</div></article>`;
     if (activeCup && !cupDataReady) {
       cupContent = `<article class="page-card"><div class="empty">Loading ${this._escape(activeCup.name)} data…</div></article>`;
     } else if (activeCup && this._cupView === "fixtures") {
-      cupContent = `<section class="section"><h2>${this._escape(activeCup.name)} fixtures</h2><div class="match-list">${fixtures.length ? fixtures.map((match) => this._matchCard(match)).join("") : `<div class="empty">No cup fixtures are available yet.</div>`}</div></section>`;
+      cupContent = `<section class="section"><h2>${this._escape(activeCup.name)} fixtures</h2><p>Upcoming matches only. In-progress matches move to Live automatically.</p><div class="match-list">${allCupFixtures.length ? allCupFixtures.map((match) => this._matchCard(match)).join("") : `<div class="empty">No cup fixtures are available yet.</div>`}</div></section>`;
+    } else if (activeCup && this._cupView === "live") {
+      cupContent = `<section class="section"><h2>${this._escape(activeCup.name)} live matches</h2><div class="match-list">${live.length ? live.map((match) => this._matchCard(match, "result")).join("") : `<div class="empty">No matches from this cup are live right now.</div>`}</div></section>`;
     } else if (activeCup && this._cupView === "results") {
       cupContent = `<section class="section"><h2>${this._escape(activeCup.name)} results</h2><div class="match-list">${results.length ? results.map((match) => this._matchCard(match, "result")).join("") : `<div class="empty">No cup results are available yet.</div>`}</div></section>`;
     } else if (activeCup && this._cupView === "table") {
       cupContent = `<section class="page-card cup-table"><h2>${activeCup.has_table ? "Table / phase standings" : "Knockout competition"}</h2>${activeCup.has_table ? this._tableRows(table) : `<div class="empty">This competition uses knockout rounds, so follow it through Fixtures and Results.</div>`}</section>`;
     } else if (activeCup) {
-      cupContent = `<section class="dashboard-grid cup-overview"><article class="stat-card"><div class="card-heading"><span>Competition</span></div><div class="big-stat cup-name">${this._escape(activeCup.name)}</div><div class="stat-label">${this._escape(activeCup.country)}</div></article><article class="stat-card"><div class="card-heading"><span>Matches</span></div><div class="big-stat">${fixtures.length + results.length}</div><div class="stat-label">${fixtures.length} upcoming · ${results.length} completed</div></article><article class="list-card cup-fixtures-card"><div class="card-heading"><span>Next fixtures</span><button class="text-button" data-cup-view="fixtures">View all</button></div><div class="match-list">${fixtures.length ? fixtures.slice(0, 3).map((match) => this._matchCard(match)).join("") : `<div class="empty">No upcoming fixtures.</div>`}</div></article><article class="list-card cup-scorers-card"><div class="card-heading"><span>Top scorers</span></div>${this._playerRows(scorers, "goals")}</article></section>`;
+      cupContent = `<section class="dashboard-grid cup-overview"><article class="stat-card"><div class="card-heading"><span>Competition</span></div><div class="big-stat cup-name">${this._escape(activeCup.name)}</div><div class="stat-label">${this._escape(activeCup.country)}</div></article><article class="stat-card"><div class="card-heading"><span>Matches</span></div><div class="big-stat">${fixtures.length + live.length + results.length}</div><div class="stat-label">${fixtures.length} upcoming · ${live.length} live · ${results.length} completed</div></article><article class="list-card cup-fixtures-card"><div class="card-heading"><span>Latest results</span><button class="text-button" data-cup-view="results">View all</button></div><div class="match-list">${results.length ? results.slice(0, 5).map((match) => this._matchCard(match, "result")).join("") : `<div class="empty">No completed matches yet.</div>`}</div></article><article class="list-card cup-scorers-card"><div class="card-heading"><span>Top scorers</span></div>${this._playerRows(scorers, "goals")}</article></section>`;
     }
 
     return `
@@ -2541,7 +2881,7 @@ class FootballHubPanel extends HTMLElement {
       ${activeCup ? `
         <section class="section cup-data">
           <div class="section-title-row"><div><span class="eyebrow">SELECTED COMPETITION</span><h2>${this._escape(activeCup.name)}</h2></div><span class="pill">${this._escape(activeCup.country)}</span></div>
-          <nav class="cup-tabs"><button data-cup-view="overview" class="${this._cupView === "overview" ? "active" : ""}">Overview</button><button data-cup-view="fixtures" class="${this._cupView === "fixtures" ? "active" : ""}">Fixtures</button><button data-cup-view="results" class="${this._cupView === "results" ? "active" : ""}">Results</button><button data-cup-view="table" class="${this._cupView === "table" ? "active" : ""}">Table</button></nav>
+          <nav class="cup-tabs"><button data-cup-view="overview" class="${this._cupView === "overview" ? "active" : ""}">Overview</button><button data-cup-view="live" class="${this._cupView === "live" ? "active" : ""}">Live (${live.length})</button><button data-cup-view="fixtures" class="${this._cupView === "fixtures" ? "active" : ""}">Fixtures (${allCupFixtures.length})</button><button data-cup-view="results" class="${this._cupView === "results" ? "active" : ""}">Results (${results.length})</button><button data-cup-view="table" class="${this._cupView === "table" ? "active" : ""}">Table</button></nav>
           ${cupContent}
           ${false ? `
           ${!cupDataReady ? `<article class="page-card"><div class="empty">Loading ${this._escape(activeCup.name)} data…</div></article>` : ""}
@@ -2717,8 +3057,9 @@ class FootballHubPanel extends HTMLElement {
     });
 
     this.shadowRoot.querySelector("#fixture-team-select")?.addEventListener("change", (event) => {
-      this._setFixtureTeam(event.target.value);
+      this._setFixtureTeam(event.target.value || "__all__");
     });
+    this.shadowRoot.querySelectorAll("[data-fixture-team-quick]").forEach((button) => button.addEventListener("click", () => this._setFixtureTeam(button.dataset.fixtureTeamQuick)));
 
     this.shadowRoot.querySelectorAll("[data-fixture-page]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -2745,6 +3086,11 @@ class FootballHubPanel extends HTMLElement {
           fixture_id: this._selectedLiveMatch,
         }).catch(() => {});
       });
+    });
+    this.shadowRoot.querySelector("#live-close-match")?.addEventListener("click", () => {
+      this._selectedLiveMatch = "";
+      localStorage.removeItem("football_hub_live_match");
+      this._render();
     });
 
     this.shadowRoot.querySelector("#my-club-select")?.addEventListener("change", (event) => {
@@ -2798,6 +3144,52 @@ class FootballHubPanel extends HTMLElement {
       });
     });
 
+    this.shadowRoot.querySelectorAll("[data-live-filter-kind]").forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const kind = checkbox.dataset.liveFilterKind;
+        const value = checkbox.dataset.liveFilterValue;
+        const filters = kind === "country" ? this._hiddenLiveCountries : kind === "gender" ? this._hiddenLiveGenders : this._hiddenLiveCompetitions;
+        if (checkbox.checked) filters.delete(value);
+        else filters.add(value);
+        if (kind === "competition" && checkbox.checked && value.includes("|||")) filters.delete(value.split("|||").slice(1).join("|||"));
+        if (kind === "country") {
+          this.shadowRoot.querySelectorAll('[data-live-filter-kind="competition"]').forEach((competitionCheckbox) => {
+            const countries = String(competitionCheckbox.dataset.liveFilterCountries || "").split("|");
+            // Only link competitions belonging exclusively to this country.
+            // Worldwide labels such as "Friendlies" must remain independent.
+            if (countries.length !== 1 || !countries.includes(value)) return;
+            competitionCheckbox.checked = checkbox.checked;
+            const competition = competitionCheckbox.dataset.liveFilterValue;
+            if (checkbox.checked) this._hiddenLiveCompetitions.delete(competition);
+            else this._hiddenLiveCompetitions.add(competition);
+          });
+          localStorage.setItem("football_hub_hidden_live_competitions", JSON.stringify([...this._hiddenLiveCompetitions]));
+        }
+        const storageKey = kind === "country" ? "football_hub_hidden_live_countries" : kind === "gender" ? "football_hub_hidden_live_genders" : "football_hub_hidden_live_competitions";
+        localStorage.setItem(storageKey, JSON.stringify([...filters]));
+        this._saveSharedPreferences();
+        this._render();
+      });
+    });
+
+    this.shadowRoot.querySelector("#live-filter-search")?.addEventListener("input", (event) => {
+      this._liveFilterSearch = event.target.value;
+      this._render();
+      requestAnimationFrame(() => { const input = this.shadowRoot.querySelector("#live-filter-search"); input?.focus(); input?.setSelectionRange(input.value.length, input.value.length); });
+    });
+    this.shadowRoot.querySelector("#live-filter-panel")?.addEventListener("toggle", (event) => {
+      this._liveFiltersOpen = event.currentTarget.open;
+      localStorage.setItem("football_hub_live_filters_open", String(this._liveFiltersOpen));
+      this._saveSharedPreferences();
+    });
+    this.shadowRoot.querySelector("#live-status-filter")?.addEventListener("change", (event) => { this._liveStatusFilter = event.target.value; localStorage.setItem("football_hub_live_status_filter", this._liveStatusFilter); this._saveSharedPreferences(); this._render(); });
+    this.shadowRoot.querySelector("#live-display-mode")?.addEventListener("change", (event) => { this._liveDisplayMode = event.target.value; localStorage.setItem("football_hub_live_display_mode", this._liveDisplayMode); this._saveSharedPreferences(); this._render(); });
+    this.shadowRoot.querySelector("#live-timezone")?.addEventListener("change", (event) => { this._liveTimezone = event.target.value; localStorage.setItem("football_hub_live_timezone", this._liveTimezone); this._saveSharedPreferences(); this._render(); });
+    this.shadowRoot.querySelector("#football-hub-refresh")?.addEventListener("click", async (event) => { event.currentTarget.disabled = true; await this._hass?.callService("football_hub", "refresh", { entry_id: this._statusInfo().config_entry_id || "" }).catch(() => {}); setTimeout(() => this._render(), 800); });
+    this.shadowRoot.querySelectorAll("[data-live-favourite]").forEach((button) => button.addEventListener("click", (event) => { event.preventDefault(); event.stopPropagation(); const name = button.dataset.liveFavourite; if (this._favouriteLiveCompetitions.has(name)) this._favouriteLiveCompetitions.delete(name); else this._favouriteLiveCompetitions.add(name); localStorage.setItem("football_hub_favourite_live_competitions", JSON.stringify([...this._favouriteLiveCompetitions])); this._saveSharedPreferences(); this._render(); }));
+    this.shadowRoot.querySelectorAll("[data-live-filter-action]").forEach((button) => button.addEventListener("click", (event) => { event.preventDefault(); const target = button.dataset.liveFilterTarget; const checked = button.dataset.liveFilterAction === "all"; this.shadowRoot.querySelectorAll(`[data-live-filter-kind="${target}"]`).forEach((input) => { input.checked = checked; const filters = target === "country" ? this._hiddenLiveCountries : target === "gender" ? this._hiddenLiveGenders : this._hiddenLiveCompetitions; if (checked) filters.delete(input.dataset.liveFilterValue); else filters.add(input.dataset.liveFilterValue); }); localStorage.setItem(target === "country" ? "football_hub_hidden_live_countries" : target === "gender" ? "football_hub_hidden_live_genders" : "football_hub_hidden_live_competitions", JSON.stringify([...(target === "country" ? this._hiddenLiveCountries : target === "gender" ? this._hiddenLiveGenders : this._hiddenLiveCompetitions)])); this._saveSharedPreferences(); this._render(); }));
+    this.shadowRoot.querySelectorAll("[data-live-notification]").forEach((input) => input.addEventListener("change", async () => { this._liveNotifications[input.dataset.liveNotification] = input.checked; if (input.checked && "Notification" in window && Notification.permission === "default") await Notification.requestPermission(); localStorage.setItem("football_hub_live_notifications", JSON.stringify(this._liveNotifications)); this._saveSharedPreferences(); }));
+
     this.shadowRoot.querySelectorAll("[data-transfer-view]").forEach((button) => {
       button.addEventListener("click", () => {
         this._transferView = button.dataset.transferView;
@@ -2834,6 +3226,15 @@ class FootballHubPanel extends HTMLElement {
         this.shadowRoot.querySelector("#lms-admin-confirm")?.value,
         this.shadowRoot.querySelector("#lms-entry-fee")?.value,
       );
+    });
+    this.shadowRoot.querySelector("#lms-remote-open")?.addEventListener("click", async () => {
+      await this._openRemoteLmsGame(
+        this.shadowRoot.querySelector("#lms-remote-game")?.value,
+        this.shadowRoot.querySelector("#lms-remote-password")?.value,
+      );
+    });
+    this.shadowRoot.querySelector("#lms-remote-password")?.addEventListener("keydown", async (event) => {
+      if (event.key === "Enter") await this._openRemoteLmsGame(this.shadowRoot.querySelector("#lms-remote-game")?.value, event.target.value);
     });
     this.shadowRoot.querySelectorAll("[data-lms-view]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -2873,6 +3274,12 @@ class FootballHubPanel extends HTMLElement {
       );
     });
     this.shadowRoot.querySelector("#lms-create-share")?.addEventListener("click", () => this._createLmsShare());
+    this.shadowRoot.querySelector("#lms-copy-external-organiser")?.addEventListener("click", async () => {
+      const url = `${LMS_SHARE_SERVICE}/organise`;
+      const copied = await this._copyText(url);
+      if (copied) window.alert("External LMS organiser link copied.");
+      else window.prompt("Copy the external LMS organiser link:", url);
+    });
     this.shadowRoot.querySelector("#lms-toggle-joining")?.addEventListener("click", async () => {
       if (!this._isLmsAdmin() || !this._lmsCompetition || this._lmsMode !== "global") return;
       this._lmsCompetition.joiningOpen = !this._lmsCompetition.joiningOpen;
@@ -3004,6 +3411,11 @@ class FootballHubPanel extends HTMLElement {
       .lms-admin-unlock div { display:flex; flex-direction:column; gap:4px; }
       .lms-admin-unlock span { color:var(--secondary-text-color); }
       .lms-admin-unlock button { min-height:44px; border:1px solid rgba(255,196,72,.55); border-radius:10px; padding:0 18px; color:#fff; background:rgba(180,117,0,.25); font-weight:900; cursor:pointer; }
+      .lms-remote-login { display:grid; grid-template-columns:auto minmax(260px,1fr) minmax(220px,1fr) minmax(190px,.7fr) auto; align-items:center; gap:14px; margin:14px 0; border-color:rgba(0,183,255,.5); }
+      .lms-remote-login > ha-icon { color:#00b7ff; --mdc-icon-size:34px; }
+      .lms-remote-login div { display:flex; flex-direction:column; gap:4px; }
+      .lms-remote-login input, .lms-remote-login button { min-height:44px; border:1px solid var(--fh-border); border-radius:10px; padding:0 13px; color:#fff; background:rgba(1,13,27,.9); }
+      .lms-remote-login button { border-color:rgba(0,183,255,.55); background:rgba(0,126,190,.3); cursor:pointer; font-weight:900; }
       .lms-summary button ha-icon, .lms-admin-status ha-icon { vertical-align:middle; --mdc-icon-size:18px; }
       .lms-summary-stats span { padding:10px 14px; border:1px solid var(--fh-border); border-radius:10px; }
       .lms-summary .danger { border-color:rgba(255,77,77,.6); background:rgba(255,77,77,.14); }
@@ -3817,6 +4229,72 @@ class FootballHubPanel extends HTMLElement {
         color: var(--secondary-text-color);
         font-size: .76rem;
       }
+      .match-competition {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .match-competition ha-icon { width: 17px; height: 17px; }
+      .match-qualification { display:flex; align-items:center; justify-content:center; gap:7px; margin:10px 0; padding:8px 10px; border-radius:10px; color:#7dff9b; background:rgba(31,190,85,.13); font-size:.82rem; text-align:center; }
+      .match-qualification ha-icon { width:18px; height:18px; }
+      .live-competition-filter { display: grid; grid-template-columns: minmax(220px, .65fr) 1.35fr; gap: 24px; margin: 20px 0; }
+      .live-filter-panel { display:block; }
+      .live-filter-panel > summary { display:flex; align-items:center; justify-content:space-between; gap:16px; cursor:pointer; list-style:none; }
+      .live-filter-panel > summary::-webkit-details-marker { display:none; }
+      .live-filter-panel > summary h2 { margin-bottom:0; }
+      .live-filter-summary-count { display:flex; align-items:center; gap:7px; color:var(--secondary-text-color); font-weight:750; white-space:nowrap; }
+      .live-filter-summary-count ha-icon { transition:transform .2s ease; }
+      .live-filter-panel[open] .live-filter-summary-count ha-icon { transform:rotate(180deg); }
+      .live-filter-panel-body { display:grid; grid-template-columns:minmax(220px,.65fr) 1.35fr; gap:24px; padding-top:18px; }
+      .live-competition-filter h2 { margin: 5px 0 6px; }
+      .live-competition-filter p { margin: 0; color: var(--secondary-text-color); }
+      .live-filter-groups { display: grid; gap: 10px; }
+      .live-filter-groups details { border: 1px solid rgba(255,255,255,.14); border-radius: 14px; padding: 11px 13px; background: rgba(255,255,255,.04); }
+      .live-filter-groups summary { cursor: pointer; font-weight: 750; }
+      .live-filter-options { display: flex; flex-wrap: wrap; gap: 9px; padding-top: 11px; max-height: 210px; overflow: auto; }
+      .live-filter-options label { display: flex; align-items: center; gap: 7px; padding: 8px 10px; border: 1px solid rgba(255,255,255,.15); border-radius: 11px; cursor: pointer; background: rgba(255,255,255,.05); }
+      .live-filter-options input { width: 18px; height: 18px; accent-color: var(--primary-color); }
+      @media (max-width: 760px) { .live-competition-filter, .live-filter-panel-body { grid-template-columns: 1fr; } }
+      .live-toolbar { display: grid; grid-template-columns: minmax(200px,1.5fr) repeat(3,minmax(140px,.8fr)) auto; gap: 12px; align-items: end; margin: 20px 0; }
+      .live-toolbar label { display: grid; gap: 6px; color: var(--secondary-text-color); font-size: .78rem; }
+      .live-toolbar input, .live-toolbar select, .fixture-filter input, .live-picker-control input { min-height: 42px; border-radius: 10px; padding: 8px 11px; border: 1px solid rgba(255,255,255,.18); background: var(--card-background-color); color: var(--primary-text-color); }
+      .live-toolbar > button { min-height: 42px; display: flex; align-items: center; justify-content: center; gap: 7px; }
+      .live-filter-actions { float: right; display: inline-flex; gap: 6px; }
+      .live-filter-actions button { padding: 4px 7px; font-size: .7rem; }
+      .live-filter-options label.favourite { border-color: #f6c344; background: rgba(246,195,68,.10); }
+      .live-filter-options label button { border: 0; background: transparent; color: #f6c344; font-size: 1.15rem; padding: 0 2px; }
+      .country-filter-tree > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .country-filter-tree > summary label { display: flex; align-items: center; gap: 9px; }
+      .live-schedule-group { margin: 15px 0 24px; }
+      .live-schedule-group > header { display: flex; align-items: end; justify-content: space-between; padding: 11px 14px; border-left: 4px solid var(--primary-color); background: rgba(255,255,255,.055); border-radius: 8px; }
+      .live-schedule-group > header div { display: grid; gap: 2px; }
+      .live-schedule-group > header div span, .live-schedule-group > header > span { color: var(--secondary-text-color); font-size: .76rem; }
+      .match-list.compact { display: grid; gap: 5px; }
+      .match-list.compact .match-card { border-radius: 10px; padding: 8px 12px; }
+      .match-list.compact .match-competition, .match-list.compact .match-footer { display: none; }
+      .match-list.compact .match-teams img { width: 28px !important; height: 28px !important; }
+      .match-list.compact .match-meta { margin-bottom: 4px; }
+      .live-utility-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0 24px; }
+      .live-utility-grid p { color: var(--secondary-text-color); }
+      .live-diagnostics > div { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+      .live-utility-grid.compact { grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr); gap:10px; margin:8px 0 14px; }
+      .live-utility-grid.compact .page-card { padding:11px 14px; border-radius:14px; }
+      .live-utility-grid.compact header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+      .live-utility-grid.compact header .eyebrow { margin:0; }
+      .live-alert-options { display:flex; flex-wrap:wrap; gap:6px 14px; }
+      .live-alert-options label { display:flex; align-items:center; gap:5px; font-size:.76rem; }
+      .live-diagnostics.compact { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px 12px; }
+      .live-diagnostics.compact header { grid-column:1/-1; margin-bottom:0; }
+      .live-diagnostics.compact > div { display:flex; flex-direction:column; gap:2px; padding:4px 0; border:0; font-size:.72rem; }
+      .live-diagnostics.compact > div strong { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .fixture-filter > div { display: flex; gap: 8px; margin-top: 7px; }
+      @media (max-width: 1050px) { .live-toolbar { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 700px) { .live-toolbar, .live-utility-grid, .live-utility-grid.compact { grid-template-columns: 1fr; } .live-diagnostics.compact { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 
       .match-teams {
         display: grid;
@@ -3851,6 +4329,8 @@ class FootballHubPanel extends HTMLElement {
       }
 
       .live-centre-card { padding: clamp(22px, 4vw, 42px); scroll-margin-top: 76px; }
+      .live-close-match { display:inline-flex; align-items:center; gap:6px; margin:0 0 14px; padding:7px 11px; border:1px solid rgba(255,255,255,.18); border-radius:10px; background:rgba(255,255,255,.07); color:var(--primary-text-color); cursor:pointer; }
+      .live-close-match ha-icon { width:18px; height:18px; }
 
       .live-picker { margin-bottom: 18px; }
       .live-picker-control { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
@@ -4479,7 +4959,7 @@ class FootballHubPanel extends HTMLElement {
         .lms-round-match time { grid-column:1/-1; text-align:center; }
         .lms-password-setup { grid-template-columns:1fr; }
         .lms-password-setup small { grid-column:auto; }
-        .lms-admin-unlock { grid-template-columns:1fr; align-items:stretch; }
+        .lms-admin-unlock, .lms-remote-login { grid-template-columns:1fr; align-items:stretch; }
         .lms-league-switch { align-items:stretch; flex-direction:column; }
         .lms-form input, .lms-add-player input { min-width:0; width:100%; }
       }

@@ -12,7 +12,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from ..competitions import COMPETITIONS, SEASONS
 from ..const import DOMAIN
-from ..engine.helpers import limit_items
+from ..engine.helpers import clean_fixture, fixture_timestamp, limit_items
 
 ATTRIBUTE_LIMIT = 5
 
@@ -42,6 +42,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             FootballHubPortalDataSensor(coordinator, entry, "news", "News"),
             FootballHubPortalDataSensor(coordinator, entry, "tv_guide", "TV Guide"),
             FootballHubTransferMarketSensor(coordinator, entry),
+            FootballHubCompetitionCatalogueSensor(coordinator, entry),
             FootballHubClubDataSensor(coordinator, entry, "club_profile", "My Club Profile"),
             FootballHubClubDataSensor(coordinator, entry, "club_statistics", "My Club Statistics"),
             FootballHubClubDataSensor(coordinator, entry, "club_squad", "My Club Squad"),
@@ -84,6 +85,23 @@ class FootballHubBaseSensor(CoordinatorEntity, SensorEntity):
     @property
     def engine(self):
         return self.coordinator.engine
+
+
+class FootballHubCompetitionCatalogueSensor(FootballHubBaseSensor):
+    """Expose the provider's complete country and competition catalogue."""
+
+    _unrecorded_attributes = frozenset({"competitions"})
+
+    def __init__(self, coordinator, entry):
+        super().__init__(coordinator, entry, "competition_catalogue", "Competition Catalogue")
+
+    @property
+    def native_value(self):
+        return len((self.coordinator.data or {}).get("competition_catalogue", []) or [])
+
+    @property
+    def extra_state_attributes(self):
+        return {"competitions": (self.coordinator.data or {}).get("competition_catalogue", []) or []}
 
 
 class FootballHubClubDataSensor(FootballHubBaseSensor):
@@ -288,6 +306,7 @@ class FootballHubStatusSensor(FootballHubBaseSensor):
     def extra_state_attributes(self):
         competition = self.coordinator.competition
         season = self.entry.data.get("season")
+        last_updated = getattr(self.coordinator, "last_update_success_time", None)
         return {
             "competition": competition.get("name"),
             "competition_key": self.coordinator.competition_key,
@@ -310,6 +329,8 @@ class FootballHubStatusSensor(FootballHubBaseSensor):
             "my_club": self.coordinator.my_club,
             "my_club_team_id": (self.coordinator.data or {}).get("my_club_team_id"),
             "favourite_clubs": self.coordinator.favourite_clubs,
+            "ui_preferences": self.coordinator.ui_preferences,
+            "last_updated": last_updated.isoformat() if last_updated else None,
             "live_count": len(self.engine.live.matches()),
             "fixtures_count": len(self.engine.fixtures.all()),
             "results_count": len(self.engine.results.all()),
@@ -426,12 +447,17 @@ class FootballHubMatchesTodaySensor(FootballHubBaseSensor):
 
     @property
     def native_value(self):
-        return len(self.engine.fixtures.today())
+        return self.extra_state_attributes["total_today"]
 
     @property
     def extra_state_attributes(self):
-        matches = self.engine.fixtures.today()
-        return {"total_today": len(matches), "matches": limit_items(matches, ATTRIBUTE_LIMIT)}
+        now = datetime.now(timezone.utc)
+        start = int(datetime(now.year, now.month, now.day, tzinfo=timezone.utc).timestamp())
+        end = start + 86400
+        raw = self.coordinator._cache.get("live_feed", []) or []
+        matches = [clean_fixture(item) for item in raw if start <= fixture_timestamp(item) < end]
+        matches.sort(key=lambda item: item.get("timestamp") or 0)
+        return {"total_today": len(matches), "matches": limit_items(matches, 500)}
 
 
 class FootballHubThisWeekSensor(FootballHubBaseSensor):
@@ -589,12 +615,21 @@ class FootballHubCupCentreSensor(FootballHubBaseSensor):
     def extra_state_attributes(self):
         engine = self.coordinator.cup_engine
         competition = self.coordinator.cup_competition or {}
+        raw_by_id = {
+            str(((item or {}).get("fixture") or {}).get("id")): item
+            for item in ((self.coordinator.data or {}).get("cup_fixtures", []) or [])
+        }
+        fixtures = []
+        for fixture in engine.fixtures.all():
+            raw = raw_by_id.get(str(fixture.get("fixture_id") or fixture.get("id")), {})
+            fixtures.append({**fixture, "qualification": raw.get("qualification")})
         return {
             "competition_key": self.coordinator.cup_key,
             "competition": competition.get("name"),
             "country": competition.get("country"),
             "has_table": competition.get("has_table", False),
-            "fixtures": engine.fixtures.all(),
+            "fixtures": fixtures,
+            "live": engine.live.matches(),
             "results": engine.results.all(),
             "table": engine.standings.table(),
             "top_scorers": limit_items(engine.top_scorers, 10),
