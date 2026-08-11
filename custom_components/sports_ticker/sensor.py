@@ -21,6 +21,7 @@ from .const import (
     DEFAULT_TICKER_THEME,
 )
 from .coordinator import MLB_PLAYER_LEADERS_KEY, SportsTickerCoordinator
+from .next_game import ESPNNFLNextGame, NFLNextGameCoordinator
 
 
 async def async_setup_entry(
@@ -49,6 +50,11 @@ async def async_setup_entry(
         ESPNRawScoreboard(coordinator, league)
         for league in leagues
     ]
+
+    if "nfl" in leagues:
+        next_game_coordinator = NFLNextGameCoordinator(hass, entry)
+        await next_game_coordinator.async_config_entry_first_refresh()
+        entities.append(ESPNNFLNextGame(next_game_coordinator))
 
     if "mlb" in leagues:
         entities.append(ESPNMLBPlayerLeaders(coordinator))
