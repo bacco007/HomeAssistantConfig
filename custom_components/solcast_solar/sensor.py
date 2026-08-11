@@ -58,6 +58,7 @@ from .const import (
     FACTORS,
     HARD_LIMIT,
     HARD_LIMIT_API,
+    LEARN_MORE_RAISE_ISSUE,
     NAME,
     RESOURCE_ID,
     SITES_DATA,
@@ -76,6 +77,208 @@ PARALLEL_UPDATES = 0
 def _api_key_last_six(api_key: str) -> str:
     """Return last six characters of API key."""
     return api_key[-6:]
+
+
+def _cleanup_stale_entities(
+    entity_registry: er.EntityRegistry,
+    coordinator: SolcastUpdateCoordinator,
+    entry: ConfigEntry,
+    expecting_limits: list[str],
+) -> None:
+    """Remove stale and legacy entities."""
+    for entity in er.async_entries_for_config_entry(entity_registry, entry.entry_id):
+        # Clean up orphaned hard limit sensors.
+        if HARD_LIMIT in entity.unique_id and entity.unique_id not in expecting_limits:
+            entity_registry.async_remove(entity.entity_id)
+            _LOGGER.warning("Cleaning up orphaned %s", entity.entity_id)
+
+        # Clean up any orphaned day sensors.
+        if entity.translation_key is not None:
+            if (
+                entity.translation_key.startswith(f"{ENTITY_TOTAL_KWH_FORECAST}_d")
+                and int(entity.unique_id.split("_")[-1].split("d")[-1]) > coordinator.advanced_day_entities - 1
+            ):
+                entity_registry.async_remove(entity.entity_id)
+                _LOGGER.warning("Cleaning up orphaned %s", entity.entity_id)
+
+    # Clean up legacy rooftop sensor entities that would collide with new style unique IDs.
+    # Legacy is identified as having a unique ID using the resource ID, and a category that
+    # is not diagnostic.
+    for site in coordinator.solcast.sites:
+        old_style_unique_id = f"solcast_solcast_api_{site[NAME]}"
+        new_style_unique_id = f"solcast_solcast_api_{site[RESOURCE_ID]}"
+        if old_style_unique_id == new_style_unique_id:
+            # A compatible unique ID already exists (or will) because the site name is the resource ID.
+            continue
+
+        old_style_entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, old_style_unique_id)
+        new_style_entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, new_style_unique_id)
+        old_style_entity = entity_registry.async_get(old_style_entity_id) if old_style_entity_id is not None else None
+        new_style_entity = entity_registry.async_get(new_style_entity_id) if new_style_entity_id is not None else None
+        if old_style_entity is None and new_style_entity is None:
+            # Neither entity exists, so nothing to clean up.
+            continue
+
+        if (
+            old_style_entity_id is not None
+            and old_style_entity is not None
+            and old_style_entity.entity_category == EntityCategory.DIAGNOSTIC
+            and new_style_entity is not None
+            and new_style_entity.entity_category == EntityCategory.DIAGNOSTIC
+        ):
+            # An upgrade/downgrade/upgrade has occurred, as both entities are diagnostic,
+            # so remove the old style entity.
+            entity_registry.async_remove(old_style_entity_id)
+            _LOGGER.warning(
+                "Removed unexpected rooftop sensor entity '%s' while cleaning up duplicate rooftop site entity '%s'",
+                old_style_entity_id,
+                site[NAME],
+            )
+            continue
+
+        if (
+            new_style_entity_id is not None
+            and new_style_entity is not None
+            and new_style_entity.entity_category != EntityCategory.DIAGNOSTIC
+        ):
+            entity_registry.async_remove(new_style_entity_id)
+            _LOGGER.debug(
+                "Removed colliding rooftop sensor site-ID entity '%s' while cleaning up legacy rooftop site entity for '%s'",
+                new_style_entity_id,
+                site[NAME],
+            )
+
+    # Clean up orphaned rooftop sensor entities whose unique ID does not correspond to any active site.
+    # These arise when a site is removed from the account. Includes both new-style (resource-ID-based)
+    # and old-style (name-based) unique IDs, which is overkill.
+    active_rooftop_unique_ids = set()
+    for site in coordinator.solcast.sites:
+        active_rooftop_unique_ids.add(f"solcast_solcast_api_{site[RESOURCE_ID]}")
+        active_rooftop_unique_ids.add(f"solcast_solcast_api_{site[NAME]}")
+    for entity in er.async_entries_for_config_entry(entity_registry, entry.entry_id):
+        if (
+            entity.domain == "sensor"
+            and entity.unique_id.startswith("solcast_solcast_api_")
+            and entity.unique_id not in active_rooftop_unique_ids
+        ):
+            entity_registry.async_remove(entity.entity_id)
+            _LOGGER.warning(
+                "Cleaning up orphaned rooftop site sensor '%s' (unique_id='%s') - no corresponding active site found",
+                entity.entity_id,
+                entity.unique_id,
+            )
+
+
+def _maintain_entities(
+    hass: HomeAssistant,
+    coordinator: SolcastUpdateCoordinator,
+    entry: ConfigEntry,
+    expecting_limits: list[str],
+    active_unique_ids: set[str],
+) -> None:
+    """Run entity maintenance tasks."""
+    entity_registry = er.async_get(hass)
+
+    _migrate_transferred_rooftop_unique_ids(entity_registry, coordinator)
+    _cleanup_stale_entities(entity_registry, coordinator, entry=entry, expecting_limits=expecting_limits)
+    _migrate_legacy_rooftop_unique_ids(entity_registry, coordinator)
+    _warn_unmanaged_sensor_entities(entity_registry, entry, active_unique_ids)
+
+
+def _migrate_transferred_rooftop_unique_ids(
+    entity_registry: er.EntityRegistry,
+    coordinator: SolcastUpdateCoordinator,
+) -> None:
+    """Migrate rooftop unique IDs for detected site resource-ID transfers."""
+
+    for old_site_id, new_site_id in coordinator.solcast.site_transfers.items():
+        old_transfer_unique_id = f"solcast_solcast_api_{old_site_id}"
+        new_transfer_unique_id = f"solcast_solcast_api_{new_site_id}"
+
+        old_transfer_entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, old_transfer_unique_id)
+        if old_transfer_entity_id is None:
+            continue
+
+        if old_transfer_unique_id == new_transfer_unique_id:
+            continue
+
+        new_transfer_entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, new_transfer_unique_id)
+        if new_transfer_entity_id is not None and new_transfer_entity_id != old_transfer_entity_id:
+            _LOGGER.debug(
+                "Skipping rooftop sensor unique ID transfer from '%s' to '%s' because the new unique ID is already in use",
+                old_site_id,
+                new_site_id,
+            )
+            continue
+
+        entity_registry.async_update_entity(old_transfer_entity_id, new_unique_id=new_transfer_unique_id)
+        _LOGGER.info(
+            "Migrated rooftop sensor unique ID for transferred site ID '%s' to '%s'",
+            old_site_id,
+            new_site_id,
+        )
+
+
+def _migrate_legacy_rooftop_unique_ids(
+    entity_registry: er.EntityRegistry,
+    coordinator: SolcastUpdateCoordinator,
+) -> None:
+    """Migrate rooftop unique IDs from legacy site-name format to resource ID."""
+
+    for site in coordinator.solcast.sites:
+        old_style_unique_id = f"solcast_solcast_api_{site[NAME]}"
+
+        old_style_entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, old_style_unique_id)
+        if old_style_entity_id is None:
+            # Already migrated or never existed, so nothing to do.
+            continue
+
+        new_style_unique_id = f"solcast_solcast_api_{site[RESOURCE_ID]}"
+        old_style_entity = entity_registry.async_get(old_style_entity_id)
+        if old_style_entity is not None and old_style_entity.unique_id == new_style_unique_id:
+            _LOGGER.debug(
+                "Skipping rooftop sensor unique ID migration for site '%s' because entity '%s' already uses unique ID '%s'",
+                site[NAME],
+                old_style_entity_id,
+                new_style_unique_id,
+            )
+            continue
+
+        new_style_entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, new_style_unique_id)
+        if new_style_entity_id is not None and new_style_entity_id != old_style_entity_id:
+            _LOGGER.debug(
+                "Skipping rooftop sensor unique ID migration for site '%s' because unique ID '%s' is already in use",
+                site[NAME],
+                new_style_unique_id,
+            )
+            continue
+
+        entity_registry.async_update_entity(old_style_entity_id, new_unique_id=new_style_unique_id)
+        _LOGGER.debug("Migrated rooftop sensor unique ID for site '%s' to resource ID", site[NAME])
+
+
+def _warn_unmanaged_sensor_entities(
+    entity_registry: er.EntityRegistry,
+    entry: ConfigEntry,
+    active_unique_ids: set[str],
+) -> None:
+    """Warn about sensor entities for this entry that are not actively maintained."""
+
+    for entity in er.async_entries_for_config_entry(entity_registry, entry.entry_id):
+        if entity.domain != "sensor":
+            continue
+        if entity.unique_id not in active_unique_ids:
+            _LOGGER.warning(
+                (
+                    "Unmanaged entity '%s' (unique_id='%s') is present in the entity registry "
+                    "but is not actively maintained by this integration. "
+                    "If this entity is not expected, please raise an issue at "
+                    "%s"
+                ),
+                entity.entity_id,
+                entity.unique_id,
+                LEARN_MORE_RAISE_ISSUE,
+            )
 
 
 NAMES: Final[dict[str, str]] = {
@@ -395,33 +598,6 @@ async def async_setup_entry(
             entities.append(sen)
         expecting_limits = [f"hard_limit_{_api_key_last_six(api_key)}" for api_key in coordinator.solcast.options.api_key.split(",")]
 
-    # Clean up.
-    entity_registry = er.async_get(hass)
-    for entity in er.async_entries_for_config_entry(entity_registry, entry.entry_id):
-        # Clean up orphaned hard limit sensors.
-        if HARD_LIMIT in entity.unique_id and entity.unique_id not in expecting_limits:
-            entity_registry.async_remove(entity.entity_id)
-            _LOGGER.warning("Cleaning up orphaned %s", entity.entity_id)
-
-        # Clean up any orphaned day sensors.
-        if entity.translation_key is not None:
-            if (
-                entity.translation_key.startswith(f"{ENTITY_TOTAL_KWH_FORECAST}_d")
-                and int(entity.unique_id.split("_")[-1].split("d")[-1]) > coordinator.advanced_day_entities - 1
-            ):
-                entity_registry.async_remove(entity.entity_id)
-                _LOGGER.warning("Cleaning up orphaned %s", entity.entity_id)
-
-    # Migrate RooftopSensor unique IDs from site display name to stable resource ID.
-    # Existing entity IDs are preserved; only the registry unique_id changes.
-    for site in coordinator.solcast.sites:
-        old_unique_id = f"solcast_solcast_api_{site[NAME]}"
-        new_unique_id = f"solcast_solcast_api_{site[RESOURCE_ID]}"
-        if old_unique_id != new_unique_id:
-            if entity_id := entity_registry.async_get_entity_id("sensor", DOMAIN, old_unique_id):
-                entity_registry.async_update_entity(entity_id, new_unique_id=new_unique_id)
-                _LOGGER.debug("Migrated RooftopSensor unique ID for site '%s' to resource ID", site[NAME])
-
     # Site sensors
     for site in coordinator.solcast.sites:
         k = {
@@ -441,6 +617,9 @@ async def async_setup_entry(
             rooftop_id=site[RESOURCE_ID],
         )
         entities.append(site_sen)
+
+    active_unique_ids = {e.unique_id for e in entities if e.unique_id is not None}
+    _maintain_entities(hass, coordinator, entry=entry, expecting_limits=expecting_limits, active_unique_ids=active_unique_ids)
 
     async_add_entities(entities)
 
