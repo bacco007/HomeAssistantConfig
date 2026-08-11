@@ -46,3 +46,52 @@ SPEEDTEST_POLL_SECONDS: Final = 15
 
 GATEWAY_DEVICES: Final = ["udm", "ugw", "uxg", "uxg-pro", "ucg-ultra", "ucg"]
 MAX_WAN_INTERFACES: Final = 4
+
+# The gateway's blocks of per-WAN ISP and geolocation details, in the order
+# they are consulted. Each is keyed by WAN network group ("WAN", "WAN2"),
+# the same convention as last_wan_interfaces. A later block only fills in a
+# field the earlier ones left unset: "last_geo_info" in particular is a
+# cut-down record that often carries the operator alone.
+WAN_GEO_INFO_BLOCKS: Final[tuple[str, ...]] = (
+    "geo_info",
+    "active_geo_info",
+    "last_geo_info",
+)
+
+# ISP and geolocation details to read out of those blocks, as
+# {canonical name: spellings to try, best first}.
+#
+# The controller derives these by looking up each WAN's own public address,
+# so they identify the operator of that line. They come only from these
+# per-WAN blocks: the speedtest records carry no ISP fields at all, and the
+# speedtest block's "server" sub-object is the far end of the test, not the
+# subscriber's line - see SPEEDTEST_SERVER_FIELDS for that.
+#
+# Firmware differs over the spellings and a gateway that performs no lookup
+# reports none of them, so every field is optional and an absent one stays
+# unset.
+WAN_ISP_FIELDS: Final[dict[str, tuple[str, ...]]] = {
+    "isp_name": ("isp_name", "isp"),
+    "isp_organization": ("isp_organization", "isp_org", "organization"),
+    "asn": ("asn", "isp_asn"),
+    "city": ("city",),
+    "country_name": ("country_name", "country"),
+}
+
+# Which speedtest server the gateway tested against, read out of the
+# "server" sub-object of its speedtest-status block, as
+# {canonical name: spellings to try, best first}.
+#
+# Every name is prefixed "server_" so nothing here can be confused with the
+# subscriber-side lookup above: "city" in this sub-object is the server's
+# city, and labelling a line with it would be wrong twice over.
+#
+# Unlike the ISP details this is not reported per WAN. The gateway records
+# one server, belonging to whichever run finished last, so it is attributed
+# to a WAN on the same evidence as the throughput it arrived with.
+SPEEDTEST_SERVER_FIELDS: Final[dict[str, tuple[str, ...]]] = {
+    "server_provider": ("provider", "sponsor", "name"),
+    "server_provider_url": ("provider_url", "url"),
+    "server_city": ("city",),
+    "server_country": ("country", "country_name"),
+}

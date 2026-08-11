@@ -27,6 +27,7 @@ from .const import DOMAIN
 from . import (
     UniFiWanData,
     UniFiWanRuntimeData,
+    gateway_speedtest_wan,
     interface_to_wan_number,
     resolve_active_wan,
 )
@@ -249,6 +250,22 @@ def _active_speedtest(d: UniFiWanData) -> dict[str, Any]:
     return _displayed_speedtest(d)[0]
 
 
+def _active_speedtest_server(d: UniFiWanData) -> dict[str, Any]:
+    """The speedtest server the gateway-wide sensors show.
+
+    Read straight from the gateway's block whenever that block belongs to
+    the active WAN, rather than from whichever result _displayed_speedtest
+    picked. The per-WAN records name no server, so there is no competing
+    source for the newest-wins rule to arbitrate - applying it anyway would
+    blank these sensors every time a per-WAN record happened to be the
+    fresher of the two.
+    """
+    active, _ = resolve_active_wan(d)
+    if active is None or gateway_speedtest_wan(d) != active:
+        return {}
+    return d.speedtest
+
+
 def _speedtest_interface(d: UniFiWanData) -> str:
     """Return the WAN whose result the gateway-wide Speedtest sensors show,
     so the interface named always matches the figures displayed.
@@ -261,6 +278,87 @@ def _speedtest_interface(d: UniFiWanData) -> str:
         # An interface the controller named but we cannot map to a WAN.
         return iface
     return "unknown"
+
+
+# How each of the per-WAN ISP/geolocation fields the gateway looks up is
+# presented, as (field, key suffix, label, icon). One entry per
+# WAN_ISP_FIELDS key; the same set is built gateway-wide below and, on a
+# multi-WAN gateway, once more for each WAN.
+#
+# The key suffix is spelled out rather than derived so that "isp_name"
+# reads as the plain "ISP" the rest of the UniFi UI calls it.
+WAN_ISP_SENSORS: Final[tuple[tuple[str, str, str, str], ...]] = (
+    ("isp_name", "isp_name", "ISP", "mdi:web"),
+    ("isp_organization", "isp_organization", "ISP Organization", "mdi:domain"),
+    ("asn", "asn", "ASN", "mdi:identifier"),
+    ("city", "city", "City", "mdi:city"),
+    ("country_name", "country_name", "Country", "mdi:earth"),
+)
+
+
+def _isp_value_fn(field: str) -> Callable[[UniFiWanData], Any]:
+    """Read one ISP field for whichever WAN is currently the active uplink.
+
+    Returns None rather than another WAN's value when the active uplink
+    cannot be resolved or the gateway looked nothing up for it.
+    """
+
+    def value(d: UniFiWanData) -> Any:
+        active, _ = resolve_active_wan(d)
+        if active is None:
+            return None
+        return (d.geo_info.get(active) or {}).get(field)
+
+    return value
+
+
+# The far end of the last speedtest, as (result field, label, icon). One
+# entry per SPEEDTEST_SERVER_FIELDS key. These describe the server the
+# gateway tested against, never the subscriber's own line - the ISP
+# sensors above are that.
+SPEEDTEST_SERVER_SENSORS: Final[tuple[tuple[str, str, str], ...]] = (
+    ("server_provider", "Server Provider", "mdi:server-network"),
+    ("server_provider_url", "Server Provider URL", "mdi:link-variant"),
+    ("server_city", "Server City", "mdi:city-variant-outline"),
+    ("server_country", "Server Country", "mdi:earth-arrow-right"),
+)
+
+
+def _server_value_fn(field: str) -> Callable[[UniFiWanData], Any]:
+    """Read one server field from the gateway's own speedtest block."""
+    return lambda d: _active_speedtest_server(d).get(field)
+
+
+# Gateway-wide speedtest server sensors, describing the active uplink's
+# last recorded run.
+_SERVER_SENSORS: Final[tuple[UniFiSensorDescription, ...]] = tuple(
+    UniFiSensorDescription(
+        key=f"speedtest_{field}",
+        name=f"UniFi Speedtest {label}",
+        icon=icon,
+        value_fn=_server_value_fn(field),
+    )
+    for field, label, icon in SPEEDTEST_SERVER_SENSORS
+)
+
+
+def _wan_isp_value_fn(wan_number: int, field: str) -> Callable[[UniFiWanData], Any]:
+    """Read one ISP field for a specific WAN, so a line is only ever
+    labelled with its own operator.
+    """
+    return lambda d: (d.geo_info.get(wan_number) or {}).get(field)
+
+
+# Gateway-wide ISP sensors, describing the active uplink's line.
+_ISP_SENSORS: Final[tuple[UniFiSensorDescription, ...]] = tuple(
+    UniFiSensorDescription(
+        key=f"wan_{suffix}",
+        name=f"UniFi WAN {label}",
+        icon=icon,
+        value_fn=_isp_value_fn(field),
+    )
+    for field, suffix, label, icon in WAN_ISP_SENSORS
+)
 
 
 SENSORS: Final[tuple[UniFiSensorDescription, ...]] = (
@@ -374,6 +472,8 @@ SENSORS: Final[tuple[UniFiSensorDescription, ...]] = (
             "speedtest_status": d.speedtest.get("status"),
         },
     ),
+    *_SERVER_SENSORS,
+    *_ISP_SENSORS,
     UniFiSensorDescription(
         key="active_wan_id",
         name="UniFi Active WAN ID",
@@ -444,6 +544,40 @@ def _wan_speedtest_descriptions(
             "lastrun",
             _ts_date,
         ),
+        # The server details latch with the figures they arrived with, so a
+        # WAN keeps the last server it can be shown to have tested against
+        # rather than borrowing whichever one another WAN reached.
+        *(
+            (
+                SensorEntityDescription(
+                    key=f"wan{wan_number}_speedtest_{field}",
+                    name=f"UniFi WAN{wan_number} Speedtest {label}",
+                    icon=icon,
+                ),
+                field,
+                None,
+            )
+            for field, label, icon in SPEEDTEST_SERVER_SENSORS
+        ),
+    )
+
+
+def _wan_isp_descriptions(wan_number: int) -> tuple[UniFiSensorDescription, ...]:
+    """One WAN's ISP/geolocation sensors.
+
+    These read the gateway's live per-WAN lookup rather than a speedtest
+    result, so unlike the throughput sensors above they need no latching:
+    the controller reports every WAN's operator on every poll, whether or
+    not that WAN has ever been speedtested.
+    """
+    return tuple(
+        UniFiSensorDescription(
+            key=f"wan{wan_number}_{suffix}",
+            name=f"UniFi WAN{wan_number} {label}",
+            icon=icon,
+            value_fn=_wan_isp_value_fn(wan_number, field),
+        )
+        for field, suffix, label, icon in WAN_ISP_SENSORS
     )
 
 
@@ -495,6 +629,11 @@ async def async_setup_entry(
                 },
             )
             entities.append(UniFiGenericSensor(device_coord, entry_id, device_info, ipv6))
+
+            for isp_desc in _wan_isp_descriptions(wan_number):
+                entities.append(
+                    UniFiGenericSensor(device_coord, entry_id, device_info, isp_desc)
+                )
 
             for desc, field, transform in _wan_speedtest_descriptions(wan_number):
                 entities.append(
