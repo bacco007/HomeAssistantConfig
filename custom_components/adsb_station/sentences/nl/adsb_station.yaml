@@ -1,0 +1,42 @@
+language: nl
+intents:
+  AdsbStationOverhead:
+    data:
+      - sentences:
+          - "wat vliegt er over[heen]"
+          - "wat vliegt er (boven|over) (me|ons|het huis)[ nu]"
+          - "(hangt|vliegt) er (iets|wat) boven (me|ons|het huis)"
+          - "wat is dat (voor )(vliegtuig|toestel)"
+  AdsbStationCount:
+    data:
+      - sentences:
+          - "hoeveel (vliegtuigen|toestellen) (zijn er|hoor je|vang je op)"
+          - "hoeveel (vliegtuigen|toestellen) zijn er (dichtbij|in de buurt|in bereik)"
+          - "hoe druk is het in de lucht"
+  AdsbStationClosest:
+    data:
+      - sentences:
+          - "wat is het (dichtstbijzijnde|dichtstbije) (vliegtuig|toestel)"
+          - "waar is het (dichtstbijzijnde|dichtstbije) (vliegtuig|toestel)"
+          - "hoe ver weg is het (dichtstbijzijnde|dichtstbije) (vliegtuig|toestel)"
+  AdsbStationTraffic:
+    data:
+      - sentences:
+          - "(is|zijn) er (een )<kind>[s] (in de buurt|dichtbij|in bereik|boven me)"
+          - "hoor je (een )<kind>[s]"
+          - "(zijn|is) er <kind>[s]"
+  AdsbStationRoute:
+    data:
+      - sentences:
+          - "waar (gaat|vliegt) (hij|die|dat vliegtuig|dat toestel) (heen|naartoe)"
+          - "waar komt (het vliegtuig|het toestel) (boven me|hierboven) vandaan"
+          - "wat is de route van (het vliegtuig|het toestel) (boven me|hierboven)"
+lists:
+  kind:
+    values:
+      - in: "(militair|leger|luchtmacht)[ verkeer]"
+        out: "military"
+      - in: "(helikopter|traumaheli|heli)"
+        out: "helicopter"
+      - in: "(drone|onbemand toestel)"
+        out: "drone"

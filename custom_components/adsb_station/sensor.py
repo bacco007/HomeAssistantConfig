@@ -632,6 +632,7 @@ async def async_setup_entry(
         entities.append(AdsbStationNearbySensor(coordinator))
         entities.append(AdsbStationOverheadSensor(coordinator))
         entities.append(AdsbStationPassagesSensor(coordinator))
+        entities.append(AdsbStationHeardTodaySensor(coordinator))
         entities.extend(
             AdsbStationSectorRangeSensor(coordinator, sector) for sector in SECTORS
         )
@@ -958,8 +959,14 @@ def _passage_entry(passage: Passage) -> dict[str, Any]:
         "flight": passage.closest.flight,
         "altitude": passage.closest.altitude,
         "distance": round(passage.closest_distance / 1000, 1),
+        # How long it was in view and the strongest it was ever heard, which
+        # are the two things a passage knows that a single poll cannot. Both
+        # grow while the aircraft is still there, and the entry is rewritten
+        # each poll, so the board holds the finished figures once it has gone.
+        "duration": round((passage.last_seen - passage.started_at).total_seconds()),
     }
     for key, value in (
+        ("peak_rssi", passage.peak_rssi),
         ("airline", passage.closest.airline),
         ("registration", passage.closest.registration),
         ("aircraft_type", passage.closest.aircraft_type),
@@ -1177,6 +1184,105 @@ class AdsbStationPassagesSensor(
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return the board itself, most recent first."""
         return {"passages": self._board.passages}
+
+
+@dataclass
+class HeardToday(ExtraStoredData):
+    """Which aircraft this station has heard today, and on which day.
+
+    The hex codes rather than a tally, because a tally cannot tell whether
+    the aircraft in front of it is one that was already counted. They survive
+    a restart through the restore state; without that, every aircraft still in
+    the air would be counted a second time on the way back up, and a station
+    restarted twice on a busy afternoon would report a day it never had.
+    """
+
+    day: str | None = None
+    hexes: list[str] = field(default_factory=list)
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return the day as the registry stores it."""
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> HeardToday:
+        """Rebuild a day that was restored from the registry."""
+        hexes = data.get("hexes")
+        return cls(
+            day=_as_text(data.get("day")),
+            hexes=[str(code) for code in hexes] if isinstance(hexes, list) else [],
+        )
+
+
+class AdsbStationHeardTodaySensor(
+    AdsbStationAircraftEntity, RestoreEntity, SensorEntity
+):
+    """How many different aircraft this station has heard today.
+
+    A different figure from the passages, and the one that says what the
+    station itself is doing: passages are what came over your house, this is
+    everything the antenna reached all day, however far away.
+    """
+
+    _attr_translation_key = "heard_today"
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    # The hex codes are kept to count with, not to show. A few thousand of
+    # them in an attribute would be written to the database on every new
+    # aircraft, and nothing reads a list of hex codes anyway.
+    _unrecorded_attributes = frozenset({"since"})
+
+    def __init__(self, coordinator: AdsbStationDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, "heard_today")
+        self._heard = HeardToday()
+        self._seen: set[str] = set()
+
+    async def async_added_to_hass(self) -> None:
+        """Restore what was already heard today."""
+        await super().async_added_to_hass()
+        if (stored := await self.async_get_last_extra_data()) is not None:
+            self._heard = HeardToday.from_dict(stored.as_dict())
+            self._seen = set(self._heard.hexes)
+        self._absorb()
+
+    @property
+    def extra_restore_state_data(self) -> HeardToday:
+        """Return the day for Home Assistant to store."""
+        return self._heard
+
+    @property
+    def available(self) -> bool:
+        """Return True on a quiet day, when nought is a real answer."""
+        return self.coordinator.last_update_success
+
+    def _handle_coordinator_update(self) -> None:
+        """Take in whatever this poll heard."""
+        self._absorb()
+        super()._handle_coordinator_update()
+
+    def _absorb(self) -> None:
+        """Add the aircraft of this poll, and start over at midnight."""
+        today = dt_util.now().date().isoformat()
+        if self._heard.day != today:
+            self._heard = HeardToday(day=today)
+            self._seen = set()
+
+        if (aircraft := self.aircraft) is None:
+            return
+        for summary in aircraft.heard:
+            if summary.hex and summary.hex not in self._seen:
+                self._seen.add(summary.hex)
+                self._heard.hexes.append(summary.hex)
+
+    @property
+    def native_value(self) -> int:
+        """Return how many different aircraft were heard today."""
+        return len(self._heard.hexes)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return which day is being counted, and not the codes themselves."""
+        return {"since": self._heard.day}
 
 
 @dataclass

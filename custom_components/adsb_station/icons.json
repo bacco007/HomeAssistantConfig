@@ -197,6 +197,9 @@
     "binary_sensor": {
       "nearby": {
         "default": "mdi:airplane-alert"
+      },
+      "watchlist": {
+        "default": "mdi:eye-outline"
       }
     },
     "button": {

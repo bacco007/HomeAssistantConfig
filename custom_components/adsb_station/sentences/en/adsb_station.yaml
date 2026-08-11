@@ -1,0 +1,42 @@
+language: en
+intents:
+  AdsbStationOverhead:
+    data:
+      - sentences:
+          - "what is (flying|going) over[head]"
+          - "what is (over|above) (me|us|the house)[ right now]"
+          - "is (there )(anything|something) (overhead|above me|over the house)"
+          - "what is that (plane|aircraft)"
+  AdsbStationCount:
+    data:
+      - sentences:
+          - "how many (planes|aircraft) (are there|are up there|can you hear)"
+          - "how many (planes|aircraft) are (nearby|near me|in range|around)"
+          - "how busy is the sky"
+  AdsbStationClosest:
+    data:
+      - sentences:
+          - "what is the (closest|nearest) (plane|aircraft)"
+          - "where is the (closest|nearest) (plane|aircraft)"
+          - "how far away is the (closest|nearest) (plane|aircraft)"
+  AdsbStationTraffic:
+    data:
+      - sentences:
+          - "(are|is) there (any )<kind>[s] (nearby|around|up there|in range|about)"
+          - "can you hear (any )<kind>[s]"
+          - "any <kind>[s]"
+  AdsbStationRoute:
+    data:
+      - sentences:
+          - "where is (it|that plane|that aircraft) (going|flying)[ to]"
+          - "where (is|does) the (plane|aircraft) (overhead|above me) (going|come from)"
+          - "what is the route of the (plane|aircraft) overhead"
+lists:
+  kind:
+    values:
+      - in: "(military|army|air force)[ traffic]"
+        out: "military"
+      - in: "(helicopter|chopper)"
+        out: "helicopter"
+      - in: "(drone|uav)"
+        out: "drone"

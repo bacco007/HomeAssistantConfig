@@ -101,6 +101,15 @@ AIRCRAFT_TYPE_GROUPS: dict[str, tuple[str, ...]] = {
     "mode_s": ("mode_s",),
 }
 
+# The bits of readsb's dbFlags, which an aircraft database fills in and a
+# decoder without one leaves out altogether. Military is the one that has an
+# entity of its own; the other three say something about the aircraft that
+# only a dashboard can decide what to do with.
+DB_FLAG_MILITARY = 1
+DB_FLAG_INTERESTING = 2
+DB_FLAG_PIA = 4
+DB_FLAG_LADD = 8
+
 # Files that sit next to aircraft.json in the same data directory.
 STATS_FILENAME = "stats.json"
 RECEIVER_FILENAME = "receiver.json"
@@ -128,6 +137,24 @@ DEFAULT_PROXIMITY_RADIUS = 10
 MIN_PROXIMITY_RADIUS = 1
 MAX_PROXIMITY_RADIUS = 500
 
+# A ceiling on what counts as overhead, in feet. Empty by default, which is
+# what every station had before there was one: the radius alone decides.
+#
+# It exists because a radius is a circle drawn on the ground, and an airliner
+# at eleven kilometres is inside it while being nothing anyone would look up
+# at. Where it applies is the whole of the point: what is nearby, what is
+# overhead and what counts as a passage, and nothing else. The station's own
+# figures are about reception rather than about your sky.
+CONF_PROXIMITY_MAX_ALTITUDE = "proximity_max_altitude"
+MAX_PROXIMITY_ALTITUDE = 60000
+
+# Every aircraft inside that radius as its own entity on the map, for as long
+# as it is there. Off unless it is asked for: it is another way of looking at
+# data the sensors already carry rather than data of its own, and a map layer
+# nobody opened is entities nobody reads.
+CONF_MAP_AIRCRAFT = "map_aircraft"
+DEFAULT_MAP_AIRCRAFT = False
+
 # One aircraft crossing the sky above you, from the moment it comes inside the
 # radius to the moment it leaves. An automation wants to hear about that once,
 # so a passage fires an event of its own rather than leaving a template to work
@@ -139,6 +166,25 @@ EVENT_AIRCRAFT_PASSAGE = f"{DOMAIN}_aircraft_passage"
 # the edge of the radius would otherwise ring the doorbell every poll.
 PASSAGE_GAP = timedelta(minutes=10)
 
+# A standing list of aircraft worth knowing about, one to a line. Unlike a
+# passage this has no radius: the question is whether the aircraft is up
+# there at all, however far away, so it is matched against everything the
+# decoder is holding.
+CONF_WATCHLIST = "watchlist"
+EVENT_WATCHLIST_MATCH = f"{DOMAIN}_watchlist_match"
+
+# What a line on that list can be, and how each is recognised. A hex code is
+# six hexadecimal characters, a squawk is four digits, a type code is one the
+# shipped table knows, and anything else carrying a letter is a name the
+# aircraft flies under — a registration or a callsign, compared against both
+# because PH-BXA is one, KLM123 the other, and N123AB could be either.
+# Nothing is guessed from a line that fits none of them: the option refuses
+# it and says which forms it knows.
+WATCHLIST_HEX = "hex"
+WATCHLIST_SQUAWK = "squawk"
+WATCHLIST_TYPE = "aircraft_type"
+WATCHLIST_NAME = "name"
+
 # How many passages the board keeps. Long enough to be a record of the
 # afternoon, short enough that writing the whole list to the database on every
 # arrival stays cheap.
@@ -147,6 +193,26 @@ PASSAGE_BOARD_LENGTH = 20
 # What an altitude in feet is in metres, for measuring the real distance to an
 # aircraft rather than the distance to the ground beneath it.
 FEET_TO_METRES = 0.3048
+# And what an aircraft's ground speed is in metres per second, since every
+# decoder reports it in knots.
+KNOTS_TO_METRES_PER_SECOND = 0.514444
+# How long a degree of latitude is. Good to a fraction of a percent, which is
+# far better than a prediction built on a straight line deserves.
+DEGREE_METRES = 111_320.0
+
+# Everything about seeing an aircraft coming rather than reporting that it is
+# here. All of it rests on one assumption — that the aircraft carries on in a
+# straight line at the same speed — so the limits below are not tuning, they
+# are what keeps a guess from being announced as a fact.
+EVENT_AIRCRAFT_APPROACHING = f"{DOMAIN}_aircraft_approaching"
+# How far ahead a prediction is worth making. Beyond a few minutes an
+# aircraft has had time to turn, descend or be told to hold, and a straight
+# line says nothing about any of that.
+APPROACH_HORIZON = timedelta(minutes=5)
+# How many polls in a row have to agree before anything is announced. One
+# mis-decoded heading is enough to point an aircraft at your house for a
+# single poll; two in a row is not.
+APPROACH_POLLS = 2
 
 # How far an aircraft at a given height can possibly be heard from, and the
 # room left over for the antenna being up a hill.

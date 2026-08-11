@@ -99,14 +99,23 @@
         "data": {
           "scan_interval": "Ververstijd",
           "proximity_radius": "Straal dichtbij",
-          "look_up_routes": "Vluchtroutes opzoeken"
+          "proximity_max_altitude": "Hoogtegrens overhead",
+          "map_aircraft": "Vliegtuigen op de kaart",
+          "look_up_routes": "Vluchtroutes opzoeken",
+          "watchlist": "Watchlist"
         },
         "data_description": {
           "scan_interval": "Hoe vaak het station uitgelezen wordt, in seconden. Alles draait op je eigen netwerk, dus een korte tijd kan prima.",
           "proximity_radius": "Hoe dichtbij een vliegtuig moet zijn om als dichtbij te tellen, in kilometers. Tien is ongeveer wat je kunt zien en horen.",
-          "look_up_routes": "Geen enkel vliegtuig zendt uit waar het vandaan komt of heen gaat, dus dit is het enige gegeven dat aan een dienst op internet gevraagd moet worden. Het gebruikt routeset, dezelfde bron als tar1090. Alleen de vliegtuigen binnen de straal 'dichtbij' worden opgezocht, en antwoorden worden een dag bewaard."
+          "proximity_max_altitude": "Hoe hoog een toestel mag zitten en toch als dichtbij telt, in voet. Leeg laten betekent geen grens, zoals het werkte voordat deze instelling bestond. Een straal is een cirkel op de grond, dus zonder grens hangt een lijnvliegtuig op 36.000 voet boven je. Hij geldt voor wat dichtbij is, wat overhead is en wat als passage telt, en verder nergens voor: het toestel telt nog steeds als ontvangen, zet nog steeds bereikrecords, en een noodsquawk wordt op elke hoogte gemeld.",
+          "map_aircraft": "Zet elk toestel binnen de nabijheidsradius als eigen entiteit op de kaart, zolang het er is. Er wordt niets geregistreerd en niets bewaard, dus ze laten geen spoor achter als ze zijn doorgevlogen; daardoor kun je ze ook niet los hernoemen of verbergen, en staan ze niet onder het apparaat van dit station.",
+          "look_up_routes": "Geen enkel vliegtuig zendt uit waar het vandaan komt of heen gaat, dus dit is het enige gegeven dat aan een dienst op internet gevraagd moet worden. Het gebruikt routeset, dezelfde bron als tar1090. Alleen de vliegtuigen binnen de straal 'dichtbij' worden opgezocht, en antwoorden worden een dag bewaard.",
+          "watchlist": "Toestellen die je wilt weten zodra ze opduiken, één per regel. Er is geen straal: de vraag is of het toestel überhaupt in de lucht is, hoe ver weg ook. Een regel kan een hexcode zijn (484123), een registratie of callsign (PH-BXA, KLM123), een vliegtuigtype (EC35) of een squawk (7700)."
         }
       }
+    },
+    "error": {
+      "unreadable_watchlist": "Deze regels zijn geen hexcode, registratie of callsign, vliegtuigtype of squawk: {lines}"
     }
   },
   "entity": {
@@ -203,6 +212,9 @@
       },
       "passages_today": {
         "name": "Passages vandaag"
+      },
+      "heard_today": {
+        "name": "Vandaag gehoord"
       },
       "highest_aircraft": {
         "name": "Hoogste vliegtuig"
@@ -372,12 +384,104 @@
           "off": "Verstuurt niets",
           "on": "Verstuurt"
         }
+      },
+      "watchlist": {
+        "name": "Watchlist in bereik"
       }
     },
     "button": {
       "reset_range": {
         "name": "Bereikrecords wissen"
       }
+    }
+  },
+  "services": {
+    "look_up_aircraft": {
+      "name": "Vliegtuig opzoeken",
+      "description": "Antwoordt met alles wat dit station van één toestel weet, op hexcode of callsign, uit de laatste poll.",
+      "fields": {
+        "aircraft": {
+          "name": "Vliegtuig",
+          "description": "De hexcode of de callsign, hoofdletters maken niet uit. Een toestel dat dit station niet hoort levert geen antwoord op, en dat is geen fout."
+        },
+        "config_entry": {
+          "name": "Station",
+          "description": "Welk station je vraagt. Alleen nodig als meer dan één van je entries een ontvanger draagt."
+        }
+      }
+    },
+    "list_aircraft": {
+      "name": "Vliegtuigen opsommen",
+      "description": "Antwoordt met elk toestel dat dit station hoort en dat voldoet, dichtstbij eerst. Zonder filter is dat alles wat de decoder vasthoudt, en dat reikt veel verder dan de nabijheidsstraal.",
+      "fields": {
+        "max_distance": {
+          "name": "Binnen",
+          "description": "Hoe ver je kijkt, in kilometers. Toestellen die nooit een positie stuurden vallen af, want hoe ver weg die zijn valt niet te zeggen."
+        },
+        "min_altitude": {
+          "name": "Hoger dan",
+          "description": "In voet. Toestellen die geen hoogte melden vallen af."
+        },
+        "max_altitude": {
+          "name": "Lager dan",
+          "description": "In voet. Toestellen die geen hoogte melden vallen af."
+        },
+        "military": {
+          "name": "Militair",
+          "description": "Aan voor alleen militair verkeer, uit voor alles behalve dat."
+        },
+        "category": {
+          "name": "Categorie",
+          "description": "De emittercategorie die een toestel uitzendt, A0 tot en met D7. A7 is een helikopter en B6 een drone."
+        },
+        "config_entry": {
+          "name": "Station",
+          "description": "Welk station je vraagt. Alleen nodig als meer dan één van je entries een ontvanger draagt."
+        }
+      }
+    },
+    "install_sentences": {
+      "name": "Spraakzinnen installeren",
+      "description": "Kopieert de gesproken zinnen die deze integratie meelevert naar je configuratiemap, waar Assist ze uit leest. Draai daarna conversation.reload, of herstart."
+    },
+    "speak": {
+      "name": "Een antwoord uitspreken",
+      "description": "Geeft één van de vijf gesproken antwoorden als tekst terug, klaar voor een zin-trigger om terug te zeggen. Heeft geen zinsbestanden nodig.",
+      "fields": {
+        "question": {
+          "name": "Vraag",
+          "description": "Welke van de vijf beantwoord wordt: wat er overvliegt, hoeveel er zijn, welk toestel het dichtstbij is, of een soort verkeer in bereik is, of waar het toestel boven je heen gaat."
+        },
+        "kind": {
+          "name": "Soort",
+          "description": "Alleen voor de verkeersvraag: militair, helikopter of drone."
+        },
+        "language": {
+          "name": "Taal",
+          "description": "In welke taal geantwoord wordt. Standaard de taal van je Home Assistant; Engels en Nederlands worden gesproken, al het andere wordt in het Engels beantwoord."
+        },
+        "config_entry": {
+          "name": "Station",
+          "description": "Welk station je vraagt. Alleen nodig als meer dan één van je entries een ontvanger draagt."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "no_receiver": {
+      "message": "Nog geen enkel ADS-B-station heeft zijn ontvanger gelezen, dus er valt niets te antwoorden."
+    },
+    "several_receivers": {
+      "message": "Meer dan één station draagt een ontvanger ({stations}), dus deze aanroep moet zeggen welke hij bedoelt."
+    },
+    "station_not_loaded": {
+      "message": "Dat station is niet ingericht, dus daar valt niets aan te vragen."
+    },
+    "station_without_aircraft": {
+      "message": "{station} heeft geen eigen ontvanger en hoort dus geen vliegtuigen. Vraag het aan de entry die je decoder draagt."
+    },
+    "sentences_not_written": {
+      "message": "De zinnen konden niet naar je configuratiemap geschreven worden: {error}"
     }
   }
 }

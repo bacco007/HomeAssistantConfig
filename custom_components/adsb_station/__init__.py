@@ -5,6 +5,7 @@ from __future__ import annotations
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.typing import ConfigType
 
 from .api import AdsbStationClient
 from .const import (
@@ -15,7 +16,9 @@ from .const import (
     FEEDER_FR24,
 )
 from .coordinator import AdsbStationConfigEntry, AdsbStationDataUpdateCoordinator
+from .intent import async_setup_intents
 from .reference import async_load_reference
+from .services import async_setup_services
 
 # What the option was called while it named a source rather than a yes or no.
 LEGACY_ROUTE_SOURCE = "route_source"
@@ -23,8 +26,22 @@ LEGACY_ROUTE_SOURCE = "route_source"
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.GEO_LOCATION,
     Platform.SENSOR,
 ]
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Register what belongs to the integration rather than to one station.
+
+    The services and the spoken questions answer about a station, but they
+    are the integration's and are registered once. Doing it per entry would
+    register them again for the second feeder in front of the same decoder,
+    and unregister them for both when either one is removed.
+    """
+    async_setup_services(hass)
+    async_setup_intents(hass)
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: AdsbStationConfigEntry) -> bool:

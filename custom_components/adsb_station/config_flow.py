@@ -29,10 +29,14 @@ from .const import (
     CONF_AIRCRAFT_URL,
     CONF_FEEDER_TYPE,
     CONF_LOOK_UP_ROUTES,
+    CONF_MAP_AIRCRAFT,
+    CONF_PROXIMITY_MAX_ALTITUDE,
     CONF_PROXIMITY_RADIUS,
     CONF_RECEIVER_FEATURES,
     CONF_STATS_URL,
+    CONF_WATCHLIST,
     DEFAULT_LOOK_UP_ROUTES,
+    DEFAULT_MAP_AIRCRAFT,
     DEFAULT_PROXIMITY_RADIUS,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_STATION_NAME,
@@ -41,12 +45,14 @@ from .const import (
     FEEDER_PIAWARE,
     FEEDER_PLANEFINDER,
     FEEDERS,
+    MAX_PROXIMITY_ALTITUDE,
     MAX_PROXIMITY_RADIUS,
     MAX_SCAN_INTERVAL,
     MIN_PROXIMITY_RADIUS,
     MIN_SCAN_INTERVAL,
 )
 from .coordinator import AdsbStationConfigEntry
+from .reference import async_load_reference, kind_of
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -105,9 +111,24 @@ OPTIONS_SCHEMA = vol.Schema(
                 mode=selector.NumberSelectorMode.BOX,
             )
         ),
+        vol.Optional(CONF_PROXIMITY_MAX_ALTITUDE): selector.NumberSelector(
+            selector.NumberSelectorConfig(
+                min=0,
+                max=MAX_PROXIMITY_ALTITUDE,
+                step=500,
+                unit_of_measurement="ft",
+                mode=selector.NumberSelectorMode.BOX,
+            )
+        ),
+        vol.Required(
+            CONF_MAP_AIRCRAFT, default=DEFAULT_MAP_AIRCRAFT
+        ): selector.BooleanSelector(),
         vol.Required(
             CONF_LOOK_UP_ROUTES, default=DEFAULT_LOOK_UP_ROUTES
         ): selector.BooleanSelector(),
+        vol.Optional(CONF_WATCHLIST): selector.TextSelector(
+            selector.TextSelectorConfig(multiline=True)
+        ),
     }
 )
 
@@ -421,13 +442,41 @@ class AdsbStationOptionsFlow(OptionsFlow):
     ) -> ConfigFlowResult:
         """Let the user change how often the station is polled."""
         if user_input is not None:
-            return self.async_create_entry(
-                data={
-                    CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
-                    CONF_PROXIMITY_RADIUS: int(user_input[CONF_PROXIMITY_RADIUS]),
-                    CONF_LOOK_UP_ROUTES: user_input[CONF_LOOK_UP_ROUTES],
-                }
-            )
+            options: dict[str, Any] = {
+                CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
+                CONF_PROXIMITY_RADIUS: int(user_input[CONF_PROXIMITY_RADIUS]),
+                CONF_MAP_AIRCRAFT: user_input[CONF_MAP_AIRCRAFT],
+                CONF_LOOK_UP_ROUTES: user_input[CONF_LOOK_UP_ROUTES],
+            }
+            # Left empty means no ceiling at all, so the option is absent
+            # rather than nought: nought would be a ceiling on the ground.
+            ceiling = user_input.get(CONF_PROXIMITY_MAX_ALTITUDE)
+            if ceiling not in (None, ""):
+                options[CONF_PROXIMITY_MAX_ALTITUDE] = int(ceiling)
+
+            watchlist = str(user_input.get(CONF_WATCHLIST) or "")
+            models = (await async_load_reference(self.hass)).models
+            # A line nobody can read is refused rather than saved and
+            # silently never matched. The message names the line, because a
+            # list of twenty is no place to go looking for the typo.
+            unreadable = [
+                line.strip()
+                for line in watchlist.splitlines()
+                if line.strip() and kind_of(line, models) is None
+            ]
+            if unreadable:
+                return self.async_show_form(
+                    step_id="init",
+                    data_schema=self.add_suggested_values_to_schema(
+                        OPTIONS_SCHEMA, user_input
+                    ),
+                    errors={CONF_WATCHLIST: "unreadable_watchlist"},
+                    description_placeholders={"lines": ", ".join(unreadable)},
+                )
+            if watchlist.strip():
+                options[CONF_WATCHLIST] = watchlist.strip()
+
+            return self.async_create_entry(data=options)
 
         return self.async_show_form(
             step_id="init",

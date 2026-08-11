@@ -136,6 +136,10 @@ async def async_setup_entry(
     if coordinator.client.aircraft_url:
         entities.append(AdsbStationEmergencyBinarySensor(coordinator))
         entities.append(AdsbStationNearbyBinarySensor(coordinator))
+        # Only where there is a list to watch. An always-off sensor for a
+        # feature nobody switched on is an entity nobody asked for.
+        if coordinator.watchlist:
+            entities.append(AdsbStationWatchlistBinarySensor(coordinator))
 
     async_add_entities(entities)
 
@@ -192,6 +196,50 @@ class AdsbStationEmergencyBinarySensor(AdsbStationAircraftEntity, BinarySensorEn
                 }
                 for entry in aircraft.emergencies
             ]
+        }
+
+
+class AdsbStationWatchlistBinarySensor(AdsbStationAircraftEntity, BinarySensorEntity):
+    """On while an aircraft from your watchlist is in the air near you.
+
+    One sensor for the whole list rather than one per line. A list of fifty
+    tails would otherwise be fifty entities, of which forty-nine are always
+    off, and what an automation wants to know is that something on the list
+    turned up — which the event says, with the line that matched.
+    """
+
+    _attr_translation_key = "watchlist"
+    # The matches are rewritten while an aircraft stays in range, and a
+    # database row per poll for a list nothing plots is not worth keeping.
+    _unrecorded_attributes = frozenset({"aircraft"})
+
+    def __init__(self, coordinator: AdsbStationDataUpdateCoordinator) -> None:
+        """Initialize the binary sensor."""
+        super().__init__(coordinator, "watchlist")
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return True when something on the list is up there."""
+        if (aircraft := self.aircraft) is None:
+            return None
+        return bool(aircraft.watched)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Return what matched, and which line of the list it matched."""
+        if (aircraft := self.aircraft) is None:
+            return None
+        return {
+            "watching": [entry.line for entry in self.coordinator.watchlist],
+            "aircraft": [
+                {
+                    "watching": match.entry.line,
+                    "matched_on": match.matched_on,
+                    "squawk": match.squawk,
+                    **aircraft_attributes(match.summary, include_distance=True),
+                }
+                for match in aircraft.watched
+            ],
         }
 
 

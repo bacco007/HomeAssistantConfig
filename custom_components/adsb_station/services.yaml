@@ -1,0 +1,84 @@
+look_up_aircraft:
+  fields:
+    aircraft:
+      required: true
+      example: KLM123
+      selector:
+        text:
+    config_entry:
+      selector:
+        config_entry:
+          integration: adsb_station
+
+list_aircraft:
+  fields:
+    max_distance:
+      example: 25
+      selector:
+        number:
+          min: 1
+          max: 700
+          step: 1
+          unit_of_measurement: km
+          mode: box
+    min_altitude:
+      example: 0
+      selector:
+        number:
+          min: 0
+          max: 60000
+          step: 500
+          unit_of_measurement: ft
+          mode: box
+    max_altitude:
+      example: 10000
+      selector:
+        number:
+          min: 0
+          max: 60000
+          step: 500
+          unit_of_measurement: ft
+          mode: box
+    military:
+      selector:
+        boolean:
+    category:
+      example: A7
+      selector:
+        text:
+    config_entry:
+      selector:
+        config_entry:
+          integration: adsb_station
+
+install_sentences:
+
+speak:
+  fields:
+    question:
+      required: true
+      example: overhead
+      selector:
+        select:
+          options:
+            - overhead
+            - count
+            - closest
+            - traffic
+            - route
+    kind:
+      example: helicopter
+      selector:
+        select:
+          options:
+            - military
+            - helicopter
+            - drone
+    language:
+      example: nl
+      selector:
+        text:
+    config_entry:
+      selector:
+        config_entry:
+          integration: adsb_station

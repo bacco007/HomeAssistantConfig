@@ -99,14 +99,23 @@
         "data": {
           "scan_interval": "Update interval",
           "proximity_radius": "Nearby radius",
-          "look_up_routes": "Look up flight routes"
+          "proximity_max_altitude": "Overhead ceiling",
+          "map_aircraft": "Aircraft on the map",
+          "look_up_routes": "Look up flight routes",
+          "watchlist": "Watchlist"
         },
         "data_description": {
           "scan_interval": "How often the station is read, in seconds. Everything runs on your own network, so a short interval is fine.",
           "proximity_radius": "How close an aircraft has to be to count as nearby, in kilometres. Ten is roughly what you can see and hear.",
-          "look_up_routes": "No aircraft broadcasts where it is flying from or to, so this is the one figure that has to be asked of a service on the internet. It uses routeset, the same source tar1090 does. Only the aircraft inside the nearby radius are looked up, and answers are kept for the day."
+          "proximity_max_altitude": "How high an aircraft may be and still count as nearby, in feet. Leave empty for no ceiling, which is how it worked before this setting existed. A radius is a circle on the ground, so without one an airliner at 36,000 feet is overhead. It applies to what is nearby, what is overhead and what counts as a passage, and to nothing else: the aircraft still counts as received, still sets range records, and an emergency squawk is still reported at any height.",
+          "map_aircraft": "Puts every aircraft inside the nearby radius on the map as its own entity, for as long as it is there. Nothing is registered and nothing is kept, so they leave no trace once they have flown on; that also means they cannot be renamed or hidden individually, and they are not listed under this station's device.",
+          "look_up_routes": "No aircraft broadcasts where it is flying from or to, so this is the one figure that has to be asked of a service on the internet. It uses routeset, the same source tar1090 does. Only the aircraft inside the nearby radius are looked up, and answers are kept for the day.",
+          "watchlist": "Aircraft worth knowing about whenever they turn up, one to a line. There is no radius: this asks whether the aircraft is in the air at all, however far away. A line can be a hex code (484123), a registration or a callsign (PH-BXA, KLM123), an aircraft type (EC35) or a squawk (7700)."
         }
       }
+    },
+    "error": {
+      "unreadable_watchlist": "These lines are not a hex code, a registration or callsign, an aircraft type or a squawk: {lines}"
     }
   },
   "entity": {
@@ -203,6 +212,9 @@
       },
       "passages_today": {
         "name": "Passages today"
+      },
+      "heard_today": {
+        "name": "Heard today"
       },
       "highest_aircraft": {
         "name": "Highest aircraft"
@@ -372,12 +384,104 @@
           "off": "Not sending",
           "on": "Sending"
         }
+      },
+      "watchlist": {
+        "name": "Watchlist in range"
       }
     },
     "button": {
       "reset_range": {
         "name": "Reset range records"
       }
+    }
+  },
+  "services": {
+    "look_up_aircraft": {
+      "name": "Look up aircraft",
+      "description": "Answers with everything this station knows about one aircraft, by hex code or callsign, out of its last poll.",
+      "fields": {
+        "aircraft": {
+          "name": "Aircraft",
+          "description": "The hex code or the callsign, in either case. An aircraft this station is not hearing answers with nothing, which is not an error."
+        },
+        "config_entry": {
+          "name": "Station",
+          "description": "Which station to ask. Only needed when more than one of your entries carries a receiver."
+        }
+      }
+    },
+    "list_aircraft": {
+      "name": "List aircraft",
+      "description": "Answers with every aircraft this station is hearing that matches, nearest first. Without a single filter that is everything the decoder is holding, which reaches far beyond the nearby radius.",
+      "fields": {
+        "max_distance": {
+          "name": "Within",
+          "description": "How far out to look, in kilometres. Aircraft that never sent a position are left out, because there is no telling how far away they are."
+        },
+        "min_altitude": {
+          "name": "Higher than",
+          "description": "In feet. Aircraft that report no altitude are left out."
+        },
+        "max_altitude": {
+          "name": "Lower than",
+          "description": "In feet. Aircraft that report no altitude are left out."
+        },
+        "military": {
+          "name": "Military",
+          "description": "On for military traffic only, off for everything but."
+        },
+        "category": {
+          "name": "Category",
+          "description": "The emitter category an aircraft broadcasts, A0 to D7. A7 is a helicopter and B6 a drone."
+        },
+        "config_entry": {
+          "name": "Station",
+          "description": "Which station to ask. Only needed when more than one of your entries carries a receiver."
+        }
+      }
+    },
+    "install_sentences": {
+      "name": "Install voice sentences",
+      "description": "Copies the spoken sentences this integration ships into your configuration directory, where Assist reads them from. Run conversation.reload afterwards, or restart."
+    },
+    "speak": {
+      "name": "Speak an answer",
+      "description": "Returns one of the five spoken answers as text, ready for a sentence trigger to say back. Needs no sentence files.",
+      "fields": {
+        "question": {
+          "name": "Question",
+          "description": "Which of the five to answer: what is overhead, how many are up there, which is closest, whether a kind of traffic is in range, or where the aircraft overhead is going."
+        },
+        "kind": {
+          "name": "Kind",
+          "description": "For the traffic question only: military, helicopter or drone."
+        },
+        "language": {
+          "name": "Language",
+          "description": "Which language to answer in. Defaults to the language of your Home Assistant; English and Dutch are spoken, anything else is answered in English."
+        },
+        "config_entry": {
+          "name": "Station",
+          "description": "Which station to ask. Only needed when more than one of your entries carries a receiver."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "no_receiver": {
+      "message": "No ADS-B station has read its receiver yet, so there is nothing to answer with."
+    },
+    "several_receivers": {
+      "message": "More than one station carries a receiver ({stations}), so this call has to say which one to ask."
+    },
+    "station_not_loaded": {
+      "message": "That station is not set up, so it cannot be asked anything."
+    },
+    "station_without_aircraft": {
+      "message": "{station} has no receiver of its own, so it hears no aircraft. Ask the entry that carries your decoder."
+    },
+    "sentences_not_written": {
+      "message": "The sentences could not be written to your configuration directory: {error}"
     }
   }
 }
