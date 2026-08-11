@@ -1,7 +1,9 @@
 {
   "domain": "breakage_radar",
   "name": "Breakage Radar",
-  "codeowners": ["@Booyaka101"],
+  "codeowners": [
+    "@Booyaka101"
+  ],
   "config_flow": true,
   "documentation": "https://github.com/Booyaka101/hass-breakage-radar",
   "integration_type": "service",
@@ -9,5 +11,5 @@
   "issue_tracker": "https://github.com/Booyaka101/hass-breakage-radar/issues",
   "requirements": [],
   "single_config_entry": true,
-  "version": "1.0.1"
+  "version": "1.2.2"
 }

@@ -15,7 +15,7 @@ from homeassistant.helpers import issue_registry as ir
 
 from .const import DOMAIN, ISSUE_ID
 from .coordinator import BreakageRadarCoordinator
-from .repairs import async_sync_issue
+from .repairs import ALERT_PREFIXES, async_sync_issue
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,4 +51,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not hass.data.get(DOMAIN):
             hass.data.pop(DOMAIN, None)
             ir.async_delete_issue(hass, DOMAIN, ISSUE_ID)
+            async_get = getattr(ir, "async_get", None)
+            if async_get is not None:
+                registry = async_get(hass)
+                for issue_domain, issue_id in list(getattr(registry, "issues", {})):
+                    if issue_domain == DOMAIN and issue_id.startswith(ALERT_PREFIXES):
+                        ir.async_delete_issue(hass, DOMAIN, issue_id)
     return unloaded

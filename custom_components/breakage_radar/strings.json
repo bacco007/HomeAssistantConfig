@@ -20,8 +20,16 @@
   },
   "issues": {
     "integrations_affected": {
-      "title": "{count} custom integration(s) will break in a future Home Assistant release",
-      "description": "Breakage Radar found deprecated Home Assistant APIs in these installed custom integrations: {integrations}.\n\nBy release: {releases}. The first deadline is Home Assistant {earliest}.\n\nThis cannot be fixed from here — the code lives in the integration's own repository. Open the details on `sensor.breakage_radar_affected` to see the exact file and line, then raise it with the integration's maintainer or plan a replacement before the deadline."
+      "title": "{count} custom integration(s) will break in a later Home Assistant release",
+      "description": "Breakage Radar found deprecated Home Assistant APIs in these installed custom integrations: {integrations}.\n\nBy release: {releases}. The first of these deadlines is Home Assistant {earliest}. Anything breaking within the next month gets its own issue instead of being listed here.\n\nThis cannot be fixed from here — the code lives in the integration's own repository. Open the details on `sensor.breakage_radar_affected` to see the exact file and line, then raise it with the integration's maintainer or plan a replacement before the deadline."
+    },
+    "integration_imminent": {
+      "title": "{domain} breaks in about {days} day(s), in Home Assistant {release}",
+      "description": "Home Assistant {release} removes an API that `{domain}` still uses, and that release is due in about {days} day(s) (Home Assistant releases on the first Wednesday of every month).\n\nCheck the integration's repository for a release that fixes it before you upgrade. The exact file and line are in the details on `sensor.breakage_radar_affected`. This issue clears itself once the integration no longer uses the removed API."
+    },
+    "integration_broken": {
+      "title": "{domain} uses an API that was removed in Home Assistant {release}",
+      "description": "This system is running Home Assistant {release} or later, so the deprecated API that Breakage Radar found in `{domain}` is already gone — the integration is likely failing right now.\n\nCheck the integration's repository for an updated release, or replace it. The exact file and line are in the details on `sensor.breakage_radar_affected`. This issue clears itself once an updated version no longer contains the removed API."
     }
   }
 }
