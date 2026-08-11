@@ -37,7 +37,17 @@ SIGNAL_SPEEDTEST_RUNNING: Final = f"{DOMAIN}_speedtest_running"
 SIGNAL_AUTO_SPEEDTEST_CHANGED: Final = f"{DOMAIN}_auto_speedtest_changed"
 SIGNAL_SPEEDTEST_RESULT: Final = f"{DOMAIN}_speedtest_result"
 SERVICE_RUN_SPEEDTEST: Final = "run_speedtest"
+SERVICE_DUMP_RAW_DATA: Final = "dump_raw_data"
 ATTR_WAN: Final = "wan"
+ATTR_KEEP: Final = "keep"
+
+# Where unredacted dumps are written, under the Home Assistant config
+# directory, and how many to keep per config entry before the oldest are
+# removed. They are kept out of the config root because they are files the
+# user is meant to find, copy off the host and then forget about.
+DUMP_DIR_NAME: Final = "unifi_wan_dumps"
+DEFAULT_DUMP_KEEP: Final = 10
+MAX_DUMP_KEEP: Final = 100
 
 # How long to wait for a triggered speedtest to finish, and how often to
 # poll the controller for its result while waiting.

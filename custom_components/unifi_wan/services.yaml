@@ -12,3 +12,23 @@ run_speedtest:
           min: 1
           max: 4
           mode: box
+
+dump_raw_data:
+  name: Dump raw data
+  description: >-
+    Write an unredacted JSON file of everything the controller returns, to
+    config/unifi_wan_dumps/, for your own inspection. Contains IP addresses,
+    MAC addresses, serial numbers and the ISP lookup - do not post it
+    publicly; use Download diagnostics for that.
+  fields:
+    keep:
+      name: Files to keep
+      description: How many dumps to keep per gateway before the oldest is deleted.
+      required: false
+      default: 10
+      example: 10
+      selector:
+        number:
+          min: 1
+          max: 100
+          mode: box

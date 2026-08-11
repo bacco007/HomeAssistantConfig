@@ -71,6 +71,16 @@
           "description": "Optional WAN number to test (e.g. 1 or 2). Omit to test the active WAN."
         }
       }
+    },
+    "dump_raw_data": {
+      "name": "Dump raw data",
+      "description": "Write an unredacted JSON file of everything the controller returns, to config/unifi_wan_dumps/, for your own inspection. Contains IP addresses, MAC addresses, serial numbers and the ISP lookup - do not post it publicly; use Download diagnostics for that.",
+      "fields": {
+        "keep": {
+          "name": "Files to keep",
+          "description": "How many dumps to keep per gateway before the oldest is deleted."
+        }
+      }
     }
   }
 }

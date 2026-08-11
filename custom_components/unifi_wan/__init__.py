@@ -11,7 +11,14 @@ import aiohttp
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, ServiceCall, CALLBACK_TYPE, callback
+from homeassistant.core import (
+    HomeAssistant,
+    ServiceCall,
+    ServiceResponse,
+    SupportsResponse,
+    CALLBACK_TYPE,
+    callback,
+)
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
@@ -47,7 +54,11 @@ from .const import (
     WAN_ISP_FIELDS,
     SPEEDTEST_SERVER_FIELDS,
     SERVICE_RUN_SPEEDTEST,
+    SERVICE_DUMP_RAW_DATA,
     ATTR_WAN,
+    ATTR_KEEP,
+    DEFAULT_DUMP_KEEP,
+    MAX_DUMP_KEEP,
     SPEEDTEST_TIMEOUT_SECONDS,
     SPEEDTEST_POLL_SECONDS,
 )
@@ -58,6 +69,14 @@ SERVICE_RUN_SPEEDTEST_SCHEMA = vol.Schema(
     {
         vol.Optional(ATTR_WAN): vol.All(
             vol.Coerce(int), vol.Range(min=1, max=MAX_WAN_INTERFACES)
+        )
+    }
+)
+
+SERVICE_DUMP_RAW_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Optional(ATTR_KEEP, default=DEFAULT_DUMP_KEEP): vol.All(
+            vol.Coerce(int), vol.Range(min=1, max=MAX_DUMP_KEEP)
         )
     }
 )
@@ -208,6 +227,33 @@ class UnifiWanClient:
         except Exception as e:
             _LOGGER.debug("Per-WAN speedtest fetch failed: %s", e)
             return None
+
+    async def fetch_raw(self, path: str, *, v2: bool = False) -> dict[str, Any]:
+        """GET an endpoint and report the whole outcome, without raising.
+
+        For the unredacted dumps: unlike get_json this reports the status
+        code and any error rather than turning them into an update failure,
+        because "this endpoint answers 404 on your firmware" is itself the
+        finding. The body is returned decoded where it is JSON and as text
+        otherwise, so a controller answering HTML still shows what it said.
+        """
+        url = self._url_v2(path) if v2 else self._url(path)
+        result: dict[str, Any] = {"url": url}
+        headers = {"X-API-Key": self.api_key}
+        try:
+            async with self._session.get(url, headers=headers) as resp:
+                result["status"] = resp.status
+                result["content_type"] = resp.headers.get("Content-Type")
+                try:
+                    result["body"] = await resp.json(content_type=None)
+                except (aiohttp.ContentTypeError, ValueError):
+                    # Truncated: a controller that answers with a login page
+                    # has already made its point in the first few hundred
+                    # characters, and the rest is not worth the file size.
+                    result["body_text"] = (await resp.text())[:2000]
+        except Exception as e:  # noqa: BLE001 - the error is the finding here
+            result["error"] = f"{type(e).__name__}: {e}"
+        return result
 
     async def get_devices(self) -> dict:
         return await self.get_json("stat/device")
@@ -1205,6 +1251,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             schema=SERVICE_RUN_SPEEDTEST_SCHEMA,
         )
 
+    if not hass.services.has_service(DOMAIN, SERVICE_DUMP_RAW_DATA):
+        async def handle_dump_raw_data(call: ServiceCall) -> ServiceResponse:
+            # Imported here so the dump machinery is only loaded when it is
+            # asked for, and to keep the module's import of this one - for
+            # UniFiWanData and resolve_active_wan - free of a cycle.
+            from .dump import async_dump_all
+
+            return await async_dump_all(hass, call.data[ATTR_KEEP])
+
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_DUMP_RAW_DATA,
+            handle_dump_raw_data,
+            schema=SERVICE_DUMP_RAW_DATA_SCHEMA,
+            # Returns the paths written, so the file can be found without
+            # digging through the log.
+            supports_response=SupportsResponse.OPTIONAL,
+        )
+
     return True
 
 
@@ -1217,8 +1282,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok:
         hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
 
-    if not hass.data.get(DOMAIN) and hass.services.has_service(DOMAIN, SERVICE_RUN_SPEEDTEST):
-        hass.services.async_remove(DOMAIN, SERVICE_RUN_SPEEDTEST)
+    if not hass.data.get(DOMAIN):
+        for service in (SERVICE_RUN_SPEEDTEST, SERVICE_DUMP_RAW_DATA):
+            if hass.services.has_service(DOMAIN, service):
+                hass.services.async_remove(DOMAIN, service)
 
     return unload_ok
 
