@@ -914,6 +914,11 @@ class AdsbStationNearbySensor(AdsbStationAircraftEntity, SensorEntity):
 
     _attr_translation_key = "aircraft_nearby"
     _attr_state_class = SensorStateClass.MEASUREMENT
+    # The list of aircraft is rewritten on every poll, so recording it would
+    # write the whole sky to the database every few seconds for a figure the
+    # state already carries. The count keeps its history; the list does not.
+    _unrecorded_attributes = frozenset({"aircraft"})
+
 
     def __init__(self, coordinator: AdsbStationDataUpdateCoordinator) -> None:
         """Initialize the sensor."""
@@ -1105,6 +1110,14 @@ class AdsbStationPassagesSensor(
 
     _attr_translation_key = "passages_today"
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    # The board is rewritten on every arrival and while an aircraft is still in
+    # view, so recording it would store twenty aircraft again for every change
+    # to the tally. Excluding the whole entity from the recorder instead costs
+    # the history and the statistics of the tally itself, which is the part
+    # worth keeping. The board survives a restart through the restore state,
+    # which is not the recorder.
+    _unrecorded_attributes = frozenset({"passages"})
+
 
     def __init__(self, coordinator: AdsbStationDataUpdateCoordinator) -> None:
         """Initialize the sensor."""
