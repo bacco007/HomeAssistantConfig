@@ -1,11 +1,8 @@
-"""Turning the index and the local scan into the sensor's state.
+"""Turns the index and the local scan into the sensor's state.
 
-Deliberately free of any ``homeassistant`` import so the exact code that runs
-on a real box can be unit-tested without a Home Assistant install, and free of
-I/O: :func:`build_report` is a pure function of (index, local scan, clock).
-
-Discovery lives in :mod:`.discovery` and scanning in :mod:`.scanner`; this
-module only decides what the two of them add up to.
+Free of any ``homeassistant`` import and of I/O, so the code that runs on a
+real system can be tested without one. Discovery lives in :mod:`.discovery`,
+scanning in :mod:`.scanner`.
 """
 
 from __future__ import annotations
@@ -13,21 +10,27 @@ from __future__ import annotations
 from datetime import date, timedelta
 from typing import Any
 
-from .const import ALERT_WINDOW_DAYS, MAX_DETAILS, SUPPORTED_SCHEMA
+from .const import (
+    ALERT_WINDOW_DAYS,
+    MAX_ALERT_CARDS,
+    MAX_DETAILS,
+    SUPPORTED_SCHEMA,
+)
 from .rules_engine import is_future, parse_version
+
+MONTH_NAMES = (
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+)
 
 
 def release_estimated_date(release: str) -> date | None:
-    """Expected calendar date of a Home Assistant release label.
+    """Expected date of a release label, or None if it cannot be parsed.
 
-    Home Assistant's published schedule: "A new stable version of Home
-    Assistant is released on the first Wednesday of every month"
-    (home-assistant.io/faq/release/). Measured against the eight 2026.x
-    releases, that rule was exact every time. It is computed here rather than
-    fetched, so a one-off rescheduled release would shift the estimate; the
-    ``broken_now`` level never depends on it. Returns ``None`` for anything
-    unparseable, and callers treat that as "no date opinion" rather than
-    guessing.
+    Home Assistant releases on the first Wednesday of every month
+    (home-assistant.io/faq/release/), which matched all eight 2026 releases
+    exactly. A rescheduled release would shift this; ``broken_now`` is decided
+    by version comparison instead, so it never depends on the estimate.
     """
     parts = release.split(".")
     if len(parts) < 2:
@@ -37,6 +40,29 @@ def release_estimated_date(release: str) -> date | None:
     except ValueError:
         return None
     return first + timedelta(days=(2 - first.weekday()) % 7)
+
+
+def describe_when(release: str, days: int | None) -> str:
+    """Human phrasing for a deadline: 'May 2027, about 8 months away'."""
+    when = release_estimated_date(release)
+    month = f"{MONTH_NAMES[when.month - 1]} {when.year}" if when else release
+    if days is None:
+        return month
+    if days < 0:
+        return f"{month}, already released"
+    if days == 0:
+        return f"{month}, today"
+    if days == 1:
+        return f"{month}, tomorrow"
+    if days < 45:
+        return f"{month}, about {days} days away"
+    months = round(days / 30.4)
+    if months < 12:
+        return f"{month}, about {months} months away"
+    years = days / 365.25
+    if years < 1.25:
+        return f"{month}, about a year away"
+    return f"{month}, about {years:.1f} years away".replace(".0 ", " ")
 
 
 def _index_by_domain(index: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -64,34 +90,17 @@ def build_report(
 ) -> dict[str, Any]:
     """Match installed custom integrations against the published index.
 
-    ``local_scan`` is the result of :func:`scan_installed`. Local findings
-    describe the exact installed bytes, so wherever the local scan reached a
-    verdict it **replaces** the index's: a domain the index never heard of that
-    parses clean becomes ``clean``, and an index finding disappears when the
-    installed copy no longer contains it. Only a domain the local scan could
-    not read falls back to the index, and if neither side knows it, it stays in
-    ``not_in_index`` with the local reason. A local ``clean`` reached with zero
-    matchable rules in play proves nothing and never overrides the index.
+    Local scan results replace the index's for the same domain, since they
+    describe the bytes actually installed. A domain the scan could not read
+    falls back to the index, and a local "clean" reached with no rules in play
+    never overrides an index finding.
 
-    ``current_version`` is the Home Assistant release this system runs, and
-    ``today`` the current date. Together they sort every finding into three
-    levels:
+    Findings are levelled as ``broken_now`` (running version has reached the
+    deadline, decided by version comparison so it is exact), ``imminent``
+    (release estimated within ``alert_window_days``) or ``upcoming``. Without
+    a version or a date everything degrades to ``upcoming``.
 
-    ``broken_now``  the running version has already reached the deadline. This
-                    is decided by version comparison alone -- never by a date
-                    estimate -- so it is exact.
-    ``imminent``    still ahead, but the release is estimated to land within
-                    ``alert_window_days``. Worth an alert of its own.
-    ``upcoming``    further out. Summarised in one group rather than alerted
-                    on individually, because a year-ahead deadline that cannot
-                    be dismissed just teaches people to ignore the panel.
-
-    Without a version or a date, findings degrade conservatively to
-    ``upcoming`` rather than guessing.
-
-    Returns a plain dict ready to become the sensor's state and attributes.
-    Unknown or malformed index payloads degrade to an empty report rather than
-    raising -- the caller decides whether that is an error.
+    A malformed index gives an empty report rather than raising.
     """
     rules = {
         rule["id"]: rule
@@ -111,9 +120,9 @@ def build_report(
     unknown_reasons: dict[str, str] = {}
     broken_now: dict[str, str] = {}
     imminent: dict[str, dict[str, Any]] = {}
+    links: dict[str, dict[str, str]] = {}
 
     def _days_until(release: str) -> int | None:
-        """Estimated days until ``release`` ships, or ``None`` if unknowable."""
         if today is None:
             return None
         when = release_estimated_date(release)
@@ -125,7 +134,6 @@ def build_report(
         if not release:
             return "upcoming"
         if current_version and not is_future(release, current_version):
-            # Exact: this system is already running the release that removed it.
             return "broken_now"
         days = _days_until(release)
         if days is not None and days <= alert_window_days:
@@ -159,6 +167,24 @@ def build_report(
                         "release": release,
                         "days": days if days is not None else 0,
                     }
+            if when in ("broken_now", "imminent"):
+                # What the notification needs to point somewhere useful.
+                rule = rules.get(finding.get("rule_id"), {})
+                links.setdefault(
+                    domain,
+                    {
+                        "repository": (entry or {}).get("full_name", ""),
+                        "repo_url": (entry or {}).get("repo_url", ""),
+                        # The deprecated symbol is the search term that finds an
+                        # existing report; a vague word like "deprecated" does not.
+                        "symbol": rule.get("symbol", ""),
+                        # source_url is a real link; source can be a bare
+                        # "file.py:418" reference for core-derived rules.
+                        "learn_more": (
+                            rule.get("source_url") or rule.get("source") or ""
+                        ),
+                    },
+                )
             rule = rules.get(finding.get("rule_id"), {})
             details.append(
                 {
@@ -171,9 +197,10 @@ def build_report(
                     "source": source,
                     "when": when,
                     "days_until": days,
+                    "due": describe_when(release, days),
                     "repository": (entry or {}).get("full_name", ""),
-                    # A local finding was matched against the installed bytes
-                    # themselves, so the scanned version *is* the installed one.
+                    # A local finding matched the installed bytes, so the
+                    # scanned version is the installed one.
                     "scanned_version": (
                         installed.get(domain, "")
                         if source == "local"
@@ -186,8 +213,7 @@ def build_report(
             )
 
     for domain in sorted(installed):
-        # Breakage Radar is reported on like anything else. Exempting the tool
-        # from its own check is how a check quietly stops being tested.
+        # Breakage Radar is reported on like anything else.
         entry = affected_by_domain.get(domain)
         index_findings = [
             f for f in (entry or {}).get("findings", []) if isinstance(f, dict)
@@ -207,18 +233,37 @@ def build_report(
             if local and local.get("reason"):
                 unknown_reasons[domain] = local["reason"]
 
-    details.sort(key=lambda d: (d["breaks_in"], d["domain"], d["file"], d["line"]))
+    details.sort(
+        key=lambda d: (parse_version(d["breaks_in"]), d["domain"], d["file"], d["line"])
+    )
     truncated = len(details) > MAX_DETAILS
+
+    # A wide window on a system with many affected integrations would other-
+    # wise raise a notification for each one. Keep the nearest few; the rest
+    # are in the summary, which carries every date anyway.
+    if len(imminent) > MAX_ALERT_CARDS:
+        nearest = sorted(imminent.items(), key=lambda item: item[1]["days"])
+        imminent = dict(nearest[:MAX_ALERT_CARDS])
+
+    schedule = []
+    for release, domains in sorted(
+        by_release.items(), key=lambda item: parse_version(item[0])
+    ):
+        days = _days_until(release)
+        schedule.append(
+            {
+                "release": release,
+                "due": describe_when(release, days),
+                "days_until": days,
+                "when": _when(release),
+                "domains": sorted(domains),
+                "count": len(domains),
+            }
+        )
 
     return {
         "affected_count": len(affected),
         "affected_domains": affected,
-        "by_release": {
-            release: sorted(domains)
-            for release, domains in sorted(
-                by_release.items(), key=lambda item: parse_version(item[0])
-            )
-        },
         "details": details[:MAX_DETAILS],
         "details_truncated": truncated,
         "total_findings": len(details),
@@ -230,8 +275,8 @@ def build_report(
         "broken_now_count": len(broken_now),
         "imminent": imminent,
         "imminent_count": len(imminent),
-        # Affected domains with nothing urgent -- the ones the aggregate issue
-        # summarises rather than alerting on individually.
+        "links": links,
+        "schedule": schedule,
         "summarised_domains": sorted(
             set(affected) - set(broken_now) - set(imminent)
         ),

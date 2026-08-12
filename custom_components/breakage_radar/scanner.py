@@ -1,9 +1,7 @@
-"""Running the rule matchers over installed integrations' own source.
+"""Runs the rule matchers over installed integrations' own source.
 
-Free of any ``homeassistant`` import; blocking I/O, so call from an executor.
-This is what gives forked, renamed and non-HACS integrations a real verdict
-instead of "not in the index" -- the matchers run over the exact installed
-bytes, which also removes any scanned-version/installed-version skew.
+Blocking I/O, so call from an executor. This is what gives forked, renamed and
+non-HACS integrations a real verdict instead of "not in the index".
 
 Problems are counted, never raised. A domain whose files cannot be parsed comes
 back ``unknown`` with a reason, and a truncated scan never reads as ``clean``:
@@ -20,20 +18,17 @@ from typing import Any
 from .discovery import IGNORED_DIRECTORIES, _manifest_domain
 from .rules_engine import ENGINE_VERSION, ScanStats, load_rules, match_source
 
-#: Directories the local scan never descends into -- the same vendored code the
-#: crawler's ``VENDOR_MARKERS`` excludes, so both sides judge the same files.
+#: Matches the crawler's VENDOR_MARKERS so both sides judge the same files.
 UNSCANNED_DIRECTORIES = IGNORED_DIRECTORIES | frozenset(
     {"site-packages", "node_modules", "vendor"}
 )
 
 
 def _rules_fingerprint(rules_payload: list[dict[str, Any]], current_version: str) -> str:
-    """A stable hash of everything that can change a scan's outcome.
+    """Cache key covering everything that can change a scan's outcome.
 
-    Folding in :data:`ENGINE_VERSION` and ``current_version`` means a rules
-    update, an engine semantics change *or* a Home Assistant upgrade (which can
-    move rules in or out of the future) all invalidate the cache, never leaving
-    stale findings behind.
+    A rules update, an engine change or a Home Assistant upgrade all invalidate
+    it, so a cached result can never outlive the rules that produced it.
     """
     digest = hashlib.sha256()
     digest.update(f"engine={ENGINE_VERSION};current={current_version};".encode())
@@ -42,11 +37,11 @@ def _rules_fingerprint(rules_payload: list[dict[str, Any]], current_version: str
 
 
 def _domain_python_files(domain_dir: str) -> tuple[list[tuple[str, str]], int]:
-    """``[(absolute_path, relative_posix_path)]`` for every ``*.py``, plus a
-    count of directories the walk could not enter.
+    """Every ``*.py`` as ``(absolute, relative)``, plus a count of directories
+    the walk could not enter.
 
-    ``__pycache__`` and symlinked directories are never descended into, so a
-    link pointing back up the tree cannot loop the scan or double-count files.
+    Symlinked subdirectories are skipped so a link pointing back up the tree
+    cannot loop the scan.
     """
     files: list[tuple[str, str]] = []
     unreadable_dirs = 0
@@ -85,11 +80,10 @@ def _scan_domain(
     max_files: int,
     max_bytes: int,
 ) -> dict[str, Any]:
-    """Run the matchers over one installed component directory. Never raises.
+    """Run the matchers over one component directory. Never raises.
 
-    ``directory_name`` is the on-disk name, which is what finding paths show;
-    the caller keys the result by the manifest-declared domain, which can
-    differ in a forked checkout.
+    ``directory_name`` is the on-disk name, used in finding paths. The caller
+    keys the result by the manifest domain, which can differ in a fork.
     """
     stats = ScanStats()
     findings: list[dict[str, Any]] = []
@@ -119,8 +113,8 @@ def _scan_domain(
     if findings:
         status = "affected"
     elif not rules:
-        # A scan with nothing to look for has proven nothing. Never let a
-        # degraded index launder every installation as clean.
+        # Nothing to look for means nothing was proven, so a degraded index
+        # can never launder an installation as clean.
         status = "unknown"
         reason = "the index shipped no matchable rules"
     elif unreadable_dirs:
@@ -138,8 +132,6 @@ def _scan_domain(
             "skipped by the size caps"
         )
     else:
-        # Zero findings with every file parsed -- including the trivial case of
-        # a component that ships no Python at all.
         status = "clean"
 
     return {
@@ -162,29 +154,17 @@ def scan_installed(
     max_bytes: int = 1_000_000,
     cache: dict[str, tuple[tuple[Any, ...], dict[str, Any]]] | None = None,
 ) -> dict[str, Any]:
-    """Scan every installed custom integration's own source with the index rules.
+    """Scan every installed integration's source against the index rules.
 
-    Blocking I/O -- call from an executor. This is what gives forked, renamed
-    and non-HACS integrations a real verdict instead of ``not_in_index``: the
-    matchers run over the exact installed bytes, so there is no
-    scanned-version/installed-version skew either.
+    Results are keyed by manifest domain, so a fork with a renamed directory
+    still lines up with discovery and the index. Rules are applied regardless
+    of tense; build_report levels them against the running version, since a
+    deadline that has already passed is the most urgent thing to report.
 
-    Every matchable rule is applied regardless of tense: a rule whose deadline
-    has already passed is the *most* urgent thing to report, so it is never
-    filtered out here -- :func:`build_report` classifies each finding as
-    ``upcoming`` or ``broken_now`` against the running version instead.
-    Results are keyed by the domain each component's manifest declares (the
-    same key :func:`discover_installed` uses), so a forked or renamed checkout
-    still matches up. A symlinked component directory is followed at the top
-    level -- the dev-checkout pattern -- while symlinked *subdirectories* are
-    still never descended into.
-
-    ``cache`` maps ``domain -> (signature, result)`` where the signature covers
-    the domain's file count, newest mtime, total size and the rules fingerprint;
-    a 12-hourly refresh therefore re-parses nothing that has not changed.
-    Problems are counted, never raised: a domain whose files cannot be parsed
-    comes back ``unknown`` with a reason, and a truncated scan never reads as
-    ``clean``.
+    A symlinked component directory is followed (the dev-checkout pattern),
+    its symlinked subdirectories are not. ``cache`` maps domain to
+    (signature, result), keyed on file count, newest mtime, size and the rules
+    fingerprint, so a refresh re-parses only what changed.
     """
     fingerprint = _rules_fingerprint(rules_payload, current_version)
     rules = [rule for rule in load_rules(rules_payload) if rule.matchable]

@@ -19,17 +19,29 @@ UPDATE_INTERVAL: Final = timedelta(hours=12)
 #: Network timeout for one index fetch, in seconds.
 FETCH_TIMEOUT: Final = 30
 
-#: Hard cap on the ``details`` attribute so a very affected system cannot
-#: produce a state object Home Assistant refuses to store.
-MAX_DETAILS: Final = 100
+#: Findings kept in the report. Everything beyond this is counted but not
+#: listed; the full set is in the downloadable diagnostics.
+MAX_DETAILS: Final = 200
 
-#: A deadline this close gets its own alert instead of being summarised with
-#: the rest. Home Assistant releases on the first Wednesday of every month
-#: (home-assistant.io/faq/release/), so 30 days means "the next release".
+#: Findings put on the sensor. The recorder drops state attributes over 16 KB,
+#: so this stays well inside it even with long file paths.
+MAX_SENSOR_FINDINGS: Final = 40
+
+#: Deadlines inside this many days get their own notification; everything else
+#: is listed in the summary. Configurable per entry via the options flow.
 ALERT_WINDOW_DAYS: Final = 30
+
+CONF_ALERT_WINDOW_DAYS: Final = "alert_window_days"
+
+#: Offered in the options flow, in days.
+ALERT_WINDOW_CHOICES: Final = (30, 60, 90, 180, 365)
+
+#: However wide the window, only the nearest few deadlines get their own
+#: notification. The rest stay in the summary, which lists every date anyway.
+MAX_ALERT_CARDS: Final = 5
 
 ISSUE_ID: Final = "integrations_affected"
 
-ATTR_BY_RELEASE: Final = "by_release"
-ATTR_DETAILS: Final = "details"
+ATTR_SCHEDULE: Final = "schedule"
+ATTR_DETAILS: Final = "findings"
 ATTR_INDEX_GENERATED: Final = "index_generated_utc"

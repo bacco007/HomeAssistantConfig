@@ -13,7 +13,12 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import issue_registry as ir
 
-from .const import DOMAIN, ISSUE_ID
+from .const import (
+    ALERT_WINDOW_DAYS,
+    CONF_ALERT_WINDOW_DAYS,
+    DOMAIN,
+    ISSUE_ID,
+)
 from .coordinator import BreakageRadarCoordinator
 from .repairs import ALERT_PREFIXES, async_sync_issue
 
@@ -24,23 +29,34 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Breakage Radar from a config entry."""
-    coordinator = BreakageRadarCoordinator(hass)
+    coordinator = BreakageRadarCoordinator(
+        hass,
+        alert_window_days=entry.options.get(
+            CONF_ALERT_WINDOW_DAYS, ALERT_WINDOW_DAYS
+        ),
+    )
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
     @callback
     def _handle_update() -> None:
-        """Keep the repairs issue in step with every refresh."""
+        """Keep the repairs issues in step with every refresh."""
         if coordinator.last_update_success and coordinator.data:
             async_sync_issue(hass, coordinator.data)
 
     entry.async_on_unload(coordinator.async_add_listener(_handle_update))
+    entry.async_on_unload(entry.add_update_listener(_async_reload_entry))
     if coordinator.data:
         async_sync_issue(hass, coordinator.data)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
+
+
+async def _async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Apply a changed alert window without needing a restart."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

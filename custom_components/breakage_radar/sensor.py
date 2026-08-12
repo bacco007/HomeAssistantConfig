@@ -12,10 +12,11 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
-    ATTR_BY_RELEASE,
     ATTR_DETAILS,
     ATTR_INDEX_GENERATED,
+    ATTR_SCHEDULE,
     DOMAIN,
+    MAX_SENSOR_FINDINGS,
     NAME,
 )
 from .coordinator import BreakageRadarCoordinator
@@ -64,27 +65,46 @@ class BreakageRadarSensor(CoordinatorEntity[BreakageRadarCoordinator], SensorEnt
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
+        """A compact summary of the report.
+
+        Home Assistant's recorder drops state attributes over 16 KB, and the
+        full finding list went past that on a system with nine affected
+        integrations. Each finding is trimmed to the fields worth templating
+        on; the messages, links and versions are in the downloadable
+        diagnostics instead.
+        """
         data = self.coordinator.data or {}
+        findings = [
+            {
+                "domain": detail["domain"],
+                "breaks_in": detail["breaks_in"],
+                "when": detail["when"],
+                "file": detail["file"],
+                "line": detail["line"],
+                "confidence": detail["confidence"],
+                "rule_id": detail["rule_id"],
+            }
+            for detail in data.get("details", [])[:MAX_SENSOR_FINDINGS]
+        ]
         attributes: dict[str, Any] = {
-            ATTR_BY_RELEASE: data.get("by_release", {}),
-            ATTR_DETAILS: data.get("details", []),
+            ATTR_SCHEDULE: data.get("schedule", []),
+            ATTR_DETAILS: findings,
             ATTR_INDEX_GENERATED: data.get("index_generated_utc", ""),
             "affected_domains": data.get("affected_domains", []),
             "broken_now": data.get("broken_now", {}),
             "broken_now_count": data.get("broken_now_count", 0),
             "imminent": data.get("imminent", {}),
             "imminent_count": data.get("imminent_count", 0),
-            "summarised_domains": data.get("summarised_domains", []),
+            "earliest_release": data.get("earliest_release"),
             "alert_window_days": data.get("alert_window_days", 0),
             "total_findings": data.get("total_findings", 0),
-            "details_truncated": data.get("details_truncated", False),
+            "details_truncated": data.get("total_findings", 0) > len(findings),
             "installed_count": data.get("installed_count", 0),
-            "not_in_index": data.get("not_in_index", []),
-            "not_in_index_reasons": data.get("not_in_index_reasons", {}),
+            "clean_count": len(data.get("clean_domains", [])),
+            "not_analysed": data.get("not_in_index", []),
             "files_scanned": data.get("files_scanned", 0),
             "unparsed_files": data.get("unparsed_files", 0),
             "skipped_files": data.get("skipped_files", 0),
-            "earliest_release": data.get("earliest_release"),
             "index_core_version": data.get("index_core_version", ""),
             "index_url": self.coordinator.index_url,
         }

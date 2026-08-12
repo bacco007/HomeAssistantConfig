@@ -1,17 +1,13 @@
-"""Repairs issue raised when installed custom integrations are going to break.
+"""Repairs issues for integrations that are going to break.
 
-The issue is deliberately *not* fixable in place. Frenck, reviewing the legacy
-device tracker deprecation (architecture discussion 1375):
-
-    "Repairs must be user actionable, and in this case, they can't solve it."
-
-The action a user *can* take is real though: open the upstream repository's
-issue tracker, or replace the integration before the deadline. So the issue is
-informational, links straight to the board, and clears itself the moment the
-count returns to zero.
+None of these are fixable in place, because the code lives in someone else's
+repository. What the user can do is real though: update the integration, raise
+it upstream, or replace it before the deadline.
 """
 
 from __future__ import annotations
+
+from urllib.parse import quote_plus
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import issue_registry as ir
@@ -20,32 +16,109 @@ from .const import DOMAIN, ISSUE_ID
 
 LEARN_MORE_URL = "https://booyaka101.github.io/hass-breakage-radar/"
 
-
-#: Prefix for the per-integration issues raised once a deadline has passed.
 BROKEN_ISSUE_PREFIX = "broken_now_"
-
-#: Prefix for the per-integration issues raised while a deadline is close.
 IMMINENT_ISSUE_PREFIX = "imminent_"
-
 ALERT_PREFIXES = (BROKEN_ISSUE_PREFIX, IMMINENT_ISSUE_PREFIX)
+
+#: Keeps the summary description readable when a lot is scheduled.
+MAX_SCHEDULE_LINES = 8
+MAX_DOMAINS_PER_LINE = 6
+
+
+def format_schedule(schedule: list[dict], only: set[str] | None = None) -> str:
+    """A dated timeline of what breaks when, as a markdown list.
+
+    A list rather than a code block because Home Assistant renders repair
+    descriptions as markdown, and a fenced block scrolls sideways instead of
+    wrapping, which hides the integration names on narrow screens.
+    """
+    lines: list[str] = []
+    hidden = 0
+    for group in schedule:
+        domains = group.get("domains") or []
+        if only is not None:
+            domains = [d for d in domains if d in only]
+        if not domains:
+            continue
+        if len(lines) >= MAX_SCHEDULE_LINES:
+            hidden += len(domains)
+            continue
+        shown = domains[:MAX_DOMAINS_PER_LINE]
+        names = ", ".join(f"`{name}`" for name in shown)
+        if len(domains) > len(shown):
+            names += f" and {len(domains) - len(shown)} more"
+        lines.append(f"- **{group['due']}** ({group['release']}): {names}")
+    if hidden:
+        lines.append(f"- ...and {hidden} more further out.")
+    return "\n".join(lines)
+
+
+def plural(count: int, singular: str, plural_form: str | None = None) -> str:
+    """``1 integration`` / ``9 integrations``, since a title cannot say (s)."""
+    return singular if count == 1 else (plural_form or f"{singular}s")
+
+
+def describe_links(link: dict | None) -> str:
+    """Where to go next, as markdown.
+
+    Deliberately points at *existing* reports rather than a blank issue form.
+    Popular integrations have thousands of users; if each one files "this
+    breaks in 2027.5" the maintainer gets the same issue over and over. A
+    search for the deprecated symbol lands on the report if there is one, so
+    the reader can add a reaction instead of a duplicate, and shows an empty
+    result with a New issue button if there is not.
+    """
+    link = link or {}
+    repo_url = (link.get("repo_url") or "").rstrip("/")
+    repository = link.get("repository") or "the integration's repository"
+    symbol = link.get("symbol") or ""
+    learn_more = link.get("learn_more") or ""
+
+    parts: list[str] = []
+    if repo_url:
+        parts.append(
+            f"First check [{repository} releases]({repo_url}/releases) for a "
+            "version that fixes it."
+        )
+        if symbol:
+            query = quote_plus(f"is:issue {symbol}")
+            parts.append(
+                f"If there isn't one, [see whether it is already "
+                f"reported]({repo_url}/issues?q={query}). Adding a reaction to "
+                "an existing report helps the maintainer more than another "
+                "copy of it does."
+            )
+        else:
+            parts.append(
+                f"If there isn't one, check [the issue tracker]({repo_url}/issues) "
+                "before reporting it, so the maintainer does not get duplicates."
+            )
+    else:
+        parts.append(
+            "Check the integration's own repository for a newer release, and "
+            "its issue tracker before reporting anything."
+        )
+    if learn_more.startswith("http"):
+        parts.append(f"[What Home Assistant is changing]({learn_more})")
+    elif learn_more:
+        parts.append(f"What Home Assistant is changing: `{learn_more}`")
+    return "\n\n".join(parts)
 
 
 @callback
 def _async_sync_alert_issues(hass: HomeAssistant, report: dict) -> None:
-    """One issue per integration that needs attention *soon*, or already.
+    """One card per integration that needs attention now, or soon.
 
-    Two levels get their own card, because both are things a person can act on
-    this week:
-
-    * ``broken_now`` -- the deadline has passed on this system, ERROR.
-    * ``imminent``   -- the deadline is inside the alert window, WARNING.
-
-    Everything further out stays in the single summary issue. A year-ahead
-    deadline that cannot be dismissed only teaches people to ignore Repairs,
-    which is the mechanism every *other* integration relies on.
+    Everything further out stays in the single summary issue, because Repairs
+    has no snooze and a wall of undismissable year-ahead cards just trains
+    people to ignore the panel.
     """
     broken: dict[str, str] = report.get("broken_now") or {}
     imminent: dict[str, dict] = report.get("imminent") or {}
+    links: dict[str, dict] = report.get("links") or {}
+    due_by_release = {
+        group["release"]: group["due"] for group in report.get("schedule") or []
+    }
 
     for domain, release in broken.items():
         ir.async_create_issue(
@@ -56,12 +129,17 @@ def _async_sync_alert_issues(hass: HomeAssistant, report: dict) -> None:
             is_persistent=False,
             severity=ir.IssueSeverity.ERROR,
             translation_key="integration_broken",
-            translation_placeholders={"domain": domain, "release": str(release)},
-            learn_more_url=LEARN_MORE_URL,
+            translation_placeholders={
+                "domain": domain,
+                "release": str(release),
+                "where": describe_links(links.get(domain)),
+            },
+            learn_more_url=links.get(domain, {}).get("repo_url") or LEARN_MORE_URL,
         )
 
     for domain, entry in imminent.items():
-        days = int(entry.get("days", 0))
+        release = str(entry.get("release", ""))
+        days = max(int(entry.get("days", 0)), 0)
         ir.async_create_issue(
             hass,
             DOMAIN,
@@ -72,15 +150,17 @@ def _async_sync_alert_issues(hass: HomeAssistant, report: dict) -> None:
             translation_key="integration_imminent",
             translation_placeholders={
                 "domain": domain,
-                "release": str(entry.get("release", "")),
-                "days": str(max(days, 0)),
+                "release": release,
+                "days": str(days),
+                "day_word": plural(days, "day"),
+                "due": due_by_release.get(release, release),
+                "where": describe_links(links.get(domain)),
             },
-            learn_more_url=LEARN_MORE_URL,
+            learn_more_url=links.get(domain, {}).get("repo_url") or LEARN_MORE_URL,
         )
 
-    # Anything that has dropped out of a level -- recovered, moved back to the
-    # summary, or been uninstalled -- must lose its card. The registry is the
-    # only place an uninstalled component's stale issue can still be found.
+    # Anything that dropped out of a level, including an uninstalled component
+    # that has vanished from the report, must lose its card.
     async_get = getattr(ir, "async_get", None)
     if async_get is None:
         return
@@ -101,23 +181,18 @@ def async_sync_issue(hass: HomeAssistant, report: dict) -> None:
     """Create, update or clear the Breakage Radar repairs issues."""
     _async_sync_alert_issues(hass, report)
 
-    # Only the non-urgent remainder is summarised; anything with its own alert
-    # would otherwise be reported twice.
     summarised = report.get("summarised_domains") or []
     if not summarised:
         ir.async_delete_issue(hass, DOMAIN, ISSUE_ID)
         return
 
-    by_release: dict[str, list[str]] = report.get("by_release") or {}
-    remaining = {
-        release: [d for d in domains if d in set(summarised)]
-        for release, domains in by_release.items()
-    }
-    remaining = {r: d for r, d in remaining.items() if d}
-    earliest = next(iter(remaining), report.get("earliest_release") or "a future release")
-    releases = ", ".join(
-        f"{release} ({len(domains)})" for release, domains in remaining.items()
-    )
+    schedule = report.get("schedule") or []
+    remaining = [
+        group
+        for group in schedule
+        if any(domain in set(summarised) for domain in group.get("domains") or [])
+    ]
+    first = remaining[0] if remaining else None
 
     ir.async_create_issue(
         hass,
@@ -129,10 +204,13 @@ def async_sync_issue(hass: HomeAssistant, report: dict) -> None:
         translation_key="integrations_affected",
         translation_placeholders={
             "count": str(len(summarised)),
-            "earliest": str(earliest),
-            "integrations": ", ".join(sorted(summarised)[:12])
-            + (" and others" if len(summarised) > 12 else ""),
-            "releases": releases or "-",
+            "noun": plural(len(summarised), "integration"),
+            "verb": "uses" if len(summarised) == 1 else "use",
+            "earliest": first["release"] if first else "a future release",
+            "earliest_due": first["due"] if first else "",
+            "schedule": format_schedule(schedule, only=set(summarised)),
+            "window": str(report.get("alert_window_days") or 0),
+            "board_url": LEARN_MORE_URL,
         },
         learn_more_url=LEARN_MORE_URL,
     )

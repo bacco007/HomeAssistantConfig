@@ -14,7 +14,13 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, FETCH_TIMEOUT, INDEX_URL, UPDATE_INTERVAL
+from .const import (
+    ALERT_WINDOW_DAYS,
+    DOMAIN,
+    FETCH_TIMEOUT,
+    INDEX_URL,
+    UPDATE_INTERVAL,
+)
 from .discovery import discover_installed
 from .report import build_report, validate_index
 from .scanner import scan_installed
@@ -30,7 +36,12 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     instead of raising or reporting stale data as fresh.
     """
 
-    def __init__(self, hass: HomeAssistant, index_url: str = INDEX_URL) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        index_url: str = INDEX_URL,
+        alert_window_days: int = ALERT_WINDOW_DAYS,
+    ) -> None:
         super().__init__(
             hass,
             _LOGGER,
@@ -38,6 +49,7 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             update_interval=UPDATE_INTERVAL,
         )
         self.index_url = index_url
+        self.alert_window_days = alert_window_days
         self.last_error: str | None = None
         self._index: dict[str, Any] | None = None
         #: ``domain -> (signature, result)``; lets the 12-hourly refresh skip
@@ -129,6 +141,7 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             local_scan,
             current_version=current_version,
             today=datetime.now(UTC).date(),
+            alert_window_days=self.alert_window_days,
         )
         _LOGGER.debug(
             "Breakage Radar: %d of %d custom integrations affected "
