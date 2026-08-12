@@ -2,7 +2,7 @@
 
 Custom card to use with [Flightradar24 integration](https://github.com/AlexandrErohin/home-assistant-flightradar24) for Home Assistant.
 
-<img src="https://raw.githubusercontent.com/Springvar/home-assistant-flightradar24-card/master/card.png" width="35%">
+![Flightradar24 Card](https://raw.githubusercontent.com/Springvar/home-assistant-flightradar24-card/master/card.png)
 
 ## Table of Contents
 
@@ -72,12 +72,30 @@ To install the card, follow these steps:
 
 ## Configuration
 
+### Migrating from `custom:flightradar24-card`
+
+The Flightradar24 integration now ships its own card under the type `custom:flightradar24-card`, which conflicts with this card's original type name. To resolve this, this card is now registered as **`custom:flightradar24-radar-card`**.
+
+- **If you have the Flightradar24 integration installed**, your existing `custom:flightradar24-card` cards now render the integration's built-in map card. Update them to `custom:flightradar24-radar-card` to keep using this card.
+- **If you do not have the Flightradar24 integration installed**, existing `custom:flightradar24-card` configs keep working without changes (the old name is registered as an alias when it is not taken by another card). Still, you should update to the new type to be future-proof.
+- The card is now listed as **"Flightradar24 Radar Card"** in the Add card dialog, and appears in the "By entity" suggestions for your Flightradar24 flights sensor.
+
+#### Updating existing cards
+
+In the dashboard editor, edit the card and change its **Type** to `custom:flightradar24-radar-card`, or update the YAML directly:
+
+```yaml
+type: custom:flightradar24-radar-card
+```
+
+That is the only change required — all other configuration options are unchanged.
+
 ### Basic Configuration
 
 To use the card, simply add the following configuration to your Lovelace dashboard:
 
 ```yaml
-type: custom:flightradar24-card
+type: custom:flightradar24-radar-card
 ```
 
 | Name                  | Description                                                                                                                                                       | Default Value                                                                            | Constraints                                                                                                     |
@@ -558,7 +576,7 @@ The Flightradar24 Integration Card offers the following features:
 Note: Radar will show all tracked flights
 
 ```yaml
-type: custom:flightradar24-card
+type: custom:flightradar24-radar-card
 toggles:
     show_on_ground:
         label: Show aircraft on the ground
@@ -577,7 +595,7 @@ filter:
 #### Example: List aircraft currently visible on radar
 
 ```yaml
-type: custom:flightradar24-card
+type: custom:flightradar24-radar-card
 filter:
     - field: distance_to_tracker
       comparator: lte
@@ -587,7 +605,7 @@ filter:
 Note: Depending on your layout and system, there may be unwanted flickering or repositioning of elements as you zoom flights in or out of the active range. To avoid this, set the flag `updateRangeFilterOnTouchEnd` to true to only update the filtered list after the pinch/zoom action stops.
 
 ```yaml
-type: custom:flightradar24-card
+type: custom:flightradar24-radar-card
 updateRangeFilterOnTouchEnd: true
 filter:
     - field: distance_to_tracker
@@ -598,7 +616,7 @@ filter:
 #### Example: List all aircraft from a given airline ("Delta" in this example), with no radar
 
 ```yaml
-type: custom:flightradar24-card
+type: custom:flightradar24-radar-card
 filter:
     - field: airline_short
       comparator: eq
@@ -614,7 +632,7 @@ radar:
 Note: Radar will show all tracked flights
 
 ```yaml
-type: custom:flightradar24-card
+type: custom:flightradar24-radar-card
 defines:
     boeing_747_icao_codes:
         - B741
@@ -669,7 +687,7 @@ filter:
 ![Template with tails](resources/example_templates_tails_dark.PNG 'Example')
 
 ```yaml
-type: custom:flightradar24-card
+type: custom:flightradar24-radar-card
 templates:
     tail_image: >-
         <img style="float: left; margin-right: 5px;"
