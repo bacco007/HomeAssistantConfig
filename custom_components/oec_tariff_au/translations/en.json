@@ -1,0 +1,53 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Select your DNSP",
+        "description": "Choose your electricity distribution network service provider.",
+        "data": {
+          "dnsp": "DNSP"
+        }
+      },
+      "tariff": {
+        "title": "Select your tariff",
+        "description": "Choose your network tariff code (check your bill or ask your retailer).",
+        "data": {
+          "tariff": "Tariff"
+        }
+      },
+      "demand": {
+        "title": "Demand tracking (optional)",
+        "description": "Optionally configure demand charge tracking. Select a power sensor that measures your grid import in kW or W. Leave blank to skip.",
+        "data": {
+          "power_entity": "Grid power sensor",
+          "billing_day": "Billing cycle start day"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to Tariff Data Service API"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Reconfigure demand tracking",
+        "description": "Change your power sensor or billing cycle day. Leave power sensor blank to disable demand tracking.",
+        "data": {
+          "power_entity": "Grid power sensor",
+          "billing_day": "Billing cycle start day"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "demand_window": {
+        "state": {
+          "active": "Active",
+          "inactive": "Inactive"
+        }
+      }
+    }
+  }
+}
