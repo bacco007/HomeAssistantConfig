@@ -73,14 +73,42 @@ def describe_links(link: dict | None) -> str:
     repository = link.get("repository") or "the integration's repository"
     symbol = link.get("symbol") or ""
     learn_more = link.get("learn_more") or ""
+    report = link.get("report") or {}
 
     parts: list[str] = []
-    if repo_url:
+    if not repo_url:
+        parts.append(
+            "Check the integration's own repository for a newer release, and "
+            "its issue tracker before reporting anything."
+        )
+    elif link.get("archived"):
+        parts.append(
+            f"[{repository}]({repo_url}) is archived, so no fix is coming. "
+            "Plan to replace this integration."
+        )
+    else:
         parts.append(
             f"First check [{repository} releases]({repo_url}/releases) for a "
             "version that fixes it."
         )
-        if symbol:
+        if report and report.get("state") == "open":
+            parts.append(
+                f"It is already reported: [#{report['number']} "
+                f"{report['title']}]({report['url']}). Add a reaction there "
+                "rather than opening another one."
+            )
+        elif report:
+            parts.append(
+                f"It was reported and closed: [#{report['number']} "
+                f"{report['title']}]({report['url']}), so a fix may already "
+                "have shipped."
+            )
+        elif link.get("issues_enabled") is False:
+            parts.append(
+                "That repository does not accept issues, so there is nowhere "
+                "to report it."
+            )
+        elif symbol:
             query = quote_plus(f"is:issue {symbol}")
             parts.append(
                 f"If there isn't one, [see whether it is already "
@@ -93,11 +121,6 @@ def describe_links(link: dict | None) -> str:
                 f"If there isn't one, check [the issue tracker]({repo_url}/issues) "
                 "before reporting it, so the maintainer does not get duplicates."
             )
-    else:
-        parts.append(
-            "Check the integration's own repository for a newer release, and "
-            "its issue tracker before reporting anything."
-        )
     if learn_more.startswith("http"):
         parts.append(f"[What Home Assistant is changing]({learn_more})")
     elif learn_more:

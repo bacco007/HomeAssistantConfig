@@ -18,10 +18,12 @@ Eight matcher types cover every deprecation Breakage Radar currently ships:
                        where the *argument* is deprecated, not the function
 
 Every matcher may additionally be constrained with ``files`` (a list of exact
-basenames, e.g. ``["device_tracker.py"]``) and ``attr`` matchers with
-``in_class_base`` (the enclosing class must derive from one of these names).
-Those constraints are what keep the false-positive rate at zero on lookalike
-code -- see ``tests/test_scanner.py``.
+basenames, e.g. ``["device_tracker.py"]``), ``attr`` matchers with
+``in_class_base`` (the enclosing class must derive from one of these names),
+and ``call`` matchers with ``not_awaited`` (skip awaited calls, for symbols
+Home Assistant defines with a plain ``def``). Those constraints are what keep
+the false-positive rate at zero on lookalike code -- see
+``tests/test_scanner.py``.
 
 Standard library only: this module is imported by the crawler and vendored
 byte-for-byte at ``custom_components/breakage_radar/rules_engine.py``, where the
@@ -53,7 +55,7 @@ MATCHER_TYPES = frozenset(
 #: Bumped whenever matching semantics change. It is folded into the crawl's
 #: rules hash, so an engine change forces a rescan instead of leaving stale
 #: findings that the current engine would no longer produce.
-ENGINE_VERSION = 3
+ENGINE_VERSION = 4
 
 VERSION_RE = re.compile(r"^\d{4}\.\d+(?:\.\d+)?$")
 
@@ -375,12 +377,27 @@ def _assign_target_name(target: ast.expr) -> str | None:
     return None
 
 
+def _awaited_calls(tree: ast.Module) -> set[int]:
+    """Calls that are directly awaited.
+
+    ``async_`` in Home Assistant means callback-safe, not coroutine, so several
+    deprecated helpers are plain ``def``. Awaiting one is proof it is somebody
+    else's method that merely shares the name.
+    """
+    return {
+        id(node.value)
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Await) and isinstance(node.value, ast.Call)
+    }
+
+
 def _match_call(
     matcher: dict[str, Any], tree: ast.Module, imports: dict[str, str]
 ) -> Iterator[tuple[int, str]]:
     names = set(matcher.get("names", ()))
+    awaited = _awaited_calls(tree) if matcher.get("not_awaited") else frozenset()
     for node in ast.walk(tree):
-        if isinstance(node, ast.Call):
+        if isinstance(node, ast.Call) and id(node) not in awaited:
             name = _called_name(node)
             if name in names and _module_allowed(matcher, node, name, imports):
                 yield node.lineno, name

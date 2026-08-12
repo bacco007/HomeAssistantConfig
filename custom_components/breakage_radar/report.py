@@ -170,6 +170,7 @@ def build_report(
             if when in ("broken_now", "imminent"):
                 # What the notification needs to point somewhere useful.
                 rule = rules.get(finding.get("rule_id"), {})
+                upstream = (entry or {}).get("upstream") or {}
                 links.setdefault(
                     domain,
                     {
@@ -183,6 +184,11 @@ def build_report(
                         "learn_more": (
                             rule.get("source_url") or rule.get("source") or ""
                         ),
+                        # What the crawler already found upstream, so nobody
+                        # files a report that exists.
+                        "archived": bool(upstream.get("archived")),
+                        "issues_enabled": upstream.get("issues_enabled"),
+                        "report": upstream.get("report") or {},
                     },
                 )
             rule = rules.get(finding.get("rule_id"), {})
