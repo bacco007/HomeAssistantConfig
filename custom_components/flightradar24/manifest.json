@@ -16,5 +16,5 @@
     "FlightRadarAPI==1.5.1",
     "pycountry==24.6.1"
   ],
-  "version": "v2.0.1"
+  "version": "v2.1.0"
 }
