@@ -149,11 +149,13 @@ class StateTriggerDecorator(TriggerDecorator, ExpressionDecorator, AutoKwargsDec
             return "None"
         return f"{(now - dt):g} ago"
 
-    async def _check_new_state(self, trig_ok: bool) -> None:
+    async def _check_new_state(
+        self, trig_ok: bool, new_vars: dict[str, Any], func_args: dict[str, Any]
+    ) -> None:
         now = asyncio.get_running_loop().time()
         if _LOGGER.isEnabledFor(logging.DEBUG):
             msg = f"check_new_state: {self}"
-            msg += f"\ntrig_ok: {trig_ok} now {now} func_args: {self.last_func_args} new_vars: {self.last_new_vars}"
+            msg += f"\ntrig_ok: {trig_ok} now {now} func_args: {func_args} new_vars: {new_vars}"
             if self.true_entered_at:
                 msg += f"\ntrue_entered_at: {self.true_entered_at}({(now - self.true_entered_at):g} ago)\n"
             if self.false_entered_at:
@@ -179,6 +181,8 @@ class StateTriggerDecorator(TriggerDecorator, ExpressionDecorator, AutoKwargsDec
 
             if state_hold_false_passed:
                 if self.state_hold is None:
+                    self.last_new_vars = new_vars
+                    self.last_func_args = func_args
                     state_hold_true_passed = True
                 else:
                     if self.true_entered_at:
@@ -192,9 +196,10 @@ class StateTriggerDecorator(TriggerDecorator, ExpressionDecorator, AutoKwargsDec
                     else:
                         _LOGGER.debug("state_hold started, %s", self)
                         self.true_entered_at = now
+                        self.last_new_vars = new_vars
+                        self.last_func_args = func_args
 
             if state_hold_true_passed:
-                self.true_entered_at = None
                 await self.dispatch(
                     DispatchData(self.last_func_args, trigger_context={"new_vars": self.last_new_vars})
                 )
@@ -231,14 +236,14 @@ class StateTriggerDecorator(TriggerDecorator, ExpressionDecorator, AutoKwargsDec
         check_state_expr_on_start = self.state_check_now or self.state_hold_false is not None
 
         if check_state_expr_on_start:
-            self.last_new_vars = State.notify_var_get(self.state_trig_ident, {})
-            trig_ok = await self._is_trig_ok()
+            new_vars = State.notify_var_get(self.state_trig_ident, {})
+            trig_ok = await self._is_trig_ok(new_vars)
 
             if self.in_wait_until_function and trig_ok and self.state_check_now is True:
                 self.state_hold_false = None
 
             if self.state_check_now and self.has_expression():
-                await self._check_new_state(trig_ok)
+                await self._check_new_state(trig_ok, new_vars, self.last_func_args)
             else:
                 if not trig_ok and self.state_hold_false is not None:
                     self.false_entered_at = loop.time()
@@ -273,22 +278,22 @@ class StateTriggerDecorator(TriggerDecorator, ExpressionDecorator, AutoKwargsDec
                     notify_type, notify_info = await asyncio.wait_for(self.notify_q.get(), effective_timeout)
                 if notify_type != "state":
                     raise RuntimeError(f"Invalid notify_type {notify_type}, {self}")
-                self.last_new_vars = notify_info[0]
-                self.last_func_args = notify_info[1]
+                new_vars = notify_info[0]
+                func_args = notify_info[1]
 
-                if ident_any_values_changed(self.last_func_args, self.state_trig_ident_any):
+                if ident_any_values_changed(func_args, self.state_trig_ident_any):
                     trig_ok = True
-                elif ident_values_changed(self.last_func_args, self.state_trig_ident):
-                    trig_ok = await self._is_trig_ok()
+                elif ident_values_changed(func_args, self.state_trig_ident):
+                    trig_ok = await self._is_trig_ok(new_vars)
                 else:
-                    trig_ok = False
-                await self._check_new_state(trig_ok)
+                    continue
+                await self._check_new_state(trig_ok, new_vars, func_args)
             except TimeoutError:
                 await self._check_state_hold()
 
-    async def _is_trig_ok(self) -> bool:
+    async def _is_trig_ok(self, new_vars: dict[str, Any]) -> bool:
         if self.has_expression():
-            return await self.check_expression_vars(self.last_new_vars)
+            return await self.check_expression_vars(new_vars)
         return True
 
     def _on_task_done(self, task: asyncio.Task) -> None:

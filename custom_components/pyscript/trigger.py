@@ -12,6 +12,7 @@ import time
 
 from croniter import croniter
 
+from homeassistant.const import SUN_EVENT_SUNRISE, SUN_EVENT_SUNSET
 from homeassistant.core import Context
 from homeassistant.helpers import sun
 from homeassistant.util import dt as dt_util
@@ -672,28 +673,15 @@ class TrigTime:
             else:
                 hour, mins, sec = int(match0[1]), int(match0[2]), 0
             dt_str = dt_str[len(match0.group(0)) :]
-        elif dt_str.startswith("sunrise") or dt_str.startswith("sunset"):
-            location = sun.get_astral_location(cls.hass)
-            if isinstance(location, tuple):
-                # HA core-2021.5.0 included this breaking change: https://github.com/home-assistant/core/pull/48573.
-                # As part of the upgrade to astral 2.2, sun.get_astral_location() now returns a tuple including the
-                # elevation.  We just want the astral.location.Location object.
-                location = location[0]
-            try:
-                if dt_str.startswith("sunrise"):
-                    time_sun = await cls.hass.async_add_executor_job(
-                        location.sunrise, dt.date(year, month, day)
-                    )
-                    dt_str = dt_str[7:]
-                else:
-                    time_sun = await cls.hass.async_add_executor_job(
-                        location.sunset, dt.date(year, month, day)
-                    )
-                    dt_str = dt_str[6:]
-            except Exception:
+        elif dt_str.startswith(SUN_EVENT_SUNRISE) or dt_str.startswith(SUN_EVENT_SUNSET):
+            event = SUN_EVENT_SUNRISE if dt_str.startswith(SUN_EVENT_SUNRISE) else SUN_EVENT_SUNSET
+            time_sun = sun.get_astral_event_date(cls.hass, event, dt.date(year, month, day))
+            if time_sun is None:
                 _LOGGER.warning("'%s' not defined at this latitude", dt_str)
                 # return something in the past so it is ignored
                 return now - dt.timedelta(days=100), fixed_date
+            time_sun = dt_util.as_local(time_sun)
+            dt_str = dt_str[len(event) :]
             now += time_sun.date() - now.date()
             hour, mins, sec = time_sun.hour, time_sun.minute, time_sun.second
         elif dt_str.startswith("noon"):

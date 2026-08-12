@@ -30,17 +30,51 @@ class TimeActiveDecorator(TriggerHandlerDecorator, AutoKwargsDecorator):
 
     name = "time_active"
     args_schema = vol.Schema(vol.All([vol.Coerce(str)], vol.Length(min=0)))
-    kwargs_schema = vol.Schema({vol.Optional("hold_off", default=0.0): vol.Any(None, cv.positive_float)})
+    kwargs_schema = vol.Schema(
+        {
+            vol.Optional("hold_off", default=0.0): vol.Any(None, cv.positive_float),
+            vol.Optional("hold_off_send_last", default=False): cv.boolean,
+        }
+    )
 
     hold_off: float | None
+    hold_off_send_last: bool
 
     last_trig_time: float = 0.0
+    _hold_off_task: asyncio.Task | None = None
+    _pending_data: DispatchData | None = None
+
+    async def _dispatch_after_hold_off(self) -> None:
+        """Dispatch the latest suppressed payload after the current hold-off window."""
+        while self._pending_data is not None:
+            delay = self.last_trig_time + self.hold_off - time.monotonic()
+            if delay > 0.0:
+                # A trigger may pass and clear _pending_data while we sleep;
+                # re-check the loop condition after every await.
+                await asyncio.sleep(delay)
+                continue
+
+            data = self._pending_data
+            _LOGGER.debug("%s hold_off_send_last dispatching %s", self, data)
+            await self.dm.dispatch(data)
+            if self._pending_data is data:
+                self._pending_data = None
 
     async def handle_dispatch(self, data: DispatchData) -> bool:
         """Handle dispatch."""
         if self.last_trig_time > 0.0 and self.hold_off is not None and self.hold_off > 0.0:
             if time.monotonic() - self.last_trig_time < self.hold_off:
+                if self.hold_off_send_last:
+                    self._pending_data = data
+                    if self._hold_off_task is None or self._hold_off_task.done():
+                        self._hold_off_task = self.dm.hass.async_create_background_task(
+                            self._dispatch_after_hold_off(), f"{self} hold_off_send_last"
+                        )
                 return False
+
+        if data is self._pending_data:
+            self.last_trig_time = time.monotonic()
+            return True
 
         if len(self.args) > 0:
             if "trigger_time" in data.func_args and isinstance(data.func_args["trigger_time"], dt.datetime):
@@ -53,11 +87,22 @@ class TimeActiveDecorator(TriggerHandlerDecorator, AutoKwargsDecorator):
                 _LOGGER.debug("time_active now %s, %s", now, self)
                 if await trigger.TrigTime.timer_active_check(time_spec, now, self.dm.startup_time):
                     self.last_trig_time = time.monotonic()
+                    if data is not self._pending_data:
+                        self._pending_data = None
                     return True
             return False
 
         self.last_trig_time = time.monotonic()
+        if data is not self._pending_data:
+            self._pending_data = None
         return True
+
+    async def stop(self) -> None:
+        """Stop pending hold-off dispatch."""
+        await super().stop()
+        self._pending_data = None
+        if self._hold_off_task is not None:
+            self._hold_off_task.cancel()
 
 
 class TimeTriggerDecorator(TriggerDecorator):
@@ -77,7 +122,7 @@ class TimeTriggerDecorator(TriggerDecorator):
     run_on_startup: bool = False
     run_on_shutdown: bool = False
     timespec: list[str]
-    _cycle_task: asyncio.Task
+    _cycle_task: asyncio.Task = None
 
     async def validate(self) -> None:
         """Validate the decorator arguments."""

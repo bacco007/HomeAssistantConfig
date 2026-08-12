@@ -2,7 +2,7 @@
 
 from abc import ABC
 import logging
-from typing import Any
+from typing import Any, ClassVar
 
 import voluptuous as vol
 
@@ -16,13 +16,25 @@ _LOGGER = logging.getLogger(__name__)
 class AutoKwargsDecorator(Decorator, ABC):
     """Mixin that copies validated kwargs into instance attributes based on annotations."""
 
+    _auto_kw_attrs: ClassVar[frozenset[str]] = frozenset()
+
+    def __init_subclass__(cls, **kwargs):
+        """Collect names of typed attributes declared on subclasses up to (but not including) Decorator."""
+        super().__init_subclass__(**kwargs)
+        attrs: set[str] = set()
+        for klass in cls.mro():
+            if klass is Decorator:
+                break
+            attrs.update(getattr(klass, "__annotations__", {}))
+        cls._auto_kw_attrs = frozenset(attrs)
+
     async def validate(self) -> None:
         """Run base validation and materialize annotated kwargs as attributes."""
         await super().validate()
         for k in self.__class__.kwargs_schema.schema:
             if isinstance(k, vol.Marker):
                 k = k.schema
-            if k in self.__class__.__annotations__:
+            if k in self._auto_kw_attrs:
                 setattr(self, k, self.kwargs.get(k, None))
 
 

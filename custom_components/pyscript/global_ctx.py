@@ -79,17 +79,13 @@ class GlobalContext:
         for dec in decs:
             dm.add(dec)
 
-        try:
-            await dm.validate()
-            if dm.status is DecoratorManagerStatus.VALIDATED:
-                self.dms.add(dm)
-
-                if self.auto_start:
-                    await dm.start()
-                else:
-                    self.dms_delay_start.add(dm)
-        except Exception as exc:
-            ast_ctx.log_exception(exc)
+        await dm.safe_await(dm.validate())
+        if dm.status is DecoratorManagerStatus.VALIDATED:
+            self.dms.add(dm)
+            if self.auto_start:
+                await dm.safe_await(dm.start())
+            else:
+                self.dms_delay_start.add(dm)
 
     def trigger_unregister(self, func: EvalFunc) -> None:
         """Unregister a trigger function."""
@@ -107,7 +103,7 @@ class GlobalContext:
         self.triggers_delay_start = set()
 
         for dm in self.dms_delay_start:
-            Function.hass.async_create_task(dm.start())
+            Function.hass.async_create_task(dm.safe_await(dm.start()))
         self.dms_delay_start = set()
 
     def stop(self) -> None:
@@ -117,7 +113,7 @@ class GlobalContext:
         self.triggers = set()
         self.triggers_delay_start = set()
         for dm in self.dms:
-            Function.hass.async_create_task(dm.stop())
+            Function.hass.async_create_task(dm.safe_await(dm.stop()))
         self.dms = set()
         self.dms_delay_start = set()
         self.set_auto_start(False)

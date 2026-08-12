@@ -354,7 +354,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         DOMAIN, SERVICE_GENERATE_STUBS, generate_stubs_service, supports_response=SupportsResponse.ONLY
     )
 
-    async def jupyter_kernel_start(call: ServiceCall) -> None:
+    async def jupyter_kernel_start(call: ServiceCall) -> dict:
         """Handle Jupyter kernel start call."""
         _LOGGER.debug("service call to jupyter_kernel_start: %s", call.data)
 
@@ -369,14 +369,25 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         Function.install_ast_funcs(ast_ctx)
         kernel = Kernel(call.data, ast_ctx, global_ctx, global_ctx_name)
         await kernel.session_start()
-        hass.states.async_set(call.data["state_var"], json.dumps(kernel.get_ports()))
 
-        def state_var_remove():
-            hass.states.async_remove(call.data["state_var"])
+        # older kernels look for this state var
+        if "state_var" in call.data:
+            hass.states.async_set(call.data["state_var"], json.dumps(kernel.get_ports()))
 
-        kernel.set_session_cleanup_callback(state_var_remove)
+            def state_var_remove():
+                hass.states.async_remove(call.data["state_var"])
 
-    hass.services.async_register(DOMAIN, SERVICE_JUPYTER_KERNEL_START, jupyter_kernel_start)
+            kernel.set_session_cleanup_callback(state_var_remove)
+
+        # newer kernels use the service response
+        return {"ports": kernel.get_ports()}
+
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_JUPYTER_KERNEL_START,
+        jupyter_kernel_start,
+        supports_response=SupportsResponse.OPTIONAL,
+    )
 
     async def state_changed(event: HAEvent) -> None:
         var_name = event.data["entity_id"]
