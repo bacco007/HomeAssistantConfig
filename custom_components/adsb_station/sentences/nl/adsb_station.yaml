@@ -22,9 +22,9 @@ intents:
   AdsbStationTraffic:
     data:
       - sentences:
-          - "(is|zijn) er (een )<kind>[s] (in de buurt|dichtbij|in bereik|boven me)"
-          - "hoor je (een )<kind>[s]"
-          - "(zijn|is) er <kind>[s]"
+          - "(is|zijn) er [een ]{kind}[s] (in de buurt|dichtbij|in bereik|boven me)"
+          - "hoor je [een ]{kind}[s]"
+          - "(zijn|is) er {kind}[s]"
   AdsbStationRoute:
     data:
       - sentences:

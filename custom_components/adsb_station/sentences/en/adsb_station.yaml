@@ -22,9 +22,9 @@ intents:
   AdsbStationTraffic:
     data:
       - sentences:
-          - "(are|is) there (any )<kind>[s] (nearby|around|up there|in range|about)"
-          - "can you hear (any )<kind>[s]"
-          - "any <kind>[s]"
+          - "(are|is) there [any |a ]{kind}[s] (nearby|around|up there|in range|about)"
+          - "can you hear [any ]{kind}[s]"
+          - "any {kind}[s]"
   AdsbStationRoute:
     data:
       - sentences:
