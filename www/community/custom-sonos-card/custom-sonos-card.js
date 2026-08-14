@@ -1,6 +1,13 @@
 //#region \0rolldown/runtime.js
 var __defProp = Object.defineProperty;
-var __esmMin = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
+var __esmMin = (fn, res, err) => () => {
+	if (err) throw err[0];
+	try {
+		return fn && (res = fn(fn = 0)), res;
+	} catch (e) {
+		throw err = [e], e;
+	}
+};
 var __exportAll = (all, no_symbols) => {
 	let target = {};
 	for (var name in all) __defProp(target, name, {
@@ -1369,7 +1376,7 @@ function delay(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.133.0/helpers/esm/decorate.js
+//#region \0@oxc-project+runtime@0.138.0/helpers/esm/decorate.js
 function __decorate$1(decorators, target, key, desc) {
 	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1564,7 +1571,7 @@ var PlayerControls = class extends i$5 {
 		};
 	}
 	render() {
-		const { stopInsteadOfPause, volumeEntityId, controlsColor, controlsLargeIcons, showVolumeUpAndDownButtons, hideControlShuffleButton, hideControlPrevTrackButton, showFastForwardAndRewindButtons, hideControlNextTrackButton, hideControlRepeatButton, showBrowseMediaButton, hideVolume } = this.store.config.player ?? {};
+		const { stopInsteadOfPause, volumeEntityId, controlsColor, controlsLargeIcons, showVolumeUpAndDownButtons, hideControlFavoriteButton, hideControlShuffleButton, hideControlPrevTrackButton, showFastForwardAndRewindButtons, hideControlNextTrackButton, hideControlRepeatButton, showBrowseMediaButton, hideVolume } = this.store.config.player ?? {};
 		const playing = this.store.activePlayer.isPlaying();
 		const playPauseIcon = playing ? stopInsteadOfPause ? mdiStopCircle : mdiPauseCircle : mdiPlayCircle;
 		const playPauseHandler = playing ? this.pauseOrStop : this.play;
@@ -1575,7 +1582,7 @@ var PlayerControls = class extends i$5 {
       <div class="main" id="mediaControls" style=${(controlsColor ? `--controls-color: ${controlsColor}` : "") || E}>
         <div class="icons ${controlsLargeIcons ? "large-icons" : ""}">
           <div class="flex-1">
-            <sonos-player-favorite-button .store=${this.store}></sonos-player-favorite-button>
+            <sonos-player-favorite-button ?hidden=${!!hideControlFavoriteButton} .store=${this.store}></sonos-player-favorite-button>
           </div>
           <sonos-icon-button ?hidden=${!showVolumeUpAndDownButtons} @click=${this.volDown} .path=${mdiVolumeMinus}></sonos-icon-button>
           <sonos-shuffle ?hidden=${!!hideControlShuffleButton} .store=${this.store}></sonos-shuffle>
@@ -4196,6 +4203,10 @@ var PLAYER_SCHEMA = [
 	},
 	{
 		name: "hideArtwork",
+		selector: { boolean: {} }
+	},
+	{
+		name: "hideControlFavoriteButton",
 		selector: { boolean: {} }
 	},
 	{
@@ -7312,17 +7323,20 @@ var __vitePreload = function preload(baseModule, deps, importerUrl) {
 				reason
 			}))));
 		}
+		function importMetaResolve(specifier) {
+			if (import.meta.resolve) return import.meta.resolve(specifier);
+			return new URL(specifier, new URL("../../../src/node/plugins/importAnalysisBuild.ts", import.meta.url)).href;
+		}
 		promise = allSettled(deps.map((dep) => {
 			dep = assetsURL(dep, importerUrl);
+			dep = importMetaResolve(dep);
 			if (dep in seen) return;
 			seen[dep] = true;
 			const isCss = dep.endsWith(".css");
-			const cssSelector = isCss ? "[rel=\"stylesheet\"]" : "";
-			if (!!importerUrl) for (let i = links.length - 1; i >= 0; i--) {
+			for (let i = links.length - 1; i >= 0; i--) {
 				const link = links[i];
 				if (link.href === dep && (!isCss || link.rel === "stylesheet")) return;
 			}
-			else if (document.querySelector(`link[href="${dep}"]${cssSelector}`)) return;
 			const link = document.createElement("link");
 			link.rel = isCss ? "stylesheet" : scriptRel;
 			if (!isCss) link.as = "script";
@@ -9710,21 +9724,21 @@ var MediaBrowserBrowser = class extends i$5 {
       ${this.playAllLoading ? x`<div class="loading-overlay"><div class="loading-spinner"></div></div>` : E}
       ${this.playAllWarning ? x`<div class="play-all-warning">${this.playAllWarning}</div>` : E}
       ${config.hideHeader ? "" : x`<div class="header">
-            ${this.navigateIds.length > 1 ? x`<sonos-icon-button .path=${mdiArrowLeft} @click=${this.goBack}></sonos-icon-button>` : x`<div class="spacer"></div>`}
-            <div class="title-section">
-              <span class="title">${this.currentTitle || "Media Browser"}</span>
-              <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
-            </div>
-            ${this.renderPlayAllButton()} ${renderShortcutButton(shortcut, () => this.navigateToShortcut(shortcut), this.isShortcutActive(shortcut))}
-            <sonos-icon-button .path=${mdiStar} @click=${this.goToFavorites} title="Favorites"></sonos-icon-button>
-            <sonos-icon-button
-              class=${this.isCurrentPathStart ? "startpath-active" : ""}
-              .path=${this.isCurrentPathStart ? mdiFolderStar : mdiFolderStarOutline}
-              @click=${this.toggleStartPath}
-              title=${this.isCurrentPathStart ? "Unset start page" : "Set as start page"}
-            ></sonos-icon-button>
-            ${renderLayoutMenu(this.layout, this.handleLayoutChange)}
-          </div>`}
+              ${this.navigateIds.length > 1 ? x`<sonos-icon-button .path=${mdiArrowLeft} @click=${this.goBack}></sonos-icon-button>` : x`<div class="spacer"></div>`}
+              <div class="title-section">
+                <span class="title">${this.currentTitle || "Media Browser"}</span>
+                <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
+              </div>
+              ${this.renderPlayAllButton()} ${renderShortcutButton(shortcut, () => this.navigateToShortcut(shortcut), this.isShortcutActive(shortcut))}
+              <sonos-icon-button .path=${mdiStar} @click=${this.goToFavorites} title="Favorites"></sonos-icon-button>
+              <sonos-icon-button
+                class=${this.isCurrentPathStart ? "startpath-active" : ""}
+                .path=${this.isCurrentPathStart ? mdiFolderStar : mdiFolderStarOutline}
+                @click=${this.toggleStartPath}
+                title=${this.isCurrentPathStart ? "Unset start page" : "Set as start page"}
+              ></sonos-icon-button>
+              ${renderLayoutMenu(this.layout, this.handleLayoutChange)}
+            </div>`}
       ${i(this.layout, x`<sonos-ha-media-player-browse
           .hass=${this.store.hass}
           .entityId=${this.store.activePlayer.id}
@@ -9881,20 +9895,20 @@ var MediaBrowser = class extends i$5 {
 		const hideActivePlayerName = config.hideActivePlayerName ?? false;
 		return x`
       ${config.hideHeader ? "" : x`<div class="header">
-            <div class="title-section">
-              <span class="title">${title}</span>
-              <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
-            </div>
-            ${onlyFavorites ? "" : renderShortcutButton(config.shortcut, this.onShortcutClick)}
-            ${onlyFavorites ? "" : x`<sonos-icon-button .path=${mdiPlayBoxMultiple} @click=${this.goToBrowser} title="Browse Media"></sonos-icon-button>
-                  <sonos-icon-button
-                    class=${this.isCurrentPathStart ? "startpath-active" : ""}
-                    .path=${this.isCurrentPathStart ? mdiFolderStar : mdiFolderStarOutline}
-                    @click=${this.toggleStartPath}
-                    title=${this.isCurrentPathStart ? "Unset start page" : "Set as start page"}
-                  ></sonos-icon-button>`}
-            ${renderLayoutMenu(this.layout, this.handleMenuAction)}
-          </div>`}
+              <div class="title-section">
+                <span class="title">${title}</span>
+                <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
+              </div>
+              ${onlyFavorites ? "" : renderShortcutButton(config.shortcut, this.onShortcutClick)}
+              ${onlyFavorites ? "" : x`<sonos-icon-button .path=${mdiPlayBoxMultiple} @click=${this.goToBrowser} title="Browse Media"></sonos-icon-button>
+                      <sonos-icon-button
+                        class=${this.isCurrentPathStart ? "startpath-active" : ""}
+                        .path=${this.isCurrentPathStart ? mdiFolderStar : mdiFolderStarOutline}
+                        @click=${this.toggleStartPath}
+                        title=${this.isCurrentPathStart ? "Unset start page" : "Set as start page"}
+                      ></sonos-icon-button>`}
+              ${renderLayoutMenu(this.layout, this.handleMenuAction)}
+            </div>`}
       <sonos-favorites .store=${this.store} .layout=${this.layout} @item-selected=${this.onMediaItemSelected}></sonos-favorites>
     `;
 	}
@@ -10805,30 +10819,30 @@ var MediaRow = class extends i$5 {
       >
         <div class="row">
           ${this.showCheckbox ? x`<div class="icon-slot">
-                <ha-checkbox .checked=${this.checked} @change=${this.onCheckboxChange} @click=${(e) => e.stopPropagation()}></ha-checkbox>
-              </div>` : this.showQueueButton ? x`<div class="icon-slot">
-                  <sonos-icon-button
-                    class=${e({
+                  <ha-checkbox .checked=${this.checked} @change=${this.onCheckboxChange} @click=${(e) => e.stopPropagation()}></ha-checkbox>
+                </div>` : this.showQueueButton ? x`<div class="icon-slot">
+                    <sonos-icon-button
+                      class=${e({
 			"queue-btn": true,
 			disabled: this.queueButtonDisabled
 		})}
-                    .path=${mdiSkipNext}
-                    ?disabled=${this.queueButtonDisabled}
-                    @click=${this.onQueueClick}
-                  ></sonos-icon-button>
-                </div>` : E}
+                      .path=${mdiSkipNext}
+                      ?disabled=${this.queueButtonDisabled}
+                      @click=${this.onQueueClick}
+                    ></sonos-icon-button>
+                  </div>` : E}
           ${renderFavoritesItem(this.item)}
         </div>
         <div class="meta-content" slot="meta">
           <sonos-playing-bars .show=${this.playing}></sonos-playing-bars>
           ${hasBadges ? x`<div class="badges">
-                ${showClickableHeart ? x`<div class="badge-toggle ${this.favoriteLoading ? "loading" : ""}" @click=${this.onFavoriteClick}>
-                      ${this.favoriteLoading ? x`<ha-circular-progress indeterminate size="tiny"></ha-circular-progress>` : x`<ha-svg-icon class=${this.isFavorite ? "accent" : ""} .path=${this.isFavorite ? mdiHeart : mdiHeartOutline}></ha-svg-icon>`}
-                    </div>` : this.showFavoriteBadge ? x`<ha-svg-icon class="accent" .path=${mdiHeart}></ha-svg-icon>` : E}
-                ${showClickableLibrary ? x`<div class="badge-toggle ${this.libraryLoading ? "loading" : ""}" @click=${this.onLibraryClick}>
-                      ${this.libraryLoading ? x`<ha-circular-progress indeterminate size="tiny"></ha-circular-progress>` : x`<ha-svg-icon class=${this.isInLibrary ? "accent" : ""} .path=${mdiBookshelf}></ha-svg-icon>`}
-                    </div>` : this.showLibraryBadge ? x`<ha-svg-icon class="accent" .path=${mdiBookshelf}></ha-svg-icon>` : E}
-              </div>` : E}
+                  ${showClickableHeart ? x`<div class="badge-toggle ${this.favoriteLoading ? "loading" : ""}" @click=${this.onFavoriteClick}>
+                          ${this.favoriteLoading ? x`<ha-circular-progress indeterminate size="tiny"></ha-circular-progress>` : x`<ha-svg-icon class=${this.isFavorite ? "accent" : ""} .path=${this.isFavorite ? mdiHeart : mdiHeartOutline}></ha-svg-icon>`}
+                        </div>` : this.showFavoriteBadge ? x`<ha-svg-icon class="accent" .path=${mdiHeart}></ha-svg-icon>` : E}
+                  ${showClickableLibrary ? x`<div class="badge-toggle ${this.libraryLoading ? "loading" : ""}" @click=${this.onLibraryClick}>
+                          ${this.libraryLoading ? x`<ha-circular-progress indeterminate size="tiny"></ha-circular-progress>` : x`<ha-svg-icon class=${this.isInLibrary ? "accent" : ""} .path=${mdiBookshelf}></ha-svg-icon>`}
+                        </div>` : this.showLibraryBadge ? x`<ha-svg-icon class="accent" .path=${mdiBookshelf}></ha-svg-icon>` : E}
+                </div>` : E}
           <slot></slot>
         </div>
       </mwc-list-item>
@@ -11322,7 +11336,7 @@ function applyQueueSearchAction(action, searchMatchIndices, selectedIndices) {
 		shownIndices: action.payload.shownIndices
 	};
 	if (action.type === "expanded") return { searchExpanded: action.payload.expanded };
-	if (action.type === "select-all") return { selectedIndices: new Set([...selectedIndices, ...searchMatchIndices]) };
+	if (action.type === "select-all") return { selectedIndices: /* @__PURE__ */ new Set([...selectedIndices, ...searchMatchIndices]) };
 	return {};
 }
 //#endregion
@@ -11901,7 +11915,7 @@ var QueueSonos = class extends i$5 {
 		this.onSearchAction = (e) => {
 			const a = e.detail;
 			if (a.type === "match") this.searchHighlightIndex = a.payload.index;
-			else if (a.type === "select-all") this.selectedIndices = new Set([...this.selectedIndices, ...a.payload.indices]);
+			else if (a.type === "select-all") this.selectedIndices = /* @__PURE__ */ new Set([...this.selectedIndices, ...a.payload.indices]);
 			else if (a.type === "expanded") this.searchExpanded = a.payload.expanded;
 			else if (a.type === "show-only") {
 				this.showOnlyMatches = a.payload.showOnlyMatches;
@@ -12127,7 +12141,7 @@ function restoreSearchState() {
 		}
 	} catch {}
 	return {
-		mediaTypes: new Set(["track"]),
+		mediaTypes: /* @__PURE__ */ new Set(["track"]),
 		searchText: "",
 		libraryFilter: "all"
 	};
@@ -12409,13 +12423,13 @@ var SearchFilterMenu = class extends i$5 {
             </div>
           `)}
         ${hasLibraryFilter ? x`
-              ${mediaTypeOverflows.length > 0 ? x`<div class="filter-menu-divider"></div>` : E}
-              <div class="filter-menu-item" @click=${() => this.dispatch({ type: "toggle-library-filter" })}>
-                <ha-svg-icon .path=${mdiBookshelf}></ha-svg-icon>
-                <span>${LIBRARY_LABELS$1[this.libraryFilter]}</span>
-                <ha-svg-icon class="check" .path=${mdiCheck} ?hidden=${this.libraryFilter === "all"}></ha-svg-icon>
-              </div>
-            ` : E}
+                ${mediaTypeOverflows.length > 0 ? x`<div class="filter-menu-divider"></div>` : E}
+                <div class="filter-menu-item" @click=${() => this.dispatch({ type: "toggle-library-filter" })}>
+                  <ha-svg-icon .path=${mdiBookshelf}></ha-svg-icon>
+                  <span>${LIBRARY_LABELS$1[this.libraryFilter]}</span>
+                  <ha-svg-icon class="check" .path=${mdiCheck} ?hidden=${this.libraryFilter === "all"}></ha-svg-icon>
+                </div>
+              ` : E}
         <div class="filter-menu-divider"></div>
         <div class="filter-menu-done" @click=${() => this.dispatch({ type: "close" })}>Done</div>
       </div>
@@ -12609,23 +12623,23 @@ var SearchHeader = class extends i$5 {
                 ></sonos-icon-button>
               `)}
             ${hasOverflow ? x`
-                  <div class="separator" ?hidden=${this.visibleCount === 0}></div>
-                  <div class="filter-menu-anchor">
-                    <sonos-icon-button
-                      .path=${mdiDotsVertical}
-                      @click=${() => this.filterMenuOpen = !this.filterMenuOpen}
-                      title="More filters"
-                      ?selected=${this.overflowIcons.some((i) => this.isIconActive(i))}
-                    ></sonos-icon-button>
-                    <sonos-search-filter-menu
-                      ?hidden=${!this.filterMenuOpen}
-                      .overflowIcons=${this.overflowIcons}
-                      .mediaTypes=${this.mediaTypes}
-                      .libraryFilter=${this.libraryFilter}
-                      @filter-action=${this.handleFilterAction}
-                    ></sonos-search-filter-menu>
-                  </div>
-                ` : E}
+                    <div class="separator" ?hidden=${this.visibleCount === 0}></div>
+                    <div class="filter-menu-anchor">
+                      <sonos-icon-button
+                        .path=${mdiDotsVertical}
+                        @click=${() => this.filterMenuOpen = !this.filterMenuOpen}
+                        title="More filters"
+                        ?selected=${this.overflowIcons.some((i) => this.isIconActive(i))}
+                      ></sonos-icon-button>
+                      <sonos-search-filter-menu
+                        ?hidden=${!this.filterMenuOpen}
+                        .overflowIcons=${this.overflowIcons}
+                        .mediaTypes=${this.mediaTypes}
+                        .libraryFilter=${this.libraryFilter}
+                        @filter-action=${this.handleFilterAction}
+                      ></sonos-search-filter-menu>
+                    </div>
+                  ` : E}
           </div>
           <sonos-selection-actions
             ?hidden=${!this.selectMode}
@@ -12945,11 +12959,11 @@ var SearchResults = class extends i$5 {
 			return x`
                 <div class="grid-tile ${selected ? "selected" : ""}" @click=${() => this.onItemClick(index)}>
                   ${this.selectMode ? x`<ha-checkbox
-                        class="grid-checkbox"
-                        .checked=${selected}
-                        @change=${(e) => this.onCheckboxChange(index, e.target.checked)}
-                        @click=${(e) => e.stopPropagation()}
-                      ></ha-checkbox>` : ""}
+                          class="grid-checkbox"
+                          .checked=${selected}
+                          @change=${(e) => this.onCheckboxChange(index, e.target.checked)}
+                          @click=${(e) => e.stopPropagation()}
+                        ></ha-checkbox>` : ""}
                   ${item.imageUrl ? x`<img class="grid-img" src="${item.imageUrl}" alt="${item.title}" loading="lazy" />` : x`<div class="grid-placeholder"><ha-svg-icon .path=${getMediaTypeIcon(item.mediaType)}></ha-svg-icon></div>`}
                   <div class="grid-info">
                     <div class="grid-title">${item.title}</div>
@@ -13334,7 +13348,7 @@ var Search = class extends i$5 {
 			this.searchService = new SearchService(this);
 			this.discoverConfigEntry();
 			const { defaultMediaType } = this.searchConfig;
-			if (this.mediaTypes.size === 0 && defaultMediaType && defaultMediaType !== "none") this.mediaTypes = new Set([defaultMediaType]);
+			if (this.mediaTypes.size === 0 && defaultMediaType && defaultMediaType !== "none") this.mediaTypes = /* @__PURE__ */ new Set([defaultMediaType]);
 		}
 	}
 	async discoverConfigEntry() {
@@ -13549,12 +13563,12 @@ var Volumes = class extends i$5 {
 		return x` <div class="row">
       <div class="volume-name">
         ${updateMembers && groupName ? x`
-              <div class="volume-name-text grouped-name">
-                <span class="grouped-name-prefix">${name} (</span>
-                <span class="grouped-name-main">${groupName}</span>
-                <span class="grouped-name-suffix">)</span>
-              </div>
-            ` : x`<div class="volume-name-text">${name}</div>`}
+                <div class="volume-name-text grouped-name">
+                  <span class="grouped-name-prefix">${name} (</span>
+                  <span class="grouped-name-main">${groupName}</span>
+                  <span class="grouped-name-suffix">)</span>
+                </div>
+              ` : x`<div class="volume-name-text">${name}</div>`}
       </div>
       <div class="slider-row">
         <sonos-icon-button
