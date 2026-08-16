@@ -6,12 +6,16 @@ import logging
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.components import websocket_api
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers import device_registry as dr
 
+from . import matter_client
+from .automation_generator import (
+    create_automation_from_template,
+    preview_automation,
+)
 from .const import (
     WS_TYPE_ADD_TO_GROUP,
     WS_TYPE_CLEAR_SCHEDULE,
@@ -33,18 +37,13 @@ from .const import (
     WS_TYPE_SET_SCHEDULE,
     WS_TYPE_VERIFY_BINDINGS,
 )
-from .automation_generator import (
-    create_automation_from_template,
-    preview_automation,
-)
-from . import matter_client
-from .telemetry import collect_survey_data
 from .devices.parsers.eve import (
     EVE_CLUSTER_ID,
     EVE_SCHEDULE_ATTR,
     is_eve_thermostat,
     parse_eve_schedule,
 )
+from .telemetry import collect_survey_data
 
 _LOGGER = logging.getLogger(__name__)
 

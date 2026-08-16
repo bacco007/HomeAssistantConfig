@@ -27,7 +27,6 @@ from .const import (
     TELEMETRY_INTERVAL_HOURS,
 )
 
-
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
@@ -76,7 +75,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         connection = DirectMatterConnection(hass, server_url)
         try:
             await connection.async_connect()
-        except Exception as err:  # noqa: BLE001 - surfaced as ConfigEntryNotReady
+        except Exception as err:
             raise ConfigEntryNotReady(
                 f"Could not connect to Matter server at {server_url}: {err}"
             ) from err

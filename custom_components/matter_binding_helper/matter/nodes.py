@@ -74,7 +74,7 @@ async def get_nodes(hass: HomeAssistant) -> list[dict[str, Any]]:
     return nodes
 
 
-def get_node_name(node: "MatterNodeData") -> str:
+def get_node_name(node: MatterNodeData) -> str:
     """Extract a friendly name for the node."""
     try:
         # Approach 1: Use node.name property (MatterNode objects)
@@ -111,7 +111,7 @@ def get_node_name(node: "MatterNodeData") -> str:
     return f"Node {node.node_id}"
 
 
-def get_device_info(node: "MatterNodeData") -> dict[str, Any]:
+def get_device_info(node: MatterNodeData) -> dict[str, Any]:
     """Extract device information from node.
 
     Tries multiple approaches:
@@ -295,7 +295,7 @@ def get_device_info(node: "MatterNodeData") -> dict[str, Any]:
     return device_info
 
 
-def get_endpoints_info(node: "MatterNodeData") -> list[dict[str, Any]]:
+def get_endpoints_info(node: MatterNodeData) -> list[dict[str, Any]]:
     """Get endpoint information for a node.
 
     Tries multiple approaches:
@@ -546,7 +546,7 @@ def _extract_from_attributes_dict(
     try:
         # Parse attribute keys to extract endpoints and clusters
         # Keys are in format: 'endpoint/cluster/attribute'
-        for attr_key in attributes.keys():
+        for attr_key in attributes:
             try:
                 parts = str(attr_key).split("/")
                 if len(parts) >= 2:

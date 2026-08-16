@@ -11,13 +11,13 @@ from homeassistant.core import HomeAssistant
 from ..const import CLUSTER_BINDING
 from .acl import provision_acl_for_binding, remove_acl_entry
 from .client import get_client
-from .groups import provision_group_for_binding, teardown_group_for_binding
 from .demo import (
     add_demo_binding,
     get_demo_bindings,
     is_demo_mode,
     remove_demo_binding,
 )
+from .groups import provision_group_for_binding, teardown_group_for_binding
 from .models import BindingEntry, BindingVerificationResult, OperationErrorType
 from .utils import (
     binding_matches,
@@ -116,7 +116,7 @@ async def get_bindings(
 
 
 def _get_bindings_from_node_cache(
-    client: "MatterClient", node_id: int, endpoint_id: int
+    client: MatterClient, node_id: int, endpoint_id: int
 ) -> list[BindingEntry] | None:
     """Try to get bindings from the node's cached endpoint data.
 

@@ -6,11 +6,11 @@ Each vendor with blob-type attributes has their own parser module.
 
 from __future__ import annotations
 
-from .eve import parse_eve_schedule, EveSchedule, EveTimeSlot, EveDayAssignment
+from .eve import EveDayAssignment, EveSchedule, EveTimeSlot, parse_eve_schedule
 
 __all__ = [
-    "parse_eve_schedule",
+    "EveDayAssignment",
     "EveSchedule",
     "EveTimeSlot",
-    "EveDayAssignment",
+    "parse_eve_schedule",
 ]

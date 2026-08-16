@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-
+from homeassistant.components.matter import DOMAIN as MATTER_DOMAIN
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -13,7 +13,6 @@ from homeassistant.config_entries import (
     OptionsFlow,
     OptionsFlowWithConfigEntry,
 )
-from homeassistant.components.matter import DOMAIN as MATTER_DOMAIN
 
 from .const import (
     CONF_DEMO_MODE,

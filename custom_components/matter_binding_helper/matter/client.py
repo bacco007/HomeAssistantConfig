@@ -80,12 +80,12 @@ class MatterClientProtocol(ABC):
 class RealMatterClient(MatterClientProtocol):
     """Wraps the actual python-matter-server client."""
 
-    def __init__(self, client: "RealMatterServerClient"):
+    def __init__(self, client: RealMatterServerClient):
         """Initialize with the real Matter client."""
         self._client = client
 
     @property
-    def raw_client(self) -> "RealMatterServerClient":
+    def raw_client(self) -> RealMatterServerClient:
         """Get the underlying raw Matter client."""
         return self._client
 
@@ -148,7 +148,7 @@ class RealMatterClient(MatterClientProtocol):
         return await self._client.send_command(command, **kwargs)
 
 
-def _get_direct_client(hass: HomeAssistant) -> "RealMatterServerClient | None":
+def _get_direct_client(hass: HomeAssistant) -> RealMatterServerClient | None:
     """Return a directly-configured Matter client, if one is connected (#61)."""
     from ..const import DOMAIN
 
@@ -159,7 +159,7 @@ def _get_direct_client(hass: HomeAssistant) -> "RealMatterServerClient | None":
     return None
 
 
-def get_raw_matter_client(hass: HomeAssistant) -> "RealMatterServerClient | None":
+def get_raw_matter_client(hass: HomeAssistant) -> RealMatterServerClient | None:
     """Get the raw Matter client from Home Assistant.
 
     Prefers an explicitly-configured direct connection (issue #61) and otherwise

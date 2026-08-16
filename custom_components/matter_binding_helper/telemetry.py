@@ -339,33 +339,35 @@ async def send_telemetry(hass: HomeAssistant) -> bool:
             TELEMETRY_URL,
         )
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
+        async with (
+            aiohttp.ClientSession() as session,
+            session.post(
                 TELEMETRY_URL,
                 json=data,
                 headers={"Content-Type": "application/json"},
                 timeout=aiohttp.ClientTimeout(total=30),
-            ) as response:
-                response_text = await response.text()
-                _LOGGER.debug(
-                    "Server response: status=%d, body=%s",
+            ) as response,
+        ):
+            response_text = await response.text()
+            _LOGGER.debug(
+                "Server response: status=%d, body=%s",
+                response.status,
+                response_text,
+            )
+
+            if response.status == 200:
+                _LOGGER.info(
+                    "Telemetry sent successfully: %d devices reported",
+                    len(data["devices"]),
+                )
+                return True
+            else:
+                _LOGGER.warning(
+                    "Telemetry submission failed with status %d: %s",
                     response.status,
                     response_text,
                 )
-
-                if response.status == 200:
-                    _LOGGER.info(
-                        "Telemetry sent successfully: %d devices reported",
-                        len(data["devices"]),
-                    )
-                    return True
-                else:
-                    _LOGGER.warning(
-                        "Telemetry submission failed with status %d: %s",
-                        response.status,
-                        response_text,
-                    )
-                    return False
+                return False
 
     except asyncio.TimeoutError:
         _LOGGER.warning("Telemetry submission timed out after 30 seconds")

@@ -70,7 +70,7 @@ class ScheduleTransition:
         }
 
     @classmethod
-    def from_matter(cls, matter_transition: Any) -> "ScheduleTransition":
+    def from_matter(cls, matter_transition: Any) -> ScheduleTransition:
         """Create from Matter SDK transition struct."""
         # Matter uses 0.01°C units
         heat = matter_transition.heatSetpoint

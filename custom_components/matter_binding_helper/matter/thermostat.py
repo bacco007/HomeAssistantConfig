@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from homeassistant.core import HomeAssistant
 
@@ -15,9 +15,6 @@ from ..const import (
 from .client import get_client
 from .demo import is_demo_mode
 from .models import ScheduleTransition, WeeklySchedule
-
-if TYPE_CHECKING:
-    pass
 
 _LOGGER = logging.getLogger(__name__)
 

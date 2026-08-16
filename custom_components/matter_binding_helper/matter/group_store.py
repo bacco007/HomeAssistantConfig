@@ -20,15 +20,16 @@ group.
 from __future__ import annotations
 
 import secrets
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 from homeassistant.core import HomeAssistant
 
 from ..const import DOMAIN, GROUP_ID_BASE, GROUP_KEY_SET_BASE
 
 
-def get_group_store(hass: HomeAssistant) -> "GroupStore":
+def get_group_store(hass: HomeAssistant) -> GroupStore:
     """Return the cached GroupStore for this hass, creating it on first use.
 
     Tests can pre-seed ``hass.data[DOMAIN][_GROUP_STORE_KEY]`` with a GroupStore
@@ -82,7 +83,7 @@ class GroupRecord:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "GroupRecord":
+    def from_dict(cls, data: dict[str, Any]) -> GroupRecord:
         """Deserialize from storage."""
         return cls(
             group_id=int(data["group_id"]),

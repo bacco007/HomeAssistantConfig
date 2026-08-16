@@ -191,7 +191,7 @@ async def provision_group_key(
                 "(write not confirmed via readback)"
             ),
         )
-    except Exception as err:  # noqa: BLE001 - surfaced to the user
+    except Exception as err:
         _LOGGER.error(
             "provision_group_key: failed for node %s group %s: %s",
             node_id,

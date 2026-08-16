@@ -73,9 +73,7 @@ def get_user_friendly_error(error_type: OperationErrorType, original: Exception)
     return messages.get(error_type, f"Operation failed: {original}")
 
 
-def check_node_available(
-    client: "MatterClient", node_id: int
-) -> tuple[bool, str | None]:
+def check_node_available(client: MatterClient, node_id: int) -> tuple[bool, str | None]:
     """Check if a node is available.
 
     Returns:

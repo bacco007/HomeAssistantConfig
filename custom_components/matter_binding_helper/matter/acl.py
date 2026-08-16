@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
-def _get_acl_from_node_cache(client: "MatterClient", node_id: int) -> list | None:
+def _get_acl_from_node_cache(client: MatterClient, node_id: int) -> list | None:
     """Try to get ACL from the node's cached endpoint 0 data.
 
     Returns None if ACL is not found in the cache.

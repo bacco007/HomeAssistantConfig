@@ -20,20 +20,25 @@ Module structure:
 
 from __future__ import annotations
 
-# Re-export all public API from matter/ subpackage
-# This maintains backwards compatibility for existing imports
+# ACL - Access Control List operations
+from .matter.acl import (
+    acl_entry_exists,
+    add_acl_entry,
+    build_acl_entry_for_binding,
+    get_acl,
+    provision_acl_for_binding,
+    remove_acl_entry,
+    write_acl,
+)
 
-# Models - data classes
-from .matter.models import (
-    ACLEntry,
-    ACLProvisioningResult,
-    ACLTarget,
-    BindingEntry,
-    BindingVerificationResult,
-    GroupEntry,
-    OperationErrorType,
-    ScheduleTransition,
-    WeeklySchedule,
+# Bindings - binding CRUD operations
+from .matter.bindings import (
+    create_binding,
+    delete_binding,
+    get_bindings,
+    provision_acls_for_existing_bindings,
+    repair_group_bindings,
+    verify_bindings,
 )
 
 # Client - Matter client protocol and factory
@@ -53,12 +58,13 @@ from .matter.demo import (
     is_demo_mode,
 )
 
-# Nodes - node discovery and info extraction
-from .matter.nodes import (
-    get_device_info,
-    get_endpoints_info,
-    get_node_name,
-    get_nodes,
+# Groups - group operations (not yet supported; honesty gate)
+from .matter.groups import (
+    add_to_group,
+    create_group,
+    delete_group,
+    get_groups,
+    remove_from_group,
 )
 
 # HA Registry - Home Assistant device/entity/area registry integration
@@ -67,34 +73,32 @@ from .matter.ha_registry import (
     get_ha_device_info,
 )
 
-# Utils - error handling and utilities
-from .matter.utils import (
-    binding_matches,
-    check_node_available,
-    get_cluster_privilege,
-    get_user_friendly_error,
-    parse_error_type,
+# Re-export all public API from matter/ subpackage
+# This maintains backwards compatibility for existing imports
+# Models - data classes
+from .matter.models import (
+    ACLEntry,
+    ACLProvisioningResult,
+    ACLTarget,
+    BindingEntry,
+    BindingVerificationResult,
+    GroupEntry,
+    OperationErrorType,
+    ScheduleTransition,
+    WeeklySchedule,
 )
 
-# Bindings - binding CRUD operations
-from .matter.bindings import (
-    create_binding,
-    delete_binding,
-    get_bindings,
-    provision_acls_for_existing_bindings,
-    repair_group_bindings,
-    verify_bindings,
+# Nodes - node discovery and info extraction
+from .matter.nodes import (
+    get_device_info,
+    get_endpoints_info,
+    get_node_name,
+    get_nodes,
 )
 
-# ACL - Access Control List operations
-from .matter.acl import (
-    acl_entry_exists,
-    add_acl_entry,
-    build_acl_entry_for_binding,
-    get_acl,
-    provision_acl_for_binding,
-    remove_acl_entry,
-    write_acl,
+# Proprietary - vendor-specific attribute operations
+from .matter.proprietary import (
+    get_proprietary_attributes,
 )
 
 # Thermostat - schedule operations
@@ -107,18 +111,13 @@ from .matter.thermostat import (
     supports_thermostat_schedule,
 )
 
-# Groups - group operations (not yet supported; honesty gate)
-from .matter.groups import (
-    add_to_group,
-    create_group,
-    delete_group,
-    get_groups,
-    remove_from_group,
-)
-
-# Proprietary - vendor-specific attribute operations
-from .matter.proprietary import (
-    get_proprietary_attributes,
+# Utils - error handling and utilities
+from .matter.utils import (
+    binding_matches,
+    check_node_available,
+    get_cluster_privilege,
+    get_user_friendly_error,
+    parse_error_type,
 )
 
 # Backwards compatibility aliases (underscore-prefixed versions)

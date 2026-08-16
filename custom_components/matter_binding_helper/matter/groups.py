@@ -241,7 +241,7 @@ async def add_to_group(
             endpoint_id=endpoint_id,
             command=_add_group_command(group_id, record.name),
         )
-    except Exception as err:  # noqa: BLE001 - surfaced to the user
+    except Exception as err:
         _LOGGER.error("add_to_group: AddGroup failed: %s", err, exc_info=True)
         return GroupOperationResult(
             success=False,
@@ -302,7 +302,7 @@ async def remove_from_group(
             endpoint_id=endpoint_id,
             command=_remove_group_command(group_id),
         )
-    except Exception as err:  # noqa: BLE001 - surfaced to the user
+    except Exception as err:
         _LOGGER.error("remove_from_group: RemoveGroup failed: %s", err, exc_info=True)
         return GroupOperationResult(
             success=False,
