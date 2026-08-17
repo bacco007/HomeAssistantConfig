@@ -23,7 +23,10 @@ LIVE_TTL = 60
 LIVE_DISCOVERY_TTL = 60 * 60
 LIVE_PREMATCH_TTL = 5 * 60
 LIVE_PREMATCH_WINDOW = 10 * 60
-FIXTURES_TTL = 6 * 60 * 60
+# Fixture status drives Fixtures, Live and Results. Refresh it alongside the
+# minute-by-minute match feed so completed scores do not remain stale for six
+# hours after full-time. The provider still caches the larger league payload.
+FIXTURES_TTL = 60
 STANDINGS_TTL = 6 * 60 * 60
 PLAYERS_TTL = 12 * 60 * 60
 LIVE_EVENTS_TTL = 60
