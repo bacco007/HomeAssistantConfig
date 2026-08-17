@@ -401,38 +401,24 @@ class ForecastSensor(SensorBase):
         )
 
     @property
-    def state(self) -> Any:
-        """Return the state of the sensor.
-
-        Only the TIMESTAMP sensors are served here; everything else delegates to
-        SensorEntity.state, which reads native_value. Those four still report an
-        ISO 8601 string in the location's local time. Returning a datetime from
-        native_value instead — what a TIMESTAMP sensor is documented to do —
-        makes Home Assistant re-render the state in UTC, which breaks templates
-        that compare or slice the string, so it is held for a release of its own.
-        """
-        if self.device_class != SensorDeviceClass.TIMESTAMP:
-            return super().state
-
-        day_data = self._day_forecast()
-        if day_data is None:
-            return None
-        value = day_data.get(self.sensor_name)
-        tzinfo = self._timezone()
-        if tzinfo is None:
-            return value
-        try:
-            return parse_iso_datetime(value).astimezone(tzinfo).isoformat()
-        except ValueError:
-            return value
-
-    @property
     def native_value(self) -> Any:
         """Return the value reported by the sensor."""
         # If there is no data for this day, report no value for this day.
         day_data = self._day_forecast()
         if day_data is None:
             return None
+
+        if self.device_class == SensorDeviceClass.TIMESTAMP:
+            # A TIMESTAMP sensor must hand Home Assistant a timezone-aware
+            # datetime, which it then renders as UTC. Anything else — a missing
+            # value, or a string BOM has changed the format of — raises out of
+            # SensorEntity.state, so it has to become None here instead.
+            # parse_iso_datetime stamps UTC on an offset-less timestamp, which
+            # keeps a naive datetime from ever reaching that check.
+            try:
+                return parse_iso_datetime(day_data.get(self.sensor_name))
+            except ValueError:
+                return None
 
         if self.sensor_name == "uv_forecast":
             return self._uv_forecast(day_data)

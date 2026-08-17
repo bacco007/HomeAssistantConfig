@@ -8,5 +8,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/safepay/ha_bom_australia/issues",
   "requirements": [],
-  "version": "1.6.5"
+  "version": "1.6.6"
 }

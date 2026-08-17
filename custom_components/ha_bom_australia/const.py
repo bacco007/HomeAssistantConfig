@@ -366,4 +366,5 @@ WARNING_TYPES: Final = {
     "bushwalkers_alert": {"name": "Bushwalkers Alert", "icon": "mdi:hiking"},
     "fire_weather_warning": {"name": "Fire Weather Warning", "icon": "mdi:fire-alert"},
     "tropical_cyclone_warning": {"name": "Tropical Cyclone Warning", "icon": "mdi:weather-hurricane"},
+    "road_weather_alert": {"name": "Road Weather Alert", "icon": "mdi:road-variant"},
 }
