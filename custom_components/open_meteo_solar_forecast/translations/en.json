@@ -2,26 +2,49 @@
   "config": {
     "step": {
       "user": {
+        "description": "General settings shared by all PV arrays. You will configure each array in the next step.",
         "data": {
           "api_key": "API key",
-          "azimuth": "Azimuth (360 degrees, 0 = North, 90 = East, 180 = South, 270 = West)",
-          "damping_morning": "Damping factor for morning (0.0-1.0).",
-          "damping_evening": "Damping factor for evening (0.0-1.0).",
-          "declination": "Declination (0 = Horizontal, 90 = Vertical)",
+          "base_url": "API base URL",
+          "name": "Name",
+          "model": "Weather model",
+          "inverter_power": "Inverter capacity",
+          "max_snowcover_depth_cm": "Maximum snow cover depth"
+        },
+        "data_description": {
+          "inverter_power": "The AC capacity of your inverter in Watt (0 = no limit).",
+          "max_snowcover_depth_cm": "If greater than 0, the snow cover depth which results in zero module power."
+        },
+        "submit": "Next"
+      },
+      "array": {
+        "description": "Settings for PV array {array_number}. Enable “Add another array” to configure an additional array with its own orientation and power.",
+        "data": {
           "latitude": "Latitude",
           "longitude": "Longitude",
-          "efficiency_factor": "DC efficiency factor (0.0-1.0, 0.0 = 100% loss, 1.0 = no loss)",
-          "modules_power": "Total Watt peak power of your solar modules",
-          "inverter_power": "The capacity of your inverter in Watt",
-          "name": "Name",
-          "model": "The weather model to use",
-          "retain_latest_forecast_when_unavailable": "Retain latest forecast when unavailable",
-          "max_forecast_age_minutes": "Max retained forecast age in minutes (0 = no limit)",
-          "use_horizon": "If enabled, the horizon line defined in the horizon file (see docs) is used to respect shading of the modules.",
-          "horizon_filepath": "Path to the horizon file (optional, leave empty for default path)",
-          "partial_shading": "(Only if horizon is enabled:) If enabled, shadows are treated as partial."
+          "declination": "Declination",
+          "azimuth": "Azimuth",
+          "modules_power": "Modules peak power",
+          "tracking": "Solar tracker type",
+          "efficiency_factor": "DC efficiency factor",
+          "damping_morning": "Morning damping factor",
+          "damping_evening": "Evening damping factor",
+          "use_horizon": "Use horizon file",
+          "partial_shading": "Partial shading",
+          "horizon_filepath": "Horizon file path",
+          "add_another": "Add another array"
         },
-        "description": "Fill in your solar panel data. For multi-array setups, enter comma-separated values in array-capable fields (example: `20, 35`). Single values are applied to all arrays."
+        "data_description": {
+          "declination": "0 = horizontal, 90 = vertical.",
+          "azimuth": "0 = North, 90 = East, 180 = South, 270 = West.",
+          "modules_power": "Total Watt peak power of the solar modules in this array.",
+          "efficiency_factor": "0.0 = 100% loss, 1.0 = no loss.",
+          "damping_morning": "0.0 = no damping, 1.0 = full damping in the morning.",
+          "damping_evening": "0.0 = no damping, 1.0 = full damping in the evening.",
+          "use_horizon": "Use the horizon line defined in the horizon file (see docs) to respect shading of the modules.",
+          "partial_shading": "Only if horizon is enabled: treat shadows as partial.",
+          "horizon_filepath": "Path to the horizon file (leave empty for the default path)."
+        }
       }
     }
   },
@@ -88,29 +111,74 @@
   },
   "options": {
     "error": {
-      "invalid_api_key": "Invalid API key",
-      "invalid_multi_value": "One or more multi-array fields contain invalid values. Use comma-separated values without empty items (example: `90, 270`)."
+      "invalid_api_key": "Invalid API key"
     },
     "step": {
       "init": {
+        "description": "General settings shared by all PV arrays. You will configure each array in the next step.",
         "data": {
           "api_key": "API key",
-          "azimuth": "Azimuth (360 degrees, 0 = North, 90 = East, 180 = South, 270 = West)",
-          "damping_morning": "Damping factor: adjusts the results in the morning",
-          "damping_evening": "Damping factor: adjusts the results in the evening",
-          "declination": "Declination (0 = Horizontal, 90 = Vertical)",
-          "inverter_size": "Inverter size (Watt)",
-          "efficiency_factor": "DC efficiency factor (0.0-1.0, 0.0 = 100% loss, 1.0 = no loss)",
-          "modules_power": "Total Watt peak power of your solar modules",
-          "inverter_power": "The capacity of your inverter in Watt",
-          "model": "The weather model to use",
-          "retain_latest_forecast_when_unavailable": "Retain latest forecast when unavailable",
-          "max_forecast_age_minutes": "Max retained forecast age in minutes (0 = no limit)",
-          "use_horizon": "Use horizon line from horizon file",
-          "horizon_filepath": "Path to the horizon file",
-          "partial_shading": "Treat shadows as partial"
+          "base_url": "API base URL",
+          "model": "Weather model",
+          "inverter_power": "Inverter capacity",
+          "max_snowcover_depth_cm": "Maximum snow cover depth"
         },
-        "description": "These values allow tweaking the Solar Forecast result. Please refer to the documentation if a field is unclear."
+        "data_description": {
+          "inverter_power": "The AC capacity of your inverter in Watt (0 = no limit).",
+          "max_snowcover_depth_cm": "If greater than 0, the snow cover depth which results in zero module power."
+        },
+        "submit": "Next"
+      },
+      "array": {
+        "description": "Settings for PV array {array_number}. Enable “Add another array” to configure an additional array with its own orientation and power.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "declination": "Declination",
+          "azimuth": "Azimuth",
+          "modules_power": "Modules peak power",
+          "tracking": "Solar tracker type",
+          "efficiency_factor": "DC efficiency factor",
+          "damping_morning": "Morning damping factor",
+          "damping_evening": "Evening damping factor",
+          "use_horizon": "Use horizon file",
+          "partial_shading": "Partial shading",
+          "horizon_filepath": "Horizon file path",
+          "add_another": "Add another array"
+        },
+        "data_description": {
+          "declination": "0 = horizontal, 90 = vertical.",
+          "azimuth": "0 = North, 90 = East, 180 = South, 270 = West.",
+          "modules_power": "Total Watt peak power of the solar modules in this array.",
+          "efficiency_factor": "0.0 = 100% loss, 1.0 = no loss.",
+          "damping_morning": "0.0 = no damping, 1.0 = full damping in the morning.",
+          "damping_evening": "0.0 = no damping, 1.0 = full damping in the evening.",
+          "use_horizon": "Use the horizon line defined in the horizon file (see docs) to respect shading of the modules.",
+          "partial_shading": "Only if horizon is enabled: treat shadows as partial.",
+          "horizon_filepath": "Path to the horizon file (leave empty for the default path)."
+        }
+      }
+    }
+  },
+  "services": {
+    "update_array_location": {
+      "name": "Update Array Location",
+      "description": "Update the array location to match that of the provided coordinates, or to the configured HA home location if no coordinates are provided.",
+      "fields": {
+        "location_override": {
+          "name": "Location Override",
+          "description": "Optional location to set the array to, if omitted the array will be set to the HA home location."
+        }
+      }
+    }
+  },
+  "selector": {
+    "tracking": {
+      "options": {
+        "none": "None (fixed panels)",
+        "azimuth": "Azimuth (vertical-axis)",
+        "tilt": "Tilt-axis",
+        "dual": "Dual-axis"
       }
     }
   }

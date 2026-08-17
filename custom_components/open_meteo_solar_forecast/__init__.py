@@ -7,7 +7,8 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.helpers.storage import Store
 
 from .const import (
     CONF_AZIMUTH,
@@ -16,12 +17,16 @@ from .const import (
     CONF_HORIZON_FILEPATH,
     CONF_MODULES_POWER,
     CONF_PARTIAL_SHADING,
+    CONF_TRACKING,
     CONF_USE_HORIZON,
+    CONF_MAX_SNOWCOVER_DEPTH_CM,
     DOMAIN,
 )
 from .coordinator import (
+    STORAGE_VERSION,
     OpenMeteoSolarForecastDataUpdateCoordinator,
     checkHorizonFile,
+    storage_key,
 )
 
 PLATFORMS = [Platform.SENSOR]
@@ -45,9 +50,11 @@ def _resolve_array_count(entry: ConfigEntry) -> int:
         entry.options.get(CONF_AZIMUTH),
         entry.options.get(CONF_MODULES_POWER),
         entry.options.get(CONF_EFFICIENCY_FACTOR, 1.0),
+        entry.options.get(CONF_TRACKING, "none"),
         entry.options.get(CONF_USE_HORIZON, False),
         entry.options.get(CONF_PARTIAL_SHADING, False),
         entry.options.get(CONF_HORIZON_FILEPATH),
+        entry.options.get(CONF_MAX_SNOWCOVER_DEPTH_CM),
     )
     lengths = [len(value) for value in candidates if _is_sequence(value)]
     if not lengths:
@@ -131,6 +138,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
+    async def async_update_array_location(call: ServiceCall | None = None):
+        new_location = call.data.get("location_override", {
+                "latitude": hass.config.latitude,
+                "longitude": hass.config.longitude,
+        })  # Optional location override defaults to current Home Assistant location
+
+        # Updating config entry will automatically update the coordinator
+        hass.config_entries.async_update_entry(
+            entry,
+            data={**entry.data, CONF_LATITUDE: new_location["latitude"], CONF_LONGITUDE: new_location["longitude"]},
+            options={**entry.options, CONF_LATITUDE: new_location["latitude"], CONF_LONGITUDE: new_location["longitude"]},
+        )
+
+    hass.services.async_register(DOMAIN, "update_array_location", async_update_array_location)
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     entry.async_on_unload(entry.add_update_listener(async_update_options))
@@ -145,6 +167,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Remove the retained forecast storage for a removed config entry."""
+    await Store(hass, STORAGE_VERSION, storage_key(entry.entry_id)).async_remove()
 
 
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:

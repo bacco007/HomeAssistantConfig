@@ -9,7 +9,15 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
 from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
 from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.selector import (
+    BooleanSelector,
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+    SelectSelector,
+    SelectSelectorConfig,
+    SelectSelectorMode,
+)
 
 from .const import (
     CONF_AZIMUTH,
@@ -18,15 +26,16 @@ from .const import (
     CONF_DAMPING_MORNING,
     CONF_DECLINATION,
     CONF_EFFICIENCY_FACTOR,
-    CONF_MAX_FORECAST_AGE_MINUTES,
     CONF_INVERTER_POWER,
     CONF_MODEL,
     CONF_USE_HORIZON,
     CONF_PARTIAL_SHADING,
     CONF_HORIZON_FILEPATH,
+    CONF_MAX_SNOWCOVER_DEPTH_CM,
     CONF_MODULES_POWER,
-    CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE,
+    CONF_TRACKING,
     DOMAIN,
+    TRACKING_OPTIONS,
 )
 
 try:
@@ -34,152 +43,187 @@ try:
 except ImportError:
     from homeassistant.data_entry_flow import FlowResult as ConfigFlowResult
 
+CONF_ADD_ANOTHER = "add_another"
+
+DEFAULT_HORIZON_FILEPATH = (
+    "/config/custom_components/open_meteo_solar_forecast/horizon.txt"
+)
+
+# Fields that can differ per PV array. Stored as a scalar for a single array
+# and as equal-length lists for multi-array setups (the format the
+# coordinator already understands).
+PER_ARRAY_KEYS = (
+    CONF_LATITUDE,
+    CONF_LONGITUDE,
+    CONF_DECLINATION,
+    CONF_AZIMUTH,
+    CONF_MODULES_POWER,
+    CONF_EFFICIENCY_FACTOR,
+    CONF_TRACKING,
+    CONF_DAMPING_MORNING,
+    CONF_DAMPING_EVENING,
+    CONF_USE_HORIZON,
+    CONF_PARTIAL_SHADING,
+    CONF_HORIZON_FILEPATH,
+)
+
 
 def _is_sequence(value: Any) -> bool:
     return isinstance(value, Sequence) and not isinstance(value, (str, bytes))
 
 
-def _serialize_for_form(value: Any) -> str | int | float | bool:
-    if _is_sequence(value):
-        return ", ".join(str(item) for item in value)
-    return value
-
-
-def _text_default(value: Any) -> str:
-    return str(_serialize_for_form(value))
-
-
-def _parse_scalar_or_list(value: Any, item_parser: Any) -> Any:
-    if _is_sequence(value):
-        return [item_parser(item) for item in value]
-
-    if isinstance(value, str):
-        raw_value = value.strip()
-        if "," in raw_value:
-            items = [item.strip() for item in raw_value.split(",")]
-            if any(not item for item in items):
-                raise vol.Invalid("Comma-separated values cannot contain empty items")
-            return [item_parser(item) for item in items]
-        value = raw_value
-
-    return item_parser(value)
-
-
-def _parse_int(min_value: int | None = None, max_value: int | None = None):
-    def _parser(value: Any) -> int | list[int]:
-        def _parse_item(item: Any) -> int:
-            parsed = vol.Coerce(int)(item)
-            if min_value is not None and parsed < min_value:
-                raise vol.Invalid(f"Value {parsed} is below minimum {min_value}")
-            if max_value is not None and parsed > max_value:
-                raise vol.Invalid(f"Value {parsed} is above maximum {max_value}")
-            return parsed
-
-        return _parse_scalar_or_list(value, _parse_item)
-
-    return _parser
-
-
-def _parse_float(min_value: float | None = None, max_value: float | None = None):
-    def _parser(value: Any) -> float | list[float]:
-        def _parse_item(item: Any) -> float:
-            parsed = vol.Coerce(float)(item)
-            if min_value is not None and parsed < min_value:
-                raise vol.Invalid(f"Value {parsed} is below minimum {min_value}")
-            if max_value is not None and parsed > max_value:
-                raise vol.Invalid(f"Value {parsed} is above maximum {max_value}")
-            return parsed
-
-        return _parse_scalar_or_list(value, _parse_item)
-
-    return _parser
-
-
-def _parse_bool(value: Any) -> bool | list[bool]:
-    true_values = {"1", "true", "yes", "on"}
-    false_values = {"0", "false", "no", "off"}
-
-    def _parse_item(item: Any) -> bool:
-        if isinstance(item, bool):
-            return item
-
-        normalized = str(item).strip().lower()
-        if normalized in true_values:
-            return True
-        if normalized in false_values:
-            return False
-
-        raise vol.Invalid(f"Invalid boolean value: {item}")
-
-    return _parse_scalar_or_list(value, _parse_item)
-
-
-def _parse_non_empty_str(value: Any) -> str | list[str]:
-    def _parse_item(item: Any) -> str:
-        parsed = str(item).strip()
-        if not parsed:
-            raise vol.Invalid("Value cannot be empty")
-        return parsed
-
-    return _parse_scalar_or_list(value, _parse_item)
-
-
-def _parse_latitude(value: Any) -> float | list[float]:
-    return _parse_scalar_or_list(value, cv.latitude)
-
-
-def _parse_longitude(value: Any) -> float | list[float]:
-    return _parse_scalar_or_list(value, cv.longitude)
-
-
-def _normalize_flow_values(user_input: dict[str, Any]) -> dict[str, Any]:
-    def _default_if_empty(value: Any, default: Any) -> Any:
-        if value is None:
-            return default
-        if isinstance(value, str) and value.strip() == "":
-            return default
-        return value
-
-    use_horizon_value = _default_if_empty(user_input.get(CONF_USE_HORIZON), False)
-    partial_shading_value = _default_if_empty(
-        user_input.get(CONF_PARTIAL_SHADING), False
-    )
-    horizon_filepath_value = _default_if_empty(
-        user_input.get(
-            CONF_HORIZON_FILEPATH,
-            "/config/custom_components/open_meteo_solar_forecast/horizon.txt",
-        ),
-        "/config/custom_components/open_meteo_solar_forecast/horizon.txt",
-    )
-
+def _array_defaults(latitude: float, longitude: float) -> dict[str, Any]:
     return {
-        **user_input,
-        CONF_LATITUDE: _parse_latitude(user_input[CONF_LATITUDE]),
-        CONF_LONGITUDE: _parse_longitude(user_input[CONF_LONGITUDE]),
-        CONF_DECLINATION: _parse_int(min_value=0, max_value=90)(
-            user_input[CONF_DECLINATION]
-        ),
-        CONF_AZIMUTH: _parse_int(min_value=0, max_value=360)(user_input[CONF_AZIMUTH]),
-        CONF_MODULES_POWER: _parse_int(min_value=1)(user_input[CONF_MODULES_POWER]),
-        CONF_EFFICIENCY_FACTOR: _parse_float(min_value=0, max_value=1)(
-            _default_if_empty(user_input.get(CONF_EFFICIENCY_FACTOR), 1.0)
-        ),
-        CONF_DAMPING_MORNING: _parse_float(min_value=0, max_value=1)(
-            _default_if_empty(user_input.get(CONF_DAMPING_MORNING), 0.0)
-        ),
-        CONF_DAMPING_EVENING: _parse_float(min_value=0, max_value=1)(
-            _default_if_empty(user_input.get(CONF_DAMPING_EVENING), 0.0)
-        ),
-        CONF_USE_HORIZON: _parse_bool(use_horizon_value),
-        CONF_PARTIAL_SHADING: _parse_bool(partial_shading_value),
-        CONF_HORIZON_FILEPATH: _parse_non_empty_str(horizon_filepath_value),
+        CONF_LATITUDE: latitude,
+        CONF_LONGITUDE: longitude,
+        CONF_DECLINATION: 25,
+        CONF_AZIMUTH: 180,
+        CONF_MODULES_POWER: None,
+        CONF_EFFICIENCY_FACTOR: 1.0,
+        CONF_TRACKING: "none",
+        CONF_DAMPING_MORNING: 0.0,
+        CONF_DAMPING_EVENING: 0.0,
+        CONF_USE_HORIZON: False,
+        CONF_PARTIAL_SHADING: False,
+        CONF_HORIZON_FILEPATH: DEFAULT_HORIZON_FILEPATH,
     }
+
+
+def _array_schema(defaults: dict[str, Any], add_another_default: bool) -> vol.Schema:
+    def _field(key: str) -> vol.Marker:
+        default = defaults.get(key)
+        if default is None:
+            return vol.Required(key)
+        return vol.Required(key, default=default)
+
+    return vol.Schema(
+        {
+            _field(CONF_LATITUDE): NumberSelector(
+                NumberSelectorConfig(
+                    min=-90, max=90, step="any", mode=NumberSelectorMode.BOX
+                )
+            ),
+            _field(CONF_LONGITUDE): NumberSelector(
+                NumberSelectorConfig(
+                    min=-180, max=180, step="any", mode=NumberSelectorMode.BOX
+                )
+            ),
+            _field(CONF_DECLINATION): NumberSelector(
+                NumberSelectorConfig(
+                    min=0,
+                    max=90,
+                    step="any",
+                    mode=NumberSelectorMode.BOX,
+                    unit_of_measurement="°",
+                )
+            ),
+            _field(CONF_AZIMUTH): NumberSelector(
+                NumberSelectorConfig(
+                    min=0,
+                    max=360,
+                    step="any",
+                    mode=NumberSelectorMode.BOX,
+                    unit_of_measurement="°",
+                )
+            ),
+            _field(CONF_MODULES_POWER): vol.All(
+                NumberSelector(
+                    NumberSelectorConfig(
+                        min=1,
+                        step=1,
+                        mode=NumberSelectorMode.BOX,
+                        unit_of_measurement="Wp",
+                    )
+                ),
+                vol.Coerce(int),
+            ),
+            _field(CONF_TRACKING): SelectSelector(
+                SelectSelectorConfig(
+                    options=list(TRACKING_OPTIONS),
+                    mode=SelectSelectorMode.DROPDOWN,
+                    translation_key="tracking",
+                )
+            ),
+            _field(CONF_EFFICIENCY_FACTOR): NumberSelector(
+                NumberSelectorConfig(
+                    min=0, max=1, step="any", mode=NumberSelectorMode.BOX
+                )
+            ),
+            _field(CONF_DAMPING_MORNING): NumberSelector(
+                NumberSelectorConfig(
+                    min=0, max=1, step="any", mode=NumberSelectorMode.BOX
+                )
+            ),
+            _field(CONF_DAMPING_EVENING): NumberSelector(
+                NumberSelectorConfig(
+                    min=0, max=1, step="any", mode=NumberSelectorMode.BOX
+                )
+            ),
+            _field(CONF_USE_HORIZON): BooleanSelector(),
+            _field(CONF_PARTIAL_SHADING): BooleanSelector(),
+            vol.Optional(
+                CONF_HORIZON_FILEPATH,
+                default=defaults.get(CONF_HORIZON_FILEPATH, DEFAULT_HORIZON_FILEPATH),
+            ): str,
+            vol.Optional(CONF_ADD_ANOTHER, default=add_another_default): BooleanSelector(),
+        }
+    )
+
+
+def _normalize_array_input(user_input: dict[str, Any]) -> dict[str, Any]:
+    array = {key: user_input.get(key) for key in PER_ARRAY_KEYS}
+    filepath = str(array[CONF_HORIZON_FILEPATH] or "").strip()
+    array[CONF_HORIZON_FILEPATH] = filepath or DEFAULT_HORIZON_FILEPATH
+    return array
+
+
+def _collapse_arrays(arrays: list[dict[str, Any]]) -> dict[str, Any]:
+    """Collapse per-array dicts into scalar (one array) or list options."""
+    if len(arrays) == 1:
+        return dict(arrays[0])
+    return {key: [array[key] for array in arrays] for key in PER_ARRAY_KEYS}
+
+
+def _expand_arrays(entry: ConfigEntry) -> list[dict[str, Any]]:
+    """Expand stored scalar-or-list options into one dict per array."""
+
+    def _stored(key: str, default: Any) -> Any:
+        return entry.options.get(key, entry.data.get(key, default))
+
+    defaults = _array_defaults(0.0, 0.0)
+    raw = {key: _stored(key, defaults[key]) for key in PER_ARRAY_KEYS}
+    count = max(
+        (len(value) for value in raw.values() if _is_sequence(value)), default=1
+    )
+
+    arrays = []
+    for index in range(count):
+        array = {}
+        for key, value in raw.items():
+            if _is_sequence(value):
+                array[key] = value[index] if index < len(value) else value[0]
+            else:
+                array[key] = value
+        arrays.append(array)
+    return arrays
+
+
+def _scalar(value: Any) -> Any:
+    """Reduce a possibly-list legacy value to its first item."""
+    if _is_sequence(value):
+        return value[0] if value else None
+    return value
 
 
 class OpenMeteoSolarForecastFlowHandler(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Open-Meteo Solar Forecast."""
 
     VERSION = 1
+
+    def __init__(self) -> None:
+        """Initialize the flow."""
+        self._common: dict[str, Any] = {}
+        self._arrays: list[dict[str, Any]] = []
 
     @staticmethod
     @callback
@@ -192,120 +236,108 @@ class OpenMeteoSolarForecastFlowHandler(ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """Handle a flow initiated by the user."""
-        errors = {}
+        """Handle the common settings."""
         if user_input is not None:
-            try:
-                normalized_input = _normalize_flow_values(user_input)
-            except vol.Invalid:
-                errors["base"] = "invalid_multi_value"
-            else:
-                return self.async_create_entry(
-                    title=normalized_input[CONF_NAME],
-                    data={
-                        CONF_LATITUDE: normalized_input[CONF_LATITUDE],
-                        CONF_LONGITUDE: normalized_input[CONF_LONGITUDE],
-                    },
-                    options={
-                        CONF_API_KEY: normalized_input[CONF_API_KEY],
-                        CONF_AZIMUTH: normalized_input[CONF_AZIMUTH],
-                        CONF_BASE_URL: normalized_input[CONF_BASE_URL],
-                        CONF_DAMPING_MORNING: normalized_input[CONF_DAMPING_MORNING],
-                        CONF_DAMPING_EVENING: normalized_input[CONF_DAMPING_EVENING],
-                        CONF_DECLINATION: normalized_input[CONF_DECLINATION],
-                        CONF_MODULES_POWER: normalized_input[CONF_MODULES_POWER],
-                        CONF_INVERTER_POWER: normalized_input[CONF_INVERTER_POWER],
-                        CONF_EFFICIENCY_FACTOR: normalized_input[CONF_EFFICIENCY_FACTOR],
-                        CONF_USE_HORIZON: normalized_input[CONF_USE_HORIZON],
-                        CONF_PARTIAL_SHADING: normalized_input[CONF_PARTIAL_SHADING],
-                        CONF_HORIZON_FILEPATH: normalized_input[CONF_HORIZON_FILEPATH],
-                        CONF_MODEL: normalized_input[CONF_MODEL],
-                        CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE: normalized_input[
-                            CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE
-                        ],
-                        CONF_MAX_FORECAST_AGE_MINUTES: normalized_input[
-                            CONF_MAX_FORECAST_AGE_MINUTES
-                        ],
-                    },
-                )
+            self._common = user_input
+            self._arrays = []
+            return await self.async_step_array()
 
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
+                    vol.Required(
+                        CONF_NAME, default=self.hass.config.location_name
+                    ): str,
                     vol.Optional(CONF_API_KEY, default=""): str,
                     vol.Required(
                         CONF_BASE_URL, default="https://api.open-meteo.com"
                     ): str,
-                    vol.Required(
-                        CONF_NAME, default=self.hass.config.location_name
-                    ): str,
-                    vol.Required(
-                        CONF_LATITUDE, default=_text_default(self.hass.config.latitude)
-                    ): str,
-                    vol.Required(
-                        CONF_LONGITUDE, default=_text_default(self.hass.config.longitude)
-                    ): str,
-                    vol.Required(CONF_DECLINATION, default="25"): str,
-                    vol.Required(CONF_AZIMUTH, default="180"): str,
-                    vol.Required(CONF_USE_HORIZON, default="false"): str,
-                    vol.Required(CONF_PARTIAL_SHADING, default="false"): str,
-                    vol.Optional(
-                        CONF_HORIZON_FILEPATH,
-                        default="/config/custom_components/open_meteo_solar_forecast/horizon.txt",
-                    ): str,
-                    vol.Required(CONF_MODULES_POWER): str,
-                    vol.Required(CONF_INVERTER_POWER, default=0): vol.All(
-                        vol.Coerce(int), vol.Range(min=0)
-                    ),
-                    vol.Optional(CONF_DAMPING_MORNING, default="0.0"): str,
-                    vol.Optional(CONF_DAMPING_EVENING, default="0.0"): str,
-                    vol.Optional(CONF_EFFICIENCY_FACTOR, default="1.0"): str,
                     vol.Optional(CONF_MODEL, default="best_match"): str,
-                    vol.Required(
-                        CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE,
-                        default=True,
-                    ): bool,
-                    vol.Required(
-                        CONF_MAX_FORECAST_AGE_MINUTES,
-                        default=0,
-                    ): vol.All(vol.Coerce(int), vol.Range(min=0)),
+                    vol.Required(CONF_INVERTER_POWER, default=0): vol.All(
+                        NumberSelector(
+                            NumberSelectorConfig(
+                                min=0,
+                                step=1,
+                                mode=NumberSelectorMode.BOX,
+                                unit_of_measurement="W",
+                            )
+                        ),
+                        vol.Coerce(int),
+                    ),
+                    vol.Required(CONF_MAX_SNOWCOVER_DEPTH_CM, default=0.0): NumberSelector(
+                        NumberSelectorConfig(
+                            min=0,
+                            step="any",
+                            mode=NumberSelectorMode.BOX,
+                            unit_of_measurement="cm",
+                        )
+                    ),
                 }
             ),
-            errors=errors,
+        )
+
+    async def async_step_array(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle the settings of one PV array."""
+        if user_input is not None:
+            add_another = user_input.get(CONF_ADD_ANOTHER, False)
+            self._arrays.append(_normalize_array_input(user_input))
+            if add_another:
+                return await self.async_step_array()
+
+            per_array = _collapse_arrays(self._arrays)
+            return self.async_create_entry(
+                title=self._common[CONF_NAME],
+                data={
+                    CONF_LATITUDE: per_array[CONF_LATITUDE],
+                    CONF_LONGITUDE: per_array[CONF_LONGITUDE],
+                },
+                options={
+                    CONF_API_KEY: self._common[CONF_API_KEY],
+                    CONF_BASE_URL: self._common[CONF_BASE_URL],
+                    CONF_MODEL: self._common[CONF_MODEL],
+                    CONF_INVERTER_POWER: self._common[CONF_INVERTER_POWER],
+                    CONF_MAX_SNOWCOVER_DEPTH_CM: self._common[
+                        CONF_MAX_SNOWCOVER_DEPTH_CM
+                    ],
+                    **{key: per_array[key] for key in PER_ARRAY_KEYS},
+                },
+            )
+
+        defaults = _array_defaults(
+            self.hass.config.latitude, self.hass.config.longitude
+        )
+        if self._arrays:
+            defaults = dict(self._arrays[-1])
+        return self.async_show_form(
+            step_id="array",
+            data_schema=_array_schema(defaults, add_another_default=False),
+            description_placeholders={"array_number": str(len(self._arrays) + 1)},
         )
 
 
 class OpenMeteoSolarForecastOptionFlowHandler(OptionsFlow):
     """Handle options."""
 
-    def _current_latitude(self) -> Any:
-        return self.config_entry.options.get(
-            CONF_LATITUDE, self.config_entry.data[CONF_LATITUDE]
-        )
-
-    def _current_longitude(self) -> Any:
-        return self.config_entry.options.get(
-            CONF_LONGITUDE, self.config_entry.data[CONF_LONGITUDE]
-        )
+    def __init__(self) -> None:
+        """Initialize the options flow."""
+        self._common: dict[str, Any] = {}
+        self._arrays: list[dict[str, Any]] = []
+        self._stored_arrays: list[dict[str, Any]] = []
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """Manage the options."""
-        errors = {}
+        """Handle the common settings."""
         if user_input is not None:
-            try:
-                normalized_input = _normalize_flow_values(user_input)
-            except vol.Invalid:
-                errors["base"] = "invalid_multi_value"
-            else:
-                return self.async_create_entry(
-                    title="",
-                    data=normalized_input
-                    | {CONF_API_KEY: normalized_input.get(CONF_API_KEY)},
-                )
+            self._common = user_input
+            self._arrays = []
+            self._stored_arrays = _expand_arrays(self.config_entry)
+            return await self.async_step_array()
 
+        options = self.config_entry.options
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
@@ -313,101 +345,81 @@ class OpenMeteoSolarForecastOptionFlowHandler(OptionsFlow):
                     vol.Optional(
                         CONF_API_KEY,
                         description={
-                            "suggested_value": self.config_entry.options.get(
-                                CONF_API_KEY, ""
-                            )
+                            "suggested_value": options.get(CONF_API_KEY, "")
                         },
                     ): str,
                     vol.Required(
-                        CONF_BASE_URL,
-                        default=self.config_entry.options[CONF_BASE_URL],
-                    ): str,
-                    vol.Required(
-                        CONF_LATITUDE,
-                        default=_text_default(self._current_latitude()),
-                    ): str,
-                    vol.Required(
-                        CONF_LONGITUDE,
-                        default=_text_default(self._current_longitude()),
-                    ): str,
-                    vol.Required(
-                        CONF_DECLINATION,
-                        default=_text_default(
-                            self.config_entry.options[CONF_DECLINATION]
-                        ),
-                    ): str,
-                    vol.Required(
-                        CONF_AZIMUTH,
-                        default=_text_default(
-                            self.config_entry.options.get(CONF_AZIMUTH)
-                        ),
-                    ): str,
-                    vol.Required(
-                        CONF_MODULES_POWER,
-                        default=_text_default(
-                            self.config_entry.options[CONF_MODULES_POWER]
-                        ),
+                        CONF_BASE_URL, default=options[CONF_BASE_URL]
                     ): str,
                     vol.Optional(
-                        CONF_DAMPING_MORNING,
-                        default=_text_default(
-                            self.config_entry.options.get(CONF_DAMPING_MORNING, 0.0)
-                        ),
-                    ): str,
-                    vol.Optional(
-                        CONF_DAMPING_EVENING,
-                        default=_text_default(
-                            self.config_entry.options.get(CONF_DAMPING_EVENING, 0.0)
-                        ),
-                    ): str,
-                    vol.Required(
-                        CONF_USE_HORIZON,
-                        default=_text_default(
-                            self.config_entry.options.get(CONF_USE_HORIZON, False)
-                        ),
-                    ): str,
-                    vol.Required(
-                        CONF_PARTIAL_SHADING,
-                        default=_text_default(
-                            self.config_entry.options.get(CONF_PARTIAL_SHADING, False)
-                        ),
-                    ): str,
-                    vol.Optional(
-                        CONF_HORIZON_FILEPATH,
-                        default=_text_default(
-                            self.config_entry.options.get(
-                                CONF_HORIZON_FILEPATH,
-                                "/config/custom_components/open_meteo_solar_forecast/horizon.txt",
-                            )
-                        ),
+                        CONF_MODEL, default=options.get(CONF_MODEL, "best_match")
                     ): str,
                     vol.Required(
                         CONF_INVERTER_POWER,
-                        default=self.config_entry.options.get(CONF_INVERTER_POWER, 0),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=0)),
-                    vol.Optional(
-                        CONF_EFFICIENCY_FACTOR,
-                        default=_text_default(
-                            self.config_entry.options.get(CONF_EFFICIENCY_FACTOR, 1.0)
+                        default=options.get(CONF_INVERTER_POWER, 0),
+                    ): vol.All(
+                        NumberSelector(
+                            NumberSelectorConfig(
+                                min=0,
+                                step=1,
+                                mode=NumberSelectorMode.BOX,
+                                unit_of_measurement="W",
+                            )
                         ),
-                    ): str,
-                    vol.Optional(
-                        CONF_MODEL,
-                        default=self.config_entry.options.get(CONF_MODEL, "best_match"),
-                    ): str,
+                        vol.Coerce(int),
+                    ),
                     vol.Required(
-                        CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE,
-                        default=self.config_entry.options.get(
-                            CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE, True
+                        CONF_MAX_SNOWCOVER_DEPTH_CM,
+                        default=_scalar(
+                            options.get(CONF_MAX_SNOWCOVER_DEPTH_CM, 0.0)
                         ),
-                    ): bool,
-                    vol.Required(
-                        CONF_MAX_FORECAST_AGE_MINUTES,
-                        default=self.config_entry.options.get(
-                            CONF_MAX_FORECAST_AGE_MINUTES, 0
-                        ),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=0)),
+                    ): NumberSelector(
+                        NumberSelectorConfig(
+                            min=0,
+                            step="any",
+                            mode=NumberSelectorMode.BOX,
+                            unit_of_measurement="cm",
+                        )
+                    ),
                 }
             ),
-            errors=errors,
+        )
+
+    async def async_step_array(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle the settings of one PV array."""
+        if user_input is not None:
+            add_another = user_input.get(CONF_ADD_ANOTHER, False)
+            self._arrays.append(_normalize_array_input(user_input))
+            if add_another:
+                return await self.async_step_array()
+
+            per_array = _collapse_arrays(self._arrays)
+            return self.async_create_entry(
+                title="",
+                data={
+                    CONF_API_KEY: self._common.get(CONF_API_KEY),
+                    CONF_BASE_URL: self._common[CONF_BASE_URL],
+                    CONF_MODEL: self._common[CONF_MODEL],
+                    CONF_INVERTER_POWER: self._common[CONF_INVERTER_POWER],
+                    CONF_MAX_SNOWCOVER_DEPTH_CM: self._common[
+                        CONF_MAX_SNOWCOVER_DEPTH_CM
+                    ],
+                    **{key: per_array[key] for key in PER_ARRAY_KEYS},
+                },
+            )
+
+        index = len(self._arrays)
+        if index < len(self._stored_arrays):
+            defaults = self._stored_arrays[index]
+        else:
+            defaults = dict(self._arrays[-1])
+        # Default to walking through all previously configured arrays;
+        # unchecking the box early drops the remaining arrays.
+        add_another_default = index + 1 < len(self._stored_arrays)
+        return self.async_show_form(
+            step_id="array",
+            data_schema=_array_schema(defaults, add_another_default),
+            description_placeholders={"array_number": str(index + 1)},
         )

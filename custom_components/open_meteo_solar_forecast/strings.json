@@ -2,55 +2,110 @@
   "config": {
     "step": {
       "user": {
-        "description": "Fill in your solar panel data. For multi-array setups, enter comma-separated values in array-capable fields (example: `20, 35`). Single values are applied to all arrays.",
+        "description": "General settings shared by all PV arrays. You will configure each array in the next step.",
         "data": {
           "api_key": "[%key:common::config_flow::data::api_key%]",
-          "azimuth": "Azimuth (360 degrees, 0 = North, 90 = East, 180 = South, 270 = West)",
-          "damping_morning": "Damping factor for morning (0.0-1.0). Supports comma-separated values for multiple arrays.",
-          "damping_evening": "Damping factor for evening (0.0-1.0). Supports comma-separated values for multiple arrays.",
-          "declination": "Declination (0 = Horizontal, 90 = Vertical)",
+          "base_url": "API base URL",
+          "name": "[%key:common::config_flow::data::name%]",
+          "model": "Weather model",
+          "inverter_power": "Inverter capacity",
+          "max_snowcover_depth_cm": "Maximum snow cover depth"
+        },
+        "data_description": {
+          "inverter_power": "The AC capacity of your inverter in Watt (0 = no limit).",
+          "max_snowcover_depth_cm": "If greater than 0, the snow cover depth which results in zero module power."
+        },
+        "submit": "Next"
+      },
+      "array": {
+        "description": "Settings for PV array {array_number}. Enable “Add another array” to configure an additional array with its own orientation and power.",
+        "data": {
           "latitude": "[%key:common::config_flow::data::latitude%]",
           "longitude": "[%key:common::config_flow::data::longitude%]",
-          "efficiency_factor": "DC efficiency factor (0.0-1.0, 0.0 = 100% loss, 1.0 = no loss)",
-          "modules_power": "Total Watt peak power of your solar modules",
-          "inverter_power": "The capacity of your inverter in Watt",
-          "name": "[%key:common::config_flow::data::name%]",
-          "model": "The weather model to use",
-          "retain_latest_forecast_when_unavailable": "Retain latest forecast when unavailable",
-          "max_forecast_age_minutes": "Max retained forecast age in minutes (0 = no limit)",
-          "use_horizon": "If enabled, the horizon line defined in the horizon file (see docs) is used to respect shading of the modules.",
-          "horizon_filepath": "Path to the horizon file (optional, leave empty for default path)",
-          "partial_shading": "(Only if horizon is enabled:) If enabled, shadows are treated as partial."
+          "declination": "Declination",
+          "azimuth": "Azimuth",
+          "modules_power": "Modules peak power",
+          "tracking": "Solar tracker type",
+          "efficiency_factor": "DC efficiency factor",
+          "damping_morning": "Morning damping factor",
+          "damping_evening": "Evening damping factor",
+          "use_horizon": "Use horizon file",
+          "partial_shading": "Partial shading",
+          "horizon_filepath": "Horizon file path",
+          "add_another": "Add another array"
+        },
+        "data_description": {
+          "declination": "0 = horizontal, 90 = vertical.",
+          "azimuth": "0 = North, 90 = East, 180 = South, 270 = West.",
+          "modules_power": "Total Watt peak power of the solar modules in this array.",
+          "efficiency_factor": "0.0 = 100% loss, 1.0 = no loss.",
+          "damping_morning": "0.0 = no damping, 1.0 = full damping in the morning.",
+          "damping_evening": "0.0 = no damping, 1.0 = full damping in the evening.",
+          "use_horizon": "Use the horizon line defined in the horizon file (see docs) to respect shading of the modules.",
+          "partial_shading": "Only if horizon is enabled: treat shadows as partial.",
+          "horizon_filepath": "Path to the horizon file (leave empty for the default path)."
         }
       }
     }
   },
   "options": {
     "error": {
-      "invalid_api_key": "[%key:common::config_flow::error::invalid_api_key%]",
-      "invalid_multi_value": "One or more multi-array fields contain invalid values. Use comma-separated values without empty items (example: `90, 270`)."
+      "invalid_api_key": "[%key:common::config_flow::error::invalid_api_key%]"
     },
     "step": {
       "init": {
         "description": "[%key:component::open_meteo_solar_forecast::config::step::user::description%]",
         "data": {
           "api_key": "[%key:common::config_flow::data::api_key%]",
-          "azimuth": "[%key:component::open_meteo_solar_forecast::config::step::user::data::azimuth%]",
-          "damping_morning": "[%key:component::open_meteo_solar_forecast::config::step::user::data::damping_morning%]",
-          "damping_evening": "[%key:component::open_meteo_solar_forecast::config::step::user::data::damping_evening%]",
-          "declination": "[%key:component::open_meteo_solar_forecast::config::step::user::data::declination%]",
+          "base_url": "[%key:component::open_meteo_solar_forecast::config::step::user::data::base_url%]",
+          "model": "[%key:component::open_meteo_solar_forecast::config::step::user::data::model%]",
+          "inverter_power": "[%key:component::open_meteo_solar_forecast::config::step::user::data::inverter_power%]",
+          "max_snowcover_depth_cm": "[%key:component::open_meteo_solar_forecast::config::step::user::data::max_snowcover_depth_cm%]"
+        },
+        "data_description": {
+          "inverter_power": "[%key:component::open_meteo_solar_forecast::config::step::user::data_description::inverter_power%]",
+          "max_snowcover_depth_cm": "[%key:component::open_meteo_solar_forecast::config::step::user::data_description::max_snowcover_depth_cm%]"
+        },
+        "submit": "[%key:component::open_meteo_solar_forecast::config::step::user::submit%]"
+      },
+      "array": {
+        "description": "[%key:component::open_meteo_solar_forecast::config::step::array::description%]",
+        "data": {
           "latitude": "[%key:common::config_flow::data::latitude%]",
           "longitude": "[%key:common::config_flow::data::longitude%]",
-          "efficiency_factor": "[%key:component::open_meteo_solar_forecast::config::step::user::data::efficiency_factor%]",
-          "modules_power": "[%key:component::open_meteo_solar_forecast::config::step::user::data::modules_power%]",
-          "inverter_power": "[%key:component::open_meteo_solar_forecast::config::step::user::data::inverter_power%]",
-          "model": "[%key:component::open_meteo_solar_forecast::config::step::user::data::model%]",
-          "retain_latest_forecast_when_unavailable": "[%key:component::open_meteo_solar_forecast::config::step::user::data::retain_latest_forecast_when_unavailable%]",
-          "max_forecast_age_minutes": "[%key:component::open_meteo_solar_forecast::config::step::user::data::max_forecast_age_minutes%]",
-          "use_horizon": "[%key:component::open_meteo_solar_forecast::config::step::user::data::use_horizon%]",
-          "horizon_filepath": "[%key:component::open_meteo_solar_forecast::config::step::user::data::horizon_filepath%]",
-          "partial_shading": "[%key:component::open_meteo_solar_forecast::config::step::user::data::partial_shading%]"
+          "declination": "[%key:component::open_meteo_solar_forecast::config::step::array::data::declination%]",
+          "azimuth": "[%key:component::open_meteo_solar_forecast::config::step::array::data::azimuth%]",
+          "modules_power": "[%key:component::open_meteo_solar_forecast::config::step::array::data::modules_power%]",
+          "tracking": "[%key:component::open_meteo_solar_forecast::config::step::array::data::tracking%]",
+          "efficiency_factor": "[%key:component::open_meteo_solar_forecast::config::step::array::data::efficiency_factor%]",
+          "damping_morning": "[%key:component::open_meteo_solar_forecast::config::step::array::data::damping_morning%]",
+          "damping_evening": "[%key:component::open_meteo_solar_forecast::config::step::array::data::damping_evening%]",
+          "use_horizon": "[%key:component::open_meteo_solar_forecast::config::step::array::data::use_horizon%]",
+          "partial_shading": "[%key:component::open_meteo_solar_forecast::config::step::array::data::partial_shading%]",
+          "horizon_filepath": "[%key:component::open_meteo_solar_forecast::config::step::array::data::horizon_filepath%]",
+          "add_another": "[%key:component::open_meteo_solar_forecast::config::step::array::data::add_another%]"
+        },
+        "data_description": {
+          "declination": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::declination%]",
+          "azimuth": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::azimuth%]",
+          "modules_power": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::modules_power%]",
+          "efficiency_factor": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::efficiency_factor%]",
+          "damping_morning": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::damping_morning%]",
+          "damping_evening": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::damping_evening%]",
+          "use_horizon": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::use_horizon%]",
+          "partial_shading": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::partial_shading%]",
+          "horizon_filepath": "[%key:component::open_meteo_solar_forecast::config::step::array::data_description::horizon_filepath%]"
         }
+      }
+    }
+  },
+  "selector": {
+    "tracking": {
+      "options": {
+        "none": "None (fixed panels)",
+        "azimuth": "Azimuth (vertical-axis)",
+        "tilt": "Tilt-axis",
+        "dual": "Dual-axis"
       }
     }
   },
@@ -112,6 +167,18 @@
       },
       "energy_next_hour": {
         "name": "Estimated energy production - next hour"
+      }
+    }
+  },
+  "services": {
+    "update_array_location": {
+      "name": "Update Array Location",
+      "description": "Update the array location to match that of the provided coordinates, or to the configured HA home location if no coordinates are provided.",
+      "fields": {
+        "location_override": {
+          "name": "Location Override",
+          "description": "Optional location to set the array to, if omitted the array will be set to the HA home location."
+        }
       }
     }
   }

@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
+import asyncio
+import json
 from collections.abc import Sequence
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 from open_meteo_solar_forecast import Estimate, OpenMeteoSolarForecast
@@ -21,18 +24,60 @@ from .const import (
     CONF_DAMPING_MORNING,
     CONF_DECLINATION,
     CONF_EFFICIENCY_FACTOR,
-    CONF_MAX_FORECAST_AGE_MINUTES,
     CONF_INVERTER_POWER,
     CONF_USE_HORIZON,
     CONF_PARTIAL_SHADING,
+    CONF_MAX_SNOWCOVER_DEPTH_CM,
     CONF_MODEL,
     CONF_MODULES_POWER,
-    CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE,
+    CONF_TRACKING,
     DOMAIN,
     LOGGER,
 )
 
 import numpy
+
+STORAGE_VERSION = 2
+
+
+class RetainedForecastStore(Store[dict[str, Any]]):
+    """Store that discards retained forecasts from older storage versions."""
+
+    async def _async_migrate_func(
+        self, old_major_version: int, old_minor_version: int, old_data: dict[str, Any]
+    ) -> dict[str, Any] | None:
+        return None
+
+# The upstream library performs the API request without any timeout, so an
+# unreachable API can hang a refresh (and config entry setup) indefinitely.
+API_TIMEOUT_SECONDS = 60
+
+
+def storage_key(entry_id: str) -> str:
+    """Return the storage key for the retained forecast of a config entry."""
+    return f"{DOMAIN}.{entry_id}"
+
+
+def _config_fingerprint(entry: ConfigEntry) -> str:
+    """Fingerprint the settings that affect forecast values.
+
+    A retained forecast computed with a different configuration (e.g. changed
+    azimuth or panel power) must not be served after an options reload.
+    """
+    values = {**entry.data, **entry.options}
+    return json.dumps(values, sort_keys=True, default=str)
+
+
+def _datetime_dict_to_json(data: dict[datetime, int]) -> dict[str, int]:
+    return {timestamp.isoformat(): value for timestamp, value in data.items()}
+
+
+def _datetime_dict_from_json(data: dict[str, int]) -> dict[datetime, int]:
+    return {datetime.fromisoformat(timestamp): value for timestamp, value in data.items()}
+
+
+def _date_dict_from_json(data: dict[str, int]) -> dict[date, int]:
+    return {date.fromisoformat(day): value for day, value in data.items()}
 
 
 def _is_sequence(value: Any) -> bool:
@@ -156,16 +201,11 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
         # Handle new options that were added after the initial release
         ac_kwp = entry.options.get(CONF_INVERTER_POWER, 0)
         ac_kwp = ac_kwp / 1000 if ac_kwp else None
-        self._retain_latest_forecast_when_unavailable = entry.options.get(
-            CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE, True
-        )
-        max_forecast_age_minutes = entry.options.get(CONF_MAX_FORECAST_AGE_MINUTES, 0)
-        self._max_forecast_age = (
-            timedelta(minutes=max_forecast_age_minutes)
-            if max_forecast_age_minutes > 0
-            else None
-        )
         self._last_successful_update: datetime | None = None
+        self._store: Store[dict[str, Any]] = RetainedForecastStore(
+            hass, STORAGE_VERSION, storage_key(entry.entry_id)
+        )
+        self._config_fingerprint = _config_fingerprint(entry)
 
         array_count = _resolve_array_count(
             _entry_value(entry, CONF_LATITUDE),
@@ -174,6 +214,7 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
             entry.options[CONF_AZIMUTH],
             entry.options[CONF_MODULES_POWER],
             entry.options.get(CONF_EFFICIENCY_FACTOR, 1.0),
+            entry.options.get(CONF_TRACKING, "none"),
             entry.options.get(CONF_USE_HORIZON, False),
             entry.options.get(CONF_PARTIAL_SHADING, False),
         )
@@ -202,6 +243,10 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
             entry.options.get(CONF_EFFICIENCY_FACTOR, 1.0),
             array_count,
         )
+        tracking = _normalize_array_value(
+            entry.options.get(CONF_TRACKING, "none"),
+            array_count,
+        )
         use_horizon = _normalize_array_value(
             entry.options.get(CONF_USE_HORIZON, False),
             array_count,
@@ -222,11 +267,13 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
             dc_kwp=dc_kwp,
             declination=declination,
             efficiency_factor=efficiency_factor,
+            tracking=tracking,
             damping_morning=entry.options.get(CONF_DAMPING_MORNING, 0.0),
             damping_evening=entry.options.get(CONF_DAMPING_EVENING, 0.0),
             use_horizon=use_horizon,
             partial_shading=partial_shading,
             horizon_map=horizon_map,
+            max_snowcover_depth_cm=entry.options.get(CONF_MAX_SNOWCOVER_DEPTH_CM, 0.0),
             weather_model=entry.options.get(CONF_MODEL, "best_match"),
         )
 
@@ -234,34 +281,88 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
 
         super().__init__(hass, LOGGER, name=DOMAIN, update_interval=update_interval)
 
+    async def _async_load_retained_estimate(self) -> Estimate | None:
+        """Load the retained forecast persisted across restarts."""
+        stored = await self._store.async_load()
+        if not stored:
+            return None
+
+        if stored.get("config_fingerprint") != self._config_fingerprint:
+            LOGGER.debug(
+                "Discarding retained forecast computed with a different configuration"
+            )
+            return None
+
+        try:
+            last_update = stored["last_successful_update"]
+            estimate = Estimate(
+                watts=_datetime_dict_from_json(stored["watts"]),
+                wh_period_15m=_datetime_dict_from_json(stored["wh_period_15m"]),
+                wh_period=_datetime_dict_from_json(stored["wh_period"]),
+                wh_days=_date_dict_from_json(stored["wh_days"]),
+                api_timezone=timezone(
+                    timedelta(seconds=stored["api_timezone_offset"])
+                ),
+            )
+        except (KeyError, TypeError, ValueError):
+            LOGGER.warning("Discarding malformed retained forecast data")
+            return None
+
+        self._last_successful_update = dt_util.parse_datetime(last_update)
+        return estimate
+
+    def _save_retained_estimate(self, estimate: Estimate) -> None:
+        """Persist the forecast so retention survives restarts and reloads."""
+        data = {
+            "config_fingerprint": self._config_fingerprint,
+            "last_successful_update": self._last_successful_update.isoformat(),
+            "watts": _datetime_dict_to_json(estimate.watts),
+            "wh_period": _datetime_dict_to_json(estimate.wh_period),
+            "wh_days": _datetime_dict_to_json(estimate.wh_days),
+            "wh_period_15m": _datetime_dict_to_json(estimate.wh_period_15m),
+            "api_timezone_offset": estimate.api_timezone.utcoffset(
+                None
+            ).total_seconds(),
+        }
+        self._store.async_delay_save(lambda: data, 60)
+
     async def _async_update_data(self) -> Estimate:
         """Fetch Open-Meteo Solar Forecast estimates."""
+        # On the first refresh after a restart or reload, reuse the stored
+        # forecast if it is younger than the update interval instead of
+        # hitting the API again.
+        if self.data is None:
+            retained = await self._async_load_retained_estimate()
+            if (
+                retained is not None
+                and self._last_successful_update is not None
+                and dt_util.utcnow() - self._last_successful_update
+                < self.update_interval
+            ):
+                LOGGER.debug(
+                    "Using stored forecast from %s, skipping fetch",
+                    self._last_successful_update,
+                )
+                return retained
+
         try:
-            estimate = await self.forecast.estimate()
+            async with asyncio.timeout(API_TIMEOUT_SECONDS):
+                estimate = await self.forecast.estimate()
         except Exception as err:
-            if not self._retain_latest_forecast_when_unavailable or self.data is None:
+            retained = self.data
+            if retained is None:
+                retained = await self._async_load_retained_estimate()
+            if retained is None:
                 raise UpdateFailed(f"Error communicating with API: {err}") from err
-
-            if self._max_forecast_age is not None:
-                if self._last_successful_update is None:
-                    raise UpdateFailed(
-                        "No successful forecast update timestamp available"
-                    ) from err
-
-                forecast_age = dt_util.utcnow() - self._last_successful_update
-                if forecast_age > self._max_forecast_age:
-                    raise UpdateFailed(
-                        "Retained forecast exceeded max age "
-                        f"({forecast_age} > {self._max_forecast_age})"
-                    ) from err
 
             LOGGER.warning(
                 "Unable to refresh forecast data, using retained forecast",
                 exc_info=err,
             )
-            return self.data
+            return retained
 
         self._last_successful_update = dt_util.utcnow()
+        self._save_retained_estimate(estimate)
         return estimate
     
     

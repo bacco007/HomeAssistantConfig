@@ -1,0 +1,6 @@
+update_array_location:
+  fields:
+    location_override:
+      required: false
+      selector:
+        location:

@@ -28,7 +28,7 @@ from homeassistant.util import slugify
 
 from open_meteo_solar_forecast.models import Estimate
 
-from .const import ATTR_WATTS, ATTR_WH_PERIOD, DOMAIN
+from .const import ATTR_WATTS, ATTR_WH_PERIOD, ATTR_WH_PERIOD_15M, DOMAIN
 from .coordinator import OpenMeteoSolarForecastDataUpdateCoordinator
 
 
@@ -339,6 +339,11 @@ class OpenMeteoSolarForecastSensorEntity(
                 ATTR_WH_PERIOD: {
                     wh_datetime.isoformat(): wh_value
                     for wh_datetime, wh_value in self.coordinator.data.wh_period.items()
+                    if wh_datetime.date() == target_date
+                },
+                ATTR_WH_PERIOD_15M: {
+                    wh_datetime.isoformat(): wh_value
+                    for wh_datetime, wh_value in self.coordinator.data.wh_period_15m.items()
                     if wh_datetime.date() == target_date
                 },
             }
