@@ -4,12 +4,15 @@ A *rule* says "this piece of Python stops working in Home Assistant release X".
 A *matcher* is the machine-checkable half of a rule.  :func:`match_source` runs
 every matcher over one parsed file and yields findings.
 
-Eight matcher types cover every deprecation Breakage Radar currently ships:
+Nine matcher types cover every deprecation Breakage Radar currently ships:
 
 ``moduledef``          a module-level ``def``/``async def`` with one of ``names``
 ``classbase``          a ``class`` whose base list mentions one of ``bases``
 ``attr``               a property or ``_attr_`` assignment named in ``names``
 ``attr_access``        reading ``something.<name>`` for a name in ``names``
+``attr_access_typed``  ``attr_access`` restricted to receivers proved, by
+                       single-file inference, to hold an object from the
+                       helper module the matcher names
 ``call``               a call to one of ``names`` (bare or attribute access)
 ``call_kwarg``         a call to one of ``names`` passing any keyword in ``kwargs``
 ``call_missing_kwarg`` a call to one of ``names`` *not* passing keyword ``kwarg``
@@ -45,6 +48,7 @@ MATCHER_TYPES = frozenset(
         "classbase",
         "attr",
         "attr_access",
+        "attr_access_typed",
         "call",
         "call_kwarg",
         "call_missing_kwarg",
@@ -55,7 +59,7 @@ MATCHER_TYPES = frozenset(
 #: Bumped whenever matching semantics change. It is folded into the crawl's
 #: rules hash, so an engine change forces a rescan instead of leaving stale
 #: findings that the current engine would no longer produce.
-ENGINE_VERSION = 4
+ENGINE_VERSION = 5
 
 VERSION_RE = re.compile(r"^\d{4}\.\d+(?:\.\d+)?$")
 
@@ -416,6 +420,322 @@ def _match_attr_access(
             yield node.lineno, node.attr
 
 
+def _annotation_resolves(
+    annotation: ast.expr | None, imports: dict[str, str], wanted: set[str]
+) -> bool:
+    """True when an annotation names one of ``wanted`` fully-qualified types.
+
+    Handles ``DeviceEntry`` (through the import map, so a bare name that was
+    never imported from the right module does not count), ``dr.DeviceEntry``,
+    ``DeviceEntry | None``, ``Optional[DeviceEntry]`` and string annotations.
+    """
+    if annotation is None:
+        return False
+    if isinstance(annotation, ast.Constant) and isinstance(annotation.value, str):
+        # Same guard as the top-level parse: third-party code decides what is
+        # in here, and no annotation is worth aborting a crawl over.
+        try:
+            annotation = ast.parse(annotation.value.strip(), mode="eval").body
+        except (SyntaxError, ValueError, RecursionError, MemoryError):
+            return False
+    if isinstance(annotation, ast.BinOp) and isinstance(annotation.op, ast.BitOr):
+        return _annotation_resolves(
+            annotation.left, imports, wanted
+        ) or _annotation_resolves(annotation.right, imports, wanted)
+    if isinstance(annotation, ast.Subscript):
+        base = _dotted(annotation.value)
+        if base and base.rsplit(".", 1)[-1] == "Optional":
+            return _annotation_resolves(annotation.slice, imports, wanted)
+        return False
+    if isinstance(annotation, ast.Name):
+        return imports.get(annotation.id) in wanted
+    if isinstance(annotation, ast.Attribute):
+        dotted = _dotted(annotation)
+        if dotted is None:
+            return False
+        head, _, tail = dotted.partition(".")
+        base = imports.get(head)
+        return bool(base and tail) and f"{base}.{tail}" in wanted
+    return False
+
+
+def _all_args(node: ast.FunctionDef | ast.AsyncFunctionDef) -> list[ast.arg]:
+    return [*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs]
+
+
+def _bound_names(node: ast.Assign | ast.AnnAssign | ast.NamedExpr) -> list[str]:
+    """Plain-``Name`` targets; attribute targets go through
+    :func:`_factory_attributes`, which scopes them to the class."""
+    targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+    return [target.id for target in targets if isinstance(target, ast.Name)]
+
+
+def _is_factory_call(
+    matcher: dict[str, Any], node: ast.Call, imports: dict[str, str]
+) -> bool:
+    name = _called_name(node)
+    if name is None:
+        return False
+    factory = f"{matcher.get('module', '')}.{matcher.get('registry_factory', '')}"
+    return _resolve_call_module(node, name, imports) == factory
+
+
+def _factory_attributes(
+    matcher: dict[str, Any], node: ast.ClassDef, imports: dict[str, str]
+) -> set[str]:
+    """Attributes a class assigns the registry to, e.g. ``self._registry``.
+
+    Collected across the whole class because the assignment usually sits in
+    ``__init__`` and the lookups sit in other methods. An attribute is safe to
+    prove that widely where a bare local name is not: it belongs to the class
+    rather than to whichever function happened to reuse the spelling.
+    """
+    found: set[str] = set()
+    for child in ast.walk(node):
+        if not isinstance(child, (ast.Assign, ast.AnnAssign)):
+            continue
+        if not (
+            isinstance(child.value, ast.Call)
+            and _is_factory_call(matcher, child.value, imports)
+        ):
+            continue
+        targets = child.targets if isinstance(child, ast.Assign) else [child.target]
+        for target in targets:
+            dotted = _dotted(target) if isinstance(target, ast.Attribute) else None
+            if dotted:
+                found.add(dotted)
+    return found
+
+
+def _scope_nodes(body: list[ast.stmt]) -> tuple[list[ast.AST], list[ast.AST]]:
+    """Split a scope's own nodes from the nested scopes inside it.
+
+    ``device`` is one of the commonest local names in this ecosystem, so a
+    binder that proved names file-wide would carry a proof out of the function
+    that earned it and into an unrelated function that happens to reuse the
+    name.
+    """
+    own: list[ast.AST] = []
+    nested: list[ast.AST] = []
+    stack = list(body)
+    while stack:
+        node = stack.pop()
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            nested.append(node)
+            continue
+        own.append(node)
+        stack.extend(ast.iter_child_nodes(node))
+    return own, nested
+
+
+def _entry_call(
+    matcher: dict[str, Any],
+    node: ast.Call,
+    imports: dict[str, str],
+    receivers: set[str],
+) -> bool:
+    """True when ``node`` provably returns entry objects.
+
+    Either a method from ``entry_methods`` on a proved receiver -- a local
+    name, an attribute such as ``self._registry``, or the factory call
+    chained directly -- or a module-level function from ``entry_functions``
+    that the import map pins to the matcher module.
+    """
+    name = _called_name(node)
+    if name is None:
+        return False
+    func = node.func
+    if isinstance(func, ast.Attribute) and name in set(
+        matcher.get("entry_methods", ())
+    ):
+        receiver = func.value
+        if _dotted(receiver) in receivers:
+            return True
+        return isinstance(receiver, ast.Call) and _is_factory_call(
+            matcher, receiver, imports
+        )
+    if isinstance(func, ast.Attribute) and name in ("get", "values"):
+        return _is_entry_container(matcher, func.value, imports, receivers)
+    if name in set(matcher.get("entry_functions", ())):
+        module = matcher.get("module", "")
+        return _resolve_call_module(node, name, imports) == f"{module}.{name}"
+    return False
+
+
+def _is_entry_container(
+    matcher: dict[str, Any],
+    node: ast.expr,
+    imports: dict[str, str],
+    receivers: set[str],
+) -> bool:
+    """``registry.devices`` and friends: a proved registry's own mapping."""
+    if not (
+        isinstance(node, ast.Attribute)
+        and node.attr in set(matcher.get("entry_containers", ()))
+    ):
+        return False
+    if _dotted(node.value) in receivers:
+        return True
+    return isinstance(node.value, ast.Call) and _is_factory_call(
+        matcher, node.value, imports
+    )
+
+
+def _yields_entry(
+    matcher: dict[str, Any],
+    node: ast.expr,
+    imports: dict[str, str],
+    receivers: set[str],
+) -> bool:
+    """True when evaluating ``node`` gives an entry, or entries to iterate."""
+    if isinstance(node, ast.Call):
+        return _entry_call(matcher, node, imports, receivers)
+    if isinstance(node, ast.Subscript):
+        return _is_entry_container(matcher, node.value, imports, receivers)
+    return False
+
+
+def _scope_bindings(
+    matcher: dict[str, Any],
+    func: ast.AST | None,
+    nodes: list[ast.AST],
+    imports: dict[str, str],
+    receivers: set[str],
+    entries: set[str],
+) -> tuple[set[str], set[str]]:
+    """Names this scope proves, on top of the ones it inherits.
+
+    Registry-typed names are settled first, because an entry lookup only
+    counts when it happens on a receiver that is already proved.
+    """
+    module = matcher.get("module", "")
+    registry_types = {f"{module}.{n}" for n in matcher.get("registry_types", ())}
+    entry_types = {f"{module}.{n}" for n in matcher.get("entry_types", ())}
+    receivers, entries = set(receivers), set(entries)
+
+    if isinstance(func, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        args = _all_args(func)
+        # A parameter shadows whatever the enclosing scope proved about the name.
+        shadowed = {arg.arg for arg in args}
+        receivers -= shadowed
+        entries -= shadowed
+        for arg in args:
+            if _annotation_resolves(arg.annotation, imports, registry_types):
+                receivers.add(arg.arg)
+            elif _annotation_resolves(arg.annotation, imports, entry_types):
+                entries.add(arg.arg)
+
+    for node in nodes:
+        if isinstance(node, (ast.Assign, ast.AnnAssign, ast.NamedExpr)):
+            if isinstance(node.value, ast.Call) and _is_factory_call(
+                matcher, node.value, imports
+            ):
+                receivers.update(_bound_names(node))
+            if isinstance(node, ast.AnnAssign):
+                if _annotation_resolves(node.annotation, imports, registry_types):
+                    receivers.update(_bound_names(node))
+                elif _annotation_resolves(node.annotation, imports, entry_types):
+                    entries.update(_bound_names(node))
+
+    for node in nodes:
+        if isinstance(node, (ast.Assign, ast.AnnAssign, ast.NamedExpr)):
+            # An awaited value is wrapped in ``ast.Await`` and never binds:
+            # every entry method here is a plain ``def`` in core, so an await
+            # is somebody else's method of the same name.
+            if _yields_entry(matcher, node.value, imports, receivers):
+                entries.update(_bound_names(node))
+        elif isinstance(node, (ast.For, ast.comprehension)):
+            # `for x in async_entries_for_area(...)` proves the same thing
+            # whether it is a statement or the generator of a comprehension.
+            if isinstance(node.target, ast.Name) and _yields_entry(
+                matcher, node.iter, imports, receivers
+            ):
+                entries.add(node.target.id)
+    return receivers, entries
+
+
+def _contract_parameter(
+    matcher: dict[str, Any], func: ast.AST, module_level: bool
+) -> str | None:
+    """The parameter a platform contract types for us, if this is one.
+
+    Home Assistant calls ``async_remove_config_entry_device(hass, entry,
+    device)`` itself, so its third parameter is an entry whether or not the
+    author annotated it, and that function is where integrations most often
+    read the deprecated attribute.
+    """
+    entry_params = matcher.get("entry_params") or {}
+    if not (module_level and isinstance(func, ast.AsyncFunctionDef)):
+        return None
+    index = entry_params.get(func.name)
+    if index is None:
+        return None
+    params = [*func.args.posonlyargs, *func.args.args]
+    return params[index - 1].arg if 0 <= index - 1 < len(params) else None
+
+
+def _match_attr_access_typed(
+    matcher: dict[str, Any], tree: ast.Module, imports: dict[str, str]
+) -> Iterator[tuple[int, str]]:
+    """``attr_access`` gated on proving what the receiver is.
+
+    Exists for ``DeviceEntry.config_entries``, whose name collides with the
+    ubiquitous ``hass.config_entries``: a plain ``attr_access`` matcher would
+    fire on nearly every integration ever written. This one is an allowlist of
+    proven receivers -- an attribute read fires only off a name proved in the
+    scope that reads it, or chained straight off a registry lookup. Everything
+    else, ``hass.config_entries`` included, never matches.
+
+    Inference is per scope and flow-insensitive: a name proved anywhere in a
+    function counts everywhere in it, and nested scopes inherit what encloses
+    them, the way a closure really does read those names. A registry assigned
+    to an attribute is proved for its whole class, because that assignment
+    lives in ``__init__`` and the lookups do not.
+    """
+    names = set(matcher.get("names", ()))
+
+    def visit(
+        func: ast.AST | None,
+        body: list[ast.stmt],
+        receivers: set[str],
+        entries: set[str],
+        contracted: str | None,
+        module_level: bool,
+    ) -> Iterator[tuple[int, str]]:
+        own, nested = _scope_nodes(body)
+        receivers, entries = _scope_bindings(
+            matcher, func, own, imports, receivers, entries
+        )
+        if contracted:  # after shadowing: it is this function's own parameter
+            entries.add(contracted)
+        for node in own:
+            if not (
+                isinstance(node, ast.Attribute)
+                and node.attr in names
+                and isinstance(node.ctx, ast.Load)
+            ):
+                continue
+            value = node.value
+            if isinstance(value, ast.Name) and value.id in entries:
+                yield node.lineno, node.attr
+            elif _yields_entry(matcher, value, imports, receivers):
+                yield node.lineno, node.attr
+        for child in nested:
+            inherited = receivers
+            if isinstance(child, ast.ClassDef):
+                inherited = receivers | _factory_attributes(matcher, child, imports)
+            yield from visit(
+                child,
+                child.body,
+                inherited,
+                entries,
+                _contract_parameter(matcher, child, module_level),
+                False,
+            )
+
+    yield from visit(None, tree.body, set(), set(), None, True)
+
+
 def _matcher_kwargs(matcher: dict[str, Any]) -> set[str]:
     wanted = set(matcher.get("kwargs", ()))
     if matcher.get("kwarg"):
@@ -491,6 +811,7 @@ _DISPATCH = {
     "classbase": _match_classbase,
     "attr": _match_attr,
     "attr_access": _match_attr_access,
+    "attr_access_typed": _match_attr_access_typed,
     "call": _match_call,
     "call_kwarg": _match_call_kwarg,
     "call_missing_kwarg": _match_call_missing_kwarg,
