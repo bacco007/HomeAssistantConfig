@@ -77,7 +77,7 @@ class EmergencyAPIConfigFlow(ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured()
 
                 return self.async_create_entry(
-                    title="EmergencyAPI",
+                    title="DataQuoll",
                     data=user_input,
                 )
 

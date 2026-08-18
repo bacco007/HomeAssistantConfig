@@ -1,13 +1,13 @@
 {
   "domain": "emergencyapi",
-  "name": "EmergencyAPI - Australian Emergency Data",
+  "name": "DataQuoll - Australian Emergency Data",
   "codeowners": ["@JackDempsey9"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://emergencyapi.com/guides/what-is-emergencyapi",
+  "documentation": "https://dataquoll.io/guides/what-is-dataquoll",
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/JackDempsey9/homeassistant-emergencyapi/issues",
   "requirements": [],
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

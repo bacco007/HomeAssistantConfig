@@ -2,20 +2,20 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to EmergencyAPI",
-        "description": "Enter your EmergencyAPI key. Get a free key at emergencyapi.com/signup",
+        "title": "Connect to DataQuoll",
+        "description": "Enter your DataQuoll key. Get a free key at dataquoll.io/signup",
         "data": {
           "api_key": "API Key",
           "radius": "Monitoring radius (km)",
           "scan_interval": "Update interval (minutes)"
         },
         "data_description": {
-          "api_key": "Your EmergencyAPI key from the dashboard"
+          "api_key": "Your DataQuoll key from the dashboard"
         }
       }
     },
     "error": {
-      "invalid_auth": "Invalid API key. Check your key at the EmergencyAPI dashboard."
+      "invalid_auth": "Invalid API key. Check your key at the DataQuoll dashboard."
     },
     "abort": {
       "already_configured": "This API key is already configured"
@@ -24,8 +24,8 @@
   "options": {
     "step": {
       "init": {
-        "title": "EmergencyAPI options",
-        "description": "Adjust how often EmergencyAPI is polled and the area it monitors.",
+        "title": "DataQuoll options",
+        "description": "Adjust how often DataQuoll is polled and the area it monitors.",
         "data": {
           "radius": "Monitoring radius (km)",
           "scan_interval": "Update interval (minutes)"

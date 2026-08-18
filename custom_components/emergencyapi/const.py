@@ -1,7 +1,7 @@
 DOMAIN = "emergencyapi"
 PLATFORMS = ["geo_location", "binary_sensor", "sensor"]
 
-API_BASE_URL = "https://emergencyapi.com/api/v1"
+API_BASE_URL = "https://dataquoll.io/api/v1"
 
 DEFAULT_RADIUS_KM = 50
 DEFAULT_SCAN_INTERVAL_MINUTES = 10

@@ -55,25 +55,25 @@ class EmergencyAPICoordinator(DataUpdateCoordinator):
                         persistent_notification.async_create(
                             self.hass,
                             (
-                                "EmergencyAPI has hit its free-tier monthly limit (5,000 calls). "
+                                "DataQuoll has hit its free-tier monthly limit (5,000 calls). "
                                 "Incident data is paused until the limit resets. Raise the update "
-                                "interval under Settings > Devices & Services > EmergencyAPI > "
+                                "interval under Settings > Devices & Services > DataQuoll > "
                                 "Configure, or upgrade your plan."
                             ),
-                            title="EmergencyAPI rate limit reached",
+                            title="DataQuoll rate limit reached",
                             notification_id=_RATE_LIMIT_NOTIFICATION_ID,
                         )
                         self.update_interval = timedelta(minutes=30)
                         # self.data is None on a cold-start 429; coalesce so entities don't wipe.
                         return self.data if self.data is not None else {"features": []}
                     if resp.status != 200:
-                        raise UpdateFailed(f"EmergencyAPI returned {resp.status}")
+                        raise UpdateFailed(f"DataQuoll returned {resp.status}")
                     data = await resp.json()
         except aiohttp.ClientError as err:
-            raise UpdateFailed(f"Error communicating with EmergencyAPI: {err}") from err
+            raise UpdateFailed(f"Error communicating with DataQuoll: {err}") from err
 
         features = data.get("features", [])
-        _LOGGER.debug("EmergencyAPI returned %d incidents within %d km", len(features), self._radius)
+        _LOGGER.debug("DataQuoll returned %d incidents within %d km", len(features), self._radius)
         # Recovered (or never rate limited): restore cadence and clear any notice.
         self.update_interval = self._base_interval
         persistent_notification.async_dismiss(self.hass, _RATE_LIMIT_NOTIFICATION_ID)
