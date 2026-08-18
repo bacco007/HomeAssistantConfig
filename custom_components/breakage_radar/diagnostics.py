@@ -31,7 +31,10 @@ async def async_get_config_entry_diagnostics(
             "core_version": report.get("index_core_version"),
             "schema": report.get("index_schema"),
         },
-        "settings": {"alert_window_days": coordinator.alert_window_days},
+        "settings": {
+            "alert_window_days": coordinator.alert_window_days,
+            "ignored_domains": report.get("ignored_domains"),
+        },
         "scan": {
             "enabled": report.get("local_scan_enabled"),
             "files_scanned": report.get("files_scanned"),

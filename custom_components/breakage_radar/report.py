@@ -7,6 +7,7 @@ scanning in :mod:`.scanner`.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import date, timedelta
 from typing import Any
 
@@ -87,6 +88,7 @@ def build_report(
     current_version: str = "",
     today: date | None = None,
     alert_window_days: int = ALERT_WINDOW_DAYS,
+    ignored_domains: Iterable[str] = (),
 ) -> dict[str, Any]:
     """Match installed custom integrations against the published index.
 
@@ -100,8 +102,19 @@ def build_report(
     (release estimated within ``alert_window_days``) or ``upcoming``. Without
     a version or a date everything degrades to ``upcoming``.
 
+    Domains in ``ignored_domains`` are dropped before anything is levelled, so
+    the user's own choice never shows up as a finding, a notification or a count.
+
     A malformed index gives an empty report rather than raising.
     """
+    # Before any other work, so every count downstream agrees on what is in play.
+    ignored = set(ignored_domains) & installed.keys()
+    installed = {
+        domain: version
+        for domain, version in installed.items()
+        if domain not in ignored
+    }
+
     rules = {
         rule["id"]: rule
         for rule in index.get("rules", [])
@@ -287,6 +300,7 @@ def build_report(
             set(affected) - set(broken_now) - set(imminent)
         ),
         "alert_window_days": alert_window_days,
+        "ignored_domains": sorted(ignored),
         "files_scanned": (local_scan or {}).get("files_scanned", 0),
         "unparsed_files": (local_scan or {}).get("unparsed_files", 0),
         "skipped_files": (local_scan or {}).get("skipped_files", 0),

@@ -17,10 +17,12 @@
         "title": "Breakage Radar options",
         "description": "An integration breaking inside the alert window gets its own notification. Everything further out is listed together in one summary, so a deadline a year away doesn't sit in your notifications for months.",
         "data": {
-          "alert_window_days": "Alert me this far ahead"
+          "alert_window_days": "Alert me this far ahead",
+          "ignored_domains": "Integrations to leave out"
         },
         "data_description": {
-          "alert_window_days": "Home Assistant releases once a month, on the first Wednesday, so each 30 days is roughly one release of warning."
+          "alert_window_days": "Home Assistant releases once a month, on the first Wednesday, so each 30 days is roughly one release of warning.",
+          "ignored_domains": "Nothing is reported for these: no notification, no finding, and they stay out of the counts. The list offers the integrations currently reported on this system. Empty unless you add something."
         }
       }
     }

@@ -97,6 +97,7 @@ class BreakageRadarSensor(CoordinatorEntity[BreakageRadarCoordinator], SensorEnt
             "imminent_count": data.get("imminent_count", 0),
             "earliest_release": data.get("earliest_release"),
             "alert_window_days": data.get("alert_window_days", 0),
+            "ignored_domains": data.get("ignored_domains", []),
             "total_findings": data.get("total_findings", 0),
             "details_truncated": data.get("total_findings", 0) > len(findings),
             "installed_count": data.get("installed_count", 0),

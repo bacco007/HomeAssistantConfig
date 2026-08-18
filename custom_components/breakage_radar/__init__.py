@@ -16,6 +16,7 @@ from homeassistant.helpers import issue_registry as ir
 from .const import (
     ALERT_WINDOW_DAYS,
     CONF_ALERT_WINDOW_DAYS,
+    CONF_IGNORED_DOMAINS,
     DOMAIN,
     ISSUE_ID,
 )
@@ -34,6 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         alert_window_days=entry.options.get(
             CONF_ALERT_WINDOW_DAYS, ALERT_WINDOW_DAYS
         ),
+        ignored_domains=entry.options.get(CONF_IGNORED_DOMAINS) or (),
     )
     await coordinator.async_config_entry_first_refresh()
 
@@ -55,7 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def _async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Apply a changed alert window without needing a restart."""
+    """Apply changed options without needing a restart."""
     await hass.config_entries.async_reload(entry.entry_id)
 
 

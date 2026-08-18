@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from collections.abc import Iterable
 from datetime import UTC, datetime
 from typing import Any
 
@@ -41,6 +42,7 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         hass: HomeAssistant,
         index_url: str = INDEX_URL,
         alert_window_days: int = ALERT_WINDOW_DAYS,
+        ignored_domains: Iterable[str] = (),
     ) -> None:
         super().__init__(
             hass,
@@ -50,6 +52,7 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
         self.index_url = index_url
         self.alert_window_days = alert_window_days
+        self.ignored_domains = tuple(ignored_domains)
         self.last_error: str | None = None
         self._index: dict[str, Any] | None = None
         #: ``domain -> (signature, result)``; lets the 12-hourly refresh skip
@@ -142,6 +145,7 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             current_version=current_version,
             today=datetime.now(UTC).date(),
             alert_window_days=self.alert_window_days,
+            ignored_domains=self.ignored_domains,
         )
         _LOGGER.debug(
             "Breakage Radar: %d of %d custom integrations affected "

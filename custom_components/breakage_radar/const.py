@@ -36,6 +36,10 @@ CONF_ALERT_WINDOW_DAYS: Final = "alert_window_days"
 #: Offered in the options flow, in days.
 ALERT_WINDOW_CHOICES: Final = (30, 60, 90, 180, 365)
 
+#: Domains the user does not want reported at all. Empty by default; nothing is
+#: ever excluded on their behalf.
+CONF_IGNORED_DOMAINS: Final = "ignored_domains"
+
 #: However wide the window, only the nearest few deadlines get their own
 #: notification. The rest stay in the summary, which lists every date anyway.
 MAX_ALERT_CARDS: Final = 5
