@@ -20,6 +20,7 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
+    CONF_ARRAY_INVERTER_POWER,
     CONF_AZIMUTH,
     CONF_BASE_URL,
     CONF_DAMPING_EVENING,
@@ -58,6 +59,7 @@ PER_ARRAY_KEYS = (
     CONF_DECLINATION,
     CONF_AZIMUTH,
     CONF_MODULES_POWER,
+    CONF_ARRAY_INVERTER_POWER,
     CONF_EFFICIENCY_FACTOR,
     CONF_TRACKING,
     CONF_DAMPING_MORNING,
@@ -79,6 +81,7 @@ def _array_defaults(latitude: float, longitude: float) -> dict[str, Any]:
         CONF_DECLINATION: 25,
         CONF_AZIMUTH: 180,
         CONF_MODULES_POWER: None,
+        CONF_ARRAY_INVERTER_POWER: 0,
         CONF_EFFICIENCY_FACTOR: 1.0,
         CONF_TRACKING: "none",
         CONF_DAMPING_MORNING: 0.0,
@@ -133,6 +136,17 @@ def _array_schema(defaults: dict[str, Any], add_another_default: bool) -> vol.Sc
                         step=1,
                         mode=NumberSelectorMode.BOX,
                         unit_of_measurement="Wp",
+                    )
+                ),
+                vol.Coerce(int),
+            ),
+            _field(CONF_ARRAY_INVERTER_POWER): vol.All(
+                NumberSelector(
+                    NumberSelectorConfig(
+                        min=0,
+                        step=1,
+                        mode=NumberSelectorMode.BOX,
+                        unit_of_measurement="W",
                     )
                 ),
                 vol.Coerce(int),

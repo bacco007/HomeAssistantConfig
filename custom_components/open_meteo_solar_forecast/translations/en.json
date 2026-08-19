@@ -12,7 +12,7 @@
           "max_snowcover_depth_cm": "Maximum snow cover depth"
         },
         "data_description": {
-          "inverter_power": "The AC capacity of your inverter in Watt (0 = no limit).",
+          "inverter_power": "The AC capacity of a single inverter shared by all arrays in Watt (0 = no limit). Ignored if any array has its own inverter capacity set on the array pages.",
           "max_snowcover_depth_cm": "If greater than 0, the snow cover depth which results in zero module power."
         },
         "submit": "Next"
@@ -25,6 +25,7 @@
           "declination": "Declination",
           "azimuth": "Azimuth",
           "modules_power": "Modules peak power",
+          "array_inverter_power": "Array inverter capacity",
           "tracking": "Solar tracker type",
           "efficiency_factor": "DC efficiency factor",
           "damping_morning": "Morning damping factor",
@@ -38,6 +39,7 @@
           "declination": "0 = horizontal, 90 = vertical.",
           "azimuth": "0 = North, 90 = East, 180 = South, 270 = West.",
           "modules_power": "Total Watt peak power of the solar modules in this array.",
+          "array_inverter_power": "The AC capacity of this array's own inverter in Watt (0 = no dedicated inverter). If any array has its own inverter, each array is clamped individually and the shared inverter capacity is ignored.",
           "efficiency_factor": "0.0 = 100% loss, 1.0 = no loss.",
           "damping_morning": "0.0 = no damping, 1.0 = full damping in the morning.",
           "damping_evening": "0.0 = no damping, 1.0 = full damping in the evening.",
@@ -124,7 +126,7 @@
           "max_snowcover_depth_cm": "Maximum snow cover depth"
         },
         "data_description": {
-          "inverter_power": "The AC capacity of your inverter in Watt (0 = no limit).",
+          "inverter_power": "The AC capacity of a single inverter shared by all arrays in Watt (0 = no limit). Ignored if any array has its own inverter capacity set on the array pages.",
           "max_snowcover_depth_cm": "If greater than 0, the snow cover depth which results in zero module power."
         },
         "submit": "Next"
@@ -137,6 +139,7 @@
           "declination": "Declination",
           "azimuth": "Azimuth",
           "modules_power": "Modules peak power",
+          "array_inverter_power": "Array inverter capacity",
           "tracking": "Solar tracker type",
           "efficiency_factor": "DC efficiency factor",
           "damping_morning": "Morning damping factor",
@@ -150,6 +153,7 @@
           "declination": "0 = horizontal, 90 = vertical.",
           "azimuth": "0 = North, 90 = East, 180 = South, 270 = West.",
           "modules_power": "Total Watt peak power of the solar modules in this array.",
+          "array_inverter_power": "The AC capacity of this array's own inverter in Watt (0 = no dedicated inverter). If any array has its own inverter, each array is clamped individually and the shared inverter capacity is ignored.",
           "efficiency_factor": "0.0 = 100% loss, 1.0 = no loss.",
           "damping_morning": "0.0 = no damping, 1.0 = full damping in the morning.",
           "damping_evening": "0.0 = no damping, 1.0 = full damping in the evening.",

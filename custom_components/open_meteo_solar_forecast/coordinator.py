@@ -18,6 +18,7 @@ from homeassistant.util import dt as dt_util
 from open_meteo_solar_forecast import Estimate, OpenMeteoSolarForecast
 
 from .const import (
+    CONF_ARRAY_INVERTER_POWER,
     CONF_AZIMUTH,
     CONF_BASE_URL,
     CONF_DAMPING_EVENING,
@@ -213,6 +214,7 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
             entry.options[CONF_DECLINATION],
             entry.options[CONF_AZIMUTH],
             entry.options[CONF_MODULES_POWER],
+            entry.options.get(CONF_ARRAY_INVERTER_POWER, 0),
             entry.options.get(CONF_EFFICIENCY_FACTOR, 1.0),
             entry.options.get(CONF_TRACKING, "none"),
             entry.options.get(CONF_USE_HORIZON, False),
@@ -255,6 +257,22 @@ class OpenMeteoSolarForecastDataUpdateCoordinator(DataUpdateCoordinator[Estimate
             entry.options.get(CONF_PARTIAL_SHADING, False),
             array_count,
         )
+
+        # Per-array inverter capacities (0 = no dedicated inverter for that
+        # array). If any array has its own inverter, pass a list to the
+        # library so each array's output is clamped individually; this
+        # overrides the shared inverter capacity configured above.
+        array_ac_kwp = _normalize_array_value(
+            entry.options.get(CONF_ARRAY_INVERTER_POWER, 0),
+            array_count,
+            transform=lambda value: value / 1000 if value else None,
+        )
+        if _is_sequence(array_ac_kwp):
+            if any(value is not None for value in array_ac_kwp):
+                ac_kwp = list(array_ac_kwp)
+        elif array_ac_kwp is not None:
+            # Single array with its own inverter: behaves like a shared one.
+            ac_kwp = array_ac_kwp
 
         self.forecast = OpenMeteoSolarForecast(
             api_key=api_key,

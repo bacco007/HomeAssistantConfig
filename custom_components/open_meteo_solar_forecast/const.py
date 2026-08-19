@@ -14,6 +14,7 @@ CONF_MODULES_POWER = "modules_power"
 CONF_DAMPING_MORNING = "damping_morning"
 CONF_DAMPING_EVENING = "damping_evening"
 CONF_INVERTER_POWER = "inverter_power"
+CONF_ARRAY_INVERTER_POWER = "array_inverter_power"
 CONF_EFFICIENCY_FACTOR = "efficiency_factor"
 CONF_TRACKING = "tracking"
 
