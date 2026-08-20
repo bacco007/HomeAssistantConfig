@@ -19,6 +19,10 @@ Nine matcher types cover every deprecation Breakage Radar currently ships:
 ``call_hass_argument`` a call to one of ``names`` that passes ``hass`` (first
                        positional or keyword) -- for ``@deprecated_hass_argument``,
                        where the *argument* is deprecated, not the function
+``js``                 an anchored ``token`` in JavaScript/TypeScript source --
+                       for the device-registry WebSocket API, which breaks
+                       Lovelace cards rather than Python integrations. Handled
+                       by :func:`match_js_source`, never by :func:`match_source`
 
 Every matcher may additionally be constrained with ``files`` (a list of exact
 basenames, e.g. ``["device_tracker.py"]``), ``attr`` matchers with
@@ -53,13 +57,14 @@ MATCHER_TYPES = frozenset(
         "call_kwarg",
         "call_missing_kwarg",
         "call_hass_argument",
+        "js",
     }
 )
 
 #: Bumped whenever matching semantics change. It is folded into the crawl's
 #: rules hash, so an engine change forces a rescan instead of leaving stale
 #: findings that the current engine would no longer produce.
-ENGINE_VERSION = 5
+ENGINE_VERSION = 6
 
 VERSION_RE = re.compile(r"^\d{4}\.\d+(?:\.\d+)?$")
 
@@ -804,6 +809,194 @@ def _match_call_hass_argument(
         )
         if passes_hass:
             yield node.lineno, f"{_called_name(node)}(hass, ...)"
+
+
+# --------------------------------------------------------------------------- #
+# JavaScript / TypeScript matching
+# --------------------------------------------------------------------------- #
+
+#: Extensions the ``js`` matcher applies to. ``.d.ts`` files are excluded by
+#: the callers: a type declaration describes the API, it does not call it.
+JS_SUFFIXES = (".js", ".mjs", ".ts")
+
+#: A single line longer than this is a bundler's output, not source.
+JS_MAX_LINE_LENGTH = 5000
+
+#: Same idea as the extractor's MIN_AUTO_SYMBOL_LEN guard: a token this short
+#: is too common to match on, whatever the rule claims. The shortest real
+#: token is ``config_entries`` (14), which also needs the WebSocket context.
+JS_MIN_TOKEN_LENGTH = 12
+
+#: A ``js`` rule fires only in a file that demonstrably talks to the
+#: WebSocket API: ``hass.callWS(`` (any receiver, so ``this.hass!.callWS``
+#: counts), ``connection.sendMessagePromise(``, ``subscribeDeviceRegistry``,
+#: or a string literal starting ``config/device_registry``. A card that merely
+#: names a field can never match.
+_JS_CONTEXT_RE = re.compile(
+    r"\.\s*callWS\s*\(|\.\s*sendMessagePromise\s*\(|subscribeDeviceRegistry|[\"'`]config/device_registry"
+)
+
+_JS_TOKEN_RES: dict[str, re.Pattern[str]] = {}
+
+
+def _js_token_re(token: str) -> re.Pattern[str]:
+    pattern = _JS_TOKEN_RES.get(token)
+    if pattern is None:
+        # ``$`` is a JS identifier character, so \b alone would match
+        # ``$config_entries``; ``config_entries_subentries`` must not satisfy
+        # a ``config_entries`` rule either, which the trailing guard settles.
+        # ``/`` is excluded too: measured on a real card, ``config_entries``
+        # inside the REST path "config/config_entries/flow" is not the
+        # device-registry field. An immediate ``:`` or ``?:`` is a TypeScript
+        # interface member (or an object-literal key), not a read -- also
+        # measured, on a card that types the field but never touches it.
+        pattern = re.compile(
+            r"(?<![\w$/])" + re.escape(token) + r"(?![\w$/]|\??:)"
+        )
+        _JS_TOKEN_RES[token] = pattern
+    return pattern
+
+
+def looks_minified_js(path: str, text: str) -> bool:
+    """A ``.min.js`` name or a bundler-length line. Skipped and counted by the
+    callers, because matching a 200 KB single-line bundle proves nothing about
+    which source line is responsible."""
+    if _basename(path).endswith(".min.js"):
+        return True
+    return any(len(line) > JS_MAX_LINE_LENGTH for line in text.split("\n"))
+
+
+def strip_js_comments(source: str) -> str:
+    """Blank ``//`` and ``/* */`` comments, preserving line numbers.
+
+    String and template literals are honoured, so ``"https://..."`` does not
+    lose its tail. A ``/`` starting a regex literal is read as code, which at
+    worst treats ``/* inside a regex */`` as a comment -- a shape not seen in
+    any real card.
+    """
+    out: list[str] = []
+    state = ""  # "", "line", "block", or the open quote character
+    index = 0
+    length = len(source)
+    while index < length:
+        char = source[index]
+        nxt = source[index + 1] if index + 1 < length else ""
+        if state == "":
+            if char == "/" and nxt == "/":
+                state = "line"
+                out.append("  ")
+                index += 2
+                continue
+            if char == "/" and nxt == "*":
+                state = "block"
+                out.append("  ")
+                index += 2
+                continue
+            if char in "'\"`":
+                state = char
+            out.append(char)
+        elif state == "line":
+            if char == "\n":
+                state = ""
+                out.append("\n")
+            else:
+                out.append(" ")
+        elif state == "block":
+            if char == "*" and nxt == "/":
+                state = ""
+                out.append("  ")
+                index += 2
+                continue
+            out.append("\n" if char == "\n" else " ")
+        else:  # inside a string or template literal
+            if char == "\\":
+                out.append(char)
+                if nxt:
+                    out.append(nxt)
+                    index += 2
+                    continue
+            elif char == state or (char == "\n" and state != "`"):
+                # An unterminated ' or " string ends at the line, the way the
+                # parser it was written for would have rejected it anyway.
+                state = ""
+                out.append(char)
+            else:
+                out.append(char)
+        index += 1
+    return "".join(out)
+
+
+def match_js_source(
+    path: str, source: str | bytes, rules: Iterable[Rule], stats: ScanStats | None = None
+) -> list[Finding]:
+    """Run every ``js`` rule over one JavaScript/TypeScript file.
+
+    Text matching, not parsing: one finding per rule at its first occurrence,
+    comments stripped first, and nothing at all unless the file references the
+    WebSocket API (see ``_JS_CONTEXT_RE``). Non-``js`` rules are ignored, the
+    mirror of :func:`match_source` ignoring ``js`` ones.
+    """
+    if isinstance(source, bytes):
+        try:
+            source = source.decode("utf-8")
+        except UnicodeDecodeError:
+            if stats:
+                stats.syntax_errors.append(f"{path}: undecodable")
+            return []
+
+    if stats:
+        stats.files_scanned += 1
+
+    text = strip_js_comments(source)
+    if not _JS_CONTEXT_RE.search(text):
+        return []
+
+    findings: list[Finding] = []
+    for rule in rules:
+        matcher = rule.match
+        if not matcher or matcher.get("type") != "js":
+            continue
+        if not _file_allowed(matcher, path):
+            continue
+        token = matcher.get("token") or ""
+        if len(token) < JS_MIN_TOKEN_LENGTH:
+            continue
+        hit = _js_token_re(token).search(text)
+        if hit is None:
+            continue
+        findings.append(
+            Finding(
+                rule_id=rule.id,
+                breaks_in=normalise_version(rule.breaks_in),
+                file=path,
+                line=text.count("\n", 0, hit.start()) + 1,
+                confidence=rule.confidence,
+                symbol=token,
+            )
+        )
+
+    findings.sort(key=lambda f: (f.file, f.line, f.rule_id))
+    return findings
+
+
+def dedupe_js_findings(findings: list[Finding]) -> list[Finding]:
+    """One finding per rule across a repository.
+
+    A TypeScript card usually ships its compiled bundle too, so the same token
+    matches in ``src/card.ts`` and ``dist/card.js``. Both point at the same
+    fix; the source file is the one worth a maintainer's click.
+    """
+
+    def rank(finding: Finding) -> tuple[bool, str, int]:
+        in_dist = ("/" + finding.file).find("/dist/") != -1
+        return (in_dist, finding.file, finding.line)
+
+    best: dict[str, Finding] = {}
+    for finding in findings:
+        current = best.get(finding.rule_id)
+        if current is None or rank(finding) < rank(current):
+            best[finding.rule_id] = finding
+    return sorted(best.values(), key=lambda f: (f.file, f.line, f.rule_id))
 
 
 _DISPATCH = {

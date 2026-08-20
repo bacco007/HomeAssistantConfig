@@ -57,6 +57,14 @@
     "integration_broken": {
       "title": "{domain} uses an API that Home Assistant {release} removed",
       "description": "This system runs Home Assistant {release} or later, and `{domain}` still uses an API that release removed, so it is most likely failing right now.\n\n{where}\n\nThis notification clears itself once `{domain}` no longer uses the removed API. The exact file and line are on `sensor.breakage_radar_affected`."
+    },
+    "card_imminent": {
+      "title": "{domain} card breaks in about {days} {day_word}",
+      "description": "Home Assistant {release} removes a WebSocket API field that the `{domain}` card still uses, and that release is due {due}.\n\n{where}\n\nIf no fix arrives before then, the card will stop showing device data. This notification clears itself once `{domain}` no longer uses the removed field."
+    },
+    "card_broken": {
+      "title": "{domain} card uses an API that Home Assistant {release} removed",
+      "description": "This system runs Home Assistant {release} or later, and the `{domain}` card still uses a WebSocket API field that release removed, so it is most likely failing right now.\n\n{where}\n\nThis notification clears itself once `{domain}` no longer uses the removed field."
     }
   }
 }

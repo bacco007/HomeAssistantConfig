@@ -18,6 +18,12 @@ LEARN_MORE_URL = "https://booyaka101.github.io/hass-breakage-radar/"
 
 BROKEN_ISSUE_PREFIX = "broken_now_"
 IMMINENT_ISSUE_PREFIX = "imminent_"
+#: Cards get their own prefixes: a card and a domain could share a name, and
+#: the wording differs ("card" vs "integration"). Deliberately not extensions
+#: of the plain prefixes, so an integration domain that happens to start with
+#: "card_" can never be mistaken for one.
+BROKEN_CARD_PREFIX = "card_broken_"
+IMMINENT_CARD_PREFIX = "card_imminent_"
 ALERT_PREFIXES = (BROKEN_ISSUE_PREFIX, IMMINENT_ISSUE_PREFIX)
 
 #: Keeps the summary description readable when a lot is scheduled.
@@ -138,52 +144,62 @@ def _async_sync_alert_issues(hass: HomeAssistant, report: dict) -> None:
     """
     broken: dict[str, str] = report.get("broken_now") or {}
     imminent: dict[str, dict] = report.get("imminent") or {}
+    broken_cards: dict[str, str] = report.get("broken_now_cards") or {}
+    imminent_cards: dict[str, dict] = report.get("imminent_cards") or {}
     links: dict[str, dict] = report.get("links") or {}
     due_by_release = {
         group["release"]: group["due"] for group in report.get("schedule") or []
     }
 
-    for domain, release in broken.items():
-        ir.async_create_issue(
-            hass,
-            DOMAIN,
-            f"{BROKEN_ISSUE_PREFIX}{domain}",
-            is_fixable=False,
-            is_persistent=False,
-            severity=ir.IssueSeverity.ERROR,
-            translation_key="integration_broken",
-            translation_placeholders={
-                "domain": domain,
-                "release": str(release),
-                "where": describe_links(links.get(domain)),
-            },
-            learn_more_url=links.get(domain, {}).get("repo_url") or LEARN_MORE_URL,
-        )
+    for prefix, bucket, key in (
+        (BROKEN_ISSUE_PREFIX, broken, "integration_broken"),
+        (BROKEN_CARD_PREFIX, broken_cards, "card_broken"),
+    ):
+        for name, release in bucket.items():
+            ir.async_create_issue(
+                hass,
+                DOMAIN,
+                f"{prefix}{name}",
+                is_fixable=False,
+                is_persistent=False,
+                severity=ir.IssueSeverity.ERROR,
+                translation_key=key,
+                translation_placeholders={
+                    "domain": name,
+                    "release": str(release),
+                    "where": describe_links(links.get(name)),
+                },
+                learn_more_url=links.get(name, {}).get("repo_url") or LEARN_MORE_URL,
+            )
 
-    for domain, entry in imminent.items():
-        release = str(entry.get("release", ""))
-        days = max(int(entry.get("days", 0)), 0)
-        ir.async_create_issue(
-            hass,
-            DOMAIN,
-            f"{IMMINENT_ISSUE_PREFIX}{domain}",
-            is_fixable=False,
-            is_persistent=False,
-            severity=ir.IssueSeverity.WARNING,
-            translation_key="integration_imminent",
-            translation_placeholders={
-                "domain": domain,
-                "release": release,
-                "days": str(days),
-                "day_word": plural(days, "day"),
-                "due": due_by_release.get(release, release),
-                "where": describe_links(links.get(domain)),
-            },
-            learn_more_url=links.get(domain, {}).get("repo_url") or LEARN_MORE_URL,
-        )
+    for prefix, bucket, key in (
+        (IMMINENT_ISSUE_PREFIX, imminent, "integration_imminent"),
+        (IMMINENT_CARD_PREFIX, imminent_cards, "card_imminent"),
+    ):
+        for name, entry in bucket.items():
+            release = str(entry.get("release", ""))
+            days = max(int(entry.get("days", 0)), 0)
+            ir.async_create_issue(
+                hass,
+                DOMAIN,
+                f"{prefix}{name}",
+                is_fixable=False,
+                is_persistent=False,
+                severity=ir.IssueSeverity.WARNING,
+                translation_key=key,
+                translation_placeholders={
+                    "domain": name,
+                    "release": release,
+                    "days": str(days),
+                    "day_word": plural(days, "day"),
+                    "due": due_by_release.get(release, release),
+                    "where": describe_links(links.get(name)),
+                },
+                learn_more_url=links.get(name, {}).get("repo_url") or LEARN_MORE_URL,
+            )
 
     # Anything that dropped out of a level, including an uninstalled component
-    # that has vanished from the report, must lose its card.
+    # that has vanished from the report, must lose its issue.
     async_get = getattr(ir, "async_get", None)
     if async_get is None:
         return
@@ -191,7 +207,13 @@ def _async_sync_alert_issues(hass: HomeAssistant, report: dict) -> None:
     for issue_domain, issue_id in list(getattr(registry, "issues", {})):
         if issue_domain != DOMAIN:
             continue
-        if issue_id.startswith(BROKEN_ISSUE_PREFIX):
+        if issue_id.startswith(BROKEN_CARD_PREFIX):
+            if issue_id[len(BROKEN_CARD_PREFIX):] not in broken_cards:
+                ir.async_delete_issue(hass, DOMAIN, issue_id)
+        elif issue_id.startswith(IMMINENT_CARD_PREFIX):
+            if issue_id[len(IMMINENT_CARD_PREFIX):] not in imminent_cards:
+                ir.async_delete_issue(hass, DOMAIN, issue_id)
+        elif issue_id.startswith(BROKEN_ISSUE_PREFIX):
             if issue_id[len(BROKEN_ISSUE_PREFIX):] not in broken:
                 ir.async_delete_issue(hass, DOMAIN, issue_id)
         elif issue_id.startswith(IMMINENT_ISSUE_PREFIX):
@@ -205,7 +227,9 @@ def async_sync_issue(hass: HomeAssistant, report: dict) -> None:
     _async_sync_alert_issues(hass, report)
 
     summarised = report.get("summarised_domains") or []
-    if not summarised:
+    summarised_cards = report.get("summarised_cards") or []
+    everything = set(summarised) | set(summarised_cards)
+    if not everything:
         ir.async_delete_issue(hass, DOMAIN, ISSUE_ID)
         return
 
@@ -213,9 +237,16 @@ def async_sync_issue(hass: HomeAssistant, report: dict) -> None:
     remaining = [
         group
         for group in schedule
-        if any(domain in set(summarised) for domain in group.get("domains") or [])
+        if any(domain in everything for domain in group.get("domains") or [])
     ]
     first = remaining[0] if remaining else None
+
+    if summarised and summarised_cards:
+        noun = "integrations and cards"
+    elif summarised_cards:
+        noun = plural(len(summarised_cards), "Lovelace card")
+    else:
+        noun = plural(len(summarised), "integration")
 
     ir.async_create_issue(
         hass,
@@ -226,12 +257,12 @@ def async_sync_issue(hass: HomeAssistant, report: dict) -> None:
         severity=ir.IssueSeverity.WARNING,
         translation_key="integrations_affected",
         translation_placeholders={
-            "count": str(len(summarised)),
-            "noun": plural(len(summarised), "integration"),
-            "verb": "uses" if len(summarised) == 1 else "use",
+            "count": str(len(everything)),
+            "noun": noun,
+            "verb": "uses" if len(everything) == 1 else "use",
             "earliest": first["release"] if first else "a future release",
             "earliest_due": first["due"] if first else "",
-            "schedule": format_schedule(schedule, only=set(summarised)),
+            "schedule": format_schedule(schedule, only=everything),
             "window": str(report.get("alert_window_days") or 0),
             "board_url": LEARN_MORE_URL,
         },

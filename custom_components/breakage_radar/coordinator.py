@@ -22,9 +22,9 @@ from .const import (
     INDEX_URL,
     UPDATE_INTERVAL,
 )
-from .discovery import discover_installed
+from .discovery import discover_cards, discover_installed
 from .report import build_report, validate_index
-from .scanner import scan_installed
+from .scanner import scan_cards, scan_installed
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -61,7 +61,9 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         #: Last completed local scan. Updates never wait for a scan; see
         #: async_run_local_scan (and issue #1) for why.
         self._local_scan: dict[str, Any] | None = None
+        self._card_scan: dict[str, Any] | None = None
         self._installed: dict[str, str] = {}
+        self._cards: list[str] = []
         self._scan_lock = asyncio.Lock()
 
     async def _fetch_index(self) -> dict[str, Any]:
@@ -126,6 +128,9 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._installed = await self.hass.async_add_executor_job(
             discover_installed, self.hass.config.path("custom_components")
         )
+        self._cards = await self.hass.async_add_executor_job(
+            discover_cards, self.hass.config.path("www/community")
+        )
         self._schedule_local_scan()
         return self._compose(index, self._installed, self._local_scan)
 
@@ -146,6 +151,8 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             today=datetime.now(UTC).date(),
             alert_window_days=self.alert_window_days,
             ignored_domains=self.ignored_domains,
+            cards=self._cards,
+            local_card_scan=self._card_scan,
         )
         _LOGGER.debug(
             "Breakage Radar: %d of %d custom integrations affected "
@@ -191,11 +198,20 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 index,
                 current_version,
             )
-            if scan is None:
-                return  # failure already logged; keep the previous results
-            self._local_scan = scan
+            card_scan = await self.hass.async_add_executor_job(
+                self._scan_local_cards,
+                self.hass.config.path("www/community"),
+                index,
+                current_version,
+            )
+            if card_scan is not None:
+                self._card_scan = card_scan
+            if scan is None and card_scan is None:
+                return  # failures already logged; keep the previous results
+            if scan is not None:
+                self._local_scan = scan
             self.async_set_updated_data(
-                self._compose(index, self._installed, scan)
+                self._compose(index, self._installed, self._local_scan)
             )
 
     def _scan_local(
@@ -216,5 +232,22 @@ class BreakageRadarCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         except Exception:  # noqa: BLE001 - a scan bug must never kill the sensor
             _LOGGER.exception(
                 "Local source scan failed; falling back to index-only matching"
+            )
+            return None
+
+    def _scan_local_cards(
+        self, community_dir: str, index: dict[str, Any], current_version: str
+    ) -> dict[str, Any] | None:
+        """Scan HACS-installed cards. Blocking -- called from the executor."""
+        try:
+            return scan_cards(
+                community_dir,
+                index.get("rules", []),
+                current_version=current_version,
+                cache=self._scan_cache,
+            )
+        except Exception:  # noqa: BLE001 - a scan bug must never kill the sensor
+            _LOGGER.exception(
+                "Card scan failed; falling back to index-only matching"
             )
             return None

@@ -80,6 +80,25 @@ def _index_by_domain(index: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return mapping
 
 
+def _index_by_card(index: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Plugin entries keyed by repository basename, lower-cased.
+
+    HACS installs a card to ``www/community/<repository basename>``, so that
+    directory name is the join key an installed card has in common with the
+    index's plugin entry.
+    """
+    mapping: dict[str, dict[str, Any]] = {}
+    for entry in index.get("integrations", []):
+        if not isinstance(entry, dict):
+            continue
+        if (entry.get("category") or "integration") != "plugin":
+            continue
+        name = str(entry.get("full_name") or "").rsplit("/", 1)[-1].lower()
+        if name and name not in mapping:
+            mapping[name] = entry
+    return mapping
+
+
 def build_report(
     index: dict[str, Any],
     installed: dict[str, str],
@@ -89,6 +108,8 @@ def build_report(
     today: date | None = None,
     alert_window_days: int = ALERT_WINDOW_DAYS,
     ignored_domains: Iterable[str] = (),
+    cards: Iterable[str] = (),
+    local_card_scan: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Match installed custom integrations against the published index.
 
@@ -108,12 +129,14 @@ def build_report(
     A malformed index gives an empty report rather than raising.
     """
     # Before any other work, so every count downstream agrees on what is in play.
-    ignored = set(ignored_domains) & installed.keys()
+    installed_cards = sorted(set(cards))
+    ignored = set(ignored_domains) & (installed.keys() | set(installed_cards))
     installed = {
         domain: version
         for domain, version in installed.items()
         if domain not in ignored
     }
+    installed_cards = [name for name in installed_cards if name not in ignored]
 
     rules = {
         rule["id"]: rule
@@ -121,9 +144,13 @@ def build_report(
         if isinstance(rule, dict) and "id" in rule
     }
     affected_by_domain = _index_by_domain(index)
+    affected_by_card = _index_by_card(index)
     clean_domains = set(index.get("clean_domains") or [])
+    index_clean_cards = set(index.get("clean_cards") or [])
     scanned_locally = (local_scan or {}).get("domains", {})
     rules_in_play = (local_scan or {}).get("rules_matchable", 0)
+    cards_scanned_locally = (local_card_scan or {}).get("cards", {})
+    card_rules_in_play = (local_card_scan or {}).get("rules_matchable", 0)
 
     by_release: dict[str, list[str]] = {}
     details: list[dict[str, Any]] = []
@@ -133,6 +160,12 @@ def build_report(
     unknown_reasons: dict[str, str] = {}
     broken_now: dict[str, str] = {}
     imminent: dict[str, dict[str, Any]] = {}
+    affected_cards: list[str] = []
+    clean_cards: list[str] = []
+    unknown_cards: list[str] = []
+    broken_now_cards: dict[str, str] = {}
+    imminent_cards: dict[str, dict[str, Any]] = {}
+    card_reasons: dict[str, str] = {}
     links: dict[str, dict[str, str]] = {}
 
     def _days_until(release: str) -> int | None:
@@ -158,8 +191,14 @@ def build_report(
         findings: list[dict[str, Any]],
         source: str,
         entry: dict[str, Any] | None,
+        kind: str = "integration",
     ) -> None:
-        affected.append(domain)
+        if kind == "card":
+            affected_cards.append(domain)
+            broken_bucket, imminent_bucket = broken_now_cards, imminent_cards
+        else:
+            affected.append(domain)
+            broken_bucket, imminent_bucket = broken_now, imminent
         for finding in findings:
             release = str(finding.get("breaks_in", ""))
             bucket = by_release.setdefault(release, [])
@@ -168,15 +207,15 @@ def build_report(
             when = _when(release)
             days = _days_until(release)
             if when == "broken_now":
-                previous = broken_now.get(domain)
+                previous = broken_bucket.get(domain)
                 if previous is None or parse_version(release) < parse_version(previous):
-                    broken_now[domain] = release
+                    broken_bucket[domain] = release
             elif when == "imminent":
-                previous_entry = imminent.get(domain)
+                previous_entry = imminent_bucket.get(domain)
                 if previous_entry is None or parse_version(release) < parse_version(
                     previous_entry["release"]
                 ):
-                    imminent[domain] = {
+                    imminent_bucket[domain] = {
                         "release": release,
                         "days": days if days is not None else 0,
                     }
@@ -208,6 +247,7 @@ def build_report(
             details.append(
                 {
                     "domain": domain,
+                    "kind": kind,
                     "rule_id": finding.get("rule_id", ""),
                     "breaks_in": release,
                     "file": finding.get("file", ""),
@@ -252,6 +292,26 @@ def build_report(
             if local and local.get("reason"):
                 unknown_reasons[domain] = local["reason"]
 
+    for card in installed_cards:
+        entry = affected_by_card.get(card.lower())
+        index_findings = [
+            f for f in (entry or {}).get("findings", []) if isinstance(f, dict)
+        ]
+        local = cards_scanned_locally.get(card)
+
+        if local and local.get("status") == "affected":
+            _add_details(card, local.get("findings", []), "local", entry, kind="card")
+        elif local and local.get("status") == "clean" and card_rules_in_play > 0:
+            clean_cards.append(card)
+        elif index_findings:
+            _add_details(card, index_findings, "index", entry, kind="card")
+        elif entry is not None or card.lower() in index_clean_cards:
+            clean_cards.append(card)
+        else:
+            unknown_cards.append(card)
+            if local and local.get("reason"):
+                card_reasons[card] = local["reason"]
+
     details.sort(
         key=lambda d: (parse_version(d["breaks_in"]), d["domain"], d["file"], d["line"])
     )
@@ -259,10 +319,16 @@ def build_report(
 
     # A wide window on a system with many affected integrations would other-
     # wise raise a notification for each one. Keep the nearest few; the rest
-    # are in the summary, which carries every date anyway.
-    if len(imminent) > MAX_ALERT_CARDS:
-        nearest = sorted(imminent.items(), key=lambda item: item[1]["days"])
-        imminent = dict(nearest[:MAX_ALERT_CARDS])
+    # are in the summary, which carries every date anyway. Cards share the
+    # same budget: the cap exists for the Repairs panel, which shows both.
+    if len(imminent) + len(imminent_cards) > MAX_ALERT_CARDS:
+        nearest = sorted(
+            [("integration", k, v) for k, v in imminent.items()]
+            + [("card", k, v) for k, v in imminent_cards.items()],
+            key=lambda item: item[2]["days"],
+        )[:MAX_ALERT_CARDS]
+        imminent = {k: v for kind, k, v in nearest if kind == "integration"}
+        imminent_cards = {k: v for kind, k, v in nearest if kind == "card"}
 
     schedule = []
     for release, domains in sorted(
@@ -294,6 +360,16 @@ def build_report(
         "broken_now_count": len(broken_now),
         "imminent": imminent,
         "imminent_count": len(imminent),
+        "cards_installed_count": len(installed_cards),
+        "affected_cards": affected_cards,
+        "clean_cards": clean_cards,
+        "cards_not_analysed": unknown_cards,
+        "cards_not_analysed_reasons": card_reasons,
+        "broken_now_cards": broken_now_cards,
+        "imminent_cards": imminent_cards,
+        "summarised_cards": sorted(
+            set(affected_cards) - set(broken_now_cards) - set(imminent_cards)
+        ),
         "links": links,
         "schedule": schedule,
         "summarised_domains": sorted(
@@ -304,6 +380,8 @@ def build_report(
         "files_scanned": (local_scan or {}).get("files_scanned", 0),
         "unparsed_files": (local_scan or {}).get("unparsed_files", 0),
         "skipped_files": (local_scan or {}).get("skipped_files", 0),
+        "card_files_scanned": (local_card_scan or {}).get("files_scanned", 0),
+        "skipped_minified_files": (local_card_scan or {}).get("skipped_minified", 0),
         "local_scan_enabled": local_scan is not None,
         "index_generated_utc": index.get("generated_utc", ""),
         "index_core_version": index.get("core_version", ""),

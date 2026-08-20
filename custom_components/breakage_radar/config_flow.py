@@ -67,7 +67,13 @@ class BreakageRadarOptionsFlow(OptionsFlow):
         coordinator = self.hass.data.get(DOMAIN, {}).get(self.config_entry.entry_id)
         report = getattr(coordinator, "data", None) or {}
         ignored = self.config_entry.options.get(CONF_IGNORED_DOMAINS) or []
-        return sorted({*report.get("affected_domains", []), *ignored})
+        return sorted(
+            {
+                *report.get("affected_domains", []),
+                *report.get("affected_cards", []),
+                *ignored,
+            }
+        )
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None

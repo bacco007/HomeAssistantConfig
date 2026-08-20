@@ -50,6 +50,26 @@ def discover_installed(custom_components_dir: str) -> dict[str, str]:
     return installed
 
 
+def discover_cards(community_dir: str) -> list[str]:
+    """Directory names under ``www/community``, where HACS installs Lovelace
+    cards and other frontend plugins. One directory per repository, named by
+    the repository basename, which is what the index's plugin entries join on.
+    """
+    try:
+        entries = sorted(os.scandir(community_dir), key=lambda e: e.name)
+    except (FileNotFoundError, NotADirectoryError, PermissionError, OSError):
+        return []
+
+    cards: list[str] = []
+    for entry in entries:
+        try:
+            if entry.is_dir() and not entry.name.startswith("."):
+                cards.append(entry.name)
+        except OSError:
+            continue
+    return cards
+
+
 def _manifest_domain(directory: str, fallback: str) -> str:
     """The domain a component declares, falling back to its directory name."""
     try:

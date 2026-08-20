@@ -40,6 +40,8 @@ async def async_get_config_entry_diagnostics(
             "files_scanned": report.get("files_scanned"),
             "unparsed_files": report.get("unparsed_files"),
             "skipped_files": report.get("skipped_files"),
+            "card_files_scanned": report.get("card_files_scanned"),
+            "skipped_minified_files": report.get("skipped_minified_files"),
         },
         "summary": {
             "installed": report.get("installed_count"),
@@ -49,6 +51,15 @@ async def async_get_config_entry_diagnostics(
             "clean": report.get("clean_domains"),
             "not_analysed": report.get("not_in_index"),
             "not_analysed_reasons": report.get("not_in_index_reasons"),
+        },
+        "cards": {
+            "installed": report.get("cards_installed_count"),
+            "affected": report.get("affected_cards"),
+            "broken_now": report.get("broken_now_cards"),
+            "imminent": report.get("imminent_cards"),
+            "clean": report.get("clean_cards"),
+            "not_analysed": report.get("cards_not_analysed"),
+            "not_analysed_reasons": report.get("cards_not_analysed_reasons"),
         },
         "schedule": report.get("schedule"),
         # Every finding, with the message and links the sensor has to leave out.
