@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 3.0.1 - Usage figure now consistent across stat tile, bar, and legend
+// Version 3.0.2 - Flow dots now driven by JS instead of SVG SMIL for cross-browser reliability
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -99,6 +99,9 @@ class SolarBarCard extends HTMLElement {
     }
     this._labelTemplateSubs = {};
     this._labelTemplateValues = {};
+
+    if (this._flowAnimFrame) cancelAnimationFrame(this._flowAnimFrame);
+    this._flowAnimRunning = false;
   }
 
   setConfig(config) {
@@ -591,6 +594,11 @@ class SolarBarCard extends HTMLElement {
       disable_animation = false,
       tap_action_card = null
     } = this.config;
+
+    // Flow dots are positioned via JS (not SMIL), so we gate their creation
+    // on prefers-reduced-motion ourselves rather than relying on CSS alone.
+    const skipDotAnimation = disable_animation ||
+      (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     // Get colors from palette
     const colors = getCardColors(this.config);
@@ -1539,7 +1547,7 @@ class SolarBarCard extends HTMLElement {
         }
 
         .flow-particle {
-          /* Opacity animation handled inline via animateMotion */
+          /* Position/opacity driven by _tickFlowAnimation() via requestAnimationFrame */
         }
 
         .flow-arrow {
@@ -2276,18 +2284,11 @@ class SolarBarCard extends HTMLElement {
                         stroke-dashoffset="0"
                         opacity="0.7"
                         vector-effect="non-scaling-stroke"/>
-                  ${!disable_animation ? [0, 1, 2].map(i => `
-                    <circle class="flow-particle" r="0.6" fill="${batteryFlowColor}" style="will-change:transform;">
-                      <animateMotion dur="${battery_flow_animation_speed}s" repeatCount="indefinite" begin="${i * battery_flow_animation_speed / 3}s">
-                        <mpath href="#batteryFlowPath"/>
-                      </animateMotion>
-                      <animate attributeName="opacity"
-                               values="0;0.9;0.9;0"
-                               keyTimes="0;0.1;0.9;1"
-                               dur="${battery_flow_animation_speed}s"
-                               repeatCount="indefinite"
-                               begin="${i * battery_flow_animation_speed / 3}s"/>
-                    </circle>
+                  ${!skipDotAnimation ? [0, 1, 2].map(i => `
+                    <circle class="flow-particle" r="0.6" fill="${batteryFlowColor}" opacity="0" style="will-change:transform;"
+                            data-path-ref="batteryFlowPath"
+                            data-speed="${battery_flow_animation_speed}"
+                            data-begin="${i * battery_flow_animation_speed / 3}"></circle>
                   `).join('') : ''}
                 </svg>
               ` : ''}
@@ -2358,12 +2359,11 @@ class SolarBarCard extends HTMLElement {
     // Helper: build a <g> group's inner HTML for a set of flows
     const flowGroupHtml = (flows) => flows.map(f => `
       <path id="path_${f.id}" d="${f.path}" fill="none" stroke="none"/>
-      ${disable_animation ? '' : Array.from({length: f.numDots}, (_, i) => `
-        <ellipse rx="${dotRx}" ry="${dotRy}" fill="${f.color}" opacity="0.9" style="will-change:transform;">
-          <animateMotion dur="${f.speed}s" repeatCount="indefinite" begin="${i * f.speed / f.numDots}s">
-            <mpath href="#path_${f.id}"/>
-          </animateMotion>
-        </ellipse>
+      ${skipDotAnimation ? '' : Array.from({length: f.numDots}, (_, i) => `
+        <ellipse class="flow-dot" rx="${dotRx}" ry="${dotRy}" fill="${f.color}" opacity="0" style="will-change:transform;"
+                 data-path-ref="path_${f.id}"
+                 data-speed="${f.speed}"
+                 data-begin="${i * f.speed / f.numDots}"></ellipse>
       `).join('')}
     `).join('');
 
@@ -2478,6 +2478,83 @@ class SolarBarCard extends HTMLElement {
       });
       this._clickListenerAdded = true;
     }
+
+    this._startFlowAnimation();
+  }
+
+  // ── Flow dot animation ──
+  // Positions the energy-flow and battery-flow particles along their paths.
+  // Deliberately plain JS (getPointAtLength + requestAnimationFrame) rather than
+  // SVG SMIL (animateMotion/mpath): SMIL support/reliability is inconsistent
+  // across mobile WebViews (see issue #114), while attribute updates work
+  // identically everywhere. One rAF loop drives every dot on the card; it stops
+  // itself once no dot elements remain and is restarted by updateCard().
+  _startFlowAnimation() {
+    if (this._flowAnimRunning) return;
+    if (!this.shadowRoot.querySelector('.flow-dot, .flow-particle')) return;
+    if (!this._flowAnimTickBound) this._flowAnimTickBound = this._tickFlowAnimation.bind(this);
+    this._flowAnimRunning = true;
+    this._flowAnimStart = undefined;
+    this._flowAnimFrame = requestAnimationFrame(this._flowAnimTickBound);
+  }
+
+  _tickFlowAnimation(now) {
+    const root = this.shadowRoot;
+    if (!root || !this.isConnected) {
+      this._flowAnimRunning = false;
+      return;
+    }
+    const dots = root.querySelectorAll('.flow-dot, .flow-particle');
+    if (!dots.length) {
+      this._flowAnimRunning = false;
+      return;
+    }
+    if (this._flowAnimStart === undefined) this._flowAnimStart = now;
+    const elapsed = (now - this._flowAnimStart) / 1000;
+    const cache = this._flowPathLenCache || (this._flowPathLenCache = new Map());
+
+    dots.forEach(dot => {
+      const pathId = dot.dataset.pathRef;
+      const pathEl = pathId ? root.getElementById(pathId) : null;
+      if (!pathEl) return;
+
+      const d = pathEl.getAttribute('d');
+      let entry = cache.get(pathId);
+      if (!entry || entry.d !== d) {
+        let length = 0;
+        try { length = pathEl.getTotalLength(); } catch (e) { /* not laid out yet */ }
+        entry = { d, length };
+        cache.set(pathId, entry);
+      }
+
+      const speed = parseFloat(dot.dataset.speed) || 1;
+      const begin = parseFloat(dot.dataset.begin) || 0;
+      const local = elapsed - begin;
+      if (local < 0) {
+        dot.setAttribute('opacity', '0');
+        return;
+      }
+
+      const t = (local % speed) / speed;
+      if (entry.length > 0) {
+        const pt = pathEl.getPointAtLength(t * entry.length);
+        dot.setAttribute('cx', pt.x.toFixed(2));
+        dot.setAttribute('cy', pt.y.toFixed(2));
+      }
+
+      if (dot.classList.contains('flow-particle')) {
+        // Fade in/out near the ends of each lap (matches the previous SMIL keyTimes)
+        let op;
+        if (t < 0.1) op = t * 9;
+        else if (t > 0.9) op = (1 - t) * 9;
+        else op = 0.9;
+        dot.setAttribute('opacity', op.toFixed(2));
+      } else {
+        dot.setAttribute('opacity', '0.9');
+      }
+    });
+
+    this._flowAnimFrame = requestAnimationFrame(this._flowAnimTickBound);
   }
 
   showEntityHistory(entityId, actionKey = null) {
@@ -3263,7 +3340,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v3.0.1 ',
+  '%c SOLAR-BAR-CARD %c v3.0.2 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
