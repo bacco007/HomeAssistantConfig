@@ -22,17 +22,35 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-NFL_TEAM_SCHEDULE_URL = (
-    "https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{team}/schedule"
+FOOTBALL_LEAGUES: dict[str, dict[str, str]] = {
+    "nfl": {
+        "espn_slug": "nfl",
+        "label": "NFL",
+    },
+    "cfb": {
+        "espn_slug": "college-football",
+        "label": "College Football",
+    },
+}
+
+TEAM_SCHEDULE_URL = (
+    "https://site.api.espn.com/apis/site/v2/sports/football/"
+    "{espn_slug}/teams/{team}/schedule"
 )
 
 
-class NFLNextGameCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Fetch the selected favorite NFL team's schedule."""
+class FootballNextGameCoordinator(DataUpdateCoordinator[dict[str, Any]]):
+    """Fetch the selected favorite football team's schedule."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
-        """Initialize the favorite-team schedule coordinator."""
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry, league: str) -> None:
+        """Initialize a favorite-team football schedule coordinator."""
+        if league not in FOOTBALL_LEAGUES:
+            raise ValueError(f"Unsupported football league: {league}")
+
         self.entry = entry
+        self.league = league
+        self.league_label = FOOTBALL_LEAGUES[league]["label"]
+        self.espn_slug = FOOTBALL_LEAGUES[league]["espn_slug"]
         self.session = async_get_clientsession(hass)
         self._last_good_data: dict[str, Any] | None = None
 
@@ -48,20 +66,20 @@ class NFLNextGameCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         super().__init__(
             hass,
             _LOGGER,
-            name="sports_ticker_nfl_next_game",
+            name=f"sports_ticker_{league}_next_game",
             update_interval=timedelta(seconds=max(15, min(poll_interval, 600))),
         )
 
     @property
     def favorite_team(self) -> str | None:
-        """Return the currently selected NFL favorite abbreviation."""
+        """Return the currently selected favorite team abbreviation."""
         opts = {**self.entry.data, **self.entry.options}
         favorite_teams = opts.get(CONF_FAVORITE_TEAMS, {})
 
         if not isinstance(favorite_teams, dict):
             return None
 
-        favorite = favorite_teams.get("nfl")
+        favorite = favorite_teams.get(self.league)
         if not favorite:
             return None
 
@@ -85,7 +103,10 @@ class NFLNextGameCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 },
             }
 
-        url = NFL_TEAM_SCHEDULE_URL.format(team=favorite.lower())
+        url = TEAM_SCHEDULE_URL.format(
+            espn_slug=self.espn_slug,
+            team=favorite.lower(),
+        )
 
         try:
             async with async_timeout.timeout(20):
@@ -119,7 +140,8 @@ class NFLNextGameCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         except Exception as err:
             _LOGGER.warning(
-                "Failed to update next NFL game for %s. Error: %s",
+                "Failed to update next %s game for %s. Error: %s",
+                self.league_label,
                 favorite,
                 err,
             )
@@ -166,7 +188,7 @@ class NFLNextGameCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if not isinstance(event, dict):
                 continue
 
-            competition = NFLNextGameCoordinator._competition(event)
+            competition = FootballNextGameCoordinator._competition(event)
             if not competition:
                 continue
 
@@ -219,12 +241,18 @@ class NFLNextGameCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return competition if isinstance(competition, dict) else {}
 
 
-class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
-    """Next scheduled game for the selected favorite NFL team."""
+class ESPNFootballNextGame(CoordinatorEntity[FootballNextGameCoordinator], SensorEntity):
+    """Next scheduled game for a selected favorite football team."""
 
     _attr_icon = "mdi:calendar-clock"
-    _attr_unique_id = "espn_nfl_next_game"
-    _attr_name = "ESPN NFL Next Game"
+
+    def __init__(self, coordinator: FootballNextGameCoordinator) -> None:
+        """Initialize the next-game sensor."""
+        super().__init__(coordinator)
+        self.league = coordinator.league
+        self.league_label = coordinator.league_label
+        self._attr_unique_id = f"espn_{self.league}_next_game"
+        self._attr_name = f"ESPN {self.league_label} Next Game"
 
     @property
     def native_value(self) -> str:
@@ -256,7 +284,8 @@ class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
             meta = {}
 
         attrs: dict[str, Any] = {
-            "league": "nfl",
+            "league": self.league,
+            "league_name": self.league_label,
             "favorite_team": favorite,
             "favorite_team_name": self._favorite_team_name(favorite),
             "has_upcoming_game": isinstance(event, dict),
@@ -270,13 +299,14 @@ class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
         if not isinstance(event, dict):
             return attrs
 
-        competition = NFLNextGameCoordinator._competition(event)
+        competition = FootballNextGameCoordinator._competition(event)
         away, home = self._teams(event)
 
         away_abbr = self._team_abbreviation(away)
         home_abbr = self._team_abbreviation(home)
         favorite_side = self._favorite_side(favorite, away, home)
         opponent = home if favorite_side == "away" else away if favorite_side == "home" else {}
+        favorite_competitor = away if favorite_side == "away" else home if favorite_side == "home" else {}
 
         status = competition.get("status") or event.get("status") or {}
         status_type = status.get("type", {}) if isinstance(status, dict) else {}
@@ -305,6 +335,16 @@ class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
         if not isinstance(week, dict):
             week = {}
 
+        notes = competition.get("notes", [])
+        note_headlines: list[str] = []
+        if isinstance(notes, list):
+            for note in notes:
+                if not isinstance(note, dict):
+                    continue
+                headline = note.get("headline") or note.get("text")
+                if headline:
+                    note_headlines.append(str(headline))
+
         attrs.update(
             {
                 "event_id": event.get("id"),
@@ -319,17 +359,28 @@ class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
                 "home_team": home_abbr,
                 "home_team_name": self._team_name(home),
                 "home_team_logo": self._team_logo(home),
+                "home_team_record": self._team_record(home),
+                "home_team_rank": self._team_rank(home),
                 "away_team": away_abbr,
                 "away_team_name": self._team_name(away),
                 "away_team_logo": self._team_logo(away),
+                "away_team_record": self._team_record(away),
+                "away_team_rank": self._team_rank(away),
                 "home_away": favorite_side,
+                "favorite_team_record": self._team_record(favorite_competitor),
+                "favorite_team_rank": self._team_rank(favorite_competitor),
                 "opponent": self._team_abbreviation(opponent),
                 "opponent_name": self._team_name(opponent),
                 "opponent_logo": self._team_logo(opponent),
+                "opponent_record": self._team_record(opponent),
+                "opponent_rank": self._team_rank(opponent),
                 "venue": venue.get("fullName"),
                 "venue_city": address.get("city"),
                 "venue_state": address.get("state"),
+                "neutral_site": competition.get("neutralSite"),
+                "conference_competition": competition.get("conferenceCompetition"),
                 "broadcasts": networks,
+                "notes": note_headlines,
                 "status": status_type.get("state") if isinstance(status_type, dict) else None,
                 "status_detail": (
                     (status_type.get("shortDetail") or status_type.get("detail"))
@@ -347,7 +398,7 @@ class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
     @staticmethod
     def _teams(event: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
         """Return away and home competitor objects."""
-        competition = NFLNextGameCoordinator._competition(event)
+        competition = FootballNextGameCoordinator._competition(event)
         competitors = competition.get("competitors", [])
 
         away: dict[str, Any] = {}
@@ -387,6 +438,40 @@ class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
         return team.get("logo")
 
     @staticmethod
+    def _team_record(competitor: dict[str, Any]) -> str | None:
+        if not isinstance(competitor, dict):
+            return None
+        records = competitor.get("records", [])
+        if not isinstance(records, list):
+            return None
+
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            if record.get("type") in ("total", "overall") and record.get("summary"):
+                return str(record["summary"])
+
+        for record in records:
+            if isinstance(record, dict) and record.get("summary"):
+                return str(record["summary"])
+
+        return None
+
+    @staticmethod
+    def _team_rank(competitor: dict[str, Any]) -> int | None:
+        if not isinstance(competitor, dict):
+            return None
+        curated_rank = competitor.get("curatedRank", {})
+        if not isinstance(curated_rank, dict):
+            return None
+        value = curated_rank.get("current")
+        try:
+            rank = int(value)
+        except (TypeError, ValueError):
+            return None
+        return rank if rank > 0 else None
+
+    @staticmethod
     def _favorite_side(
         favorite: str | None,
         away: dict[str, Any],
@@ -394,18 +479,17 @@ class ESPNNFLNextGame(CoordinatorEntity[NFLNextGameCoordinator], SensorEntity):
     ) -> str | None:
         if not favorite:
             return None
-        if ESPNNFLNextGame._team_abbreviation(away) == favorite:
+        if ESPNFootballNextGame._team_abbreviation(away) == favorite:
             return "away"
-        if ESPNNFLNextGame._team_abbreviation(home) == favorite:
+        if ESPNFootballNextGame._team_abbreviation(home) == favorite:
             return "home"
         return None
 
-    @staticmethod
-    def _favorite_team_name(favorite: str | None) -> str | None:
+    def _favorite_team_name(self, favorite: str | None) -> str | None:
         if not favorite:
             return None
 
-        for team in TEAM_OPTIONS.get("nfl", []):
+        for team in TEAM_OPTIONS.get(self.league, []):
             if team.get("value") == favorite:
                 return team.get("label")
 

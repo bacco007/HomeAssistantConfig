@@ -21,7 +21,7 @@ from .const import (
     DEFAULT_TICKER_THEME,
 )
 from .coordinator import MLB_PLAYER_LEADERS_KEY, SportsTickerCoordinator
-from .next_game import ESPNNFLNextGame, NFLNextGameCoordinator
+from .next_game import ESPNFootballNextGame, FootballNextGameCoordinator
 
 
 async def async_setup_entry(
@@ -51,10 +51,12 @@ async def async_setup_entry(
         for league in leagues
     ]
 
-    if "nfl" in leagues:
-        next_game_coordinator = NFLNextGameCoordinator(hass, entry)
+    for league in ("nfl", "cfb"):
+        if league not in leagues:
+            continue
+        next_game_coordinator = FootballNextGameCoordinator(hass, entry, league)
         await next_game_coordinator.async_config_entry_first_refresh()
-        entities.append(ESPNNFLNextGame(next_game_coordinator))
+        entities.append(ESPNFootballNextGame(next_game_coordinator))
 
     if "mlb" in leagues:
         entities.append(ESPNMLBPlayerLeaders(coordinator))
