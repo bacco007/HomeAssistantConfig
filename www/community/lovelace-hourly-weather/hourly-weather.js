@@ -1300,7 +1300,7 @@ var _n = (e) => !nn(e) && typeof e.then == "function", vn = 1073741823, yn = on(
 	reconnected() {
 		this._$CK.reconnect(this), this._$CX.resume();
 	}
-}), bn = "6.9.0", xn = "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0, Sn = class extends HTMLElement {
+}), bn = "6.10.0", xn = "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0, Sn = class extends HTMLElement {
 	constructor() {
 		super(), this.holdTime = 500, this.held = !1, this.ripple = document.createElement("mwc-ripple");
 	}
@@ -5444,7 +5444,7 @@ var Gl = Ul = class extends Ft {
             <p>${this.localize("errors.check_entity")}</p>
           </div>
         </ha-card>`;
-		let g = this.getConditionListFromForecast(r, c, l), _ = this.getTemperatures(r, c, l, p, m), v = this.getWind(r, c, l, a, p), y = this.getPrecipitation(r, c, l, s, p), b = this.getColorSettings(e.colors);
+		let g = this.getConditionListFromForecast(r, c, l), _ = this.getTemperatures(r, c, l, p, m), v = this.getWind(r, c, l, a, p), y = this.getPrecipitation(r, c, l, s, p, u), b = this.getColorSettings(e.colors);
 		return V`
       <ha-card
         .header=${e.name}
@@ -5501,20 +5501,26 @@ var Gl = Ul = class extends Ft {
 		}
 		return a;
 	}
-	getPrecipitation(e, t, n, r, i) {
-		let a = [];
-		for (let o = n; o < t + n; o++) {
-			let t = e[o], n = "";
-			t.precipitation > 0 && (n = `${_(t.precipitation, this.hass.locale)} ${r}`.trim());
-			let s = "", c = "";
-			t.precipitation_probability > 0 && (s = `${_(t.precipitation_probability, this.hass.locale)}%`.trim(), c = this.localize("card.chance_of_precipitation", "{0}", String(t.precipitation_probability))), a.push({
-				hour: this.formatHour(new Date(t.datetime), this.hass.locale, i),
-				precipitationAmount: n,
-				precipitationProbability: s,
-				precipitationProbabilityText: c
+	getPrecipitation(e, t, n, r, i, a) {
+		let o = [];
+		for (let s = 0; s < t; s++) {
+			let c = e[n + s];
+			if (s % a === 0) {
+				let l = e.slice(n + s, Math.min(n + s + a, n + t)), u = l.reduce((e, t) => e + (Number(t.precipitation) || 0), 0), d = 100 * (1 - l.reduce((e, t) => e * (1 - (Number(t.precipitation_probability) || 0) / 100), 1)), f = Math.round(d);
+				o.push({
+					hour: this.formatHour(new Date(c.datetime), this.hass.locale, i),
+					precipitationAmount: u > 0 ? `${_(u, this.hass.locale)} ${r}`.trim() : "",
+					precipitationProbability: f > 0 ? `${_(f, this.hass.locale)}%` : "",
+					precipitationProbabilityText: f > 0 ? this.localize("card.chance_of_precipitation", "{0}", String(f)) : ""
+				});
+			} else o.push({
+				hour: this.formatHour(new Date(c.datetime), this.hass.locale, i),
+				precipitationAmount: "",
+				precipitationProbability: "",
+				precipitationProbabilityText: ""
 			});
 		}
-		return a;
+		return o;
 	}
 	getWind(e, t, n, r, i) {
 		let a = [];
