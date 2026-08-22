@@ -1,131 +1,268 @@
+"""Sensor entities for CAP Alerts: count, last updated, and per-alert entities."""
+
 from __future__ import annotations
-import aiohttp
-from datetime import timedelta
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+
+import hashlib
+from datetime import datetime, timezone
+
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
+)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from .const import DOMAIN, CONF_FEEDS, MAX_FEED_FAILURES, ISSUE_FEED_DISABLED_PREFIX
-from .parser import parse_feed
-from .util import slug_from_url, raise_issue
+from homeassistant.const import EntityCategory
+from homeassistant.core import callback
+from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import slugify
 
-SCAN_INTERVAL = timedelta(minutes=5)
+from .const import CONF_PROVIDER, PLATFORM_VERSION
+from .coordinator import AlertsDataUpdateCoordinator
+from .model import CAPAlert
+from .normalize import count_by_onset
+from .payload import UNRECORDED_ATTRIBUTES, fit_to_budget
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
-    feeds = entry.data.get(CONF_FEEDS, []) + entry.options.get(CONF_FEEDS, [])
-    coordinator = CAPCoordinator(hass, feeds)
-    await coordinator.async_config_entry_first_refresh()
-    entities = []
-    for f in feeds:
-        slug = slug_from_url(f.get('url',''))
-        entities.append(CAPFeedSensor(hass, coordinator, slug, f))
-    entities.append(CAPGlobalSensor(hass, coordinator))
-    async_add_entities(entities)
+# Every entity on this platform reads from the coordinator's cached data and
+# never polls upstream itself, so there is no request concurrency to cap.
+PARALLEL_UPDATES = 0
 
-class CAPCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass: HomeAssistant, feeds: list[dict]):
-        super().__init__(hass, hass.logger, name=DOMAIN, update_interval=SCAN_INTERVAL)
-        self._feeds = feeds
-        self.data = []
-        hass.data.setdefault(DOMAIN, {})
-        hass.data[DOMAIN].setdefault('failures', {})
-        hass.data[DOMAIN].setdefault('empty_alerts', {})
 
-    async def _async_update_data(self):
-        results = []
-        async with aiohttp.ClientSession() as sess:
-            for f in self._feeds:
-                url = f.get('url')
-                fmt = (f.get('format') or 'cap').lower()
-                slug = slug_from_url(url or '')
-                failures = self.hass.data[DOMAIN]['failures'].get(slug, 0)
-                if failures >= MAX_FEED_FAILURES:
-                    # Disabled due to repeated failures
-                    results.append({'feed': f, 'slug': slug, 'alerts': [], 'features': {'error': 'feed_disabled_due_to_failures'}})
-                    continue
-                try:
-                    async with sess.get(url, timeout=20) as resp:
-                        text = await resp.text()
-                        parsed = parse_feed(text, fmt)
-                        alerts = parsed.get('alerts', [])
-                        features = parsed.get('features', {})
-                        warn = not (features.get('has_polygons') or features.get('has_circles') or features.get('has_points'))
-                        if warn:
-                            features['warning'] = 'Feed appears to lack geometry (polygons/circles/points)'
-                            # Raise Repairs issue to inform the user explicitly
-                            raise_issue(self.hass, f"{ISSUE_FEED_NO_GEOMETRY_PREFIX}{slug}", translation_key="feed_no_geometry", placeholders={"slug": slug, "url": url}, fixable=False)
-                        # Track empty alerts and raise Repairs issue if persistently empty (usefulness impacted)
-                        if isinstance(alerts, list) and not alerts and not features.get('error'):
-                            empties = self.hass.data[DOMAIN]['empty_alerts'].get(slug, 0) + 1
-                            self.hass.data[DOMAIN]['empty_alerts'][slug] = empties
-                            if empties >= EMPTY_ALERTS_THRESHOLD:
-                                raise_issue(self.hass, f"{ISSUE_FEED_NO_CONTENT_PREFIX}{slug}", translation_key="feed_no_content", placeholders={"slug": slug, "url": url}, fixable=False)
-                        else:
-                            # Reset when we have content or an error handled elsewhere
-                            self.hass.data[DOMAIN]['empty_alerts'][slug] = 0
-                        results.append({'feed': f, 'slug': slug, 'alerts': alerts, 'features': features})
-                except Exception:
-                    failures += 1
-                    self.hass.data[DOMAIN]['failures'][slug] = failures
-                    features = {'error': 'fetch_failed', 'failures': failures}
-                    if failures >= MAX_FEED_FAILURES:
-                        # Raise Repairs issue once feed is disabled
-                        raise_issue(self.hass, f"{ISSUE_FEED_DISABLED_PREFIX}{slug}", translation_key="feed_disabled", placeholders={"slug": slug, "url": url}, fixable=True)
-                        features['error'] = 'feed_disabled_due_to_failures'
-                    results.append({'feed': f, 'slug': slug, 'alerts': [], 'features': features})
-        self.hass.data[DOMAIN]['last_data'] = results
-        return results
+def _short_hash(unique_id: str) -> str:
+    """Return the 8-char SHA-1 prefix used to disambiguate entity IDs (RFC §2.2.1)."""
+    return hashlib.sha1(unique_id.encode()).hexdigest()[:8]
 
-class CAPFeedSensor(SensorEntity):
-    def __init__(self, hass: HomeAssistant, coordinator: CAPCoordinator, slug: str, feed: dict):
-        self.hass = hass
-        self.coordinator = coordinator
-        self._slug = slug
-        self._feed = feed
-        self._attr_name = f"CAP {slug} Alert Count"
-        self._attr_unique_id = f"cap_{slug}_alert_count"
+
+def _alert_object_id(unique_id: str, event: str) -> str:
+    """Build the collision-proof object_id for an alert entity."""
+    return f"cap_alert_{slugify(event)}_{_short_hash(unique_id)}"
+
+
+def _classify_sync(
+    current_ids: set[str],
+    tracked_ids: set[str],
+    grace_ids: set[str],
+) -> tuple[set[str], set[str]]:
+    """Compute (to_add, to_remove) sets for one coordinator cycle.
+
+    `grace_ids` are tracked IDs hydrated from the registry that have not yet
+    appeared in coordinator data; they are exempted from removal on this cycle.
+    Caller is responsible for clearing `grace_ids` after this cycle.
+    """
+    to_add = current_ids - tracked_ids
+    to_remove = (tracked_ids - current_ids) - grace_ids
+    return to_add, to_remove
+
+
+async def async_setup_entry(
+    hass,
+    entry: ConfigEntry,
+    async_add_entities,
+) -> None:
+    """Set up CAP Alerts sensor entities."""
+    coordinator: AlertsDataUpdateCoordinator = entry.runtime_data
+
+    # Static diagnostic sensors
+    async_add_entities(
+        [CountSensor(coordinator, entry), LastUpdatedSensor(coordinator, entry)]
+    )
+
+    # Dynamic alert entities
+    tracked: dict[str, AlertEntity] = {}
+    grace_ids: set[str] = set()
+    ent_reg = er.async_get(hass)
+
+    # Hydrate tracked set from entity registry on startup and re-add them
+    # to the platform so they can write state. Without this, hydrated
+    # entities block creation of new entities for the same alert ID but
+    # never become platform-registered, leaving them unavailable.
+    provider = entry.data.get(CONF_PROVIDER, "nws")
+    alert_prefix = f"{entry.entry_id}_{provider}_"
+    for ent in er.async_entries_for_config_entry(ent_reg, entry.entry_id):
+        if not ent.unique_id.startswith(alert_prefix):
+            continue
+        alert_id = ent.unique_id.removeprefix(alert_prefix)
+        tracked[alert_id] = AlertEntity(coordinator, entry, alert_id)
+        grace_ids.add(alert_id)
+    if tracked:
+        async_add_entities(list(tracked.values()))
+
+    first_sync = True
+
+    @callback
+    def _sync_alert_entities() -> None:
+        nonlocal first_sync
+        alerts_by_id = coordinator.data or {}
+        current_ids = set(alerts_by_id)
+        tracked_ids = set(tracked)
+
+        active_grace = grace_ids if first_sync else set()
+        to_add, to_remove = _classify_sync(current_ids, tracked_ids, active_grace)
+
+        # Additions: batched single call
+        if to_add:
+            new_entities: list[AlertEntity] = []
+            for alert_id in to_add:
+                entity = AlertEntity(coordinator, entry, alert_id)
+                tracked[alert_id] = entity
+                new_entities.append(entity)
+            async_add_entities(new_entities)
+
+        # Removals: idempotent — check the registry before calling async_remove
+        for alert_id in to_remove:
+            removed: AlertEntity | None = tracked.pop(alert_id, None)
+            if removed is None:
+                continue
+            if ent_reg.async_get(removed.entity_id):
+                ent_reg.async_remove(removed.entity_id)
+
+        if first_sync:
+            grace_ids.clear()
+            first_sync = False
+
+    unsub = coordinator.async_add_listener(_sync_alert_entities)
+    entry.async_on_unload(unsub)
+    _sync_alert_entities()
+
+
+class _CAPAlertsEntity(CoordinatorEntity[AlertsDataUpdateCoordinator], SensorEntity):
+    """Base class for CAP Alerts entities."""
+
+    _attr_has_entity_name = True
+
+    def __init__(
+        self,
+        coordinator: AlertsDataUpdateCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        super().__init__(coordinator)
+        self._entry = entry
 
     @property
-    def native_value(self):
-        data = next((r for r in (self.coordinator.data or []) if r.get('slug') == self._slug), None)
-        alerts = data.get('alerts') if data else []
-        return len(alerts) if isinstance(alerts, list) else 0
+    def device_info(self) -> DeviceInfo:
+        return self.coordinator.device_info
+
+
+class CountSensor(_CAPAlertsEntity):
+    """Sensor showing the number of active alerts."""
+
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_translation_key = "alert_count"
+
+    def __init__(
+        self,
+        coordinator: AlertsDataUpdateCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        super().__init__(coordinator, entry)
+        self._attr_unique_id = f"{entry.entry_id}_count"
 
     @property
-    def extra_state_attributes(self):
-        data = next((r for r in (self.coordinator.data or []) if r.get('slug') == self._slug), None)
-        if not data:
+    def native_value(self) -> int:
+        return len(self.coordinator.data or {})
+
+    @property
+    def extra_state_attributes(self) -> dict[str, int]:
+        """Break the total down into alerts in force now vs. still to start.
+
+        The state stays the total (issue #99): templates already key off it,
+        so the breakdown rides along as attributes rather than changing what
+        the number means. Recomputed on read against the wall clock, so an
+        upcoming alert crosses over at the next poll rather than waiting for
+        the feed to restate it.
+        """
+        alerts = list((self.coordinator.data or {}).values())
+        active, upcoming = count_by_onset(alerts, datetime.now(timezone.utc))
+        return {"active": active, "upcoming": upcoming}
+
+
+class LastUpdatedSensor(_CAPAlertsEntity):
+    """Sensor showing the last successful update time."""
+
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_translation_key = "last_updated"
+
+    def __init__(
+        self,
+        coordinator: AlertsDataUpdateCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        super().__init__(coordinator, entry)
+        self._attr_unique_id = f"{entry.entry_id}_last_updated"
+
+    @property
+    def native_value(self) -> datetime | None:
+        return self.coordinator.last_update_success_time
+
+
+class AlertEntity(CoordinatorEntity[AlertsDataUpdateCoordinator], SensorEntity):
+    """Sensor representing a single active weather alert."""
+
+    _attr_has_entity_name = True
+    # Keeps the providers' verbatim ``<parameter>`` catch-all out of history —
+    # and, because the recorder measures its ceiling against the recorded set,
+    # out of the attribute budget as well (issue #150).
+    _unrecorded_attributes = UNRECORDED_ATTRIBUTES
+
+    def __init__(
+        self,
+        coordinator: AlertsDataUpdateCoordinator,
+        entry: ConfigEntry,
+        alert_id: str,
+    ) -> None:
+        super().__init__(coordinator)
+        self._alert_id = alert_id
+        self._entry = entry
+        provider = entry.data.get(CONF_PROVIDER, "nws")
+        self._attr_unique_id = f"{entry.entry_id}_{provider}_{alert_id}"
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        return self.coordinator.device_info
+
+    @property
+    def _alert(self) -> CAPAlert | None:
+        alerts = self.coordinator.data or {}
+        return alerts.get(self._alert_id)
+
+    @property
+    def name(self) -> str | None:
+        a = self._alert
+        return a.event if a else None
+
+    @property
+    def suggested_object_id(self) -> str | None:
+        a = self._alert
+        uid = self.unique_id
+        if not a or not a.event or not uid:
+            return None
+        return _alert_object_id(uid, a.event)
+
+    @property
+    def native_value(self) -> str | None:
+        a = self._alert
+        return a.severity_normalized if a else None
+
+    @property
+    def icon(self) -> str | None:
+        a = self._alert
+        return a.icon or None if a else None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Sparse CAP attributes, trimmed to what the recorder will store.
+
+        The trim runs here rather than in ``normalize`` so the ``CAPAlert``
+        keeps the full text the source sent: ``store.process()`` diffs against
+        that, and a platform-induced truncation would otherwise show up in
+        ``changed_fields`` as if the feed had reworded the alert.
+        """
+        a = self._alert
+        if not a:
             return {}
-        return {
-            'feed': data.get('feed'),
-            'features': data.get('features'),
-            'alerts': data.get('alerts')
-        }
-
-    @property
-    def available(self) -> bool:
-        failures = self.hass.data[DOMAIN].get('failures', {}).get(self._slug, 0)
-        return failures < MAX_FEED_FAILURES
-
-class CAPGlobalSensor(SensorEntity):
-    _attr_name = "CAP All Alert Count"
-    _attr_unique_id = "cap_all_alert_count"
-    def __init__(self, hass: HomeAssistant, coordinator: CAPCoordinator):
-        self.hass = hass
-        self.coordinator = coordinator
-
-    @property
-    def native_value(self):
-        total = 0
-        for r in self.coordinator.data or []:
-            a = r.get('alerts')
-            if isinstance(a, list):
-                total += len(a)
-        return total
-
-    @property
-    def extra_state_attributes(self):
-        return {
-            'feeds': [r.get('feed') for r in (self.coordinator.data or [])],
-            'raw': self.coordinator.data or []
-        }
+        attrs = a.to_attributes()
+        attrs["incident_platform_version"] = PLATFORM_VERSION
+        return fit_to_budget(attrs)

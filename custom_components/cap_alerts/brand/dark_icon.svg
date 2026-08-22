@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Warning triangle -->
+  <path d="M 128 38 L 228 214 L 28 214 Z"
+        fill="none" stroke="#E8E8E8" stroke-width="14"
+        stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Bell handle -->
+  <line x1="128" y1="106" x2="128" y2="118"
+        stroke="#E8E8E8" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Bell body -->
+  <path d="M 128 118
+           C 106 118 100 136 100 156
+           L 100 176
+           C 100 182 94 188 90 190
+           L 166 190
+           C 162 188 156 182 156 176
+           L 156 156
+           C 156 136 150 118 128 118 Z"
+        fill="none" stroke="#E8E8E8" stroke-width="8"
+        stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Amber clapper dot inside bell -->
+  <circle cx="128" cy="176" r="7" fill="#FFA000"/>
+</svg>

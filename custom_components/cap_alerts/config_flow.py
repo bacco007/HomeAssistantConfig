@@ -1,142 +1,186 @@
+"""Config flow for CAP Alerts: setup, reconfigure, and options flows.
+
+The flow handler is one class per Home Assistant's contract, assembled here
+from one mixin per provider. Each module under ``flows/`` owns its steps, its
+validators, and the option fields only it renders; this module owns the
+entry points that pick a provider and the options flow's shared fields.
+
+The steps sit in a sibling package rather than a ``config_flow/`` package of
+their own because hassfest requires the flow to be defined in a file literally
+named ``config_flow.py``.
+"""
+
 from __future__ import annotations
-import aiohttp
-import voluptuous as vol
+
+from collections.abc import Callable
 from typing import Any
-from homeassistant import config_entries
+
+import voluptuous as vol
+
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
-from .const import DOMAIN, CONF_FEEDS, CATALOG_URL
-from .util import compute_disclaimer_hash, async_save_acceptance
-from .util import build_acceptance_signature
-from .util import disclaimer_path
 
-class CAPConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+from .const import (
+    CONF_EXCLUDE_MARINE,
+    CONF_GDACS_EVENT_TYPES,
+    CONF_GEOCODE_PREFIXES,
+    CONF_PROVIDER,
+    CONF_SCAN_INTERVAL,
+    CONF_TIMEOUT,
+    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_TIMEOUT,
+    DOMAIN,
+    GDACS_EVENT_TYPES,
+)
+from .conventions import conventions_for
+from .flows import eccc, gdacs, meteoalarm, nws, wmo
+from .flows.common import OptionsSchema, _validate_geocode_prefixes
+
+# Providers that add fields to the options form, in the order the setup menu
+# offers them. A provider absent here (NWS) has nothing beyond the shared
+# polling fields.
+_OPTIONS_SCHEMAS: dict[str, Callable[[ConfigEntry], OptionsSchema]] = {
+    "eccc": eccc.options_schema,
+    "meteoalarm": meteoalarm.options_schema,
+    "wmo": wmo.options_schema,
+    "gdacs": gdacs.options_schema,
+}
+
+
+class CAPAlertsFlowHandler(
+    nws.NWSFlowMixin,
+    eccc.ECCCFlowMixin,
+    meteoalarm.MeteoAlarmFlowMixin,
+    wmo.WMOFlowMixin,
+    gdacs.GDACSFlowMixin,
+    ConfigFlow,
+    domain=DOMAIN,
+):
+    """Handle config flow for CAP Alerts."""
+
     VERSION = 1
-    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        # Mandatory disclaimer acceptance step
-        return await self.async_step_accept()
-
-    async def async_step_accept(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        schema = vol.Schema({vol.Required("accept", default=False): bool})
-        if user_input is None:
-            # Load packaged disclaimer text to present in the UI (scrollable in HA form)
-            try:
-                with open(disclaimer_path(), 'r', encoding='utf-8') as f:
-                    disclaimer_text = f.read()
-            except Exception:
-                disclaimer_text = ""
-            return self.async_show_form(
-                step_id="accept",
-                data_schema=schema,
-                description_placeholders={
-                    "link": "https://github.com/twcau/CAP-au-for-home-assistant/blob/main/LEGAL-DISCLAIMER.md",
-                    "text": disclaimer_text,
-                },
-            )
-        if not user_input.get("accept"):
-            return self.async_abort(reason="disclaimer_not_accepted")
-        # Record acceptance details
-        user_id = self.context.get("user_id")
-        from .util import now_iso
-        ts = now_iso()
-        disc_hash = compute_disclaimer_hash()
-        await async_save_acceptance(self.hass, {
-            "accepted": True,
-            "accepted_at_iso": ts,
-            "user_id": user_id,
-            "disclaimer_hash": disc_hash,
-            "signature": build_acceptance_signature(user_id, ts, disc_hash),
-        })
-        return await self.async_step_choose()
-
-    async def async_step_choose(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        schema = vol.Schema({vol.Required("mode", default="catalog"): vol.In(["catalog","manual"])})
-        if user_input is None:
-            return self.async_show_form(step_id="choose", data_schema=schema)
-        if user_input["mode"] == "catalog":
-            return await self.async_step_catalog()
-        return await self.async_step_manual()
-
-    async def async_step_catalog(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        feeds: list[dict] = []
-        try:
-            async with aiohttp.ClientSession() as sess:
-                async with sess.get(CATALOG_URL, timeout=10) as resp:
-                    data = await resp.json(content_type=None)
-                    feeds = data.get("feeds", [])
-        except Exception:
-            feeds = []
-        countries = sorted({f.get("country","?") for f in feeds})
-        schema = vol.Schema({vol.Required("country"): vol.In(countries)})
-        if user_input is None:
-            return self.async_show_form(step_id="catalog", data_schema=schema)
-        self._feeds = feeds
-        self._country = user_input["country"]
-        return await self.async_step_catalog_region()
-
-    async def async_step_catalog_region(self, user_input=None):
-        regions = sorted({f["region"] for f in self._feeds if f.get("country") == self._country})
-        schema = vol.Schema({vol.Required("region"): vol.In(regions)})
-        if user_input is None:
-            return self.async_show_form(step_id="catalog_region", data_schema=schema)
-        self._region = user_input["region"]
-        return await self.async_step_catalog_source()
-
-    async def async_step_catalog_source(self, user_input=None):
-        sources = [f for f in self._feeds if f.get("country") == self._country and f.get("region") == self._region]
-        names = [f"{f['name']} ({f['format']})" for f in sources]
-        schema = vol.Schema({vol.Required("source"): vol.In(names)})
-        if user_input is None:
-            return self.async_show_form(step_id="catalog_source", data_schema=schema)
-        idx = names.index(user_input["source"]) if names else -1
-        if idx >= 0:
-            sel = sources[idx]
-            return self.async_create_entry(title="CAP Alerts", data={CONF_FEEDS: [sel]})
-        return self.async_abort(reason="no_selection")
-
-    async def async_step_manual(self, user_input=None):
-        schema = vol.Schema({
-            vol.Required("name"): str,
-            vol.Required("url"): str,
-            vol.Required("format", default="cap"): vol.In(["cap","atom","json"])})
-        if user_input is None:
-            return self.async_show_form(step_id="manual", data_schema=schema)
-        return self.async_create_entry(title="CAP Alerts", data={CONF_FEEDS: [user_input]})
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
-        return CAPOptionsFlow(config_entry)
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+        return CAPAlertsOptionsFlowHandler()
 
-class CAPOptionsFlow(config_entries.OptionsFlow):
-    def __init__(self, entry: config_entries.ConfigEntry) -> None:
-        self.entry = entry
+    # ── Initial setup ──
 
-    async def async_step_init(self, user_input=None):
-        feeds = self.entry.data.get(CONF_FEEDS, []) + self.entry.options.get(CONF_FEEDS, [])
-        # Allow resetting failure counters for specific feed slugs
-        slugs = []
-        for f in feeds:
-            url = f.get('url','')
-            from .util import slug_from_url as _slug
-            slugs.append(_slug(url))
-        schema = vol.Schema({vol.Optional("add_or_replace", default="add"): vol.In(["add","replace"]),
-                             vol.Optional("name"): str,
-                             vol.Optional("url"): str,
-                             vol.Optional("format", default="cap"): vol.In(["cap","atom","json"]),
-                             vol.Optional("reset_failures_for"): vol.In(slugs)})
-        if user_input is None:
-            return self.async_show_form(step_id="init", data_schema=schema)
-        new_feed = {k:user_input[k] for k in ("name","url","format") if k in user_input and user_input[k]}
-        if user_input.get("add_or_replace") == "replace" and new_feed:
-            feeds = [new_feed]
-        elif new_feed:
-            feeds = feeds + [new_feed]
-        # Reset failure counter if requested
-        reset_slug = user_input.get("reset_failures_for")
-        if reset_slug:
-            from .const import DOMAIN
-            self.hass.data.setdefault(DOMAIN, {})
-            self.hass.data[DOMAIN].setdefault('failures', {})
-            self.hass.data[DOMAIN]['failures'][reset_slug] = 0
-        return self.async_create_entry(title="Options updated", data={CONF_FEEDS: feeds})
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Provider selection menu."""
+        return self.async_show_menu(
+            step_id="user",
+            menu_options=["nws", "eccc", "meteoalarm", "wmo", "gdacs"],
+        )
+
+    # ── Reconfigure flow ──
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Allow full reconfiguration including provider change."""
+        return self.async_show_menu(
+            step_id="reconfigure",
+            menu_options=[
+                "reconfigure_nws",
+                "reconfigure_eccc",
+                "reconfigure_meteoalarm",
+                "reconfigure_wmo",
+                "reconfigure_gdacs",
+            ],
+        )
+
+
+class CAPAlertsOptionsFlowHandler(OptionsFlow):
+    """Handle options flow for CAP Alerts."""
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            prefixes, err = _validate_geocode_prefixes(
+                str(user_input.get(CONF_GEOCODE_PREFIXES, "") or "")
+            )
+            if err:
+                errors["base"] = err
+            else:
+                data = {**user_input}
+                # Absent rather than empty when unset, so the coordinator's
+                # `.get(...) or []` short-circuits and options stay tidy.
+                if prefixes:
+                    data[CONF_GEOCODE_PREFIXES] = prefixes
+                else:
+                    data.pop(CONF_GEOCODE_PREFIXES, None)
+                # The GDACS multiselect materializes its all-types default into
+                # user_input on save, and a stored list is a closed set — a
+                # hazard code GDACS adds later would be silently dropped by an
+                # entry that never chose to narrow. All types selected (or
+                # none) means "no narrowing", and no narrowing is spelled
+                # "absent", same as the prefixes above.
+                event_types = data.get(CONF_GDACS_EVENT_TYPES)
+                if event_types is not None and (
+                    not event_types or set(event_types) == set(GDACS_EVENT_TYPES)
+                ):
+                    data.pop(CONF_GDACS_EVENT_TYPES)
+                return self.async_create_entry(title="", data=data)
+
+        provider = self.config_entry.data.get(CONF_PROVIDER)
+        schema: OptionsSchema = {
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=self.config_entry.options.get(
+                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                ),
+            ): vol.All(vol.Coerce(int), vol.Range(min=60, max=3600)),
+            vol.Optional(
+                CONF_TIMEOUT,
+                default=self.config_entry.options.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
+            ): vol.All(vol.Coerce(int), vol.Range(min=5, max=120)),
+        }
+
+        provider_schema = _OPTIONS_SCHEMAS.get(provider or "")
+        if provider_schema is not None:
+            schema.update(provider_schema(self.config_entry))
+
+        # Marine-alert exclusion is only meaningful for providers that classify
+        # marine zones (NWS UGC prefixes, ECCC CLC "00…"). Asked of the
+        # convention table rather than re-listing them here, so a provider that
+        # gains a marine discriminator gets the toggle without a second edit.
+        if conventions_for(provider or "").classifies_marine:
+            schema[
+                vol.Optional(
+                    CONF_EXCLUDE_MARINE,
+                    default=self.config_entry.options.get(CONF_EXCLUDE_MARINE, False),
+                )
+            ] = bool
+
+        # Area-code narrowing composes with every location mode, but only on
+        # sources that publish geocodes at all — GDACS never does, so there the
+        # field's only possible effect is a permanently unavailable entry.
+        # Asked of the convention table, like the marine toggle above. The
+        # field re-renders from the rejected input rather than the stored
+        # value, so a typo is shown back to the user to correct instead of
+        # silently reverting.
+        if conventions_for(provider or "").publishes_geocodes:
+            stored_prefixes = self.config_entry.options.get(CONF_GEOCODE_PREFIXES) or []
+            prefix_default = (
+                str(user_input.get(CONF_GEOCODE_PREFIXES, "") or "")
+                if user_input is not None
+                else ",".join(stored_prefixes)
+            )
+            schema[vol.Optional(CONF_GEOCODE_PREFIXES, default=prefix_default)] = str
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(schema),
+            errors=errors,
+        )

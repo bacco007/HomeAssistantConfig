@@ -1,82 +1,466 @@
 {
   "config": {
     "step": {
-      "accept": {
-        "title": "Legal Disclaimer — Acceptance Required",
-        "description": "Please review the legal disclaimer below and accept to continue.\n\nLink: {link}\n\n{text}",
-        "data": {
-          "accept": "I have read and accept the disclaimer"
+      "user": {
+        "title": "CAP Alerts",
+        "menu_options": {
+          "nws": "National Weather Service (US)",
+          "eccc": "Environment Canada",
+          "meteoalarm": "MeteoAlarm (Europe)",
+          "wmo": "WMO Severe Weather",
+          "gdacs": "GDACS Global Disasters"
         }
       },
-      "choose": {
-        "title": "Add CAP Alerts",
-        "description": "Choose how to add a feed",
-        "data": {
-          "mode": "Mode"
+      "nws": {
+        "title": "NWS Location Type",
+        "menu_options": {
+          "nws_zone": "Zone ID",
+          "nws_gps_loc": "GPS Coordinates",
+          "nws_gps_tracker": "GPS Tracker Entity"
         }
       },
-      "catalog": {
-        "title": "Select Country",
+      "nws_zone": {
+        "title": "NWS Zone",
+        "data": {
+          "zone_id": "Zone ID(s)"
+        },
+        "data_description": {
+          "zone_id": "Comma-separated UGC zone codes (e.g. OHC049,OHC035)"
+        }
+      },
+      "nws_gps_loc": {
+        "title": "NWS GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 40.1234,-83.5678)"
+        }
+      },
+      "nws_gps_tracker": {
+        "title": "NWS GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "eccc": {
+        "title": "ECCC Location Type",
+        "menu_options": {
+          "eccc_province": "Province",
+          "eccc_gps_loc": "GPS Coordinates",
+          "eccc_gps_tracker": "GPS Tracker Entity"
+        }
+      },
+      "eccc_province": {
+        "title": "ECCC Province",
+        "description": "Creates an entity for every active alert across the whole province. To match only your location, go back and choose GPS location or device tracker instead.",
+        "data": {
+          "province": "Province Code"
+        },
+        "data_description": {
+          "province": "2-letter province code (e.g. ON, BC, AB)"
+        }
+      },
+      "eccc_gps_loc": {
+        "title": "ECCC GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 43.6532,-79.3832)"
+        }
+      },
+      "eccc_gps_tracker": {
+        "title": "ECCC GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "meteoalarm": {
+        "title": "MeteoAlarm Location Type",
+        "menu_options": {
+          "meteoalarm_country": "Fixed country",
+          "meteoalarm_country_source": "GPS Tracker + Country Source (fully mobile)"
+        }
+      },
+      "meteoalarm_country": {
+        "title": "MeteoAlarm Country",
         "data": {
           "country": "Country"
+        },
+        "data_description": {
+          "country": "Select your country"
         }
       },
-      "catalog_region": {
-        "title": "Select Region",
-        "data": {
-          "region": "Region"
+      "meteoalarm_filter": {
+        "title": "MeteoAlarm Location Filter",
+        "menu_options": {
+          "meteoalarm_country_only": "Country-wide",
+          "meteoalarm_gps_polygon": "GPS Coordinates",
+          "meteoalarm_gps_tracker": "GPS Tracker Entity",
+          "meteoalarm_region_picker": "Region picker"
         }
       },
-      "catalog_source": {
-        "title": "Select Source",
+      "meteoalarm_gps_polygon": {
+        "title": "MeteoAlarm GPS Location",
         "data": {
-          "source": "Source"
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 52.5200,13.4050). Filters by per-warning polygons; fails loud if the country does not publish geometry."
         }
       },
-      "manual": {
-        "title": "Add feed manually",
+      "meteoalarm_gps_tracker": {
+        "title": "MeteoAlarm GPS Tracker",
         "data": {
-          "name": "Name",
-          "url": "URL",
-          "format": "Format"
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "meteoalarm_country_source": {
+        "title": "MeteoAlarm Fully Mobile",
+        "data": {
+          "tracker_entity": "Tracker Entity",
+          "country_entity": "Country Source Entity",
+          "country_attribute": "Country Attribute (optional)"
+        },
+        "data_description": {
+          "tracker_entity": "Device tracker providing coordinates for polygon narrowing. Warnings without per-warning geometry are kept, so countries that publish none degrade to country-wide alerts.",
+          "country_entity": "Entity whose value names the current country (e.g. sensor.geolocator_country). Accepts an ISO-2 code or a country name.",
+          "country_attribute": "Optional attribute to read the country from instead of the entity's state."
+        }
+      },
+      "meteoalarm_region_picker": {
+        "title": "MeteoAlarm Regions",
+        "data": {
+          "regions": "Regions"
+        },
+        "data_description": {
+          "regions": "Select one or more regions to filter alerts. You can also type a region code (e.g. FI810) that isn't listed — the list only shows regions named by warnings currently in the feed."
+        }
+      },
+      "wmo_source": {
+        "title": "WMO Source",
+        "data": {
+          "source_id": "Source ID"
+        },
+        "data_description": {
+          "source_id": "Pick a source from the live WMO SWIC registry, or type a custom source ID (e.g. mx-smn-es for Mexico) if yours is not listed. European and US users are better served by the dedicated MeteoAlarm and NWS providers; US alerts fetched via WMO recreate their entities on each lifecycle change (NEW/CON/CAN)."
+        }
+      },
+      "wmo_filter": {
+        "title": "WMO Location Filter",
+        "menu_options": {
+          "wmo_country_wide": "All alerts (country-wide)",
+          "wmo_gps_loc": "GPS Coordinates",
+          "wmo_gps_tracker": "GPS Tracker Entity",
+          "wmo_geocode": "Area codes (prefix match)"
+        }
+      },
+      "wmo_gps_loc": {
+        "title": "WMO GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 19.4326,-99.1332). Filters by per-alert polygons; fails loud if the source does not publish geometry."
+        }
+      },
+      "wmo_gps_tracker": {
+        "title": "WMO GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "gdacs": {
+        "title": "GDACS Location Scope",
+        "menu_options": {
+          "gdacs_global": "All alerts (worldwide)",
+          "gdacs_gps_loc": "GPS Coordinates"
+        }
+      },
+      "gdacs_gps_loc": {
+        "title": "GDACS GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 35.6762,139.6503). Keeps only events whose affected area contains the point."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure CAP Alerts",
+        "menu_options": {
+          "reconfigure_nws": "National Weather Service (US)",
+          "reconfigure_eccc": "Environment Canada",
+          "reconfigure_meteoalarm": "MeteoAlarm (Europe)",
+          "reconfigure_wmo": "WMO Severe Weather",
+          "reconfigure_gdacs": "GDACS Global Disasters"
+        }
+      },
+      "reconfigure_nws": {
+        "title": "NWS Location Type",
+        "menu_options": {
+          "reconfigure_nws_zone": "Zone ID",
+          "reconfigure_nws_gps_loc": "GPS Coordinates",
+          "reconfigure_nws_gps_tracker": "GPS Tracker Entity"
+        }
+      },
+      "reconfigure_nws_zone": {
+        "title": "NWS Zone",
+        "data": {
+          "zone_id": "Zone ID(s)"
+        },
+        "data_description": {
+          "zone_id": "Comma-separated UGC zone codes (e.g. OHC049,OHC035)"
+        }
+      },
+      "reconfigure_nws_gps_loc": {
+        "title": "NWS GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 40.1234,-83.5678)"
+        }
+      },
+      "reconfigure_nws_gps_tracker": {
+        "title": "NWS GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "reconfigure_eccc": {
+        "title": "ECCC Location Type",
+        "menu_options": {
+          "reconfigure_eccc_province": "Province",
+          "reconfigure_eccc_gps_loc": "GPS Coordinates",
+          "reconfigure_eccc_gps_tracker": "GPS Tracker Entity"
+        }
+      },
+      "reconfigure_eccc_province": {
+        "title": "ECCC Province",
+        "description": "Creates an entity for every active alert across the whole province. To match only your location, go back and choose GPS location or device tracker instead.",
+        "data": {
+          "province": "Province Code"
+        },
+        "data_description": {
+          "province": "2-letter province code (e.g. ON, BC, AB)"
+        }
+      },
+      "reconfigure_eccc_gps_loc": {
+        "title": "ECCC GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 43.6532,-79.3832)"
+        }
+      },
+      "reconfigure_eccc_gps_tracker": {
+        "title": "ECCC GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "reconfigure_meteoalarm": {
+        "title": "MeteoAlarm Location Type",
+        "menu_options": {
+          "reconfigure_meteoalarm_country": "Fixed country",
+          "reconfigure_meteoalarm_country_source": "GPS Tracker + Country Source (fully mobile)"
+        }
+      },
+      "reconfigure_meteoalarm_country": {
+        "title": "MeteoAlarm Country",
+        "data": {
+          "country": "Country"
+        },
+        "data_description": {
+          "country": "Select your country"
+        }
+      },
+      "reconfigure_meteoalarm_filter": {
+        "title": "MeteoAlarm Location Filter",
+        "menu_options": {
+          "reconfigure_meteoalarm_country_only": "Country-wide",
+          "reconfigure_meteoalarm_gps_polygon": "GPS Coordinates",
+          "reconfigure_meteoalarm_gps_tracker": "GPS Tracker Entity",
+          "reconfigure_meteoalarm_region_picker": "Region picker"
+        }
+      },
+      "reconfigure_meteoalarm_gps_polygon": {
+        "title": "MeteoAlarm GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude (e.g. 52.5200,13.4050). Filters by per-warning polygons; fails loud if the country does not publish geometry."
+        }
+      },
+      "reconfigure_meteoalarm_gps_tracker": {
+        "title": "MeteoAlarm GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "reconfigure_meteoalarm_country_source": {
+        "title": "MeteoAlarm Fully Mobile",
+        "data": {
+          "tracker_entity": "Tracker Entity",
+          "country_entity": "Country Source Entity",
+          "country_attribute": "Country Attribute (optional)"
+        },
+        "data_description": {
+          "tracker_entity": "Device tracker providing coordinates for polygon narrowing. Warnings without per-warning geometry are kept, so countries that publish none degrade to country-wide alerts.",
+          "country_entity": "Entity whose value names the current country (e.g. sensor.geolocator_country). Accepts an ISO-2 code or a country name.",
+          "country_attribute": "Optional attribute to read the country from instead of the entity's state."
+        }
+      },
+      "reconfigure_meteoalarm_region_picker": {
+        "title": "MeteoAlarm Regions",
+        "data": {
+          "regions": "Regions"
+        },
+        "data_description": {
+          "regions": "Select one or more regions to filter alerts. You can also type a region code (e.g. FI810) that isn't listed — the list only shows regions named by warnings currently in the feed."
+        }
+      },
+      "reconfigure_wmo_source": {
+        "title": "WMO Source",
+        "data": {
+          "source_id": "Source ID"
+        },
+        "data_description": {
+          "source_id": "Pick a source from the live WMO SWIC registry, or type a custom source ID. European and US users are better served by the dedicated MeteoAlarm and NWS providers; US alerts fetched via WMO recreate their entities on each lifecycle change (NEW/CON/CAN)."
+        }
+      },
+      "reconfigure_wmo_filter": {
+        "title": "WMO Location Filter",
+        "menu_options": {
+          "reconfigure_wmo_country_wide": "All alerts (country-wide)",
+          "reconfigure_wmo_gps_loc": "GPS Coordinates",
+          "reconfigure_wmo_gps_tracker": "GPS Tracker Entity",
+          "reconfigure_wmo_geocode": "Area codes (prefix match)"
+        }
+      },
+      "reconfigure_wmo_gps_loc": {
+        "title": "WMO GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude. Filters by per-alert polygons."
+        }
+      },
+      "reconfigure_wmo_gps_tracker": {
+        "title": "WMO GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
+        }
+      },
+      "wmo_geocode": {
+        "title": "WMO Area Codes",
+        "data": {
+          "geocode_prefixes": "Area codes (prefix match)"
+        },
+        "data_description": {
+          "geocode_prefixes": "Comma-separated area-code prefixes (e.g. 13,37). Fetches the whole country, then keeps only alerts whose area codes start with one of them. Codes are hierarchical, so a shorter prefix covers a wider area (13 = Hebei, 1307 = Zhangjiakou). Use this for sources that publish no per-alert polygons, where GPS filtering cannot work. Code lengths vary, so prefer the leading digits over pasting a full code. Editable later under Configure."
+        }
+      },
+      "reconfigure_gdacs": {
+        "title": "GDACS Location Scope",
+        "menu_options": {
+          "reconfigure_gdacs_global": "All alerts (worldwide)",
+          "reconfigure_gdacs_gps_loc": "GPS Coordinates"
+        }
+      },
+      "reconfigure_gdacs_gps_loc": {
+        "title": "GDACS GPS Location",
+        "data": {
+          "gps_loc": "GPS Coordinates"
+        },
+        "data_description": {
+          "gps_loc": "Latitude,Longitude. Keeps only events whose affected area contains the point."
+        }
+      },
+      "reconfigure_wmo_geocode": {
+        "title": "WMO Area Codes",
+        "data": {
+          "geocode_prefixes": "Area codes (prefix match)"
+        },
+        "data_description": {
+          "geocode_prefixes": "Comma-separated area-code prefixes (e.g. 13,37). Fetches the whole country, then keeps only alerts whose area codes start with one of them. Codes are hierarchical, so a shorter prefix covers a wider area (13 = Hebei, 1307 = Zhangjiakou). Use this for sources that publish no per-alert polygons, where GPS filtering cannot work. Code lengths vary, so prefer the leading digits over pasting a full code. Editable later under Configure."
         }
       }
     },
+    "error": {
+      "cannot_connect": "Could not connect to the weather service.",
+      "cannot_fetch_regions": "Could not load regions for this country. Try again or pick a different filter mode.",
+      "invalid_country": "Invalid country code. Use a MeteoAlarm-supported ISO 3166-1 alpha-2 code.",
+      "invalid_geocode_prefix": "Invalid area code prefix. Enter a comma-separated list of codes made up of letters, digits, and : _ . - (max 32 characters each).",
+      "invalid_gps": "Invalid GPS coordinates. Enter as latitude,longitude.",
+      "invalid_province": "Invalid province code.",
+      "invalid_wmo_source": "Invalid WMO source ID. Select from the list or enter a valid source ID (e.g. mx-smn-es).",
+      "invalid_zone": "Invalid zone ID format.",
+      "no_regions_selected": "Select at least one region.",
+      "unknown_country_feed": "MeteoAlarm no longer publishes a feed for this country. Pick another, or report it so the country list can be updated.",
+      "unknown_wmo_source": "The WMO mirror does not publish this source. Pick one from the list — some registered sources are only served on national sites, which this integration cannot read.",
+      "unknown_zone": "No such NWS zone. The format is right, but the National Weather Service does not publish a zone with that ID — check it at weather.gov/zones."
+    },
     "abort": {
-      "no_selection": "No selection",
-      "disclaimer_not_accepted": "Disclaimer not accepted"
+      "already_configured": "This location is already set up. Reconfigure the existing entry instead of adding a second one for the same scope.",
+      "no_regions_available": "This country's MeteoAlarm feed names no regions to pick from. Set the integration up again and choose Country-wide instead.",
+      "reconfigure_successful": "Configuration updated successfully."
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Manage feeds",
         "data": {
-          "add_or_replace": "Add or replace",
-          "name": "Name",
-          "url": "URL",
-          "format": "Format",
-          "reset_failures_for": "Reset failures for feed"
+          "scan_interval": "Polling interval (seconds)",
+          "timeout": "API timeout (seconds)",
+          "language": "Language",
+          "streaming": "Real-time streaming",
+          "feed_source": "Alert feed source",
+          "exclude_marine": "Exclude marine alerts",
+          "gdacs_event_types": "Event types",
+          "alert_level": "Minimum alert level",
+          "geocode_prefixes": "Area codes (prefix match)"
+        },
+        "data_description": {
+          "scan_interval": "How often to check for new alerts (60–3600). ECCC: applies only when real-time streaming is off.",
+          "timeout": "Per-request API timeout (5–120)",
+          "language": "Preferred alert language. ECCC: auto/en-CA/fr-CA. MeteoAlarm: auto plus 2-letter ISO codes. WMO: auto, or any BCP 47 tag the source publishes (e.g. zh-Hans); the source falls back to English when it does not carry your language.",
+          "streaming": "Stream ECCC alerts over the NAAD real-time feed for near-instant updates (recommended). When off, alerts are polled from the GeoRSS feed on the polling interval. ECCC only.",
+          "feed_source": "Which NAAD GeoRSS host(s) to fetch. 'auto' combines both feeds so no alert carried by only one is missed (recommended). The legacy host retires around September 2026; pin a single host only to work around a specific feed issue. ECCC only.",
+          "exclude_marine": "Hide alerts issued for marine/water zones (boating, open water). NWS and ECCC only.",
+          "gdacs_event_types": "Which GDACS hazards to track. Filtering happens before any alert is fetched, so narrowing this also cuts the fetch cost. Leave every type selected (the default) to track them all, including hazards GDACS adds later. GDACS only.",
+          "alert_level": "Lowest GDACS alert level to fetch: Green (all), Orange, or Red. This is GDACS's own impact scale, not CAP severity: it decides which events are fetched, not how they are shown. Raise it to cut the volume of green earthquakes. GDACS only.",
+          "geocode_prefixes": "Optional. Comma-separated area-code prefixes (e.g. 13,37). Keeps only alerts whose area codes start with one of them, on top of the location filter chosen at setup. Codes are hierarchical, so a shorter prefix covers a wider area (13 = Hebei, 1307 = Zhangjiakou). Matched against every code scheme the source publishes. Code lengths vary within a scheme, so pasting a full code may match nothing — prefer the leading digits. Leave empty to disable."
         }
       }
+    },
+    "error": {
+      "invalid_geocode_prefix": "Invalid area code prefix. Use a comma-separated list of codes made up of letters, digits, and : _ . - (max 32 characters each)."
     }
   },
-  "issues": {
-    "disclaimer_required": {
-      "title": "CAP Alerts disabled — disclaimer acceptance required",
-      "description": "CAP Alerts is disabled until you accept the legal disclaimer.\n\nOpen the integration and reconfigure to accept, or visit: {link}"
+  "entity": {
+    "binary_sensor": {
+      "stream_connected": {
+        "name": "Real-time stream"
+      }
     },
-    "feed_disabled": {
-      "title": "Feed disabled due to repeated failures",
-      "description": "Feed {slug} ({url}) was disabled after repeated failures. Use Options to reset failures once resolved."
+    "button": {
+      "refresh": {
+        "name": "Refresh"
+      }
     },
-    "feed_no_geometry": {
-      "title": "Feed lacks geometry features",
-      "description": "Feed {slug} ({url}) does not include polygons, circles, or points. Some automations may be limited. Review the source or continue knowingly."
-    },
-    "feed_no_content": {
-      "title": "Feed has no alerts (persistently)",
-      "description": "Feed {slug} ({url}) has returned no alerts for multiple checks. If unexpected, verify the endpoint; otherwise, you can ignore this."
+    "sensor": {
+      "alert_count": {
+        "name": "Alert count"
+      },
+      "last_updated": {
+        "name": "Last updated"
+      }
     }
   }
 }

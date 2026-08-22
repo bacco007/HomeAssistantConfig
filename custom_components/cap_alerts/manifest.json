@@ -1,19 +1,19 @@
 {
   "domain": "cap_alerts",
-  "name": "CAP Alerts (Multi-Feed)",
-  "version": "0.1.0",
-  "documentation": "https://github.com/twcau/CAP-au-for-home-assistant",
-  "issue_tracker": "https://github.com/twcau/CAP-au-for-home-assistant/issues",
+  "name": "CAP Alerts",
   "codeowners": [
-    "@twcau"
+    "@seevee"
   ],
   "config_flow": true,
+  "dependencies": [
+    "http"
+  ],
+  "documentation": "https://github.com/seevee/cap_alerts",
+  "integration_type": "hub",
   "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/seevee/cap_alerts/issues",
   "requirements": [
-    "xmltodict>=0.13.0"
+    "defusedxml"
   ],
-  "loggers": [
-    "custom_components.cap_alerts"
-  ],
-  "integration_type": "service"
+  "version": "0.4.0"
 }
