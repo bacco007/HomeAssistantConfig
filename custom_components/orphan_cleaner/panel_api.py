@@ -4,7 +4,7 @@ Endpoint HTTP per il panel web di Orphan Entity Cleaner.
 Tutte le route sono registrate tramite HomeAssistantView, che applica
 l'autenticazione di Home Assistant per default (requires_auth = True).
 Gli endpoint che leggono o modificano lo stato del registry richiedono
-inoltre privilegi di amministratore (requires_admin = True).
+inoltre un controllo esplicito su user.is_admin nel handler.
 """
 from __future__ import annotations
 
@@ -153,13 +153,16 @@ class OrphanCleanerScanView(HomeAssistantView):
 class OrphanCleanerDeleteView(HomeAssistantView):
     """POST /api/orphan_cleaner/delete - elimina le entità specificate. Richiede admin."""
 
-    url            = "/api/orphan_cleaner/delete"
-    name           = "api:orphan_cleaner:delete"
-    requires_auth  = True
-    requires_admin = True
+    url           = "/api/orphan_cleaner/delete"
+    name          = "api:orphan_cleaner:delete"
+    requires_auth = True
 
     async def post(self, request: web.Request) -> web.Response:
         hass: HomeAssistant = request.app["hass"]
+        user = request.get("hass_user")
+        if user is None or not user.is_admin:
+            return web.Response(status=403, content_type="application/json",
+                                text='{"error":"Admin privileges required"}')
         try:
             body = await request.json()
         except Exception:
@@ -188,16 +191,19 @@ class OrphanCleanerDeleteView(HomeAssistantView):
 
 
 class OrphanCleanerExportView(HomeAssistantView):
-    """POST /api/orphan_cleaner/export - salva un backup JSON. Richiede admin
-    perché scrive un file nella directory di configurazione."""
+    """POST /api/orphan_cleaner/export - salva un backup JSON.
+    Richiede admin perché scrive un file nella directory di configurazione."""
 
-    url            = "/api/orphan_cleaner/export"
-    name           = "api:orphan_cleaner:export"
-    requires_auth  = True
-    requires_admin = True
+    url           = "/api/orphan_cleaner/export"
+    name          = "api:orphan_cleaner:export"
+    requires_auth = True
 
     async def post(self, request: web.Request) -> web.Response:
         hass: HomeAssistant = request.app["hass"]
+        user = request.get("hass_user")
+        if user is None or not user.is_admin:
+            return web.Response(status=403, content_type="application/json",
+                                text='{"error":"Admin privileges required"}')
         try:
             body = await request.json()
         except Exception:
@@ -251,7 +257,7 @@ class OrphanCleanerIgnoreListView(HomeAssistantView):
     async def post(self, request: web.Request) -> web.Response:
         hass: HomeAssistant = request.app["hass"]
         user = request.get("hass_user")
-        if user is not None and not user.is_admin:
+        if user is None or not user.is_admin:
             return web.Response(status=403, content_type="application/json",
                                 text='{"error":"Admin privileges required"}')
         try:
