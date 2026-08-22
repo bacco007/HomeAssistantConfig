@@ -47,13 +47,17 @@
                     "hass_throttle_enable": "节流实体状态更新",
                     "hass_throttle_ms": "节流间隔 (毫秒)",
                     "dialog_apply_after_show": "对话框完全显示后延迟应用 UIX 样式",
-                    "disable_hash_template_variable": "禁用 Hash 模板变量及更新"
+                    "disable_hash_template_variable": "禁用 Hash 模板变量及更新",
+                    "disable_icon_styling": "禁用图标样式修补",
+                    "disable_entity_picture_image_override": "禁用实体头像图片重写"
                 },
                 "data_description": {
                     "hass_throttle_enable": "启用后，当实体状态频繁变化时，将降低仪表盘根节点的重绘频率。",
                     "hass_throttle_ms": "两次实体状态更新重绘之间的最小间隔时间。仅在启用节流时生效。",
                     "dialog_apply_after_show": "启用后，UIX 对话框样式将在对话框打开动画完成后应用，而非立即应用。这可以减少慢速设备上的视觉闪烁。",
-                    "disable_hash_template_variable": "启用后，Hash（URL 中 # 之后的部分）模板变量将不可用，且 Hash 的更改不会触发 UIX 模板重绑定或 UIX Forge 更新。"
+                    "disable_hash_template_variable": "启用后，Hash（URL 中 # 之后的部分）模板变量将不可用，且 Hash 的更改不会触发 UIX 模板重绑定或 UIX Forge 更新。",
+                    "disable_icon_styling": "启用后，禁用对图标元素（ha-icon、ha-state-icon、ha-svg-icon）的修补，不再执行自定义样式或重写。这可以减少慢速设备上的 CPU 开销。",
+                    "disable_entity_picture_image_override": "启用后，禁用对徽章和标记元素（ha-entity-marker、ha-tile-icon、state-badge、ha-user-badge、ha-person-badge）的修补，不再执行自定义实体头像图片重载。这可以减少慢速设备上的 CPU 开销。"
                 }
             },
             "add_foundry": {

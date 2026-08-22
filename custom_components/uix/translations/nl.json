@@ -47,13 +47,17 @@
                     "hass_throttle_enable": "Entiteitstatus‑updates afremmen",
                     "hass_throttle_ms": "Afreminterval",
                     "dialog_apply_after_show": "UIX‑styling voor dialogen pas toepassen nadat ze volledig getoond zijn",
-                    "disable_hash_template_variable": "Hash‑templatevariabele en updates uitschakelen"
+                    "disable_hash_template_variable": "Hash‑templatevariabele en updates uitschakelen",
+                    "disable_icon_styling": "Icoongebaseerde styling patching uitschakelen",
+                    "disable_entity_picture_image_override": "Entiteitsafbeelding-overschrijvingen uitschakelen"
                 },
                 "data_description": {
                     "hass_throttle_enable": "Wanneer ingeschakeld, wordt de frequentie verlaagd waarmee de dashboard‑root opnieuw rendert wanneer entiteitstatussen snel veranderen.",
                     "hass_throttle_ms": "Minimale tijd tussen her‑renders door entiteitstatusupdates. Alleen van toepassing wanneer afremmen is ingeschakeld.",
                     "dialog_apply_after_show": "Wanneer ingeschakeld, worden UIX‑stijlen voor dialogen toegepast nadat de open‑animatie van de dialoog is voltooid in plaats van onmiddellijk. Dit kan visuele flikkering verminderen op tragere apparaten.",
-                    "disable_hash_template_variable": "Wanneer ingeschakeld, is de hash (het deel na # in de URL) templatevariabele niet beschikbaar en veroorzaken hash‑wijzigingen geen UIX‑template‑rebinds of UIX Forge‑updates."
+                    "disable_hash_template_variable": "Wanneer ingeschakeld, is de hash (het deel na # in de URL) templatevariabele niet beschikbaar en veroorzaken hash‑wijzigingen geen UIX‑template‑rebinds of UIX Forge‑updates.",
+                    "disable_icon_styling": "Wanneer ingeschakeld, wordt het patchen van icoon-elementen (ha-icon, ha-state-icon, ha-svg-icon) voor aangepaste styling of overschrijvingen uitgeschakeld. Dit kan de CPU-belasting op tragere apparaten verminderen.",
+                    "disable_entity_picture_image_override": "Wanneer ingeschakeld, wordt het patchen van badge- en markerelementen (ha-entity-marker, ha-tile-icon, state-badge, ha-user-badge, ha-person-badge) voor aangepaste entiteitsafbeelding-overschrijvingen uitgeschakeld. Dit kan de CPU-belasting op tragere apparaten verminderen."
                 }
             },
             "add_foundry": {

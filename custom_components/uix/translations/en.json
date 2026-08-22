@@ -47,13 +47,17 @@
                     "hass_throttle_enable": "Throttle entity state updates",
                     "hass_throttle_ms": "Throttle interval",
                     "dialog_apply_after_show": "Delay UIX styling for dialogs until fully shown",
-                    "disable_hash_template_variable": "Disable hash template variable and updates"
+                    "disable_hash_template_variable": "Disable hash template variable and updates",
+                    "disable_icon_styling": "Disable icon styling patching",
+                    "disable_entity_picture_image_override": "Disable entity picture image overrides"
                 },
                 "data_description": {
                     "hass_throttle_enable": "When enabled, reduces the frequency at which the dashboard root re-renders when entity states change rapidly.",
                     "hass_throttle_ms": "Minimum time between entity state update re-renders. Only applies when throttling is enabled.",
                     "dialog_apply_after_show": "When enabled, UIX styles for dialogs are applied after the dialog's open animation completes rather than immediately. This can reduce visual flicker on slower devices.",
-                    "disable_hash_template_variable": "When enabled, hash (the part after # in the URL) template variable is not available and hash changes do not trigger UIX template rebinds or UIX Forge updates."
+                    "disable_hash_template_variable": "When enabled, hash (the part after # in the URL) template variable is not available and hash changes do not trigger UIX template rebinds or UIX Forge updates.",
+                    "disable_icon_styling": "When enabled, disables patching of icon elements (ha-icon, ha-state-icon, ha-svg-icon) for custom styling. This can reduce CPU overhead on slower devices.",
+                    "disable_entity_picture_image_override": "When enabled, disables patching of badge and marker elements (ha-entity-marker, ha-tile-icon, state-badge, ha-user-badge, ha-person-badge) for custom entity picture image styling. This can reduce CPU overhead on slower devices."
                 }
             },
             "add_foundry": {

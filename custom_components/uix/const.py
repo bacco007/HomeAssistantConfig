@@ -18,6 +18,8 @@ DEFAULT_HASS_THROTTLE_MS = 200
 
 CONF_DIALOG_APPLY_AFTER_SHOW = "dialog_apply_after_show"
 CONF_DISABLE_HASH_TEMPLATE_VARIABLE = "disable_hash_template_variable"
+CONF_DISABLE_ICON_STYLING = "disable_icon_styling"
+CONF_DISABLE_ENTITY_PICTURE_IMAGE_OVERRIDE = "disable_entity_picture_image_override"
 
 WS_GET_FOUNDRIES = f"{DOMAIN}/get_foundries"
 WS_SET_FOUNDRY = f"{DOMAIN}/set_foundry"
