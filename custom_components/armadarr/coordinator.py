@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import contextlib
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any
 
@@ -61,6 +60,10 @@ class StandardCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if app_type != "Bazarr":
                 data["system_status"] = await client.system.get_status()
 
+            # Bazarr and Dispatcharr expose no update endpoint.
+            if app_type not in ["Bazarr", "Dispatcharr"]:
+                data["update"] = await client.update.get()
+
             if app_type not in ["Bazarr", "Prowlarr", "Dispatcharr"]:
                 data["queue"] = await client.queue.get()
                 data["health"] = await client.system.get_health()
@@ -75,8 +78,18 @@ class StandardCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 )
 
             if app_type == "Bazarr":
-                with contextlib.suppress(Exception):
+                # Bazarr behind a URL base can answer with the web UI's HTML
+                # rather than JSON. That leaves connectivity off, which is
+                # correct, but it must not pass silently.
+                try:
                     data["system_status"] = await client.system.get_status()
+                except Exception as exception:  # noqa: BLE001
+                    LOGGER.warning(
+                        "Could not read Bazarr system status from %s: %s. "
+                        "Check the configured URL includes any URL base.",
+                        self.config_entry.data["url"],
+                        exception,
+                    )
 
             if app_type == "Prowlarr":
                 data["indexer_status"] = await client.indexer.get()
@@ -121,9 +134,9 @@ class StandardCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         start = datetime.now(tz=UTC)
         end = start + timedelta(days=upcoming_days)
         kwargs = {}
-        if app_type in ["Sonarr", "Whisparr"]:
+        if app_type == "Sonarr":
             kwargs["includeSeries"] = True
-        elif app_type == "Radarr":
+        elif app_type in ["Radarr", "Whisparr"]:
             kwargs["includeMovie"] = True
         elif app_type == "Lidarr":
             kwargs["includeArtist"] = True
@@ -141,7 +154,6 @@ class StandardCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def _fetch_dispatcharr(client: Any) -> dict[str, Any]:
         """Fetch all Dispatcharr-specific data."""
         return {
-            "indexer_status": await client.indexer.get(),
             "channels": await client.channels.get(),
             "streams": await client.streams.get(),
             "vod": await client.vod.get_all(),
@@ -190,12 +202,12 @@ class DailyCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data: dict[str, Any] = {}
 
         try:
-            if app_type in ["Sonarr", "Whisparr"]:
+            if app_type == "Sonarr":
                 data["series"] = await client.series.get()
                 data["unmonitored_count"] = sum(
                     1 for s in data["series"] if not s.get("monitored")
                 )
-            elif app_type == "Radarr":
+            elif app_type in ["Radarr", "Whisparr"]:
                 data["movies"] = await client.movie.get()
                 data["unmonitored_count"] = sum(
                     1 for m in data["movies"] if not m.get("monitored")
@@ -218,9 +230,9 @@ class DailyCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
                 # Fetch wanted data
                 kwargs = {}
-                if app_type in ["Sonarr", "Whisparr"]:
+                if app_type == "Sonarr":
                     kwargs["includeSeries"] = True
-                elif app_type == "Radarr":
+                elif app_type in ["Radarr", "Whisparr"]:
                     kwargs["includeMovie"] = True
                 elif app_type == "Lidarr":
                     kwargs["includeArtist"] = True
@@ -230,9 +242,7 @@ class DailyCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 wanted_data = await client.wanted.get(
                     page=1,
                     page_size=wanted_count,
-                    sort_key="airDateUtc"
-                    if app_type in ["Sonarr", "Whisparr"]
-                    else "releaseDate",
+                    sort_key="airDateUtc" if app_type == "Sonarr" else "releaseDate",
                     sort_dir="descending",
                     **kwargs,
                 )

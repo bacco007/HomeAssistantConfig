@@ -127,21 +127,11 @@ class ArmadarrSensor(ArmadarrEntity, SensorEntity):
             # Add template item at index 0 for compatibility with upcoming-media-card
             template = {
                 "title_default": "$title",
-                "line1_default": "$episode"
-                if app_type in ["Sonarr", "Whisparr"]
-                else "$release",
-                "line2_default": "$number"
-                if app_type in ["Sonarr", "Whisparr"]
-                else "$runtime",
-                "line3_default": "$airdate"
-                if app_type in ["Sonarr", "Whisparr"]
-                else "$rating",
-                "line4_default": "$studio"
-                if app_type in ["Sonarr", "Whisparr"]
-                else "$genres",
-                "icon": "mdi:television"
-                if app_type in ["Sonarr", "Whisparr"]
-                else "mdi:movie",
+                "line1_default": "$episode" if app_type == "Sonarr" else "$release",
+                "line2_default": "$number" if app_type == "Sonarr" else "$runtime",
+                "line3_default": "$airdate" if app_type == "Sonarr" else "$rating",
+                "line4_default": "$studio" if app_type == "Sonarr" else "$genres",
+                "icon": "mdi:television" if app_type == "Sonarr" else "mdi:movie",
             }
             if app_type == "Lidarr":
                 template |= {

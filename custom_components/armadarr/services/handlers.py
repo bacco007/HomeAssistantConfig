@@ -12,12 +12,53 @@ class ArmadarrServiceError(Exception):
     """Base class for Armadarr service exceptions."""
 
 
-async def async_get_client(hass: HomeAssistant, entry_id: str) -> Any:
-    """Get client for entry_id."""
+# Which app types can service each kind of call. Services are registered once
+# per domain, so any of them can be called with any entry_id regardless of the
+# app type it was registered for.
+SERIES_APPS = ["Sonarr"]
+MOVIE_APPS = ["Radarr", "Whisparr"]
+ARTIST_APPS = ["Lidarr"]
+AUTHOR_APPS = ["Readarr"]
+MEDIA_APPS = ["Sonarr", "Radarr", "Lidarr", "Readarr", "Whisparr"]
+# Bazarr and Dispatcharr expose no command component.
+COMMAND_APPS = ["Sonarr", "Radarr", "Lidarr", "Readarr", "Whisparr", "Prowlarr"]
+INDEXER_APPS = ["Prowlarr"]
+DISPATCHARR_APPS = ["Dispatcharr"]
+
+
+def _validate_app_type(entry: Any, app_types: list[str] | None) -> str:
+    """Return the entry's app type, or raise if this service cannot serve it."""
+    app_type = str(entry.data["app_type"])
+    if app_types is not None and app_type not in app_types:
+        msg = (
+            f"This service supports {', '.join(app_types)}, "
+            f"but entry {entry.entry_id} is a {app_type} instance"
+        )
+        raise ArmadarrServiceError(msg)
+    return app_type
+
+
+def _get_entry(hass: HomeAssistant, entry_id: str) -> Any:
+    """Return the config entry for ``entry_id``, or raise."""
     entry = hass.config_entries.async_get_entry(entry_id)
     if not entry:
         msg = f"Entry {entry_id} not found"
         raise ArmadarrServiceError(msg)
+    return entry
+
+
+async def async_get_client(
+    hass: HomeAssistant, entry_id: str, app_types: list[str] | None = None
+) -> Any:
+    """
+    Get client for entry_id, rejecting app types this service cannot serve.
+
+    Without ``app_types`` any entry is accepted. With it, a mismatched entry
+    raises ArmadarrServiceError rather than letting the call reach pyarr and
+    fail with AttributeError on a component that app does not have.
+    """
+    entry = _get_entry(hass, entry_id)
+    _validate_app_type(entry, app_types)
     return entry.runtime_data.client
 
 
@@ -25,7 +66,7 @@ async def async_handle_system_task(hass: HomeAssistant, call: ServiceCall) -> No
     """Handle system task service call."""
     entry_id = call.data["entry_id"]
     task = str(call.data["task"])
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, COMMAND_APPS)
 
     if task.isdigit():
         # It's a task ID, trigger via ExecuteStoredTask command
@@ -38,16 +79,12 @@ async def async_handle_system_task(hass: HomeAssistant, call: ServiceCall) -> No
 async def async_handle_search_missing(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle search missing service call."""
     entry_id = call.data["entry_id"]
-    entry = hass.config_entries.async_get_entry(entry_id)
-    if not entry:
-        msg = f"Entry {entry_id} not found"
-        raise ArmadarrServiceError(msg)
-
+    entry = _get_entry(hass, entry_id)
+    app_type = _validate_app_type(entry, MEDIA_APPS)
     client = entry.runtime_data.client
-    app_type = entry.data["app_type"]
 
     command = "MissingSeriesSearch"
-    if app_type == "Radarr":
+    if app_type in ["Radarr", "Whisparr"]:
         command = "MissingMoviesSearch"
     elif app_type == "Lidarr":
         command = "ArtistSearch"
@@ -60,7 +97,7 @@ async def async_handle_search_missing(hass: HomeAssistant, call: ServiceCall) ->
 async def async_handle_add_series(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle add series service call."""
     entry_id = call.data["entry_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, SERIES_APPS)
 
     tvdb_id = call.data.get("tvdb_id")
     title = call.data.get("title")
@@ -98,7 +135,7 @@ async def async_handle_add_series(hass: HomeAssistant, call: ServiceCall) -> Non
 async def async_handle_add_movie(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle add movie service call."""
     entry_id = call.data["entry_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, MOVIE_APPS)
 
     tmdb_id = call.data.get("tmdb_id")
     title = call.data.get("title")
@@ -135,7 +172,7 @@ async def async_handle_add_movie(hass: HomeAssistant, call: ServiceCall) -> None
 async def async_handle_add_artist(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle add artist service call."""
     entry_id = call.data["entry_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, ARTIST_APPS)
 
     mb_id = call.data.get("mb_id")
     name = call.data.get("name")
@@ -174,7 +211,7 @@ async def async_handle_add_artist(hass: HomeAssistant, call: ServiceCall) -> Non
 async def async_handle_add_author(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle add author service call."""
     entry_id = call.data["entry_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, AUTHOR_APPS)
 
     author_id = call.data.get("author_id")
     name = call.data.get("name")
@@ -217,7 +254,7 @@ async def async_handle_lookup_series(
     """Handle lookup series service call."""
     entry_id = call.data["entry_id"]
     term = call.data["term"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, SERIES_APPS)
 
     results = await client.series.lookup(term=term)
     return {"data": results}
@@ -229,7 +266,7 @@ async def async_handle_lookup_movie(
     """Handle lookup movie service call."""
     entry_id = call.data["entry_id"]
     term = call.data["term"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, MOVIE_APPS)
 
     results = await client.movie.lookup(term=term)
     return {"data": results}
@@ -241,7 +278,7 @@ async def async_handle_lookup_artist(
     """Handle lookup artist service call."""
     entry_id = call.data["entry_id"]
     term = call.data["term"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, ARTIST_APPS)
 
     results = await client.artist.lookup(term=term)
     return {"data": results}
@@ -253,7 +290,7 @@ async def async_handle_lookup_author(
     """Handle lookup author service call."""
     entry_id = call.data["entry_id"]
     term = call.data["term"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, AUTHOR_APPS)
 
     results = await client.author.lookup(term=term)
     return {"data": results}
@@ -264,20 +301,17 @@ async def async_handle_get_config_data(
 ) -> dict[str, Any]:
     """Handle get config data service call."""
     entry_id = call.data["entry_id"]
-    entry = hass.config_entries.async_get_entry(entry_id)
-    if not entry:
-        msg = f"Entry {entry_id} not found"
-        raise ArmadarrServiceError(msg)
-
+    entry = _get_entry(hass, entry_id)
+    # Every app type can answer this; the payload just varies by app.
+    app_type = _validate_app_type(entry, None)
     client = entry.runtime_data.client
-    app_type = entry.data["app_type"]
 
     data: dict[str, Any] = {}
-    if app_type not in ["Bazarr", "Prowlarr"]:
+    if app_type not in ["Bazarr", "Prowlarr", "Dispatcharr"]:
         data["root_folders"] = await client.root_folder.get()
         data["quality_profiles"] = await client.quality_profile.get()
 
-    if app_type in ["Lidarr", "Readarr"]:
+    if app_type == "Readarr":
         data["metadata_profiles"] = await client.metadata_profile.get()
 
     return {"data": data}
@@ -289,7 +323,7 @@ async def async_handle_delete_queue_item(
     """Handle delete queue item service call."""
     entry_id = call.data["entry_id"]
     item_id = call.data["item_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, MEDIA_APPS)
 
     await client.queue.delete(item_id=item_id)
 
@@ -298,17 +332,13 @@ async def async_handle_search_item(hass: HomeAssistant, call: ServiceCall) -> No
     """Handle search item service call."""
     entry_id = call.data["entry_id"]
     item_id = call.data["item_id"]
-    entry = hass.config_entries.async_get_entry(entry_id)
-    if not entry:
-        msg = f"Entry {entry_id} not found"
-        raise ArmadarrServiceError(msg)
-
+    entry = _get_entry(hass, entry_id)
+    app_type = _validate_app_type(entry, MEDIA_APPS)
     client = entry.runtime_data.client
-    app_type = entry.data["app_type"]
 
-    if app_type in ["Sonarr", "Whisparr"]:
+    if app_type == "Sonarr":
         await client.command.execute(name="EpisodeSearch", episodeIds=[item_id])
-    elif app_type == "Radarr":
+    elif app_type in ["Radarr", "Whisparr"]:
         await client.command.execute(name="MovieSearch", movieIds=[item_id])
     elif app_type == "Lidarr":
         await client.command.execute(name="ArtistSearch", artistIds=[item_id])
@@ -319,7 +349,7 @@ async def async_handle_search_item(hass: HomeAssistant, call: ServiceCall) -> No
 async def async_handle_sync_indexers(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle sync indexers service call."""
     entry_id = call.data["entry_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, INDEXER_APPS)
     await client.command.execute(name="AppIndexerSync")
 
 
@@ -328,7 +358,7 @@ async def async_handle_dispatcharr_refresh_m3u(
 ) -> None:
     """Handle Dispatcharr refresh M3U service call."""
     entry_id = call.data["entry_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, DISPATCHARR_APPS)
     await client.m3u.refresh(data=call.data.get("data", {}))
 
 
@@ -337,7 +367,7 @@ async def async_handle_dispatcharr_refresh_epg(
 ) -> None:
     """Handle Dispatcharr refresh EPG service call."""
     entry_id = call.data["entry_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, DISPATCHARR_APPS)
     await client.epg.import_epg(data=call.data.get("data", {}))
 
 
@@ -347,7 +377,7 @@ async def async_handle_dispatcharr_run_plugin(
     """Handle Dispatcharr run plugin service call."""
     entry_id = call.data["entry_id"]
     plugin_id = call.data["plugin_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, DISPATCHARR_APPS)
     await client.plugins.run(item_id=plugin_id, data=call.data.get("data", {}))
 
 
@@ -358,7 +388,7 @@ async def async_handle_dispatcharr_proxy_action(
     entry_id = call.data["entry_id"]
     action = call.data["action"]
     channel_id = call.data["channel_id"]
-    client = await async_get_client(hass, entry_id)
+    client = await async_get_client(hass, entry_id, DISPATCHARR_APPS)
 
     if action == "change_stream":
         await client.proxy.change_ts_stream(channel_id=channel_id)

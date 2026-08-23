@@ -181,7 +181,8 @@ async def async_setup_services(hass: HomeAssistant, app_type: str) -> None:
             ),
         ],
     }
-    app_services["Whisparr"] = app_services["Sonarr"]
+    # Whisparr exposes pyarr's `movie` component, so it gets Radarr's services.
+    app_services["Whisparr"] = app_services["Radarr"]
 
     for service_info in app_services.get(app_type, []):
         _register(*service_info)

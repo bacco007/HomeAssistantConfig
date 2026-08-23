@@ -42,7 +42,7 @@ def _parse_radarr_event(event: dict[str, Any], item: dict[str, Any]) -> None:
 
 
 def _parse_sonarr_event(event: dict[str, Any], item: dict[str, Any]) -> None:
-    """Parse sonarr and whisparr events."""
+    """Parse sonarr events."""
     series = event.get("series", {})
     season = event.get("seasonNumber", 0)
     episode = event.get("episodeNumber", 0)
@@ -93,9 +93,9 @@ def parse_event(event: dict[str, Any], app_type: str) -> dict[str, Any] | None:
         return None
     item["airdate"] = airdate
 
-    if app_type in {"Sonarr", "Whisparr"}:
+    if app_type == "Sonarr":
         _parse_sonarr_event(event, item)
-    elif app_type == "Radarr":
+    elif app_type in {"Radarr", "Whisparr"}:
         _parse_radarr_event(event, item)
     elif app_type == "Lidarr":
         _parse_resource_event(event, "artist", "label", item)

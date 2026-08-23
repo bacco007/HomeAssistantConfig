@@ -247,19 +247,6 @@ def get_app_specific_sensors(app_type: str) -> list[ArmadarrSensorEntityDescript
         ],
         "Dispatcharr": [
             ArmadarrSensorEntityDescription(
-                key="indexer_count",
-                name="Indexer Count",
-                icon="mdi:format-list-bulleted",
-                state_class=SensorStateClass.MEASUREMENT,
-                value_fn=lambda data: (
-                    len(data.get("indexer_status", []))
-                    if data.get("indexer_status")
-                    else len(data.get("indexer_stats", {}).get("indexers", []))
-                    if data
-                    else 0
-                ),
-            ),
-            ArmadarrSensorEntityDescription(
                 key="channel_count",
                 name="Channel Count",
                 icon="mdi:television-guide",
@@ -441,7 +428,8 @@ def get_app_specific_sensors(app_type: str) -> list[ArmadarrSensorEntityDescript
             ),
         ],
     }
-    app_sensors["Whisparr"] = app_sensors["Sonarr"]
+    # Whisparr is movie-based, so it reports the same shape as Radarr.
+    app_sensors["Whisparr"] = app_sensors["Radarr"]
 
     return app_sensors.get(app_type, [])
 

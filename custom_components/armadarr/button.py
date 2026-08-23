@@ -34,28 +34,41 @@ async def async_setup_entry(
     coordinator = entry.runtime_data.standard_coordinator
     app_type = entry.data["app_type"]
 
-    entities = [
-        ArmadarrButton(
-            coordinator,
-            ArmadarrButtonEntityDescription(
-                key="restart",
-                name="Restart Application",
-                icon="mdi:restart",
-                press_fn=lambda client: client.system.request_restart(),
-            ),
-        ),
-        ArmadarrButton(
-            coordinator,
-            ArmadarrButtonEntityDescription(
-                key="backup",
-                name="Backup Now",
-                icon="mdi:backup-restore",
-                press_fn=lambda client: client.backup.create(),
-            ),
-        ),
-    ]
+    entities: list[ArmadarrButton] = []
 
-    if app_type in ["Prowlarr", "Dispatcharr"]:
+    # Dispatcharr exposes no restart endpoint.
+    if app_type != "Dispatcharr":
+        entities.append(
+            ArmadarrButton(
+                coordinator,
+                ArmadarrButtonEntityDescription(
+                    key="restart",
+                    name="Restart Application",
+                    icon="mdi:restart",
+                    press_fn=lambda client: client.system.request_restart(),
+                ),
+            )
+        )
+
+    # Bazarr has no backup endpoint; Dispatcharr names its own component "backups".
+    if app_type != "Bazarr":
+        entities.append(
+            ArmadarrButton(
+                coordinator,
+                ArmadarrButtonEntityDescription(
+                    key="backup",
+                    name="Backup Now",
+                    icon="mdi:backup-restore",
+                    press_fn=(
+                        (lambda client: client.backups.create())
+                        if app_type == "Dispatcharr"
+                        else (lambda client: client.backup.create())
+                    ),
+                ),
+            )
+        )
+
+    if app_type == "Prowlarr":
         entities.append(
             ArmadarrButton(
                 coordinator,
@@ -69,18 +82,18 @@ async def async_setup_entry(
                 ),
             )
         )
-        if app_type == "Dispatcharr":
-            entities.append(
-                ArmadarrButton(
-                    coordinator,
-                    ArmadarrButtonEntityDescription(
-                        key="reload_plugins",
-                        name="Reload Plugins",
-                        icon="mdi:plugin",
-                        press_fn=lambda client: client.plugins.reload(),
-                    ),
-                )
+    elif app_type == "Dispatcharr":
+        entities.append(
+            ArmadarrButton(
+                coordinator,
+                ArmadarrButtonEntityDescription(
+                    key="reload_plugins",
+                    name="Reload Plugins",
+                    icon="mdi:plugin",
+                    press_fn=lambda client: client.plugins.reload(),
+                ),
             )
+        )
     elif app_type == "Bazarr":
         entities.append(
             ArmadarrButton(
@@ -89,14 +102,18 @@ async def async_setup_entry(
                     key="search_missing_subtitles",
                     name="Search Missing Subtitles",
                     icon="mdi:magnify",
-                    press_fn=lambda client: client.command.execute(
-                        name="SearchMissingSubtitles"
-                    ),
+                    press_fn=_bazarr_search_wanted,
                 ),
             )
         )
 
     async_add_entities(entities)
+
+
+async def _bazarr_search_wanted(client: Any) -> None:
+    """Ask Bazarr to search for every wanted series and movie subtitle."""
+    await client.series.run_action(action="search-wanted")
+    await client.movies.run_action(action="search-wanted")
 
 
 class ArmadarrButton(ArmadarrEntity, ButtonEntity):

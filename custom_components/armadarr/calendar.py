@@ -79,7 +79,7 @@ class ArmadarrCalendar(ArmadarrEntity, CalendarEntity):
 
         for event in raw_events:
             # Handle different app event structures
-            if app_type in ["Sonarr", "Whisparr"]:
+            if app_type == "Sonarr":
                 series_title = event.get("series", {}).get("title")
                 episode_title = event.get("title")
                 if series_title and episode_title:
