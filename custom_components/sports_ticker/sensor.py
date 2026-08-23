@@ -8,6 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .cfb_rankings import CFBRankingsCoordinator, ESPNCFBRankings
 from .const import (
     DOMAIN,
     CONF_LEAGUES,
@@ -57,6 +58,12 @@ async def async_setup_entry(
         next_game_coordinator = FootballNextGameCoordinator(hass, entry, league)
         await next_game_coordinator.async_config_entry_first_refresh()
         entities.append(ESPNFootballNextGame(next_game_coordinator))
+
+    if "cfb" in leagues:
+        rankings_coordinator = CFBRankingsCoordinator(hass, entry)
+        await rankings_coordinator.async_load_cached_data()
+        await rankings_coordinator.async_config_entry_first_refresh()
+        entities.append(ESPNCFBRankings(rankings_coordinator))
 
     if "mlb" in leagues:
         entities.append(ESPNMLBPlayerLeaders(coordinator))
