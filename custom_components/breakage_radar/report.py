@@ -8,7 +8,7 @@ scanning in :mod:`.scanner`.
 from __future__ import annotations
 
 from collections.abc import Iterable
-from datetime import date, timedelta
+from datetime import date
 from typing import Any
 
 from .const import (
@@ -19,51 +19,10 @@ from .const import (
 )
 from .rules_engine import is_future, parse_version
 
-MONTH_NAMES = (
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
-)
-
-
-def release_estimated_date(release: str) -> date | None:
-    """Expected date of a release label, or None if it cannot be parsed.
-
-    Home Assistant releases on the first Wednesday of every month
-    (home-assistant.io/faq/release/), which matched all eight 2026 releases
-    exactly. A rescheduled release would shift this; ``broken_now`` is decided
-    by version comparison instead, so it never depends on the estimate.
-    """
-    parts = release.split(".")
-    if len(parts) < 2:
-        return None
-    try:
-        first = date(int(parts[0]), int(parts[1]), 1)
-    except ValueError:
-        return None
-    return first + timedelta(days=(2 - first.weekday()) % 7)
-
-
-def describe_when(release: str, days: int | None) -> str:
-    """Human phrasing for a deadline: 'May 2027, about 8 months away'."""
-    when = release_estimated_date(release)
-    month = f"{MONTH_NAMES[when.month - 1]} {when.year}" if when else release
-    if days is None:
-        return month
-    if days < 0:
-        return f"{month}, already released"
-    if days == 0:
-        return f"{month}, today"
-    if days == 1:
-        return f"{month}, tomorrow"
-    if days < 45:
-        return f"{month}, about {days} days away"
-    months = round(days / 30.4)
-    if months < 12:
-        return f"{month}, about {months} months away"
-    years = days / 365.25
-    if years < 1.25:
-        return f"{month}, about a year away"
-    return f"{month}, about {years:.1f} years away".replace(".0 ", " ")
+# describe_when and release_estimated_date are re-exported: the repairs card
+# and the tests reach them through this module.
+from .schedule import days_until as _schedule_days_until
+from .schedule import describe_when, release_estimated_date  # noqa: F401
 
 
 def _index_by_domain(index: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -171,10 +130,7 @@ def build_report(
     def _days_until(release: str) -> int | None:
         if today is None:
             return None
-        when = release_estimated_date(release)
-        if when is None:
-            return None
-        return (when - today).days
+        return _schedule_days_until(release, today)
 
     def _when(release: str) -> str:
         if not release:
