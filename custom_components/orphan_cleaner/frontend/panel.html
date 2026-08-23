@@ -475,9 +475,18 @@ function applyIgnore() {
 }
 function renderIgnoreTags() {
   const c = document.getElementById('ignore-tags');
-  c.innerHTML = [...ignorePlatforms].map(v =>
-    `<span class="ignore-tag">${v} <span class="ignore-tag-x" onclick="ignoreRemove('${v}')">×</span></span>`
-  ).join('');
+  c.innerHTML = '';
+  [...ignorePlatforms].forEach(v => {
+    const span = document.createElement('span');
+    span.className = 'ignore-tag';
+    span.textContent = v + ' ';
+    const x = document.createElement('span');
+    x.className = 'ignore-tag-x';
+    x.textContent = '×';
+    x.addEventListener('click', () => ignoreRemove(v));
+    span.appendChild(x);
+    c.appendChild(span);
+  });
 }
 
 function addLog(msg, type='info') {
@@ -818,9 +827,20 @@ async function loadSavedIgnoreList() {
 
 function renderSavedTags() {
   const c = document.getElementById('saved-ig-tags');
-  c.innerHTML = savedIgnoreList.map(v =>
-    `<span class="tag-saved" data-v="${v}">${v} <span class="ignore-tag-x" onclick="savedIgRemove('${v}')" style="cursor:pointer;opacity:.5;font-size:13px;">×</span></span>`
-  ).join('');
+  c.innerHTML = '';
+  savedIgnoreList.forEach(v => {
+    const span = document.createElement('span');
+    span.className = 'tag-saved';
+    span.dataset.v = v;
+    span.textContent = v + ' ';
+    const x = document.createElement('span');
+    x.className = 'ignore-tag-x';
+    x.textContent = '×';
+    x.style.cssText = 'cursor:pointer;opacity:.5;font-size:13px;';
+    x.addEventListener('click', () => savedIgRemove(v));
+    span.appendChild(x);
+    c.appendChild(span);
+  });
   document.getElementById('saved-badge').textContent = savedIgnoreList.length + ' saved';
 }
 
