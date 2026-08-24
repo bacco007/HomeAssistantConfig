@@ -19,11 +19,12 @@ from ..const import (
     CONF_GDACS_EVENT_TYPES,
     CONF_GPS_LOC,
     CONF_PROVIDER,
+    CONF_TRACKER_ENTITY,
     GDACS_ALERT_LEVELS,
     GDACS_DEFAULT_ALERT_LEVEL,
     GDACS_EVENT_TYPES,
 )
-from .common import ScopedEntryFlowMixin, OptionsSchema, _validate_gps
+from .common import ScopedEntryFlowMixin, OptionsSchema, _tracker_schema, _validate_gps
 
 
 def _gdacs_event_type_selector() -> SelectSelector:
@@ -83,7 +84,7 @@ class GDACSFlowMixin(ScopedEntryFlowMixin):
         """
         return self.async_show_menu(
             step_id="gdacs",
-            menu_options=["gdacs_global", "gdacs_gps_loc"],
+            menu_options=["gdacs_global", "gdacs_gps_loc", "gdacs_gps_tracker"],
         )
 
     async def async_step_gdacs_global(
@@ -109,6 +110,20 @@ class GDACSFlowMixin(ScopedEntryFlowMixin):
             errors=errors,
         )
 
+    async def async_step_gdacs_gps_tracker(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        if user_input is not None:
+            data = {
+                CONF_PROVIDER: "gdacs",
+                CONF_TRACKER_ENTITY: user_input[CONF_TRACKER_ENTITY],
+            }
+            return await self._async_create_scoped_entry(data)
+        return self.async_show_form(
+            step_id="gdacs_gps_tracker",
+            data_schema=_tracker_schema(),
+        )
+
     # ── GDACS reconfigure ──
 
     async def async_step_reconfigure_gdacs(
@@ -116,7 +131,11 @@ class GDACSFlowMixin(ScopedEntryFlowMixin):
     ) -> ConfigFlowResult:
         return self.async_show_menu(
             step_id="reconfigure_gdacs",
-            menu_options=["reconfigure_gdacs_global", "reconfigure_gdacs_gps_loc"],
+            menu_options=[
+                "reconfigure_gdacs_global",
+                "reconfigure_gdacs_gps_loc",
+                "reconfigure_gdacs_gps_tracker",
+            ],
         )
 
     async def async_step_reconfigure_gdacs_global(
@@ -148,4 +167,21 @@ class GDACSFlowMixin(ScopedEntryFlowMixin):
                 }
             ),
             errors=errors,
+        )
+
+    async def async_step_reconfigure_gdacs_gps_tracker(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        entry = self._get_reconfigure_entry()
+        if user_input is not None:
+            new_data = {
+                CONF_PROVIDER: "gdacs",
+                CONF_TRACKER_ENTITY: user_input[CONF_TRACKER_ENTITY],
+            }
+            return await self._async_update_scoped_entry(entry, new_data)
+        return self.async_show_form(
+            step_id="reconfigure_gdacs_gps_tracker",
+            data_schema=_tracker_schema(
+                default=entry.data.get(CONF_TRACKER_ENTITY, "")
+            ),
         )

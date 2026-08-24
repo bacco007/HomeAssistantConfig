@@ -240,9 +240,12 @@ def _compute_device_title(data: dict[str, Any]) -> str:
             location = source_name
     elif data[CONF_PROVIDER] == "gdacs":
         # "Global" is a real scope here, not a missing one — the GDACS index is
-        # worldwide, so an entry with no GPS filter is fully configured and must
-        # not fall through to the "Unknown" default.
-        location = data.get(CONF_GPS_LOC, "Global")
+        # worldwide, so an entry with no location filter is fully configured
+        # and must not fall through to the "Unknown" default.
+        if CONF_TRACKER_ENTITY in data:
+            location = data[CONF_TRACKER_ENTITY].split(".")[-1]
+        else:
+            location = data.get(CONF_GPS_LOC, "Global")
     elif CONF_COUNTRY_ENTITY in data:
         # MeteoAlarm fully-mobile mode: country follows a source entity, so
         # there is no static location — surface the tracker name as "auto".

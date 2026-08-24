@@ -175,7 +175,8 @@
         "title": "GDACS Location Scope",
         "menu_options": {
           "gdacs_global": "All alerts (worldwide)",
-          "gdacs_gps_loc": "GPS Coordinates"
+          "gdacs_gps_loc": "GPS Coordinates",
+          "gdacs_gps_tracker": "GPS Tracker Entity"
         }
       },
       "gdacs_gps_loc": {
@@ -185,6 +186,12 @@
         },
         "data_description": {
           "gps_loc": "Latitude,Longitude (e.g. 35.6762,139.6503). Keeps only events whose affected area contains the point."
+        }
+      },
+      "gdacs_gps_tracker": {
+        "title": "GDACS GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
         }
       },
       "reconfigure": {
@@ -370,7 +377,8 @@
         "title": "GDACS Location Scope",
         "menu_options": {
           "reconfigure_gdacs_global": "All alerts (worldwide)",
-          "reconfigure_gdacs_gps_loc": "GPS Coordinates"
+          "reconfigure_gdacs_gps_loc": "GPS Coordinates",
+          "reconfigure_gdacs_gps_tracker": "GPS Tracker Entity"
         }
       },
       "reconfigure_gdacs_gps_loc": {
@@ -380,6 +388,12 @@
         },
         "data_description": {
           "gps_loc": "Latitude,Longitude. Keeps only events whose affected area contains the point."
+        }
+      },
+      "reconfigure_gdacs_gps_tracker": {
+        "title": "GDACS GPS Tracker",
+        "data": {
+          "tracker_entity": "Tracker Entity"
         }
       },
       "reconfigure_wmo_geocode": {
