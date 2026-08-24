@@ -4,7 +4,7 @@ A *rule* says "this piece of Python stops working in Home Assistant release X".
 A *matcher* is the machine-checkable half of a rule.  :func:`match_source` runs
 every matcher over one parsed file and yields findings.
 
-Nine matcher types cover every deprecation Breakage Radar currently ships:
+Ten matcher types cover every deprecation Breakage Radar currently ships:
 
 ``moduledef``          a module-level ``def``/``async def`` with one of ``names``
 ``classbase``          a ``class`` whose base list mentions one of ``bases``
@@ -19,6 +19,9 @@ Nine matcher types cover every deprecation Breakage Radar currently ships:
 ``call_hass_argument`` a call to one of ``names`` that passes ``hass`` (first
                        positional or keyword) -- for ``@deprecated_hass_argument``,
                        where the *argument* is deprecated, not the function
+``import_from``        ``from <module in modules> import <name in names>`` --
+                       for ``_DEPRECATED_X = DeprecatedAlias(...)``, where the
+                       import itself is what breaks and the module is the rule
 ``js``                 an anchored ``token`` in JavaScript/TypeScript source --
                        for the device-registry WebSocket API, which breaks
                        Lovelace cards rather than Python integrations. Handled
@@ -57,6 +60,7 @@ MATCHER_TYPES = frozenset(
         "call_kwarg",
         "call_missing_kwarg",
         "call_hass_argument",
+        "import_from",
         "js",
     }
 )
@@ -64,7 +68,7 @@ MATCHER_TYPES = frozenset(
 #: Bumped whenever matching semantics change. It is folded into the crawl's
 #: rules hash, so an engine change forces a rescan instead of leaving stale
 #: findings that the current engine would no longer produce.
-ENGINE_VERSION = 6
+ENGINE_VERSION = 7
 
 VERSION_RE = re.compile(r"^\d{4}\.\d+(?:\.\d+)?$")
 
@@ -423,6 +427,29 @@ def _match_attr_access(
             and isinstance(node.ctx, ast.Load)
         ):
             yield node.lineno, node.attr
+
+
+def _match_import_from(
+    matcher: dict[str, Any], tree: ast.Module, imports: dict[str, str]
+) -> Iterator[tuple[int, str]]:
+    """``from <deprecating module> import <name>``.
+
+    Core's second removal mechanism, ``_DEPRECATED_X = DeprecatedAlias(...)``
+    behind a module ``__getattr__``, fires on the import itself. The module is
+    the whole rule: the same name imported from the replacement path is the
+    fix, so matching on the name alone would flag correct code. A relative
+    import cannot name the deprecating module, so it is never a match.
+    """
+    modules = set(matcher.get("modules", ()))
+    names = set(matcher.get("names", ()))
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ImportFrom) or node.level or node.module is None:
+            continue
+        if node.module not in modules:
+            continue
+        for alias in node.names:
+            if alias.name in names:
+                yield node.lineno, f"{node.module}.{alias.name}"
 
 
 def _annotation_resolves(
@@ -819,6 +846,11 @@ def _match_call_hass_argument(
 #: the callers: a type declaration describes the API, it does not call it.
 JS_SUFFIXES = (".js", ".mjs", ".ts")
 
+#: Directory names holding somebody else's code. A finding in here is not the
+#: repository's to fix. Every walker -- tarball, checkout, installed tree --
+#: takes the list from here so all three judge the same files.
+VENDOR_DIRECTORIES = frozenset({"site-packages", "node_modules", ".venv", "vendor"})
+
 #: A single line longer than this is a bundler's output, not source.
 JS_MAX_LINE_LENGTH = 5000
 
@@ -1009,6 +1041,7 @@ _DISPATCH = {
     "call_kwarg": _match_call_kwarg,
     "call_missing_kwarg": _match_call_missing_kwarg,
     "call_hass_argument": _match_call_hass_argument,
+    "import_from": _match_import_from,
 }
 
 
@@ -1070,6 +1103,35 @@ def match_source(
             )
 
     findings.sort(key=lambda f: (f.file, f.line, f.rule_id))
+    return findings
+
+
+def scan_sources(
+    python: Iterable[tuple[str, str | bytes]],
+    javascript: Iterable[tuple[str, str]],
+    rules: Iterable[Rule],
+    stats: ScanStats | None = None,
+) -> list[Finding]:
+    """Every finding for one repository's Python and JavaScript.
+
+    JavaScript is deduplicated per rule across the whole repository, Python is
+    not: a card shipping ``src`` and ``dist`` has one thing to fix, two Python
+    call sites are two. Both the crawler (reading a tarball) and the local
+    self-check (reading a directory) call this, so a repository gets the same
+    verdict whichever side looked at it.
+    """
+    rules = list(rules)
+    findings = [
+        finding
+        for path, source in python
+        for finding in match_source(path, source, rules, stats)
+    ]
+    js_findings = [
+        finding
+        for path, text in javascript
+        for finding in match_js_source(path, text, rules, stats)
+    ]
+    findings.extend(dedupe_js_findings(js_findings))
     return findings
 
 

@@ -304,6 +304,11 @@ def scan_installed(
         "skipped_files": totals["skipped_files"],
         "cached_domains": cached_domains,
         "rules_matchable": len(rules),
+        # Which rules this engine could actually run. A "clean" verdict only
+        # speaks for these; report.py keeps an index finding whose rule is not
+        # in here, which is what happens when the index ships a matcher type
+        # this vendored engine predates.
+        "rule_ids": sorted(rule.id for rule in rules),
         "rules_fingerprint": fingerprint,
         "engine_version": ENGINE_VERSION,
     }
@@ -457,6 +462,7 @@ def scan_cards(
         **totals,
         "cached_cards": cached_cards,
         "rules_matchable": len(rules),
+        "rule_ids": sorted(rule.id for rule in rules),
         "rules_fingerprint": fingerprint,
         "engine_version": ENGINE_VERSION,
     }

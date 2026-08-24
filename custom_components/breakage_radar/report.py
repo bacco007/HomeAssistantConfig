@@ -111,6 +111,27 @@ def build_report(
     cards_scanned_locally = (local_card_scan or {}).get("cards", {})
     card_rules_in_play = (local_card_scan or {}).get("rules_matchable", 0)
 
+    def _unchecked(
+        index_findings: list[dict[str, Any]], scan: dict[str, Any] | None
+    ) -> list[dict[str, Any]]:
+        """Index findings the local scan was never able to look for.
+
+        A local "clean" only speaks for the rules the local engine could run.
+        When the index ships a rule whose matcher type this vendored engine
+        predates, the engine silently drops it and reports clean anyway --
+        and without this the index's finding would be discarded, telling the
+        user an integration is fine while the index says it breaks.
+
+        A scan that does not report ``rule_ids`` is from an engine that
+        predates the field; there is nothing to compare against, so it keeps
+        the old behaviour rather than resurrecting every index finding.
+        """
+        ran = (scan or {}).get("rule_ids")
+        if not ran:
+            return []
+        known = set(ran)
+        return [f for f in index_findings if f.get("rule_id") not in known]
+
     by_release: dict[str, list[str]] = {}
     details: list[dict[str, Any]] = []
     affected: list[str] = []
@@ -150,10 +171,12 @@ def build_report(
         kind: str = "integration",
     ) -> None:
         if kind == "card":
-            affected_cards.append(domain)
+            if domain not in affected_cards:
+                affected_cards.append(domain)
             broken_bucket, imminent_bucket = broken_now_cards, imminent_cards
         else:
-            affected.append(domain)
+            if domain not in affected:
+                affected.append(domain)
             broken_bucket, imminent_bucket = broken_now, imminent
         for finding in findings:
             release = str(finding.get("breaks_in", ""))
@@ -235,10 +258,17 @@ def build_report(
         ]
         local = scanned_locally.get(domain)
 
+        unchecked = _unchecked(index_findings, local_scan) if local else []
+
         if local and local.get("status") == "affected":
             _add_details(domain, local.get("findings", []), "local", entry)
+            if unchecked:
+                _add_details(domain, unchecked, "index", entry)
         elif local and local.get("status") == "clean" and rules_in_play > 0:
-            clean.append(domain)
+            if unchecked:
+                _add_details(domain, unchecked, "index", entry)
+            else:
+                clean.append(domain)
         elif index_findings:
             _add_details(domain, index_findings, "index", entry)
         elif entry is not None or domain in clean_domains:
@@ -255,10 +285,17 @@ def build_report(
         ]
         local = cards_scanned_locally.get(card)
 
+        unchecked = _unchecked(index_findings, local_card_scan) if local else []
+
         if local and local.get("status") == "affected":
             _add_details(card, local.get("findings", []), "local", entry, kind="card")
+            if unchecked:
+                _add_details(card, unchecked, "index", entry, kind="card")
         elif local and local.get("status") == "clean" and card_rules_in_play > 0:
-            clean_cards.append(card)
+            if unchecked:
+                _add_details(card, unchecked, "index", entry, kind="card")
+            else:
+                clean_cards.append(card)
         elif index_findings:
             _add_details(card, index_findings, "index", entry, kind="card")
         elif entry is not None or card.lower() in index_clean_cards:
