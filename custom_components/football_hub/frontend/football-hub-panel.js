@@ -1,4 +1,4 @@
-const PANEL_VERSION = "0.20.0-acca-league";
+const PANEL_VERSION = "0.20.21-lms-settlement-email-fix";
 const LMS_SHARE_SERVICE = "https://football-hub-lms.zesty-flame-5295.chatgpt.site";
 const FULL_COMPETITION_CATALOGUE = {
   England: ["Premier League", "Championship", "League One", "League Two", "National League", "FA Cup", "EFL Cup", "Community Shield"],
@@ -118,8 +118,15 @@ class FootballHubPanel extends HTMLElement {
     catch (_error) { this._doublePickGame = null; }
     try { this._doublePickCache = JSON.parse(localStorage.getItem("football_hub_double_pick_cache") || "{}"); }
     catch (_error) { this._doublePickCache = {}; }
+    if (localStorage.getItem("football_hub_double_pick_cache_version") !== "6") {
+      this._doublePickCache = {};
+      localStorage.setItem("football_hub_double_pick_cache", "{}");
+      localStorage.setItem("football_hub_double_pick_cache_version", "6");
+    }
     this._doublePickView = localStorage.getItem("football_hub_double_pick_view") || "picks";
     this._doublePickActiveCompetition = localStorage.getItem("football_hub_double_pick_active_competition") || "";
+    this._doublePickLoadQueue = [];
+    this._doublePickFinalizing = false;
     this._lastRenderSig = null;
     this._lmsCountdownTimer = null;
     this._lmsReminderTimer = null;
@@ -152,10 +159,14 @@ class FootballHubPanel extends HTMLElement {
     this._ensureCompetition();
     this._processLiveNotifications();
     if (this._pendingCompetition && this._statusInfo().competition_key === this._pendingCompetition) {
+      const loadedKey = this._pendingCompetition;
       this._pendingCompetition = "";
+      this._scheduleDoublePickCapture(loadedKey, "league");
     }
     if (this._pendingCup && this._attrs("cup_centre").competition_key === this._pendingCup) {
+      const loadedKey = this._pendingCup;
       this._pendingCup = "";
+      this._scheduleDoublePickCapture(loadedKey, "cup");
     }
     if (this._selectInteracting || ["SELECT", "INPUT", "TEXTAREA"].includes(this.shadowRoot.activeElement?.tagName)) {
       this._pendingHassRender = true;
@@ -207,9 +218,9 @@ class FootballHubPanel extends HTMLElement {
     clearInterval(this._lmsSharePullTimer);
     this._lmsSharePullTimer = setInterval(() => this._pullLmsSharePicks(), 2000);
     queueMicrotask(() => this._pullLmsSharePicks());
-    clearInterval(this._doublePickResultsTimer);
-    this._doublePickResultsTimer = setInterval(() => this._autoSettleDoublePickRound(), 60000);
-    queueMicrotask(() => this._autoSettleDoublePickRound());
+    clearInterval(this._lmsSettleTimer);
+    this._lmsSettleTimer = setInterval(() => this._maybeAutoSettleLmsRound(), 60000);
+    queueMicrotask(() => this._maybeAutoSettleLmsRound());
   }
 
   disconnectedCallback() {
@@ -219,8 +230,8 @@ class FootballHubPanel extends HTMLElement {
     this._lmsReminderTimer = null;
     clearInterval(this._lmsSharePullTimer);
     this._lmsSharePullTimer = null;
-    clearInterval(this._doublePickResultsTimer);
-    this._doublePickResultsTimer = null;
+    clearInterval(this._lmsSettleTimer);
+    this._lmsSettleTimer = null;
     clearTimeout(this._lmsShareSyncTimer);
     this._lmsShareSyncTimer = null;
   }
@@ -478,6 +489,14 @@ class FootballHubPanel extends HTMLElement {
     })?.[0] || "";
   }
 
+  _lmsConfiguredEmailService() {
+    const games = [this._lmsCompetition];
+    for (const key of ["football_hub_lms_private", "football_hub_lms_global"]) {
+      try { games.push(JSON.parse(localStorage.getItem(key) || "null")); } catch (_error) { /* ignore damaged saved data */ }
+    }
+    return String(games.find((game) => game?.emailNotifyService && game.emailNotifyService !== "__auto__")?.emailNotifyService || "__auto__");
+  }
+
   _lmsEmailDeadline() {
     const deadline = this._lmsDeadlineState();
     return deadline.timestamp
@@ -526,10 +545,12 @@ class FootballHubPanel extends HTMLElement {
       const reminderIntro = reminderKind === "day"
         ? "This is your 24-hour reminder"
         : reminderKind === "hours"
-          ? "Final reminder: only a few hours remain"
-          : "Choose your Last Man Standing team";
+          ? "FINAL REMINDER: only a few hours remain. If you do not make a pick before the deadline, you will be eliminated"
+          : reminderKind === "new-round"
+            ? `Round ${competition.round} is now open. Please choose your team`
+            : "Choose your Last Man Standing team";
       const messageData = {
-        title: `${reminderKind ? "Reminder: " : ""}${competition.name} - Round ${competition.round} team selection`,
+        title: `${reminderKind && reminderKind !== "new-round" ? "Reminder: " : ""}${competition.name} - Round ${competition.round} team selection`,
         message: `Hi ${player.name},\n\n${reminderIntro} for Round ${competition.round}:\n${player.pickUrl}\n\nYour deadline is ${this._lmsEmailDeadline()} local time. Teams already used cannot be selected again.\n\nROUND ${competition.round} FIXTURES\n\n${fixtures}\n\nUse your private link above to make your selection.\n\nFootball Hub`,
       };
       if (matchedEntity || this._hass.states?.[action]) {
@@ -860,9 +881,35 @@ class FootballHubPanel extends HTMLElement {
   async _checkLmsEmailReminders() {
     const competition = this._lmsCompetition;
     if (!competition || this._lmsReminderBusy || !competition.emailNotifyService) return;
+    const roundKey = String(competition.round || 1);
+    const now = Math.floor(Date.now() / 1000);
+    const nextRoundSchedule = competition.nextRoundEmailSchedules?.[roundKey];
+    if (nextRoundSchedule && !nextRoundSchedule.sent && now >= Number(nextRoundSchedule.sendAt || 0)) {
+      const eligiblePlayers = (competition.players || []).filter((player) =>
+        player.alive && player.email && player.pickUrl && !player.picks?.[roundKey] &&
+        (competition.mode === "global" || player.paid === true) &&
+        !player.emailReminders?.[roundKey]?.newRound
+      );
+      this._lmsReminderBusy = true;
+      try {
+        let allSent = true;
+        for (const player of eligiblePlayers) {
+          if (await this._sendLmsPlayerEmail(player, true, "new-round")) {
+            player.emailReminders = player.emailReminders || {};
+            player.emailReminders[roundKey] = player.emailReminders[roundKey] || {};
+            player.emailReminders[roundKey].newRound = now;
+          } else allSent = false;
+        }
+        nextRoundSchedule.sent = allSent;
+        if (allSent) nextRoundSchedule.sentAt = now;
+        this._saveLms();
+      } finally {
+        this._lmsReminderBusy = false;
+      }
+      return;
+    }
     const deadline = this._lmsDeadlineState();
     if (!deadline.timestamp || deadline.remaining <= 0 || deadline.remaining > 86400000) return;
-    const roundKey = String(competition.round || 1);
     const reminderKind = deadline.remaining <= 10800000 ? "hours" : "day";
     const eligiblePlayers = (competition.players || []).filter((player) =>
       player.alive &&
@@ -1174,40 +1221,60 @@ class FootballHubPanel extends HTMLElement {
     this._render();
   }
 
-  _maybeAutoSettleLmsRound() {
+  async _refreshLmsRoundFixtures() {
+    const competition = this._lmsCompetition;
+    if (!competition || !LMS_SHARE_SERVICE) return;
+    await Promise.all((competition.leagues || []).map(async (league) => {
+      try {
+        const response = await fetch(`${LMS_SHARE_SERVICE}/api/football-data?league=${encodeURIComponent(league.key)}&fresh=1`, { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!Array.isArray(data.fixtures) || !data.fixtures.length) return;
+        this._lmsLeagueCache[league.key] = {
+          teams: Array.isArray(data.teams) ? data.teams : [],
+          fixtures: data.fixtures,
+          updated: Date.now(),
+        };
+      } catch (error) {
+        console.warn(`Football Hub LMS fixture refresh failed for ${league.key}`, error);
+      }
+    }));
+    localStorage.setItem("football_hub_lms_league_cache", JSON.stringify(this._lmsLeagueCache));
+  }
+
+  async _maybeAutoSettleLmsRound() {
     const competition = this._lmsCompetition;
     if (!competition || competition.completed || this._lmsAutoCheckBusy || !this._lmsDeadlineState().locked) return;
-    const groups = this._lmsRoundFixtureGroups();
-    if (!(competition.leagues || []).length || groups.some((league) => !league.roundFixtures.length)) return;
-    const fixtures = groups.flatMap((league) => league.roundFixtures);
-    const finished = new Set(["FT", "AET", "PEN"]);
-    if (!fixtures.length) return;
-    const roundKey = String(competition.round);
-    const hasNewResult = competition.players.some((player) => {
-      if (!player.alive || player.results?.[roundKey]) return false;
-      const pick = player.picks?.[roundKey];
-      if (!pick) return true;
-      const match = fixtures.find((fixture) => fixture.home_team === pick || fixture.away_team === pick);
-      return Boolean(match && finished.has(String(match.status_short || match.status || "").toUpperCase()));
-    });
-    if (!hasNewResult) return;
     this._lmsAutoCheckBusy = true;
     try {
+      await this._refreshLmsRoundFixtures();
+      const fixtures = this._lmsRoundFixtureGroups().flatMap((league) => league.roundFixtures || []);
+      const finished = new Set(["FT", "AET", "PEN"]);
+      if (!fixtures.length) return;
+      const roundKey = String(competition.round);
+      const hasNewResult = competition.players.some((player) => {
+        if (!player.alive || player.results?.[roundKey]) return false;
+        const pick = player.picks?.[roundKey];
+        if (!pick) return true;
+        const match = fixtures.find((fixture) => fixture.home_team === pick || fixture.away_team === pick);
+        return Boolean(match && finished.has(String(match.status_short || match.status || "").toUpperCase()));
+      });
+      if (!hasNewResult) return;
       this._settleLmsRound(true);
     } finally {
       this._lmsAutoCheckBusy = false;
     }
   }
 
-  _settleLmsRound(automatic = false) {
+  async _settleLmsRound(automatic = false) {
     const competition = this._lmsCompetition;
     if (!competition || competition.completed || (!automatic && !this._isLmsAdmin())) return;
     if (competition.mode === "global") {
       this._settleGlobalLmsRound();
       return;
     }
+    if (!automatic) await this._refreshLmsRoundFixtures();
     const roundKey = String(competition.round);
-    this._captureLmsLeagueData();
     const fixtures = this._lmsRoundFixtureGroups().flatMap((league) => league.roundFixtures || []);
     let waiting = false;
     for (const player of competition.players) {
@@ -1239,21 +1306,80 @@ class FootballHubPanel extends HTMLElement {
       player.results = player.results || {};
       player.results[roundKey] = won ? "survived" : "eliminated";
       if (!won) player.alive = false;
+      const emailKey = `${roundKey}:${player.id}`;
+      if (player.email && !competition.matchResultEmails?.[emailKey]) {
+        competition.matchResultEmails = competition.matchResultEmails || {};
+        competition.matchResultEmails[emailKey] = "sending";
+        void this._sendLmsPlayerMatchResultEmail(player, roundKey, match, won).then((sent) => {
+          if (sent) competition.matchResultEmails[emailKey] = Math.floor(Date.now() / 1000);
+          else delete competition.matchResultEmails[emailKey];
+          this._saveLms();
+        });
+      }
     }
     const unresolved = competition.players.some((player) => player.alive && player.picks?.[roundKey] && !player.results?.[roundKey]);
-    const roundFinished = fixtures.length > 0 && fixtures.every((fixture) => ["FT", "AET", "PEN"].includes(String(fixture.status_short || fixture.status || "").toUpperCase()));
-    if (roundFinished && !waiting && !unresolved) {
+    const pickedTeams = new Set(competition.players.map((player) => player.picks?.[roundKey]).filter(Boolean));
+    const pickedFixtures = fixtures.filter((fixture) => pickedTeams.has(fixture.home_team) || pickedTeams.has(fixture.away_team));
+    const pickedMatchesFinished = pickedFixtures.length > 0 && pickedFixtures.every((fixture) => ["FT", "AET", "PEN"].includes(String(fixture.status_short || fixture.status || "").toUpperCase()));
+    if (pickedMatchesFinished && !waiting && !unresolved) {
       const survivors = competition.players.filter((player) => player.alive);
+      const completedRoundEnds = fixtures.map((fixture) => this._lmsFixtureTimestamp(fixture)).filter(Boolean);
+      const nextRoundStartsAfter = completedRoundEnds.length ? Math.max(...completedRoundEnds) + 300 : Math.floor(Date.now() / 1000);
+      if (!competition.resultsEmailSent?.[roundKey]) {
+        competition.resultsEmailSent = competition.resultsEmailSent || {};
+        competition.resultsEmailSent[roundKey] = Math.floor(Date.now() / 1000);
+        const summary = competition.players.map((player) => `${player.name}: ${player.picks?.[roundKey] || "No pick"} - ${player.results?.[roundKey] === "survived" ? "Through" : "Out"}`).join("\n");
+        for (const player of competition.players.filter((item) => item.email)) void this._sendLmsRoundResultEmail(player, roundKey, summary);
+      }
       if (survivors.length <= 1 && competition.players.length > 0) {
         competition.completed = true;
         competition.winnerId = survivors[0]?.id || "";
       } else {
         competition.round += 1;
-        competition.roundStarted = Math.floor(Date.now() / 1000);
+        competition.roundStarted = nextRoundStartsAfter;
+        const nextRoundKey = String(competition.round);
+        competition.nextRoundEmailSchedules = competition.nextRoundEmailSchedules || {};
+        competition.nextRoundEmailSchedules[nextRoundKey] = {
+          sendAt: Math.floor(Date.now() / 1000) + (3 * 60 * 60),
+          sent: false,
+          previousRound: roundKey,
+        };
       }
     }
     this._saveLms();
     this._render();
+  }
+
+  async _sendLmsRoundResultEmail(player, roundKey, summary) {
+    const competition = this._lmsCompetition;
+    const action = String(competition?.emailNotifyService || "__auto__");
+    if (!competition || !player?.email || !this._hass?.callService) return false;
+    const matchedEntity = this._lmsNotifyEntityForEmail(player.email);
+    const [domain, ...serviceParts] = action.split(".");
+    const service = serviceParts.join(".");
+    if (!matchedEntity && action === "__auto__") return false;
+    const data = { title: `${competition.name} - Round ${roundKey} results`, message: `Hi ${player.name},\n\nRound ${roundKey} is complete.\n\n${summary}\n\n${competition.shareUrl ? `View the competition: ${competition.shareUrl}\n\n` : ""}Football Hub` };
+    try {
+      if (matchedEntity || this._hass.states?.[action]) await this._hass.callService("notify", "send_message", data, { entity_id: matchedEntity || action });
+      else await this._hass.callService(domain, service, { ...data, target: [player.email] });
+      return true;
+    } catch (error) { console.warn("Football Hub LMS result email failed", error); return false; }
+  }
+
+  async _sendLmsPlayerMatchResultEmail(player, roundKey, match, won) {
+    const competition = this._lmsCompetition;
+    const action = String(competition?.emailNotifyService || "__auto__");
+    if (!competition || !player?.email || !match || !this._hass?.callService) return false;
+    const matchedEntity = this._lmsNotifyEntityForEmail(player.email);
+    const [domain, ...serviceParts] = action.split(".");
+    const service = serviceParts.join(".");
+    if (!matchedEntity && action === "__auto__") return false;
+    const data = { title: `${competition.name} - ${won ? "You are through" : "You are out"}`, message: `Hi ${player.name},\n\nYour Round ${roundKey} result is in.\n\n${match.home_team} ${match.home_goals} - ${match.away_goals} ${match.away_team}\n\nYour pick: ${player.picks?.[roundKey] || "Not recorded"}\nResult: ${won ? "THROUGH" : "OUT"}\n\n${competition.shareUrl ? `View the competition: ${competition.shareUrl}\n\n` : ""}Football Hub` };
+    try {
+      if (matchedEntity || this._hass.states?.[action]) await this._hass.callService("notify", "send_message", data, { entity_id: matchedEntity || action });
+      else await this._hass.callService(domain, service, { ...data, target: [player.email] });
+      return true;
+    } catch (error) { console.warn("Football Hub LMS player result email failed", error); return false; }
   }
 
   _settleGlobalLmsRound() {
@@ -1325,8 +1451,8 @@ class FootballHubPanel extends HTMLElement {
     this._doublePickGame = {
       id: `double-pick-${Date.now()}`,
       name: String(name || "Acca League").trim() || "Acca League",
-      created: new Date().toISOString(), round: 1, competitions, players, pickCount: Math.max(1, Math.min(20, Number(pickCount) || 2)), emailNotifyService: "__auto__",
-      rounds: { "1": { number: 1, ...dates, payerId: players[0].id, stake: 0, returnAmount: 0, picks: {}, results: {}, settled: false } },
+      created: new Date().toISOString(), round: 1, competitions, players, pickCount: Math.max(1, Math.min(20, Number(pickCount) || 2)), emailNotifyService: this._lmsConfiguredEmailService(), emailServiceInherited: true,
+      rounds: { "1": { number: 1, ...dates, competitionKeys: competitions.map((item) => item.key), payerId: players[0].id, stake: 0, returnAmount: 0, picks: {}, results: {}, settled: false } },
     };
     this._doublePickActiveCompetition = competitions[0].key;
     localStorage.setItem("football_hub_double_pick_active_competition", this._doublePickActiveCompetition);
@@ -1341,9 +1467,15 @@ class FootballHubPanel extends HTMLElement {
     const key = String(game.round || 1);
     if (!game.rounds?.[key]) {
       game.rounds = game.rounds || {};
-      game.rounds[key] = { number: Number(game.round || 1), ...this._doublePickDefaultDates(), payerId: game.players?.[0]?.id || "", stake: 0, returnAmount: 0, picks: {}, results: {}, settled: false };
+      game.rounds[key] = { number: Number(game.round || 1), ...this._doublePickDefaultDates(), competitionKeys: (game.competitions || []).map((item) => item.key), payerId: game.players?.[0]?.id || "", stake: 0, returnAmount: 0, picks: {}, results: {}, settled: false };
     }
     return game.rounds[key];
+  }
+
+  _doublePickRoundCompetitions(round = this._doublePickRound()) {
+    const keys = new Set(round?.competitionKeys?.length ? round.competitionKeys : (this._doublePickGame?.competitions || []).map((item) => item.key));
+    const catalogue = this._statusInfo().available_competitions || [];
+    return [...new Map(catalogue.filter((item) => keys.has(item.key)).map((item) => [item.key, { key:item.key, name:item.name, country:item.country, type:item.type || "league" }])).values()];
   }
 
   _captureDoublePickData() {
@@ -1359,18 +1491,42 @@ class FootballHubPanel extends HTMLElement {
           teams = [...(cup.table || [])].map((row) => row.team || row.team_name);
         }
       } else {
-        ready = this._statusInfo().competition_key === competition.key;
+        const fixtureData = this._attrs("fixtures");
+        const resultData = this._attrs("results");
+        ready = this._statusInfo().competition_key === competition.key && fixtureData.competition_key === competition.key && resultData.competition_key === competition.key;
         if (ready) {
-          fixtures = [...(this._attrs("fixtures").fixtures || []), ...(this._attrs("results").latest_5 || []), ...(this._attrs("live_matches").matches || [])];
+          // Fixtures and results are scoped to the competition currently loaded in
+          // Football Hub. The live feed is global and must not populate this cache,
+          // otherwise unrelated countries and clubs leak into the Acca picker.
+          // The fixtures entity contains the selected competition's complete
+          // schedule, including completed matches. Do not merge latest_5 here:
+          // that feed may contain results from a different competition.
+          fixtures = [...(fixtureData.fixtures || []), ...(resultData.results || [])];
           teams = [...(this._attrs("standings").table || [])].map((row) => row.team || row.team_name);
         }
       }
       if (!ready) continue;
+      fixtures = fixtures.filter((fixture) => this._doublePickFixtureMatchesCompetition(fixture, competition));
       const uniqueFixtures = [...new Map(fixtures.map((fixture, index) => [String(fixture.fixture_id ?? fixture.id ?? `${fixture.home_team}-${fixture.away_team}-${fixture.timestamp || index}`), fixture])).values()];
       teams.push(...uniqueFixtures.flatMap((fixture) => [fixture.home_team, fixture.away_team]));
-      this._doublePickCache[competition.key] = { teams: [...new Set(teams.filter(Boolean))].sort((a, b) => a.localeCompare(b)), fixtures: uniqueFixtures, updated: Date.now() };
+      this._doublePickCache[competition.key] = { competitionKey: competition.key, teams: [...new Set(teams.filter(Boolean))].sort((a, b) => a.localeCompare(b)), fixtures: uniqueFixtures, updated: Date.now() };
       localStorage.setItem("football_hub_double_pick_cache", JSON.stringify(this._doublePickCache));
     }
+  }
+
+  _doublePickFixtureMatchesCompetition(fixture, competition) {
+    const rawLabel = fixture.competition || fixture.competition_name || fixture.league_name || fixture.league?.name || "";
+    const clean = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const label = clean(rawLabel), target = clean(competition?.name);
+    if (label.includes("friendly") || label.includes("friendlies")) return target.includes("friendly");
+    if (!label || !target) return true;
+    const aliases = {
+      "premier league": ["premier league", "english premier league"],
+      "championship": ["championship", "efl championship"],
+      "league one": ["league one", "efl league one"],
+      "league two": ["league two", "efl league two"],
+    };
+    return (aliases[target] || [target]).some((name) => label === name || label.includes(name));
   }
 
   _loadDoublePickCompetition(key) {
@@ -1382,14 +1538,58 @@ class FootballHubPanel extends HTMLElement {
     else this._setLeague(key);
   }
 
+  _loadAllDoublePickCompetitions() {
+    this._doublePickLoadQueue = [...new Set(this._doublePickRoundCompetitions().map((item) => item.key))];
+    const next = this._doublePickLoadQueue.shift();
+    if (next) this._loadDoublePickCompetition(next);
+  }
+
+  _scheduleDoublePickCapture(key, type) {
+    if (this._doublePickFinalizing) return;
+    this._doublePickFinalizing = true;
+    let attempts = 0;
+    const finish = () => {
+      attempts += 1;
+      const fixtures = this._attrs("fixtures"), results = this._attrs("results");
+      const ready = type === "cup"
+        ? this._attrs("cup_centre").competition_key === key
+        : this._statusInfo().competition_key === key && fixtures.competition_key === key && results.competition_key === key;
+      if (!ready && attempts < 12) { setTimeout(finish, 500); return; }
+      if (ready && this._activeTab === "double-pick-league") this._captureDoublePickData();
+      this._doublePickFinalizing = false;
+      const next = this._doublePickLoadQueue?.shift();
+      if (next) this._loadDoublePickCompetition(next); else this._render();
+    };
+    setTimeout(finish, 500);
+  }
+
+  _updateDoublePickCompetitions(keys) {
+    const game = this._doublePickGame;
+    if (!game || !keys.length) { window.alert("Keep at least one league or cup selected."); return; }
+    const wanted = new Set(keys);
+    const catalogue = this._statusInfo().available_competitions || [];
+    const round = this._doublePickRound();
+    round.competitionKeys = [...wanted];
+    const chosen = catalogue.filter((item) => wanted.has(item.key)).map((item) => ({ key:item.key, name:item.name, country:item.country, type:item.type || "league" }));
+    game.competitions = [...new Map([...(game.competitions || []), ...chosen].map((item) => [item.key, item])).values()];
+    for (const [playerId, picks] of Object.entries(round.picks || {})) round.picks[playerId] = (picks || []).map((pick) => wanted.has(String(pick || "").split("|||")[0]) ? pick : "");
+    localStorage.setItem("football_hub_double_pick_cache", JSON.stringify(this._doublePickCache));
+    if (!wanted.has(this._doublePickActiveCompetition)) this._doublePickActiveCompetition = chosen[0]?.key || "";
+    this._saveDoublePickGame();
+    this._render();
+  }
+
   _doublePickRoundFixtures(round = this._doublePickRound()) {
     if (!round) return [];
     const start = new Date(`${round.startDate}T00:00:00`).getTime() / 1000;
     const end = new Date(`${round.endDate}T23:59:59`).getTime() / 1000;
-    return (this._doublePickGame?.competitions || []).flatMap((competition) =>
-      (this._doublePickCache?.[competition.key]?.fixtures || [])
+    return this._doublePickRoundCompetitions(round).flatMap((competition) => {
+      const cache = this._doublePickCache?.[competition.key];
+      if (!cache || cache.competitionKey !== competition.key) return [];
+      return (cache.fixtures || [])
         .filter((fixture) => { const timestamp = this._lmsFixtureTimestamp(fixture); return timestamp >= start && timestamp <= end; })
-        .map((fixture) => ({ ...fixture, competitionKey: competition.key, competitionName: competition.name, country: competition.country }))
+        .map((fixture) => ({ ...fixture, competitionKey: competition.key, competitionName: competition.name, country: competition.country }));
+    }
     ).sort((a, b) => this._lmsFixtureTimestamp(a) - this._lmsFixtureTimestamp(b));
   }
 
@@ -1406,7 +1606,7 @@ class FootballHubPanel extends HTMLElement {
     this._render();
   }
 
-  async _settleDoublePickRound(automatic = false) {
+  _settleDoublePickRound() {
     const game = this._doublePickGame;
     const round = this._doublePickRound();
     if (!game || !round) return;
@@ -1415,41 +1615,36 @@ class FootballHubPanel extends HTMLElement {
     let waiting = false;
     for (const player of game.players || []) {
       const picks = round.picks?.[player.id] || [];
-      round.results[player.id] = round.results[player.id] || {};
+      const previousResults = round.results[player.id] || {};
+      const refreshedResults = {};
       for (let slot = 0; slot < Number(game.pickCount || 2); slot += 1) {
-        if (round.results[player.id][slot]) continue;
         const value = picks[slot];
         if (!value) { waiting = true; continue; }
         const [competitionKey, ...teamParts] = value.split("|||");
         const team = teamParts.join("|||");
         const match = fixtures.find((fixture) => fixture.competitionKey === competitionKey && (fixture.home_team === team || fixture.away_team === team));
         const status = String(match?.status_short || match?.status || "").toUpperCase();
-        if (!match || !finishedStatuses.has(status)) { waiting = true; continue; }
+        if (!match || !finishedStatuses.has(status)) {
+          waiting = true;
+          if (previousResults[slot]) refreshedResults[slot] = previousResults[slot];
+          continue;
+        }
         const home = Number(match.home_goals), away = Number(match.away_goals);
         const won = (match.home_team === team && home > away) || (match.away_team === team && away > home);
         const drawn = home === away;
         const points = won ? 3 : drawn ? 1 : 0;
         const opponent = match.home_team === team ? match.away_team : match.home_team;
-        round.results[player.id][slot] = { team, competitionKey, competitionName: match.competitionName, kickoff: this._lmsFixtureTimestamp(match), points, outcome: won ? "Win" : drawn ? "Draw" : "Loss", score: `${home}-${away}`, opponent, fixtureId: match.fixture_id ?? match.id };
-        player.points = Number(player.points || 0) + points;
+        refreshedResults[slot] = { team, competitionKey, competitionName: match.competitionName, kickoff: this._lmsFixtureTimestamp(match), points, outcome: won ? "Win" : drawn ? "Draw" : "Loss", score: `${home}-${away}`, opponent, fixtureId: match.fixture_id ?? match.id };
       }
+      round.results[player.id] = refreshedResults;
+    }
+    for (const player of game.players || []) {
+      player.points = Object.values(game.rounds || {}).reduce((total, savedRound) =>
+        total + Object.values(savedRound.results?.[player.id] || {}).reduce((roundTotal, result) => roundTotal + Number(result?.points || 0), 0), 0);
     }
     round.settled = !waiting && (game.players || []).every((player) => Object.keys(round.results?.[player.id] || {}).length === Number(game.pickCount || 2));
-    const shouldEmailResults = automatic && round.settled && !round.resultsEmailSentAt;
-    if (shouldEmailResults) round.resultsEmailSentAt = Date.now();
     this._saveDoublePickGame();
     this._render();
-    if (shouldEmailResults && !await this._emailDoublePickRound("results", true)) {
-      delete round.resultsEmailSentAt;
-      this._saveDoublePickGame();
-    }
-  }
-
-  _autoSettleDoublePickRound() {
-    const round = this._doublePickRound();
-    if (!this._doublePickGame || round?.settled) return;
-    this._captureDoublePickData();
-    void this._settleDoublePickRound(true);
   }
 
   _nextDoublePickRound() {
@@ -1461,7 +1656,7 @@ class FootballHubPanel extends HTMLElement {
     const nextPayer = game.players?.[(currentPayerIndex + 1) % game.players.length];
     const nextStart = new Date(`${current.endDate}T00:00:00`).getTime() + 86400000;
     game.round = nextNumber;
-    game.rounds[String(nextNumber)] = { number: nextNumber, ...this._doublePickDefaultDates(nextStart), payerId: nextPayer?.id || "", stake: 0, returnAmount: 0, picks: {}, results: {}, settled: false };
+    game.rounds[String(nextNumber)] = { number: nextNumber, ...this._doublePickDefaultDates(nextStart), competitionKeys: [...(current.competitionKeys || (game.competitions || []).map((item) => item.key))], payerId: nextPayer?.id || "", stake: 0, returnAmount: 0, picks: {}, results: {}, settled: false };
     this._saveDoublePickGame();
     this._render();
   }
@@ -1510,18 +1705,17 @@ class FootballHubPanel extends HTMLElement {
     return `Round ${game.round} (${round.startDate} to ${round.endDate})\nPaid by: ${payer}\n\n${lines.join("\n")}${money}`;
   }
 
-  async _emailDoublePickRound(kind, quiet = false) {
+  async _emailDoublePickRound(kind) {
     const game = this._doublePickGame, round = this._doublePickRound();
     if (!game || !round) return;
     const payer = game.players.find((player) => player.id === round.payerId);
     let sent = 0;
-    const recipients = kind === "reminder" ? (game.players || []).slice(0, 1) : (game.players || []);
-    for (const player of recipients) {
+    for (const player of game.players || []) {
       if (!player.email) continue;
       let title, message;
       if (kind === "reminder") {
-        title = `${game.name} · Round ${game.round} picks to add`;
-        message = `Please add both players' selections for Round ${game.round}, covering ${round.startDate} to ${round.endDate}.\n\n${this._doublePickEmailSummary(false)}\n\nPlace the Acca at Bet365 and then update Football Hub with the final selections.${player.id === round.payerId ? "\n\nYou are paying this round." : `\n\n${payer?.name || "The selected player"} is paying this round.`}`;
+        title = `${game.name} · Round ${game.round} picks`;
+        message = `Please choose your ${game.pickCount || 2} teams for Round ${game.round}. The round covers ${round.startDate} to ${round.endDate}.${player.id === round.payerId ? "\n\nIt is your turn to place and pay for this round's bet." : `\n\n${payer?.name || "The selected player"} is paying this round.`}`;
       } else if (kind === "confirmation") {
         title = `${game.name} · Round ${game.round} selections`;
         message = `The selections are confirmed:\n\n${this._doublePickEmailSummary(false)}`;
@@ -1531,8 +1725,26 @@ class FootballHubPanel extends HTMLElement {
       }
       if (await this._sendDoublePickEmail(player, title, message, true)) sent += 1;
     }
-    if (!quiet) window.alert(sent ? `Email sent to ${sent} player${sent === 1 ? "" : "s"}.` : "No matching player email entities were available.");
-    return sent;
+    window.alert(sent ? `Email sent to ${sent} player${sent === 1 ? "" : "s"}.` : "No matching player email entities were available.");
+  }
+
+  async _emailDoublePickPlayer(playerId, kind) {
+    const game = this._doublePickGame, round = this._doublePickRound();
+    const player = game?.players?.find((item) => item.id === playerId);
+    if (!game || !round || !player) return;
+    const payer = game.players.find((item) => item.id === round.payerId);
+    let title, message;
+    if (kind === "reminder") {
+      title = `${game.name} · Round ${game.round} picks`;
+      message = `Please choose your ${game.pickCount || 2} teams for Round ${game.round}. The round covers ${round.startDate} to ${round.endDate}.${player.id === round.payerId ? "\n\nIt is your turn to place and pay for this round's bet." : `\n\n${payer?.name || "The selected player"} is paying this round.`}`;
+    } else if (kind === "confirmation") {
+      title = `${game.name} · Round ${game.round} selections`;
+      message = `The selections are confirmed:\n\n${this._doublePickEmailSummary(false)}`;
+    } else {
+      title = `${game.name} · Round ${game.round} results`;
+      message = `The round results are in:\n\n${this._doublePickEmailSummary(true)}`;
+    }
+    if (await this._sendDoublePickEmail(player, title, message)) window.alert(`${kind === "reminder" ? "Pick reminder" : kind === "confirmation" ? "Confirmed picks" : "Round results"} emailed to ${player.name}.`);
   }
 
   _doublePickSharePayload() {
@@ -1575,23 +1787,24 @@ class FootballHubPanel extends HTMLElement {
     const catalogue = (this._statusInfo().available_competitions || []).slice().sort((a, b) => String(a.country).localeCompare(String(b.country)) || String(a.name).localeCompare(String(b.name)));
     if (!game) {
       const countries = [...new Set(catalogue.map((item) => item.country).filter(Boolean))];
-      const defaults = new Set(["premier_league", "championship", "league_one", "league_two"]);
-      return `<section class="page-heading"><div><span class="eyebrow">NEW FOOTBALL HUB GAME</span><h1>Acca League</h1><p>Choose your teams each round. A win earns 3 points, a draw 1 and a loss 0.</p></div></section><section class="page-card double-pick-setup"><label>Game name<input id="dp-game-name" value="Acca League" maxlength="60"></label><label>Teams per player<input id="dp-pick-count" type="number" min="1" max="20" value="2"></label><label>Players and emails<textarea id="dp-player-names" rows="4" placeholder="One per line: Name,email">Adrian\nFriend</textarea></label><div><h3>Choose leagues and cups</h3><p>Premier League through League Two are selected initially. Add or remove any league or cup.</p></div><div class="dp-competition-groups">${countries.map((country) => `<fieldset><legend>${this._escape(country)}</legend>${catalogue.filter((item) => item.country === country).map((item) => `<label><input type="checkbox" class="dp-competition-check" value="${this._escape(item.key)}" ${defaults.has(item.key) ? "checked" : ""}><span>${this._escape(item.name)} <small>${item.type === "cup" ? "Cup" : "League"}</small></span></label>`).join("")}</fieldset>`).join("")}</div><button id="dp-create" class="lms-create-button">Create Acca League</button></section>`;
+      const defaults = new Set();
+      return `<section class="page-heading acca-heading"><div><span class="eyebrow">FOOTBALL HUB GAME</span><h1>Acca League</h1><p>Build a points competition around the fixtures you already follow.</p></div><div class="count-badge">3 · 1 · 0</div></section><section class="page-card acca-setup"><header class="acca-section-head"><ha-icon icon="mdi:trophy-variant-outline"></ha-icon><div><span class="eyebrow">GAME DETAILS</span><h2>Create your Acca League</h2><p>Choose the number of teams each player picks in every round.</p></div></header><div class="acca-form-grid"><label><span>Game name</span><input id="dp-game-name" value="Acca League" maxlength="60"></label><label><span>Teams per player</span><input id="dp-pick-count" type="number" min="1" max="20" value="2"></label></div><section class="acca-player-setup"><div class="acca-section-title"><div><span class="eyebrow">PLAYERS & EMAIL</span><h3>Add everyone taking part</h3></div><small>Add one player per line. Emails are optional and can be added or changed later.</small></div><textarea id="dp-player-names" rows="5" placeholder="Adrian,adrian@example.com\nDave,dave@example.com">Adrian\nFriend</textarea><div class="acca-format-help"><ha-icon icon="mdi:information-outline"></ha-icon><span>Use <b>Name,email</b> on each line. A name on its own is fine.</span></div></section><section class="acca-competitions"><div class="acca-section-title"><div><span class="eyebrow">FIXTURE SOURCES</span><h3>Choose leagues and cups</h3></div><small>Premier League through League Two are selected initially.</small></div><div class="dp-competition-groups">${countries.map((country) => `<fieldset><legend><ha-icon icon="mdi:flag-outline"></ha-icon>${this._escape(country)}</legend>${catalogue.filter((item) => item.country === country).map((item) => `<label><input type="checkbox" class="dp-competition-check" value="${this._escape(item.key)}" ${defaults.has(item.key) ? "checked" : ""}><span><b>${this._escape(item.name)}</b><small>${item.type === "cup" ? "Cup" : "League"}</small></span></label>`).join("")}</fieldset>`).join("")}</div></section><div class="acca-create-bar"><div><strong>Ready to begin?</strong><small>You can add player emails after setup.</small></div><button id="dp-create" class="lms-create-button"><ha-icon icon="mdi:plus-circle-outline"></ha-icon>Create Acca League</button></div></section>`;
     }
     this._captureDoublePickData();
     const round = this._doublePickRound();
     const fixtures = this._doublePickRoundFixtures(round);
-    const optionGroups = (game.competitions || []).map((competition) => {
+    const alphabetical = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+    const optionGroups = this._doublePickRoundCompetitions(round).sort((a, b) => alphabetical.compare(`${a.country} ${a.name}`, `${b.country} ${b.name}`)).map((competition) => {
       const cache = this._doublePickCache?.[competition.key];
-      const roundTeams = [...new Set(fixtures.filter((fixture) => fixture.competitionKey === competition.key).flatMap((fixture) => [fixture.home_team, fixture.away_team]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+      const roundTeams = [...new Set(fixtures.filter((fixture) => fixture.competitionKey === competition.key).flatMap((fixture) => [fixture.home_team, fixture.away_team]).filter(Boolean))].sort((a, b) => alphabetical.compare(a, b));
       return { ...competition, teams: roundTeams, loaded: Boolean(cache), fixtureCount: fixtures.filter((fixture) => fixture.competitionKey === competition.key).length };
     });
-    const pickOptions = (selected = "") => `<option value="">Choose a team</option>${optionGroups.filter((group) => group.teams.length).map((group) => `<optgroup label="${this._escape(`${group.country} · ${group.name}`)}">${group.teams.map((team) => { const value = `${group.key}|||${team}`; return `<option value="${this._escape(value)}" ${value === selected ? "selected" : ""}>${this._escape(team)}</option>`; }).join("")}</optgroup>`).join("")}`;
+    const pickOptions = (selected = "") => `<option value="">Choose a team</option>${optionGroups.filter((group) => group.teams.length).map((group) => `<optgroup label="${this._escape(`── ${String(group.country || "").toUpperCase()} · ${String(group.name || "").toUpperCase()} · ${group.fixtureCount} FIXTURE${group.fixtureCount === 1 ? "" : "S"} ──`)}">${group.teams.map((team) => { const value = `${group.key}|||${team}`; return `<option value="${this._escape(value)}" ${value === selected ? "selected" : ""}>${this._escape(team)}</option>`; }).join("")}</optgroup>`).join("")}`;
     const payer = game.players.find((player) => player.id === round.payerId);
     const previousRounds = Object.values(game.rounds || {}).filter((item) => Number(item.number) < Number(game.round)).sort((a, b) => b.number - a.number);
     const lastPaid = previousRounds.map((item) => game.players.find((player) => player.id === item.payerId)?.name).find(Boolean) || "No previous round";
     const table = [...game.players].sort((a, b) => Number(b.points || 0) - Number(a.points || 0) || a.name.localeCompare(b.name));
-    const playerRows = game.players.map((player) => { const picks = round.picks?.[player.id] || Array(Number(game.pickCount || 2)).fill(""); const results = round.results?.[player.id] || {}; return `<article class="page-card dp-player-card"><header><div><span class="eyebrow">PLAYER</span><h3>${this._escape(player.name)}</h3><small>${this._escape(player.email || "No email added")}</small></div><strong>${Number(player.points || 0)} pts</strong></header><div class="dp-picks">${Array.from({ length: Number(game.pickCount || 2) }, (_, slot) => `<label>Pick ${slot + 1}<select class="dp-pick" data-player-id="${this._escape(player.id)}" data-slot="${slot}" ${round.settled ? "disabled" : ""}>${pickOptions(picks[slot])}</select>${results[slot] ? `<span class="dp-pick-result ${results[slot].outcome.toLowerCase()}">${this._escape(`${results[slot].outcome} · ${results[slot].score} vs ${results[slot].opponent} · ${results[slot].points} pts · ${results[slot].kickoff ? new Date(results[slot].kickoff * 1000).toLocaleString() : "Date unavailable"}`)}</span>` : picks[slot] ? `<span class="dp-pick-result waiting">Waiting for result</span>` : ""}</label>`).join("")}</div></article>`; }).join("");
+    const playerRows = game.players.map((player) => { const picks = round.picks?.[player.id] || Array(Number(game.pickCount || 2)).fill(""); const results = round.results?.[player.id] || {}; return `<article class="page-card dp-player-card"><header><div class="dp-player-identity"><span class="dp-avatar">${this._escape(String(player.name || "P").slice(0,1).toUpperCase())}</span><div><span class="eyebrow">PLAYER</span><h3>${this._escape(player.name)}</h3><span class="dp-email-status ${player.email ? "ready" : "missing"}"><ha-icon icon="mdi:${player.email ? "email-check-outline" : "email-plus-outline"}"></ha-icon>${this._escape(player.email || "No email added")}</span></div></div><div class="dp-player-actions"><strong>${Number(player.points || 0)} pts</strong><button class="dp-edit-email" data-player-id="${this._escape(player.id)}"><ha-icon icon="mdi:email-edit-outline"></ha-icon>${player.email ? "Edit email" : "Add email"}</button></div></header><div class="dp-picks">${Array.from({ length: Number(game.pickCount || 2) }, (_, slot) => `<label><span>Pick ${slot + 1}</span><select class="dp-pick" data-player-id="${this._escape(player.id)}" data-slot="${slot}" ${round.settled ? "disabled" : ""}>${pickOptions(picks[slot])}</select>${results[slot] ? `<span class="dp-pick-result ${results[slot].outcome.toLowerCase()}">${this._escape(`${results[slot].outcome} · ${results[slot].score} vs ${results[slot].opponent} · ${results[slot].points} pts · ${results[slot].kickoff ? new Date(results[slot].kickoff * 1000).toLocaleString() : "Date unavailable"}`)}</span>` : picks[slot] ? `<span class="dp-pick-result waiting">Waiting for result</span>` : ""}</label>`).join("")}</div><div class="dp-player-email-actions"><span>Send only to ${this._escape(player.name)}</span><button class="dp-email-player" data-player-id="${this._escape(player.id)}" data-email-kind="reminder" ${player.email ? "" : "disabled"}>Pick reminder</button><button class="dp-email-player" data-player-id="${this._escape(player.id)}" data-email-kind="confirmation" ${player.email ? "" : "disabled"}>Team picks</button><button class="dp-email-player" data-player-id="${this._escape(player.id)}" data-email-kind="results" ${player.email ? "" : "disabled"}>Results</button></div></article>`; }).join("");
     const history = Object.values(game.rounds || {}).sort((a, b) => b.number - a.number).map((item) => { const paid = game.players.find((player) => player.id === item.payerId)?.name || "Not recorded"; return `<article class="page-card dp-history-card"><header><strong>Round ${item.number}</strong><span>${this._escape(item.startDate)} to ${this._escape(item.endDate)}</span><b>Paid by ${this._escape(paid)}</b></header>${game.players.map((player) => { const picks = item.picks?.[player.id] || []; const results = item.results?.[player.id] || {}; const earned = Object.values(results).reduce((total, result) => total + Number(result.points || 0), 0); return `<div><strong>${this._escape(player.name)}</strong><span>${picks.map((value, index) => { const team = String(value || "").split("|||").slice(1).join("|||") || "No pick"; const result = results[index]; return `${team}${result ? ` (${result.outcome}, ${result.points} pts)` : ""}`; }).join(" · ")}</span><b>${earned} pts</b></div>`; }).join("")}</article>`; }).join("");
     return `<section class="page-heading"><div><span class="eyebrow">TWO PICKS · 3/1/0 SCORING</span><h1>${this._escape(game.name)}</h1><p>Round ${game.round} · ${this._escape(round.startDate)} to ${this._escape(round.endDate)}</p></div><div class="count-badge">${game.players.length} players</div></section><section class="dp-summary-grid"><article class="page-card"><span>Paying this round</span><strong>${this._escape(payer?.name || "Choose payer")}</strong><small>Last paid: ${this._escape(lastPaid)}</small></article><article class="page-card"><span>Round fixtures</span><strong>${fixtures.length}</strong><small>${optionGroups.filter((group) => group.loaded).length}/${game.competitions.length} competitions loaded</small></article><article class="page-card"><span>Scoring</span><strong>3 · 1 · 0</strong><small>Win · Draw · Loss</small></article></section><nav class="lms-page-tabs"><button class="${this._doublePickView === "picks" ? "active" : ""}" data-dp-view="picks">Picks</button><button class="${this._doublePickView === "fixtures" ? "active" : ""}" data-dp-view="fixtures">Fixtures</button><button class="${this._doublePickView === "table" ? "active" : ""}" data-dp-view="table">Table</button><button class="${this._doublePickView === "history" ? "active" : ""}" data-dp-view="history">History</button></nav><section class="page-card dp-round-controls"><label>Round start<input id="dp-round-start" type="date" value="${this._escape(round.startDate)}"></label><label>Round end<input id="dp-round-end" type="date" value="${this._escape(round.endDate)}"></label><label>Who paid?<select id="dp-payer">${game.players.map((player) => `<option value="${this._escape(player.id)}" ${player.id === round.payerId ? "selected" : ""}>${this._escape(player.name)}</option>`).join("")}</select></label><button id="dp-check-results">Check results</button><button id="dp-next-round" ${round.settled ? "" : "disabled"}>Start next round</button></section><section class="page-card dp-load-data"><header><div><span class="eyebrow">SELECTED COMPETITIONS</span><h2>Load fixtures and teams</h2></div><button id="dp-delete" class="danger">Delete game</button></header><div>${optionGroups.map((group) => `<button class="dp-load-competition ${this._doublePickActiveCompetition === group.key ? "active" : ""}" data-competition="${this._escape(group.key)}"><span>${this._escape(group.country)} · ${this._escape(group.name)}</span><b>${group.loaded ? `${group.fixtureCount} round fixtures` : "Load data"}</b></button>`).join("")}</div></section>${this._doublePickView === "picks" ? `<section class="dp-player-grid">${playerRows}</section><section class="page-card dp-add-player"><input id="dp-new-player" placeholder="Add another player"><button id="dp-add-player">Add player</button></section>` : this._doublePickView === "fixtures" ? `<section class="page-card"><h2>Round ${game.round} fixtures</h2><div class="match-list">${fixtures.length ? fixtures.map((fixture) => this._matchCard(fixture, ["FT","AET","PEN"].includes(String(fixture.status_short || "").toUpperCase()) ? "result" : undefined)).join("") : `<div class="empty">Load the selected competitions or adjust the round dates.</div>`}</div></section>` : this._doublePickView === "table" ? `<section class="page-card lms-standings"><div class="lms-standings-table"><div class="lms-standings-row heading"><span>#</span><span>Player</span><span>Points</span><span>Current picks</span><span>Paid rounds</span><span>Status</span></div>${table.map((player, index) => `<div class="lms-standings-row"><span>${index + 1}</span><strong>${this._escape(player.name)}</strong><b>${Number(player.points || 0)}</b><span>${(round.picks?.[player.id] || []).map((value) => String(value).split("|||").slice(1).join("|||")).filter(Boolean).join(" · ") || "Not picked"}</span><span>${Object.values(game.rounds || {}).filter((item) => item.payerId === player.id).length}</span><span>${Object.keys(round.results?.[player.id] || {}).length}/2 results</span></div>`).join("")}</div></section>` : `<section class="dp-history">${history}</section>`}`;
   }
@@ -1688,11 +1901,43 @@ class FootballHubPanel extends HTMLElement {
     const game = this._doublePickGame;
     let html = this._doublePickLeaguePage();
     if (!game) return html;
-    const sharePanel = `<section class="page-card lms-share"><ha-icon icon="mdi:open-in-new"></ha-icon><div><span class="eyebrow">EXTERNAL ACCA LEAGUE</span><strong>${game.shareUrl ? "Public results page is live" : "Create a link for players"}</strong><small>Share picks, fixture dates, results and the points table. Player emails remain private in Home Assistant.</small>${game.shareUrl ? `<a href="${this._escape(game.shareUrl)}" target="_blank" rel="noopener noreferrer">${this._escape(game.shareUrl)}</a>` : ""}</div>${game.shareUrl ? `<button id="dp-copy-share">Copy link</button><button id="dp-sync-share">Update now</button>` : `<button id="dp-create-share">Create external link</button>`}</section>`;
-    html = html.replace("</section><section class=\"dp-summary-grid\">", `</section>${sharePanel}<section class="dp-summary-grid">`);
+    if (!game.emailServiceInherited) {
+      game.emailNotifyService = this._lmsConfiguredEmailService();
+      game.emailServiceInherited = true;
+      this._saveDoublePickGame();
+    }
+    const services = this._lmsEmailServices();
+    const selectedService = String(game.emailNotifyService || "__auto__");
+    const catalogue = (this._statusInfo().available_competitions || []).slice().sort((a, b) => String(a.country).localeCompare(String(b.country)) || String(a.name).localeCompare(String(b.name)));
+    const countries = [...new Set(catalogue.map((item) => item.country).filter(Boolean))];
+    const selectedKeys = new Set(this._doublePickRoundCompetitions().map((item) => item.key));
+    const roundFixtures = this._doublePickRoundFixtures();
+    const fixtureGroups = this._doublePickRoundCompetitions().map((competition) => ({ competition, fixtures: roundFixtures.filter((fixture) => fixture.competitionKey === competition.key) })).filter((group) => group.fixtures.length);
+    const fixtureBoard = `<section class="page-card acca-fixture-board"><header class="acca-section-head"><ha-icon icon="mdi:calendar-month-outline"></ha-icon><div><span class="eyebrow">FIXTURES AVAILABLE TO PICK</span><h2>${this._escape(this._doublePickRound()?.startDate || "")} to ${this._escape(this._doublePickRound()?.endDate || "")}</h2><p>Only the teams shown below appear in the player pick lists.</p></div><strong>${roundFixtures.length} matches</strong></header>${fixtureGroups.length ? `<div class="acca-fixture-groups">${fixtureGroups.map(({ competition, fixtures }) => `<section><div class="acca-fixture-group-title"><strong>${this._escape(competition.country)} · ${this._escape(competition.name)}</strong><span>${fixtures.length} match${fixtures.length === 1 ? "" : "es"}</span></div>${fixtures.map((fixture) => { const status = String(fixture.status_short || fixture.status || "").toUpperCase(); const finished = ["FT","AET","PEN","AWD","WO"].includes(status); const kickoff = this._lmsFixtureTimestamp(fixture); return `<article class="acca-fixture-row ${finished ? "finished" : "upcoming"}"><time>${kickoff ? new Date(kickoff * 1000).toLocaleString([], { weekday:"short", day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }) : "Time TBC"}</time><span class="home">${this._escape(fixture.home_team || "Home TBC")}</span><b>${finished ? `${fixture.home_goals ?? 0} - ${fixture.away_goals ?? 0}` : "v"}</b><span>${this._escape(fixture.away_team || "Away TBC")}</span><em>${finished ? "Finished" : status || "Scheduled"}</em></article>`; }).join("")}</section>`).join("")}</div>` : `<div class="empty"><strong>No fixtures loaded for these dates.</strong><span>Use Load fixtures and teams below for each selected competition.</span></div>`}</section>`;
+    const competitionEditor = `<details class="page-card acca-league-editor"><summary><span><span class="eyebrow">ROUND ${game.round} LEAGUES & CUPS</span><strong>${selectedKeys.size} selected</strong><small>Add or remove competitions for this round only. Finished-round history is unchanged.</small></span><ha-icon icon="mdi:chevron-down"></ha-icon></summary><div class="dp-competition-groups">${countries.map((country) => `<fieldset><legend>${this._escape(country)}</legend>${catalogue.filter((item) => item.country === country).map((item) => `<label><input type="checkbox" class="dp-game-competition-check" value="${this._escape(item.key)}" ${selectedKeys.has(item.key) ? "checked" : ""}><span><b>${this._escape(item.name)}</b><small>${item.type === "cup" ? "Cup" : "League"}</small></span></label>`).join("")}</fieldset>`).join("")}</div><button id="dp-save-competitions"><ha-icon icon="mdi:content-save-check-outline"></ha-icon>Save Round ${game.round} competitions</button></details>`;
+    const sharePanel = `<section class="page-card lms-share acca-share"><ha-icon icon="mdi:share-variant-outline"></ha-icon><div><span class="eyebrow">EXTERNAL ACCA LEAGUE</span><strong>${game.shareUrl ? "Public results page is live" : "Create a link for players"}</strong><small>Share picks, fixture dates, results and the points table. Player emails remain private in Home Assistant.</small>${game.shareUrl ? `<a href="${this._escape(game.shareUrl)}" target="_blank" rel="noopener noreferrer">${this._escape(game.shareUrl)}</a>` : ""}</div>${game.shareUrl ? `<button id="dp-copy-share"><ha-icon icon="mdi:content-copy"></ha-icon>Copy link</button><button id="dp-sync-share"><ha-icon icon="mdi:sync"></ha-icon>Update now</button>` : `<button id="dp-create-share"><ha-icon icon="mdi:link-plus"></ha-icon>Create external link</button>`}</section>`;
+    html = html.replace("</section><section class=\"dp-summary-grid\">", `</section>${sharePanel}${competitionEditor}<section class="dp-summary-grid">`);
     html = html.replace("TWO PICKS · 3/1/0 SCORING", `${game.pickCount || 2} PICKS · 3/1/0 SCORING`).replaceAll("/2 results", `/${game.pickCount || 2} results`);
     html = html.replace("<button id=\"dp-check-results\">", `<label>Stake £<input id="dp-stake" type="number" min="0" step="0.01" value="${Number(this._doublePickRound()?.stake || 0)}"></label><label>Return £<input id="dp-return" type="number" min="0" step="0.01" value="${Number(this._doublePickRound()?.returnAmount || 0)}"></label><button id="dp-email-reminders">Email pick reminder</button><button id="dp-email-confirmation">Email confirmed picks</button><button id="dp-email-results">Email results</button><button id="dp-check-results">`);
     html = html.replace("<input id=\"dp-new-player\" placeholder=\"Add another player\">", `<input id="dp-new-player" placeholder="Player name"><input id="dp-new-email" type="email" placeholder="Player email">`);
+    html = html.replace('<section class="page-card dp-round-controls">', `<section class="page-card acca-control-panel"><header class="acca-section-head"><ha-icon icon="mdi:calendar-clock-outline"></ha-icon><div><span class="eyebrow">ROUND CONTROL</span><h2>Manage Round ${game.round}</h2><p>Set the fixture window, payer and bet totals, then check Football Hub results.</p></div></header><div class="dp-round-controls">`);
+    html = html.replace('<button id="dp-email-reminders">Email pick reminder</button><button id="dp-email-confirmation">Email confirmed picks</button><button id="dp-email-results">Email results</button>', '');
+    html = html.replace('</section><section class="page-card dp-load-data">', `</div><div class="acca-email-panel"><div><span class="eyebrow">PLAYER EMAILS</span><strong>Send picks and results</strong><small>Uses the same Home Assistant email service configured for LMS.</small></div><label><span>Email service</span><select id="dp-email-service">${services.map((item) => `<option value="${this._escape(item.value)}" ${selectedService === item.value ? "selected" : ""}>${this._escape(item.label)}</option>`).join("")}</select></label><div class="acca-email-actions"><button id="dp-email-reminders"><ha-icon icon="mdi:email-fast-outline"></ha-icon>Pick reminder</button><button id="dp-email-confirmation"><ha-icon icon="mdi:email-check-outline"></ha-icon>Confirmed picks</button><button id="dp-email-results"><ha-icon icon="mdi:email-newsletter"></ha-icon>Round results</button></div></div></section><section class="page-card dp-load-data">`);
+    html = html.replace('<section class="dp-player-grid">', `${fixtureBoard}<section class="dp-player-grid">`);
+    html = html.replace('<button id="dp-delete" class="danger">', '<button id="dp-load-all"><ha-icon icon="mdi:database-sync-outline"></ha-icon>Load all selected</button><button id="dp-delete" class="danger">');
+    if (this._doublePickView === "fixtures") {
+      const roundSections = Object.values(game.rounds || {}).sort((a, b) => Number(b.number) - Number(a.number)).map((item) => {
+        const available = this._doublePickRoundFixtures(item);
+        const selections = (game.players || []).flatMap((player) => (item.picks?.[player.id] || []).map((value, slot) => ({ player, value, slot }))).filter((entry) => entry.value).map((entry) => {
+          const [competitionKey, ...parts] = String(entry.value).split("|||");
+          const team = parts.join("|||");
+          const fixture = available.find((match) => match.competitionKey === competitionKey && (match.home_team === team || match.away_team === team));
+          return { ...entry, team, fixture };
+        });
+        return `<section class="page-card acca-picked-round"><header><div><span class="eyebrow">ROUND ${item.number}</span><h2>${this._escape(item.startDate)} to ${this._escape(item.endDate)}</h2></div><strong>${selections.length} selection${selections.length === 1 ? "" : "s"}</strong></header>${selections.length ? `<div>${selections.map(({ player, team, fixture, slot }) => { const status = String(fixture?.status_short || fixture?.status || "").toUpperCase(); const finished = ["FT","AET","PEN","AWD","WO"].includes(status); const home = fixture?.home_team === team; const opponent = fixture ? (home ? fixture.away_team : fixture.home_team) : "Fixture unavailable"; const kickoff = fixture ? this._lmsFixtureTimestamp(fixture) : 0; return `<article class="acca-picked-fixture"><span class="dp-avatar">${this._escape(String(player.name || "P").slice(0,1).toUpperCase())}</span><div><small>${this._escape(player.name)} · Pick ${slot + 1}</small><strong>${this._escape(team)}</strong><span>vs ${this._escape(opponent)}</span></div><div><small>${this._escape(fixture?.competitionName || "")}</small><time>${kickoff ? new Date(kickoff * 1000).toLocaleString([], { weekday:"short", day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }) : "Date unavailable"}</time></div><b>${finished ? `${fixture.home_goals ?? 0} - ${fixture.away_goals ?? 0}` : status || "Scheduled"}</b></article>`; }).join("")}</div>` : `<div class="empty">No teams were selected in this round.</div>`}</section>`;
+      }).join("");
+      html = html.replace(/<section class="page-card"><h2>Round \d+ fixtures<\/h2>[\s\S]*<\/section>$/, `<section class="acca-picked-fixtures">${roundSections}</section>`);
+    }
     return html;
   }
 
@@ -3536,7 +3781,22 @@ class FootballHubPanel extends HTMLElement {
     this.shadowRoot.querySelector("#dp-create")?.addEventListener("click", () => this._createDoublePickGame(this.shadowRoot.querySelector("#dp-game-name")?.value, [...this.shadowRoot.querySelectorAll(".dp-competition-check:checked")].map((input) => input.value), this.shadowRoot.querySelector("#dp-player-names")?.value, this.shadowRoot.querySelector("#dp-pick-count")?.value));
     this.shadowRoot.querySelectorAll("[data-dp-view]").forEach((button) => button.addEventListener("click", () => { this._doublePickView = button.dataset.dpView; localStorage.setItem("football_hub_double_pick_view", this._doublePickView); this._render(); }));
     this.shadowRoot.querySelectorAll(".dp-load-competition").forEach((button) => button.addEventListener("click", () => this._loadDoublePickCompetition(button.dataset.competition)));
+    this.shadowRoot.querySelector("#dp-load-all")?.addEventListener("click", () => this._loadAllDoublePickCompetitions());
+    this.shadowRoot.querySelector("#dp-save-competitions")?.addEventListener("click", () => this._updateDoublePickCompetitions([...this.shadowRoot.querySelectorAll(".dp-game-competition-check:checked")].map((input) => input.value)));
     this.shadowRoot.querySelectorAll(".dp-pick").forEach((select) => select.addEventListener("change", () => this._setDoublePick(select.dataset.playerId, select.dataset.slot, select.value)));
+    this.shadowRoot.querySelectorAll(".dp-edit-email").forEach((button) => button.addEventListener("click", () => {
+      const player = this._doublePickGame?.players?.find((item) => item.id === button.dataset.playerId);
+      if (!player) return;
+      const email = window.prompt(`Email address for ${player.name}:`, player.email || "");
+      if (email === null) return;
+      const clean = String(email).trim();
+      if (clean && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) { window.alert("Enter a valid email address."); return; }
+      player.email = clean;
+      this._saveDoublePickGame();
+      this._render();
+    }));
+    this.shadowRoot.querySelectorAll(".dp-email-player").forEach((button) => button.addEventListener("click", () => this._emailDoublePickPlayer(button.dataset.playerId, button.dataset.emailKind)));
+    this.shadowRoot.querySelector("#dp-email-service")?.addEventListener("change", (event) => { this._doublePickGame.emailNotifyService = event.target.value; this._doublePickGame.emailServiceInherited = true; this._saveDoublePickGame(); });
     [["#dp-round-start", "startDate"], ["#dp-round-end", "endDate"], ["#dp-payer", "payerId"]].forEach(([selector, field]) => this.shadowRoot.querySelector(selector)?.addEventListener("change", (event) => { const round = this._doublePickRound(); round[field] = event.target.value; this._saveDoublePickGame(); this._render(); }));
     [["#dp-stake", "stake"], ["#dp-return", "returnAmount"]].forEach(([selector, field]) => this.shadowRoot.querySelector(selector)?.addEventListener("change", (event) => { this._doublePickRound()[field] = Math.max(0, Number(event.target.value) || 0); this._saveDoublePickGame(); this._render(); }));
     this.shadowRoot.querySelector("#dp-check-results")?.addEventListener("click", () => this._settleDoublePickRound());
@@ -3902,6 +4162,90 @@ class FootballHubPanel extends HTMLElement {
       .dp-load-data > div { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
       .dp-load-competition { display:grid; gap:3px; text-align:left; }
       .dp-history-card > div { display:grid; grid-template-columns:minmax(120px,.4fr) minmax(240px,1fr) auto; gap:12px; padding:10px 0; border-top:1px solid var(--line); }
+      .acca-setup { display:grid; gap:22px; padding:24px; overflow:hidden; }
+      .acca-section-head { display:flex; align-items:center; gap:15px; padding-bottom:18px; border-bottom:1px solid var(--line); }
+      .acca-section-head > ha-icon { --mdc-icon-size:30px; display:grid; place-items:center; width:54px; height:54px; border-radius:15px; color:var(--fh-cyan); background:linear-gradient(145deg,rgba(0,183,255,.18),rgba(49,233,129,.12)); border:1px solid rgba(0,183,255,.3); }
+      .acca-section-head h2, .acca-section-head p, .acca-section-title h3 { margin:3px 0 0; }
+      .acca-section-head p, .acca-section-title > small { color:var(--secondary-text-color); }
+      .acca-form-grid { display:grid; grid-template-columns:minmax(0,2fr) minmax(180px,.6fr); gap:14px; }
+      .acca-form-grid label, .acca-player-setup, .acca-competitions, .dp-add-player label, .acca-email-panel label { display:grid; gap:8px; }
+      .acca-form-grid label > span, .dp-add-player label > span, .acca-email-panel label > span { color:var(--secondary-text-color); font-size:.78rem; font-weight:850; letter-spacing:.05em; }
+      .acca-setup input, .acca-setup textarea, .acca-control-panel input, .acca-control-panel select, .dp-add-player input, .dp-player-card select { width:100%; min-height:48px; border:1px solid var(--fh-border); border-radius:11px; padding:0 14px; color:#fff; background:linear-gradient(180deg,rgba(4,25,46,.96),rgba(1,14,29,.96)); outline:none; }
+      .acca-setup textarea { min-height:132px; padding:14px; resize:vertical; font:inherit; }
+      .acca-setup input:focus, .acca-setup textarea:focus, .acca-control-panel input:focus, .acca-control-panel select:focus, .dp-add-player input:focus, .dp-player-card select:focus { border-color:var(--fh-cyan); box-shadow:0 0 0 3px rgba(0,183,255,.12); }
+      .acca-player-setup, .acca-competitions { padding:18px; border:1px solid var(--line); border-radius:14px; background:rgba(0,19,38,.54); }
+      .acca-section-title { display:flex; justify-content:space-between; align-items:end; gap:18px; margin-bottom:12px; }
+      .acca-format-help { display:flex; align-items:center; gap:8px; color:var(--secondary-text-color); font-size:.8rem; }
+      .acca-format-help ha-icon { color:var(--fh-cyan); }
+      .acca-create-bar { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:18px; border-radius:14px; background:linear-gradient(100deg,rgba(0,183,255,.12),rgba(49,233,129,.1)); border:1px solid rgba(49,233,129,.28); }
+      .acca-create-bar > div { display:grid; gap:4px; }
+      .acca-create-bar small { color:var(--secondary-text-color); }
+      .acca-create-bar button, .acca-share button, .acca-control-panel button, .dp-edit-email { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:0 15px; border:1px solid rgba(0,183,255,.48); border-radius:10px; color:#fff; background:rgba(0,126,190,.28); font-weight:850; cursor:pointer; }
+      .dp-competition-groups fieldset { padding:13px; background:rgba(1,14,29,.72); }
+      .dp-competition-groups legend { display:flex; align-items:center; gap:6px; padding:0 8px; color:#fff; font-weight:900; }
+      .dp-competition-groups legend ha-icon { --mdc-icon-size:16px; color:var(--fh-cyan); }
+      .dp-competition-groups fieldset label { display:flex; align-items:center; gap:9px; padding:8px; border-radius:8px; cursor:pointer; }
+      .dp-competition-groups fieldset label:hover { background:rgba(0,183,255,.08); }
+      .dp-competition-groups fieldset label span { display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%; }
+      .dp-competition-groups fieldset small { color:var(--secondary-text-color); }
+      .acca-control-panel { display:grid; gap:18px; margin:14px 0; }
+      .acca-league-editor { margin:14px 0; }
+      .acca-league-editor summary { display:flex; justify-content:space-between; align-items:center; gap:14px; cursor:pointer; list-style:none; }
+      .acca-league-editor summary::-webkit-details-marker { display:none; }
+      .acca-league-editor summary > span { display:grid; gap:4px; }
+      .acca-league-editor summary small { color:var(--secondary-text-color); }
+      .acca-league-editor[open] summary { padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--line); }
+      .acca-league-editor[open] summary > ha-icon { transform:rotate(180deg); }
+      .acca-league-editor > button { display:inline-flex; align-items:center; gap:7px; min-height:44px; margin-top:14px; padding:0 16px; border:1px solid rgba(49,233,129,.45); border-radius:10px; color:#fff; background:rgba(49,233,129,.14); font-weight:900; cursor:pointer; }
+      .acca-fixture-board { margin:14px 0; }
+      .acca-fixture-board > .acca-section-head > strong { margin-left:auto; padding:8px 12px; border-radius:999px; color:var(--fh-cyan); background:rgba(0,183,255,.1); border:1px solid rgba(0,183,255,.25); white-space:nowrap; }
+      .acca-fixture-groups { display:grid; gap:16px; margin-top:18px; }
+      .acca-fixture-groups > section { overflow:hidden; border:1px solid var(--line); border-radius:13px; background:rgba(1,14,29,.64); }
+      .acca-fixture-group-title { display:flex; justify-content:space-between; gap:12px; padding:12px 14px; background:rgba(0,126,190,.1); border-bottom:1px solid var(--line); }
+      .acca-fixture-group-title span { color:var(--secondary-text-color); font-size:.78rem; }
+      .acca-fixture-row { display:grid; grid-template-columns:150px minmax(130px,1fr) 54px minmax(130px,1fr) 85px; align-items:center; gap:10px; padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+      .acca-fixture-row:last-child { border-bottom:0; }
+      .acca-fixture-row time, .acca-fixture-row em { color:var(--secondary-text-color); font-size:.76rem; font-style:normal; }
+      .acca-fixture-row .home { text-align:right; }
+      .acca-fixture-row b { text-align:center; color:var(--fh-cyan); font-size:1.05rem; }
+      .acca-fixture-row.finished { background:rgba(49,233,129,.035); }
+      .acca-fixture-row.finished em { color:#7df2ae; }
+      .acca-picked-fixtures { display:grid; gap:14px; }
+      .acca-picked-round > header { display:flex; justify-content:space-between; align-items:center; gap:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+      .acca-picked-round > header h2 { margin:4px 0 0; }
+      .acca-picked-round > div { display:grid; }
+      .acca-picked-fixture { display:grid; grid-template-columns:46px minmax(210px,1fr) minmax(180px,.7fr) 90px; align-items:center; gap:13px; padding:14px 0; border-bottom:1px solid var(--line); }
+      .acca-picked-fixture:last-child { border-bottom:0; }
+      .acca-picked-fixture > div { display:grid; gap:4px; }
+      .acca-picked-fixture small, .acca-picked-fixture span, .acca-picked-fixture time { color:var(--secondary-text-color); font-size:.78rem; }
+      .acca-picked-fixture b { text-align:center; padding:8px; border-radius:9px; color:var(--fh-cyan); background:rgba(0,183,255,.1); }
+      .acca-control-panel .dp-round-controls { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); align-items:end; gap:12px; }
+      .acca-control-panel .dp-round-controls > button { min-height:48px; }
+      .acca-email-panel { display:grid; grid-template-columns:minmax(210px,1fr) minmax(230px,1fr) auto; align-items:end; gap:14px; padding:18px; border:1px solid rgba(0,183,255,.24); border-radius:13px; background:rgba(0,126,190,.08); }
+      .acca-email-panel > div:first-child { display:grid; gap:4px; }
+      .acca-email-panel small { color:var(--secondary-text-color); }
+      .acca-email-actions { display:flex; flex-wrap:wrap; gap:8px; }
+      .dp-player-card { overflow:hidden; }
+      .dp-player-card header { align-items:center; padding-bottom:14px; border-bottom:1px solid var(--line); }
+      .dp-player-identity, .dp-player-actions { display:flex; align-items:center; gap:12px; }
+      .dp-player-identity > div { display:grid; gap:3px; }
+      .dp-avatar { display:grid; place-items:center; width:46px; height:46px; border-radius:50%; color:#001526; background:linear-gradient(135deg,var(--fh-cyan),var(--accent)); font-weight:950; font-size:1.15rem; }
+      .dp-email-status { display:flex; align-items:center; gap:5px; color:var(--secondary-text-color); font-size:.78rem; }
+      .dp-email-status.ready { color:#7df2ae; }
+      .dp-email-status.missing { color:#ffc85c; }
+      .dp-email-status ha-icon { --mdc-icon-size:16px; }
+      .dp-player-actions { flex-direction:column; align-items:flex-end; }
+      .dp-edit-email { min-height:34px; padding:0 10px; font-size:.76rem; }
+      .dp-player-email-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+      .dp-player-email-actions > span { margin-right:auto; color:var(--secondary-text-color); font-size:.76rem; font-weight:850; }
+      .dp-player-email-actions button { min-height:34px; padding:0 10px; border:1px solid rgba(0,183,255,.42); border-radius:9px; color:#fff; background:rgba(0,126,190,.2); font-weight:800; cursor:pointer; }
+      .dp-player-email-actions button:disabled { opacity:.4; cursor:not-allowed; }
+      .dp-picks { margin-top:15px; }
+      .dp-picks label > span:first-child { color:var(--secondary-text-color); font-size:.76rem; font-weight:900; letter-spacing:.06em; }
+      .dp-add-player { padding:18px; display:grid; grid-template-columns:minmax(170px,.7fr) repeat(2,minmax(190px,1fr)) auto; align-items:end; }
+      .dp-add-player > div { display:grid; gap:4px; }
+      @media (max-width:900px) { .acca-email-panel, .dp-add-player { grid-template-columns:1fr; } .acca-email-actions { justify-content:flex-start; } }
+      @media (max-width:620px) { .acca-form-grid { grid-template-columns:1fr; } .acca-section-title, .acca-create-bar, .dp-player-card header { align-items:stretch; flex-direction:column; } .dp-player-actions { align-items:stretch; } .acca-fixture-row { grid-template-columns:1fr 36px 1fr; } .acca-fixture-row time, .acca-fixture-row em { grid-column:1/-1; text-align:center; } .acca-picked-fixture { grid-template-columns:40px 1fr; } .acca-picked-fixture > div:nth-of-type(2), .acca-picked-fixture > b { grid-column:2; text-align:left; } }
       .tv-row { display:grid; grid-template-columns:220px minmax(260px,1fr) minmax(180px,auto); align-items:center; gap:20px; }
       .tv-time, .tv-match { display:flex; flex-direction:column; gap:5px; }
       .tv-time span, .tv-match span { color:var(--secondary-text-color); font-size:.78rem; }

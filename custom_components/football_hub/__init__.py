@@ -14,10 +14,12 @@ from .const import DOMAIN
 PLATFORMS = ["sensor"]
 PANEL_URL = "football-hub"
 PANEL_NAME = "football-hub-panel"
-PANEL_VERSION = "0.6.1-acca-league"
+PANEL_VERSION = "0.6.24-acca-score-refresh"
 PANEL_STATIC_URL = "/football_hub/football-hub-panel.js"
-PANEL_MODULE_URL = f"{PANEL_STATIC_URL}?v={PANEL_VERSION}"
+PANEL_ENTRY_URL = "/football_hub/football-hub-panel-entry.js"
+PANEL_MODULE_URL = f"{PANEL_ENTRY_URL}?v={PANEL_VERSION}"
 PANEL_SCRIPT_PATH = Path(__file__).parent / "frontend" / "football-hub-panel.js"
+PANEL_ENTRY_PATH = Path(__file__).parent / "frontend" / "football-hub-panel-entry.js"
 PANEL_BACKGROUND_URL = "/football_hub/football-hub-background.png"
 PANEL_BACKGROUND_PATH = Path(__file__).parent / "frontend" / "football-hub-background.png"
 PANEL_LOGO_URL = "/football_hub/football-hub-logo.png"
@@ -38,6 +40,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     hass.data.setdefault(DOMAIN, {})
     await hass.http.async_register_static_paths([
         StaticPathConfig(PANEL_STATIC_URL, str(PANEL_SCRIPT_PATH), False),
+        StaticPathConfig(PANEL_ENTRY_URL, str(PANEL_ENTRY_PATH), False),
         StaticPathConfig(PANEL_BACKGROUND_URL, str(PANEL_BACKGROUND_PATH), False),
         StaticPathConfig(PANEL_LOGO_URL, str(PANEL_LOGO_PATH), False),
     ])
