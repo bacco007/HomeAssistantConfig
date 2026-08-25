@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .const import DOMAIN, PLATFORMS
+from .const import CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL, DOMAIN, PLATFORMS
+from .coordinator import SynologyDynamicCoordinator
 from .services import async_register_services
 
 
@@ -13,7 +13,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Synology Pro from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    # Forward entry setups — coordinator is created by sensor platform
+    # Create the shared coordinator BEFORE forwarding platforms so every
+    # platform (sensor, binary_sensor, switch) can read from it.
+    config = entry.data
+    scan_interval = config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    coordinator = SynologyDynamicCoordinator(hass, config, scan_interval)
+    await coordinator.async_config_entry_first_refresh()
+    hass.data[DOMAIN][entry.entry_id] = coordinator
+
+    # Forward entry setups — coordinator is already in hass.data
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     # Register services

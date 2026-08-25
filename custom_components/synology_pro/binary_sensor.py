@@ -9,7 +9,10 @@ from homeassistant.components.binary_sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+)
 
 from .const import DOMAIN, is_entity_enabled_default
 
@@ -77,7 +80,7 @@ async def async_setup_entry(
             if not reg:
                 return
             for entity in entities:
-                if entity._enabled_default:
+                if getattr(entity, "_enabled_default", True):
                     continue
                 entity_id = reg.async_get_entity_id(
                     "binary_sensor", DOMAIN, entity._attr_unique_id
@@ -95,7 +98,7 @@ async def async_setup_entry(
         hass.config_entries.async_update_entry(entry, data=new_data)
 
 
-class SynologyDynamicBinarySensor(BinarySensorEntity):
+class SynologyDynamicBinarySensor(CoordinatorEntity, BinarySensorEntity):
     """A binary sensor dynamically created from NAS API boolean data."""
 
     def __init__(
@@ -108,7 +111,7 @@ class SynologyDynamicBinarySensor(BinarySensorEntity):
         enabled_default: bool = True,
     ):
         """Initialize."""
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._sensor_key = sensor_key
         self._enabled_default = enabled_default
         # Standard HA pattern for entity_registry_enabled_default
@@ -126,30 +129,22 @@ class SynologyDynamicBinarySensor(BinarySensorEntity):
         }
 
     @property
-    def available(self) -> bool:
-        """Return if sensor is available."""
-        return self.coordinator.last_update_success
-
-    @property
     def is_on(self) -> bool:
         """Return True if the binary sensor is on."""
         sensors = self.coordinator.data.get("sensors", {})
         entry = sensors.get(self._sensor_key, {})
         return bool(entry.get("value", False))
 
-    async def async_update(self) -> None:
-        """Update entity."""
-        await self.coordinator.async_request_refresh()
 
-
-class SynologyHealthBinarySensor(BinarySensorEntity):
+class SynologyHealthBinarySensor(CoordinatorEntity, BinarySensorEntity):
     """Synthetic sensor: True if the coordinator successfully fetched data."""
 
     _attr_entity_registry_enabled_default = True
 
     def __init__(self, coordinator: DataUpdateCoordinator):
         """Initialize."""
-        self.coordinator = coordinator
+        super().__init__(coordinator)
+        self._enabled_default = True
         self._attr_name = "System Health"
         self._attr_unique_id = f"{DOMAIN}_system_health"
         self._attr_device_class = BinarySensorDeviceClass.PROBLEM
@@ -162,16 +157,7 @@ class SynologyHealthBinarySensor(BinarySensorEntity):
         }
 
     @property
-    def available(self) -> bool:
-        """Always available."""
-        return True
-
-    @property
     def is_on(self) -> bool:
         """True if coordinator has data."""
         sensors = self.coordinator.data.get("sensors", {})
         return len(sensors) > 0
-
-    async def async_update(self) -> None:
-        """Update entity."""
-        await self.coordinator.async_request_refresh()

@@ -6,7 +6,10 @@ import logging
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+)
 
 from .const import DOMAIN
 
@@ -23,46 +26,37 @@ async def async_setup_entry(
         _LOGGER.warning("No coordinator found for switch platform")
         return
 
-    # Discover containers from coordinator data
-    sensors = coordinator.data.get("sensors", {})
-    container_count_key = "docker_api.containers"
-    container_count = sensors.get(container_count_key, {}).get("value", 0)
-
+    # Read container list from the coordinator data (already fetched
+    # during coordinator refresh) — no blocking calls here.
+    containers = coordinator.data.get("containers", [])
     entities = []
 
-    if container_count > 0:
-        # Try to get detailed container list
-        try:
-            containers = _get_containers(coordinator.config)
-            for c in containers:
-                name = c.get("name", c.get("id", ""))
-                container_id = c.get("id", "")
-                if name and container_id:
-                    entities.append(
-                        DockerContainerSwitch(coordinator, container_id, name)
-                    )
-            _LOGGER.info("Synology Pro: discovered %d container switches", len(entities))
-        except Exception as e:
-            _LOGGER.debug("Cannot list containers: %s", e)
+    for c in containers:
+        name = c.get("name", c.get("id", ""))
+        container_id = c.get("id", "")
+        if name and container_id:
+            entities.append(
+                DockerContainerSwitch(coordinator, container_id, name)
+            )
 
+    _LOGGER.info("Synology Pro: discovered %d container switches", len(entities))
     async_add_entities(entities)
 
 
-def _get_containers(config: dict) -> list:
-    """Get container list from Docker API."""
+def _get_docker_client(config: dict):
+    """Build a synology-api Docker client (blocking, run in executor)."""
     from synology_api.docker_api import Docker
 
-    docker = Docker(
+    return Docker(
         config["host"], config["port"],
         config["username"], config["password"],
         secure=config.get("use_ssl", True),
         cert_verify=config.get("verify_ssl", False),
         dsm_version=config.get("dsm_version", 7),
     )
-    return docker.containers()
 
 
-class DockerContainerSwitch(SwitchEntity):
+class DockerContainerSwitch(CoordinatorEntity, SwitchEntity):
     """Switch to start/stop a Docker container."""
 
     def __init__(
@@ -72,7 +66,7 @@ class DockerContainerSwitch(SwitchEntity):
         container_name: str,
     ):
         """Initialize."""
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._container_id = container_id
         self._container_name = container_name
         self._attr_name = f"Container {container_name}"
@@ -85,20 +79,12 @@ class DockerContainerSwitch(SwitchEntity):
         }
 
     @property
-    def available(self) -> bool:
-        """Return if entity is available."""
-        return self.coordinator.last_update_success
-
-    @property
     def is_on(self) -> bool:
-        """Return True if container is running."""
-        try:
-            containers = _get_containers(self.coordinator.config)
-            for c in containers:
-                if c.get("id") == self._container_id:
-                    return c.get("state") == "running"
-        except Exception:
-            pass
+        """Return True if container is running, from coordinator data."""
+        containers = self.coordinator.data.get("containers", [])
+        for c in containers:
+            if c.get("id") == self._container_id:
+                return c.get("running", False)
         return False
 
     async def async_turn_on(self, **kwargs):
@@ -106,33 +92,17 @@ class DockerContainerSwitch(SwitchEntity):
         await self.hass.async_add_executor_job(self._start_container)
 
     def _start_container(self):
-        from synology_api.docker_api import Docker
         config = self.coordinator.config
-        docker = Docker(
-            config["host"], config["port"],
-            config["username"], config["password"],
-            secure=config.get("use_ssl", True),
-            cert_verify=config.get("verify_ssl", False),
-            dsm_version=config.get("dsm_version", 7),
-        )
-        docker.start_container(self._container_id)
+        docker = _get_docker_client(config)
+        # synology-api start_container() takes the container NAME, not id
+        docker.start_container(self._container_name)
 
     async def async_turn_off(self, **kwargs):
         """Stop the container."""
         await self.hass.async_add_executor_job(self._stop_container)
 
     def _stop_container(self):
-        from synology_api.docker_api import Docker
         config = self.coordinator.config
-        docker = Docker(
-            config["host"], config["port"],
-            config["username"], config["password"],
-            secure=config.get("use_ssl", True),
-            cert_verify=config.get("verify_ssl", False),
-            dsm_version=config.get("dsm_version", 7),
-        )
-        docker.stop_container(self._container_id)
-
-    async def async_update(self) -> None:
-        """Update the entity."""
-        await self.coordinator.async_request_refresh()
+        docker = _get_docker_client(config)
+        # synology-api stop_container() takes the container NAME, not id
+        docker.stop_container(self._container_name)
