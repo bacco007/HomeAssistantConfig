@@ -27,6 +27,7 @@ import "@/molecules/target-row-list/target-row-list";
  * @fires dp-targets-add             — `{ entityIds: string[] }` when entity picker value changes
  * @fires dp-targets-add-click       — `{}` when the collapsed add button is clicked
  * @fires dp-targets-prefs-click     — `{}` when the collapsed preferences button is clicked
+ * @fires dp-targets-clear-all       — `{}` when the "Clear all" text link is clicked
  * @fires dp-collapsed-entity-click  — `{ entityId: string, buttonEl: HTMLElement }` when a collapsed summary icon is clicked
  */
 @localized()
@@ -100,6 +101,11 @@ export class HistoryTargets extends LitElement {
     });
   }
 
+  private _onClearAllTargets(ev: Event): void {
+    ev.stopPropagation();
+    this._emit("dp-targets-clear-all");
+  }
+
   private _onCollapsedEntityClick(ev: Event, entityId: string): void {
     ev.stopPropagation();
     this._emit("dp-collapsed-entity-click", {
@@ -162,8 +168,19 @@ export class HistoryTargets extends LitElement {
           ></target-row-list>
         </div>
 
-        <div class="history-target-picker-slot">
-          <slot name="picker"> ${nothing} </slot>
+        <div class="history-target-picker-row">
+          <div class="history-target-picker-slot">
+            <slot name="picker"> ${nothing} </slot>
+          </div>
+          ${this.rows.length > 1
+            ? html`<button
+                type="button"
+                class="history-targets-clear-all"
+                @click=${this._onClearAllTargets}
+              >
+                ${msg("Clear all")}
+              </button>`
+            : nothing}
         </div>
 
         <div class="history-targets-collapsed-summary">

@@ -5,7 +5,7 @@ export default {
   title: "Atoms/Form/Editor Switch",
   component: "editor-switch",
   parameters: {
-    actions: { handles: ["dp-switch-change"] },
+    actions: { handles: ["dp-change"] },
   },
 };
 

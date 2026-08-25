@@ -79,21 +79,21 @@ export class HassDatapointsListCardEditor extends EditorBase {
         <editor-text-field
           .label=${msg("Card title (optional)")}
           .value=${c.title || ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("title", e.detail.value)}
         ></editor-text-field>
         <editor-text-field
           .label=${msg("Hours to show (blank = all time)")}
           type="number"
           .value=${c.hours_to_show != null ? String(c.hours_to_show) : ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("hours_to_show", e.detail.value)}
         ></editor-text-field>
         <editor-text-field
           .label=${msg("Records per page")}
           type="number"
           .value=${String(c.page_size ?? 15)}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("page_size", e.detail.value)}
         ></editor-text-field>
 
@@ -101,7 +101,7 @@ export class HassDatapointsListCardEditor extends EditorBase {
         <editor-text-field
           .label=${msg("Default message filter (always applied)")}
           .value=${c.message_filter || ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("message_filter", e.detail.value)}
         ></editor-text-field>
 
@@ -109,19 +109,19 @@ export class HassDatapointsListCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Show search bar")}
           .checked=${c.show_search !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("show_search", e.detail.checked ? undefined : false)}
         ></editor-switch>
         <editor-switch
           .label=${msg("Show related entities")}
           .checked=${c.show_entities !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("show_entities", e.detail.checked ? undefined : false)}
         ></editor-switch>
         <editor-switch
           .label=${msg("Show edit & delete actions")}
           .checked=${c.show_actions !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("show_actions", e.detail.checked ? undefined : false)}
         ></editor-switch>
         <editor-switch
@@ -130,7 +130,7 @@ export class HassDatapointsListCardEditor extends EditorBase {
           .tooltip=${msg("User will be able to expand the row if hidden", {
             id: "User will be able to expand the row if hidden",
           })}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set(
               "show_full_message",
               e.detail.checked ? undefined : false

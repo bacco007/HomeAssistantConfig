@@ -430,12 +430,12 @@ export class RangeToolbar extends LitElement {
           <date-time-input
             id="range-mobile-start"
             label=${msg("Start")}
-            @dp-datetime-change=${this._onMobileStartChange}
+            @dp-change=${this._onMobileStartChange}
           ></date-time-input>
           <date-time-input
             id="range-mobile-end"
             label=${msg("End")}
-            @dp-datetime-change=${this._onMobileEndChange}
+            @dp-change=${this._onMobileEndChange}
           ></date-time-input>
         </div>
 

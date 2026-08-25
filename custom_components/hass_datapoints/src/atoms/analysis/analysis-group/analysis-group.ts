@@ -3,6 +3,10 @@ import { property } from "lit/decorators.js";
 
 import { styles } from "./analysis-group.styles";
 
+/**
+ * Toggle-style group container that shows/hides slotted sub-options.
+ * @fires dp-group-change - `{ checked: boolean }` — fired when the toggle checkbox changes
+ */
 export class AnalysisGroup extends LitElement {
   @property({ type: String }) accessor label: string = "";
 

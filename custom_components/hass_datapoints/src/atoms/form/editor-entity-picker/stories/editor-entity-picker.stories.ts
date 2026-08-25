@@ -5,7 +5,7 @@ export default {
   title: "Atoms/Form/Editor Entity Picker",
   component: "editor-entity-picker",
   parameters: {
-    actions: { handles: ["dp-entity-change"] },
+    actions: { handles: ["dp-change"] },
   },
 };
 

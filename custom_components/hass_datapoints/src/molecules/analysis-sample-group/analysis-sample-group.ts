@@ -1,10 +1,9 @@
 import { LitElement, html, nothing } from "lit";
-import { property } from "lit/decorators.js";
 import { localized, msg } from "@/lib/i18n/localize";
 
+import { AnalysisGroupMixin } from "../analysis-group-shared/analysis-group.mixin";
 import { sharedStyles } from "../analysis-group-shared/analysis-group-shared.styles";
 import { styles } from "./analysis-sample-group.styles";
-import type { NormalizedAnalysis } from "@/molecules/target-row/types";
 import "@/atoms/analysis/analysis-group/analysis-group";
 import "@/atoms/form/inline-select/inline-select";
 
@@ -38,34 +37,12 @@ export const SAMPLE_AGGREGATE_OPTIONS = [
   { value: "last", label: "Last" },
 ];
 
+/**
+ * @fires dp-group-analysis-change - `{ entityId, key: "show_sampling" | "sample_interval" | "sample_aggregation", value }` — analysis field changed
+ */
 @localized()
-export class AnalysisSampleGroup extends LitElement {
-  @property({ type: Object }) accessor analysis: NormalizedAnalysis =
-    {} as NormalizedAnalysis;
-
-  @property({ type: String, attribute: "entity-id" })
-  accessor entityId: string = "";
-
+export class AnalysisSampleGroup extends AnalysisGroupMixin(LitElement) {
   static styles = [sharedStyles, styles];
-
-  private _emit(key: string, value: unknown) {
-    this.dispatchEvent(
-      new CustomEvent("dp-group-analysis-change", {
-        detail: { entityId: this.entityId, key, value },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
-  private _localizedOptions(
-    options: Array<{ value: string; label: string }>
-  ): Array<{ value: string; label: string }> {
-    return options.map((opt) => ({
-      ...opt,
-      label: msg(opt.label),
-    }));
-  }
 
   private _onGroupChange(e: CustomEvent) {
     // Toggling the group on/off switches between "raw" and "5m" as default.
@@ -88,7 +65,7 @@ export class AnalysisSampleGroup extends LitElement {
           <inline-select
             .value=${interval}
             .options=${this._localizedOptions(SAMPLE_INTERVAL_OPTIONS)}
-            @dp-select-change=${(e: Event) =>
+            @dp-change=${(e: Event) =>
               this._emit(
                 "sample_interval",
                 (e as CustomEvent<{ value: string }>).detail.value
@@ -102,7 +79,7 @@ export class AnalysisSampleGroup extends LitElement {
                 <inline-select
                   .value=${a.sample_aggregate ?? "mean"}
                   .options=${this._localizedOptions(SAMPLE_AGGREGATE_OPTIONS)}
-                  @dp-select-change=${(e: Event) =>
+                  @dp-change=${(e: Event) =>
                     this._emit(
                       "sample_aggregate",
                       (e as CustomEvent<{ value: string }>).detail.value

@@ -36,10 +36,13 @@ vi.mock("@/lib/chart/chart-state", async (importOriginal) => {
 });
 
 vi.mock("../../../components/annotation-dialog/annotation-dialog", () => ({
-  HistoryAnnotationDialogController: vi.fn().mockImplementation(() => ({
-    teardown: vi.fn(),
-    open: vi.fn(),
-  })),
+  HistoryAnnotationDialogController: vi.fn().mockImplementation(
+    class {
+      teardown = vi.fn();
+
+      open = vi.fn();
+    }
+  ),
 }));
 
 vi.mock("../../../lib/workers/history-analysis-client", () => ({

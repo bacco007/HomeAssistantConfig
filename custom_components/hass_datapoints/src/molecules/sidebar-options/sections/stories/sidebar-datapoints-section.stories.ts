@@ -12,7 +12,7 @@ export default {
   component: "sidebar-datapoints-section",
   parameters: {
     actions: {
-      handles: ["dp-scope-change", "dp-radio-change"],
+      handles: ["dp-scope-change", "dp-change"],
     },
   },
   argTypes: {

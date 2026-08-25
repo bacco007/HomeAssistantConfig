@@ -43,9 +43,9 @@ describe("editor-switch", () => {
     });
 
     describe("WHEN the switch fires change", () => {
-      it("THEN it dispatches dp-switch-change with checked=true", () => {
+      it("THEN it dispatches dp-change with checked=true", () => {
         const handler = vi.fn();
-        el.addEventListener("dp-switch-change", handler);
+        el.addEventListener("dp-change", handler);
         const sw = el.shadowRoot!.querySelector("ha-switch") as any;
         sw.checked = true;
         sw.dispatchEvent(new Event("change", { bubbles: true }));

@@ -21,6 +21,7 @@ describe("ha-components", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   describe("GIVEN a tag name", () => {
@@ -58,7 +59,8 @@ describe("ha-components", () => {
       it("THEN it falls back to window.confirm", async () => {
         expect.assertions(2);
 
-        const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
+        const confirmSpy = vi.fn().mockReturnValue(true);
+        vi.stubGlobal("confirm", confirmSpy);
 
         await expect(
           confirmDestructiveAction(null, { title: "Delete item?" })

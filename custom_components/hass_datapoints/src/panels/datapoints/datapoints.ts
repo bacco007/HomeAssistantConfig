@@ -2898,6 +2898,9 @@ export class HassDatapointsHistoryPanel extends HTMLElement {
         this._openTargetPicker(buttonEl ?? undefined);
       }
     );
+    histTargets.addEventListener("dp-targets-clear-all", () => {
+      this._clearAllSeriesRows();
+    });
     histTargets.addEventListener(
       "dp-collapsed-entity-click",
       (
@@ -3782,6 +3785,16 @@ export class HassDatapointsHistoryPanel extends HTMLElement {
     const next = removeSeriesRow(this._seriesRows, index);
     if (!next) return;
     this._seriesRows = next;
+    this._syncSeriesState();
+    this._saveSessionState();
+    this._renderTargetRows();
+    this._syncControls();
+    this._updateUrl({ push: true });
+    this._renderContent();
+  }
+
+  _clearAllSeriesRows() {
+    this._seriesRows = [];
     this._syncSeriesState();
     this._saveSessionState();
     this._renderTargetRows();

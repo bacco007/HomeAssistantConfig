@@ -75,10 +75,10 @@ describe("radio-group", () => {
     });
 
     describe("WHEN a radio option is selected", () => {
-      it("THEN it dispatches dp-radio-change with the new value", () => {
+      it("THEN it dispatches dp-change with the new value", () => {
         expect.assertions(2);
         const handler = vi.fn();
-        el.addEventListener("dp-radio-change", handler);
+        el.addEventListener("dp-change", handler);
 
         const inputs = el.shadowRoot!.querySelectorAll("input[type='radio']");
         const weekInput = inputs[2] as HTMLInputElement;

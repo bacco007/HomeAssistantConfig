@@ -100,6 +100,7 @@ export class HistoryChart extends HTMLElement {
 
   private _applyConfig() {
     if (!this._chartEl || !this._config) return;
+    if (typeof this._chartEl.setConfig !== "function") return;
     const nextKey = JSON.stringify(this._config);
     if (nextKey !== this._configKey) {
       this._chartEl.setConfig(this._config);

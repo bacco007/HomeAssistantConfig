@@ -117,11 +117,10 @@ export class AnomalyMonitorWizard extends LitElement {
     this._initFromProps();
   }
 
-  updated(changed: Map<string, unknown>) {
+  willUpdate(changed: Map<string, unknown>) {
     if (changed.has("open") && this.open) {
       this._initFromProps();
-    }
-    if (changed.has("editMonitor") && this.editMonitor) {
+    } else if (changed.has("editMonitor") && this.editMonitor) {
       this._initFromProps();
     }
   }
@@ -711,7 +710,7 @@ export class AnomalyMonitorWizard extends LitElement {
               value: String(o.value),
               label: msg(o.label),
             }))}
-            @dp-select-change=${(e: Event) => {
+            @dp-change=${(e: Event) => {
               const val = (e as CustomEvent<{ value: string }>).detail?.value;
               if (val) this._lookBackHours = parseInt(val, 10);
             }}
@@ -725,7 +724,7 @@ export class AnomalyMonitorWizard extends LitElement {
               value: String(o.value),
               label: msg(o.label),
             }))}
-            @dp-select-change=${(e: Event) => {
+            @dp-change=${(e: Event) => {
               const val = (e as CustomEvent<{ value: string }>).detail?.value;
               if (val) this._scanIntervalMinutes = parseInt(val, 10);
             }}
@@ -743,7 +742,7 @@ export class AnomalyMonitorWizard extends LitElement {
                   { value: "individual", label: msg("Individual sensors") },
                   { value: "combined", label: msg("Combined sensor") },
                 ]}
-                @dp-select-change=${(e: Event) => {
+                @dp-change=${(e: Event) => {
                   const val = (e as CustomEvent<{ value: string }>).detail
                     ?.value as MonitorType;
                   this._monitorType = val;
@@ -763,7 +762,7 @@ export class AnomalyMonitorWizard extends LitElement {
               <inline-select
                 .value=${this._overlapMode}
                 .options=${this._overlapOptions()}
-                @dp-select-change=${(e: Event) => {
+                @dp-change=${(e: Event) => {
                   const val = (e as CustomEvent<{ value: string }>).detail
                     ?.value;
                   if (val) this._overlapMode = val;

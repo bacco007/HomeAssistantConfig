@@ -12,7 +12,7 @@ export default {
   component: "sidebar-datapoint-display-section",
   parameters: {
     actions: {
-      handles: ["dp-display-change", "dp-item-change"],
+      handles: ["dp-display-change", "dp-change"],
     },
   },
   argTypes: {

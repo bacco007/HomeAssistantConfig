@@ -81,10 +81,10 @@ describe("number-input", () => {
     });
 
     describe("WHEN the user types a new value", () => {
-      it("THEN it dispatches dp-number-change with the new value", () => {
+      it("THEN it dispatches dp-change with the new value", () => {
         expect.assertions(2);
         const handler = vi.fn();
-        el.addEventListener("dp-number-change", handler);
+        el.addEventListener("dp-change", handler);
         const input = el.shadowRoot!.querySelector("input") as HTMLInputElement;
         input.value = "42";
         input.dispatchEvent(new Event("input", { bubbles: true }));

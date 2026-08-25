@@ -153,7 +153,7 @@ describe("sidebar-chart-display-section", () => {
       await el.updateComplete;
     });
 
-    describe("WHEN the checkbox list emits dp-item-change for data_gaps=false", () => {
+    describe("WHEN the checkbox list emits dp-change for data_gaps=false", () => {
       it("THEN dispatches dp-display-change with kind=data_gaps and value=false", () => {
         expect.assertions(3);
         const handler = vi.fn();
@@ -161,8 +161,8 @@ describe("sidebar-chart-display-section", () => {
         el.shadowRoot!.querySelector<CheckboxListEl>(
           "checkbox-list"
         )!.dispatchEvent(
-          new CustomEvent("dp-item-change", {
-            detail: { name: "data_gaps", checked: false },
+          new CustomEvent("dp-change", {
+            detail: { value: "data_gaps", checked: false },
             bubbles: true,
             composed: true,
           })
@@ -173,7 +173,7 @@ describe("sidebar-chart-display-section", () => {
       });
     });
 
-    describe("WHEN the gap threshold inline-select emits dp-select-change", () => {
+    describe("WHEN the gap threshold inline-select emits dp-change", () => {
       it("THEN dispatches dp-display-change with kind=data_gap_threshold and the new value", () => {
         expect.assertions(3);
         const handler = vi.fn();
@@ -182,7 +182,7 @@ describe("sidebar-chart-display-section", () => {
           ".is-subopt inline-select"
         )!;
         inlineSelect.dispatchEvent(
-          new CustomEvent("dp-select-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "6h" },
             bubbles: true,
             composed: true,
@@ -194,7 +194,7 @@ describe("sidebar-chart-display-section", () => {
       });
     });
 
-    describe("WHEN the y-axis radio group emits dp-radio-change with value=split", () => {
+    describe("WHEN the y-axis radio group emits dp-change with value=split", () => {
       it("THEN dispatches dp-display-change with kind=y_axis_mode and value=split", () => {
         expect.assertions(3);
         const handler = vi.fn();
@@ -202,7 +202,7 @@ describe("sidebar-chart-display-section", () => {
         el.shadowRoot!.querySelector<RadioGroupEl>(
           "radio-group"
         )!.dispatchEvent(
-          new CustomEvent("dp-radio-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "split" },
             bubbles: true,
             composed: true,
@@ -214,7 +214,7 @@ describe("sidebar-chart-display-section", () => {
       });
     });
 
-    describe("WHEN the hover snap radio group emits dp-radio-change with value=snap_to_data_points", () => {
+    describe("WHEN the hover snap radio group emits dp-change with value=snap_to_data_points", () => {
       it("THEN dispatches dp-display-change with kind=hover_snap_mode and value=snap_to_data_points", () => {
         expect.assertions(3);
         const handler = vi.fn();
@@ -222,7 +222,7 @@ describe("sidebar-chart-display-section", () => {
         const groups =
           el.shadowRoot!.querySelectorAll<RadioGroupEl>("radio-group");
         groups[1].dispatchEvent(
-          new CustomEvent("dp-radio-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "snap_to_data_points" },
             bubbles: true,
             composed: true,

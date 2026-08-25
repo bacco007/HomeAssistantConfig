@@ -2,31 +2,37 @@ import { LitElement, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 import { styles } from "./analysis-checkbox.styles";
+import { dispatchChange } from "@/lib/events";
 
+/**
+ * Single checkbox with an optional `ha-tooltip` help popup.
+ * @fires dp-change - `{ type: "check", checked: boolean }`
+ */
 export class AnalysisCheckbox extends LitElement {
+  /** Whether the checkbox is checked. */
   @property({ type: Boolean }) accessor checked: boolean = false;
 
+  /** Label text rendered next to the checkbox. */
   @property({ type: String }) accessor label: string = "";
 
+  /** When true the checkbox is rendered but non-interactive. */
   @property({ type: Boolean }) accessor disabled: boolean = false;
 
+  /** Tooltip content shown on hover; only rendered when non-empty. */
   @property({ type: String, attribute: "help-text" })
   accessor helpText: string = "";
 
+  /** ID used to associate the tooltip with its trigger element. */
   @property({ type: String, attribute: "help-id" }) accessor helpId: string =
     "";
 
   static styles = styles;
 
   private _onChange(e: Event) {
-    const target = e.target as HTMLInputElement;
-    this.dispatchEvent(
-      new CustomEvent("dp-check-change", {
-        detail: { checked: target.checked },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    dispatchChange(this, {
+      type: "check",
+      checked: (e.target as HTMLInputElement).checked,
+    });
   }
 
   render() {

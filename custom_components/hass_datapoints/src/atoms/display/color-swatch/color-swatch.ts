@@ -2,23 +2,26 @@ import { LitElement, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import { styles } from "./color-swatch.styles";
+import { dispatchChange } from "@/lib/events";
 
+/**
+ * Compact color swatch button backed by a native color `<input>`.
+ * @fires dp-change - `{ type: "color", color: string }`
+ */
 export class ColorSwatch extends LitElement {
+  /** Current color as a CSS hex string (e.g. `"#ff9800"`). */
   @property({ type: String }) accessor color: string = "#ff9800";
 
+  /** Optional label rendered above the swatch button. */
   @property({ type: String }) accessor label: string = "";
 
   static styles = styles;
 
   _onInput(e: Event) {
-    const newColor = (e.target as HTMLInputElement).value;
-    this.dispatchEvent(
-      new CustomEvent("dp-color-change", {
-        detail: { color: newColor },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    dispatchChange(this, {
+      type: "color",
+      color: (e.target as HTMLInputElement).value,
+    });
   }
 
   render() {

@@ -1,10 +1,9 @@
 import { LitElement, html } from "lit";
-import { property } from "lit/decorators.js";
 import { localized, msg } from "@/lib/i18n/localize";
 
+import { AnalysisGroupMixin } from "../analysis-group-shared/analysis-group.mixin";
 import { sharedStyles } from "../analysis-group-shared/analysis-group-shared.styles";
 import { styles } from "./analysis-rate-group.styles";
-import type { NormalizedAnalysis } from "@/molecules/target-row/types";
 import "@/atoms/analysis/analysis-group/analysis-group";
 import "@/atoms/form/inline-select/inline-select";
 
@@ -19,41 +18,15 @@ export const ANALYSIS_RATE_WINDOW_OPTIONS = [
   { value: "7d", label: "7 days" },
 ];
 
+/**
+ * @fires dp-group-analysis-change - `{ entityId, key: "show_rate_analysis" | "rate_window", value }` — analysis field changed
+ */
 @localized()
-export class AnalysisRateGroup extends LitElement {
-  @property({ type: Object }) accessor analysis: NormalizedAnalysis =
-    {} as NormalizedAnalysis;
-
-  @property({ type: String, attribute: "entity-id" })
-  accessor entityId: string = "";
-
+export class AnalysisRateGroup extends AnalysisGroupMixin(LitElement) {
   static styles = [sharedStyles, styles];
-
-  private _emit(key: string, value: unknown) {
-    this.dispatchEvent(
-      new CustomEvent("dp-group-analysis-change", {
-        detail: { entityId: this.entityId, key, value },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
-  private _localizedOptions(
-    options: Array<{ value: string; label: string }>
-  ): Array<{ value: string; label: string }> {
-    return options.map((opt) => ({
-      ...opt,
-      label: msg(opt.label),
-    }));
-  }
 
   private _onGroupChange(e: CustomEvent) {
     this._emit("show_rate_of_change", e.detail.checked);
-  }
-
-  private _onCheckbox(key: string, e: Event) {
-    this._emit(key, (e.target as HTMLInputElement).checked);
   }
 
   render() {
@@ -77,7 +50,7 @@ export class AnalysisRateGroup extends LitElement {
           <inline-select
             .value=${a.rate_window}
             .options=${this._localizedOptions(ANALYSIS_RATE_WINDOW_OPTIONS)}
-            @dp-select-change=${(e: Event) =>
+            @dp-change=${(e: Event) =>
               this._emit(
                 "rate_window",
                 (e as CustomEvent<{ value: string }>).detail.value

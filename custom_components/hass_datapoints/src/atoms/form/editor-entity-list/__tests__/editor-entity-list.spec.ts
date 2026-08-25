@@ -51,15 +51,15 @@ describe("editor-entity-list", () => {
     });
 
     describe("WHEN a remove button is clicked", () => {
-      it("THEN it dispatches dp-entity-list-change with the entity removed", () => {
+      it("THEN it dispatches dp-change with the entity removed", () => {
         const handler = vi.fn();
-        el.addEventListener("dp-entity-list-change", handler);
+        el.addEventListener("dp-change", handler);
         const removeBtn = el.shadowRoot!.querySelector(
           "[data-action='remove']"
         );
         removeBtn?.dispatchEvent(new Event("click"));
         expect(handler).toHaveBeenCalledOnce();
-        expect(handler.mock.calls[0][0].detail.entities).toEqual([
+        expect(handler.mock.calls[0][0].detail.value).toEqual([
           "sensor.humidity",
         ]);
       });

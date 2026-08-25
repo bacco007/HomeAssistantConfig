@@ -7,7 +7,7 @@ from typing import Any
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_time_interval
@@ -123,6 +123,7 @@ class _MonitorBinarySensorBase(BinarySensorEntity):
     def _on_store_update(self) -> None:
         self.async_write_ha_state()
 
+    @callback
     def _on_time_interval(self, now: datetime) -> None:
         self.async_write_ha_state()
 

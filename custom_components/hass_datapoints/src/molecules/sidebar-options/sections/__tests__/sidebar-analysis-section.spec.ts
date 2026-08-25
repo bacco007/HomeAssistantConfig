@@ -81,7 +81,7 @@ describe("sidebar-analysis-section", () => {
       await el.updateComplete;
     });
 
-    describe("WHEN the checkbox list emits dp-item-change", () => {
+    describe("WHEN the checkbox list emits dp-change", () => {
       it("THEN dispatches dp-display-change for correlated anomalies", () => {
         expect.assertions(3);
         const handler = vi.fn();
@@ -89,8 +89,8 @@ describe("sidebar-analysis-section", () => {
         el.shadowRoot!.querySelector<CheckboxListEl>(
           "checkbox-list"
         )!.dispatchEvent(
-          new CustomEvent("dp-item-change", {
-            detail: { name: "correlated_anomalies", checked: true },
+          new CustomEvent("dp-change", {
+            detail: { value: "correlated_anomalies", checked: true },
             bubbles: true,
             composed: true,
           })
@@ -104,7 +104,7 @@ describe("sidebar-analysis-section", () => {
       });
     });
 
-    describe("WHEN the radio group emits dp-radio-change", () => {
+    describe("WHEN the radio group emits dp-change", () => {
       it("THEN dispatches dp-analysis-change for anomaly overlap mode", () => {
         expect.assertions(3);
         const handler = vi.fn();
@@ -112,7 +112,7 @@ describe("sidebar-analysis-section", () => {
         el.shadowRoot!.querySelector<RadioGroupEl>(
           "radio-group"
         )!.dispatchEvent(
-          new CustomEvent("dp-radio-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "only" },
             bubbles: true,
             composed: true,

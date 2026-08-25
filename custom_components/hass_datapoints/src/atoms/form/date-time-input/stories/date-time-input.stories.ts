@@ -5,7 +5,7 @@ export default {
   title: "Atoms/Form/Date Time Input",
   component: "date-time-input",
   parameters: {
-    actions: { handles: ["dp-datetime-change"] },
+    actions: { handles: ["dp-change"] },
   },
 };
 

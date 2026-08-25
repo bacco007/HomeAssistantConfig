@@ -86,13 +86,13 @@ describe("sidebar-datapoints-section", () => {
       await el.updateComplete;
     });
 
-    describe("WHEN the radio group emits dp-radio-change with value=all", () => {
+    describe("WHEN the radio group emits dp-change with value=all", () => {
       it("THEN dispatches dp-scope-change with value=all", () => {
         expect.assertions(2);
         const handler = vi.fn();
         el.addEventListener("dp-scope-change", handler);
         el.shadowRoot!.querySelector("radio-group")!.dispatchEvent(
-          new CustomEvent("dp-radio-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "all" },
             bubbles: true,
             composed: true,

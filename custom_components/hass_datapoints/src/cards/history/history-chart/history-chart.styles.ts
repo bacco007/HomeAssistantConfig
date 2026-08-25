@@ -498,6 +498,7 @@ export const styles = `
     color: rgba(255, 255, 255, 0.96);
   }
   .tt-dot {
+    position: relative;
     display: inline-block;
     width: 8px; height: 8px;
     border-radius: 50%;
@@ -521,11 +522,31 @@ export const styles = `
   .tt-series-row.subordinate {
     padding-left: calc(var(--spacing, 8px) * 2.25);
   }
+  .tt-series-row.split-active .tt-series-label {
+    color: rgba(255, 255, 255, 0.96);
+    font-weight: 500;
+  }
+  .tt-series-chevron {
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    line-height: 1;
+    margin-right: -2px;
+  }
   .tt-series-main {
     min-width: 0;
     display: flex;
     align-items: center;
     gap: calc(var(--spacing, 8px) * 0.75);
+  }
+  .tt-series-main.active-row .tt-dot::before {
+    content: "›";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    left: -8px;
+    top: -4px;
   }
   .tt-series-label {
     min-width: 0;

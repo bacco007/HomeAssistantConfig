@@ -5,7 +5,7 @@ export default {
   title: "Atoms/Form/Editor Entity List",
   component: "editor-entity-list",
   parameters: {
-    actions: { handles: ["dp-entity-list-change"] },
+    actions: { handles: ["dp-change"] },
   },
 };
 

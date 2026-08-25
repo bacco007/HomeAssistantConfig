@@ -5,7 +5,7 @@ export default {
   title: "Atoms/Form/Editor Icon Picker",
   component: "editor-icon-picker",
   parameters: {
-    actions: { handles: ["dp-icon-change"] },
+    actions: { handles: ["dp-change"] },
   },
 };
 

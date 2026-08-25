@@ -4,6 +4,7 @@ DOMAIN = "hass_datapoints"
 
 STORAGE_KEY = "hass_datapoints.events"
 STORAGE_VERSION = 1
+EVENTS_DB_FILENAME = "hass_datapoints_events.db"
 
 MONITOR_SCAN_HISTORY_MAX = 96
 

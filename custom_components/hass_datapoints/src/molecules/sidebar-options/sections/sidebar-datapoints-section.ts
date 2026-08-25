@@ -56,7 +56,7 @@ export class SidebarDatapointsSection extends LitElement {
           .name=${"datapoint-scope"}
           .value=${this.datapointScope}
           .options=${this._localizedOptions(DATAPOINT_SCOPE_OPTIONS)}
-          @dp-radio-change=${this._onScopeChange}
+          @dp-change=${this._onScopeChange}
         ></radio-group>
       </sidebar-options-section>
     `;

@@ -11,7 +11,7 @@ from typing import Any
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTime
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_call_later, async_track_time_interval
@@ -145,6 +145,7 @@ class _DatapointsPeriodicSensorBase(_DatapointsSensorBase):
             )
         )
 
+    @callback
     def _handle_time_interval(self, now: datetime) -> None:
         """Refresh state on every timer tick."""
         self._attr_native_value = self._compute()
@@ -594,11 +595,22 @@ class DatapointsMonitorSensor(_DatapointsSensorBase):
         self._monitor_id = monitor_id
         self._unsub_timer: Any = None
         self._unsub_stagger: Any = None
+        self._timer_signature: tuple[bool, int] | None = None
 
         monitor = store.get_monitor(monitor_id) or {}
         self._attr_unique_id = f"{entry.entry_id}_monitor_{monitor_id}"
         self._attr_name = monitor.get("name", f"Anomaly monitor {monitor_id[:8]}")
         self._attr_native_value = monitor.get("last_cluster_count", 0)
+
+    def _compute_timer_signature(
+        self, monitor: dict[str, Any] | None
+    ) -> tuple[bool, int] | None:
+        """Return the timer-driving config tuple for the current monitor."""
+        if not monitor:
+            return None
+        enabled = bool(monitor.get("enabled", True))
+        interval_minutes = int(monitor.get("scan_interval_minutes", 30))
+        return enabled, interval_minutes
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -625,10 +637,12 @@ class DatapointsMonitorSensor(_DatapointsSensorBase):
 
         monitor = self._store.get_monitor(self._monitor_id)
         if not monitor or not monitor.get("enabled", True):
+            self._timer_signature = self._compute_timer_signature(monitor)
             return
 
         interval_minutes = monitor.get("scan_interval_minutes", 30)
         interval = timedelta(minutes=max(1, interval_minutes))
+        self._timer_signature = self._compute_timer_signature(monitor)
 
         # Deterministic 0–29 s stagger per monitor to avoid simultaneous startup bursts.
         # uuid.UUID(id).int is stable across restarts unlike hash() (PYTHONHASHSEED).
@@ -637,6 +651,7 @@ class DatapointsMonitorSensor(_DatapointsSensorBase):
         except ValueError:
             stagger_secs = 0
 
+        @callback
         def _start(_now: Any = None) -> None:
             self._unsub_stagger = None  # stagger has fired; clear reference
             self._unsub_timer = async_track_time_interval(
@@ -651,9 +666,18 @@ class DatapointsMonitorSensor(_DatapointsSensorBase):
             lambda: self._unsub_stagger and self._unsub_stagger()  # type: ignore[func-returns-value]
         )
 
+    @callback
     def _handle_scan_tick(self, now: datetime) -> None:
         """Trigger a scan on the next event loop iteration."""
-        self._hass.async_create_task(self._run_scan())
+        coroutine = self._run_scan()
+        try:
+            self._hass.async_create_task(coroutine)
+        except RuntimeError:
+            coroutine.close()
+            _LOGGER.debug(
+                "DatapointsMonitorSensor could not schedule scan for monitor %s",
+                self._monitor_id,
+            )
 
     async def _run_scan(self) -> None:
         """Fetch history, run detection, update state and store."""
@@ -919,7 +943,9 @@ class DatapointsMonitorSensor(_DatapointsSensorBase):
         self._attr_native_value = monitor.get(
             "last_cluster_count", self._attr_native_value
         )
-        self._schedule_timer()
+        next_signature = self._compute_timer_signature(monitor)
+        if next_signature != self._timer_signature:
+            self._schedule_timer()
         self.async_write_ha_state()
 
     @property

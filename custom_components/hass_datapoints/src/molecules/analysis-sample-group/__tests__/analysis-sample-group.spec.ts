@@ -117,14 +117,14 @@ describe("analysis-sample-group", () => {
       await el.updateComplete;
     });
 
-    describe("WHEN interval inline-select emits dp-select-change to 5m", () => {
+    describe("WHEN interval inline-select emits dp-change to 5m", () => {
       it("THEN fires dp-group-analysis-change with key=sample_interval and value=5m", () => {
         expect.assertions(3);
         const handler = vi.fn();
         el.addEventListener("dp-group-analysis-change", handler);
         const inlineSelects = el.shadowRoot!.querySelectorAll("inline-select");
         inlineSelects[0].dispatchEvent(
-          new CustomEvent("dp-select-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "5m" },
             bubbles: true,
             composed: true,
@@ -136,14 +136,14 @@ describe("analysis-sample-group", () => {
       });
     });
 
-    describe("WHEN aggregate inline-select emits dp-select-change to max", () => {
+    describe("WHEN aggregate inline-select emits dp-change to max", () => {
       it("THEN fires dp-group-analysis-change with key=sample_aggregate and value=max", () => {
         expect.assertions(3);
         const handler = vi.fn();
         el.addEventListener("dp-group-analysis-change", handler);
         const inlineSelects = el.shadowRoot!.querySelectorAll("inline-select");
         inlineSelects[1].dispatchEvent(
-          new CustomEvent("dp-select-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "max" },
             bubbles: true,
             composed: true,

@@ -46,9 +46,9 @@ describe("editor-select", () => {
     });
 
     describe("WHEN value-changed fires", () => {
-      it("THEN it dispatches dp-select-change", () => {
+      it("THEN it dispatches dp-change", () => {
         const handler = vi.fn();
-        el.addEventListener("dp-select-change", handler);
+        el.addEventListener("dp-change", handler);
         const selector = el.shadowRoot!.querySelector("ha-selector")!;
         selector.dispatchEvent(
           new CustomEvent("value-changed", {

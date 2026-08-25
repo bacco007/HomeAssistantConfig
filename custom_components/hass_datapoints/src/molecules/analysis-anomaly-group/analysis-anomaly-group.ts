@@ -1,6 +1,7 @@
 import type { TemplateResult } from "lit";
 import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
+import { AnalysisGroupMixin } from "../analysis-group-shared/analysis-group.mixin";
 import { sharedStyles } from "../analysis-group-shared/analysis-group-shared.styles";
 import { styles } from "./analysis-anomaly-group.styles";
 import { localized, msg } from "@/lib/i18n/localize";
@@ -93,14 +94,11 @@ export const ANALYSIS_ANOMALY_OVERLAP_MODE_OPTIONS = [
   { value: "only", label: "Overlaps only" },
 ];
 
+/**
+ * @fires dp-group-analysis-change - `{ entityId, key: "show_anomaly_detection" | "anomaly_method" | "anomaly_sensitivity" | ..., value }` — analysis field changed
+ */
 @localized()
-export class AnalysisAnomalyGroup extends LitElement {
-  @property({ type: Object }) accessor analysis: NormalizedAnalysis =
-    {} as NormalizedAnalysis;
-
-  @property({ type: String, attribute: "entity-id" })
-  accessor entityId: string = "";
-
+export class AnalysisAnomalyGroup extends AnalysisGroupMixin(LitElement) {
   @property({ type: Array, attribute: "comparison-windows" })
   accessor comparisonWindows: ComparisonWindow[] = [];
 
@@ -151,28 +149,8 @@ export class AnalysisAnomalyGroup extends LitElement {
     };
   }
 
-  private _emit(key: string, value: unknown) {
-    this.dispatchEvent(
-      new CustomEvent("dp-group-analysis-change", {
-        detail: { entityId: this.entityId, key, value },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
   private _onGroupChange(e: CustomEvent) {
     this._emit("show_anomalies", e.detail.checked);
-  }
-
-  private _localizedOptions(
-    options: Array<{ value: string; label: string; help?: string }>
-  ): Array<{ value: string; label: string; help?: string }> {
-    return options.map((option) => ({
-      ...option,
-      label: msg(option.label),
-      help: option.help ? msg(option.help) : undefined,
-    }));
   }
 
   private _renderMethodSubopts(
@@ -210,7 +188,7 @@ export class AnalysisAnomalyGroup extends LitElement {
             <inline-select
               .value=${effectiveMethod}
               .options=${methodOptions}
-              @dp-select-change=${(e: Event) =>
+              @dp-change=${(e: Event) =>
                 this._emit(
                   "anomaly_trend_method",
                   (e as CustomEvent<{ value: string }>).detail.value
@@ -224,7 +202,7 @@ export class AnalysisAnomalyGroup extends LitElement {
                   <inline-select
                     .value=${a.anomaly_trend_window}
                     .options=${windowOptions}
-                    @dp-select-change=${(e: Event) =>
+                    @dp-change=${(e: Event) =>
                       this._emit(
                         "anomaly_trend_window",
                         (e as CustomEvent<{ value: string }>).detail.value
@@ -246,7 +224,7 @@ export class AnalysisAnomalyGroup extends LitElement {
               .options=${this._localizedOptions(
                 ANALYSIS_ANOMALY_RATE_WINDOW_OPTIONS
               )}
-              @dp-select-change=${(e: Event) =>
+              @dp-change=${(e: Event) =>
                 this._emit(
                   "anomaly_rate_window",
                   (e as CustomEvent<{ value: string }>).detail.value
@@ -266,7 +244,7 @@ export class AnalysisAnomalyGroup extends LitElement {
               .options=${this._localizedOptions(
                 ANALYSIS_ANOMALY_ZSCORE_WINDOW_OPTIONS
               )}
-              @dp-select-change=${(e: Event) =>
+              @dp-change=${(e: Event) =>
                 this._emit(
                   "anomaly_zscore_window",
                   (e as CustomEvent<{ value: string }>).detail.value
@@ -286,7 +264,7 @@ export class AnalysisAnomalyGroup extends LitElement {
               .options=${this._localizedOptions(
                 ANALYSIS_ANOMALY_PERSISTENCE_WINDOW_OPTIONS
               )}
-              @dp-select-change=${(e: Event) =>
+              @dp-change=${(e: Event) =>
                 this._emit(
                   "anomaly_persistence_window",
                   (e as CustomEvent<{ value: string }>).detail.value
@@ -311,7 +289,7 @@ export class AnalysisAnomalyGroup extends LitElement {
             <inline-select
               .value=${a.anomaly_comparison_window_id ?? ""}
               .options=${comparisonOptions}
-              @dp-select-change=${(e: Event) =>
+              @dp-change=${(e: Event) =>
                 this._emit(
                   "anomaly_comparison_window_id",
                   (e as CustomEvent<{ value: string }>).detail.value
@@ -369,7 +347,7 @@ export class AnalysisAnomalyGroup extends LitElement {
           <inline-select
             .value=${a.anomaly_sensitivity}
             .options=${sensitivityOptions}
-            @dp-select-change=${(e: Event) =>
+            @dp-change=${(e: Event) =>
               this._emit(
                 "anomaly_sensitivity",
                 (e as CustomEvent<{ value: string }>).detail.value
@@ -461,7 +439,7 @@ export class AnalysisAnomalyGroup extends LitElement {
                 <inline-select
                   .value=${a.anomaly_overlap_mode}
                   .options=${overlapOptions}
-                  @dp-select-change=${(e: Event) =>
+                  @dp-change=${(e: Event) =>
                     this._emit(
                       "anomaly_overlap_mode",
                       (e as CustomEvent<{ value: string }>).detail.value

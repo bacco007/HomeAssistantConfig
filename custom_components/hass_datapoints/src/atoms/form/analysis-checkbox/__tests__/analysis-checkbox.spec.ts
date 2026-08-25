@@ -121,10 +121,10 @@ describe("analysis-checkbox", () => {
     });
 
     describe("WHEN the user toggles the checkbox", () => {
-      it("THEN it dispatches dp-check-change with checked true", () => {
+      it("THEN it dispatches dp-change with checked true", () => {
         expect.assertions(2);
         const handler = vi.fn();
-        el.addEventListener("dp-check-change", handler);
+        el.addEventListener("dp-change", handler);
         const input = el.shadowRoot!.querySelector("input") as HTMLInputElement;
         input.checked = true;
         input.dispatchEvent(new Event("change", { bubbles: true }));

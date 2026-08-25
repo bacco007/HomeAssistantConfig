@@ -9,8 +9,8 @@ export default {
       handles: [
         "dp-analysis-change",
         "dp-display-change",
-        "dp-item-change",
-        "dp-radio-change",
+        "dp-change",
+        "dp-change",
       ],
     },
   },

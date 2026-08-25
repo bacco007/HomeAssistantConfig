@@ -45,9 +45,9 @@ describe("editor-text-field", () => {
     });
 
     describe("WHEN input event fires", () => {
-      it("THEN it dispatches dp-field-change with the value", () => {
+      it("THEN it dispatches dp-change with the value", () => {
         const handler = vi.fn();
-        el.addEventListener("dp-field-change", handler);
+        el.addEventListener("dp-change", handler);
         const haField = el.shadowRoot!.querySelector(
           "ha-textfield"
         ) as HTMLElement;
@@ -66,13 +66,13 @@ describe("editor-text-field", () => {
     });
 
     describe("WHEN input event fires with a numeric value", () => {
-      it("THEN it dispatches dp-field-change with a number", () => {
+      it("THEN it dispatches dp-change with the string value", () => {
         const handler = vi.fn();
-        el.addEventListener("dp-field-change", handler);
+        el.addEventListener("dp-change", handler);
         const haField = el.shadowRoot!.querySelector("ha-textfield") as any;
         haField.value = "48";
         haField.dispatchEvent(new Event("input", { bubbles: true }));
-        expect(handler.mock.calls[0][0].detail.value).toBe(48);
+        expect(handler.mock.calls[0][0].detail.value).toBe("48");
       });
     });
   });

@@ -67,10 +67,10 @@ describe("checkbox-list", () => {
     });
 
     describe("WHEN a checkbox is toggled", () => {
-      it("THEN it dispatches dp-item-change with name and checked", () => {
+      it("THEN it dispatches dp-change with value and checked", () => {
         expect.assertions(3);
         const handler = vi.fn();
-        el.addEventListener("dp-item-change", handler);
+        el.addEventListener("dp-change", handler);
 
         const inputs = el.shadowRoot!.querySelectorAll(
           "input[type='checkbox']"
@@ -80,7 +80,7 @@ describe("checkbox-list", () => {
         humidityInput.dispatchEvent(new Event("change", { bubbles: true }));
 
         expect(handler).toHaveBeenCalledOnce();
-        expect(handler.mock.calls[0][0].detail.name).toBe("humidity");
+        expect(handler.mock.calls[0][0].detail.value).toBe("humidity");
         expect(handler.mock.calls[0][0].detail.checked).toBe(true);
       });
     });

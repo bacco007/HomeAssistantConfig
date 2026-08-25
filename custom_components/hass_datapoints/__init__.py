@@ -31,6 +31,7 @@ from .const import (
     ATTR_MESSAGE,
     DOMAIN,
     EVENT_RECORDED,
+    EVENTS_DB_FILENAME,
     FRONTEND_URL,
     KEY_ADD_BINARY_SENSOR_ENTITIES,
     KEY_ADD_SENSOR_ENTITIES,
@@ -145,7 +146,8 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: DatapointsConfigEntry) -> bool:
     """Set up Hass Data Points from a config entry."""
-    store = DatapointsStore(hass)
+    db_path = hass.config.path(".storage", EVENTS_DB_FILENAME)
+    store = DatapointsStore(hass, db_path)
     await store.async_load()
 
     # Warn if monitors are configured aggressively (low-spec device safeguard).

@@ -2,10 +2,17 @@ import { LitElement, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import { styles } from "./color-picker-field.styles";
+import { dispatchChange } from "@/lib/events";
 
+/**
+ * Native color `<input>` with an optional HA entity icon overlay.
+ * @fires dp-change - `{ type: "color", color: string }`
+ */
 export class ColorPickerField extends LitElement {
+  /** Current color as a CSS hex string (e.g. `"#ff9800"`). */
   @property({ type: String }) accessor color: string = "#ff9800";
 
+  /** When set, renders the entity's `ha-state-icon` over the color swatch. */
   @property({ type: String, attribute: "entity-id" }) accessor entityId:
     | string
     | undefined = undefined;
@@ -13,14 +20,10 @@ export class ColorPickerField extends LitElement {
   static styles = styles;
 
   _onInput(e: Event) {
-    const newColor = (e.target as HTMLInputElement).value;
-    this.dispatchEvent(
-      new CustomEvent("dp-color-change", {
-        detail: { color: newColor },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    dispatchChange(this, {
+      type: "color",
+      color: (e.target as HTMLInputElement).value,
+    });
   }
 
   render() {

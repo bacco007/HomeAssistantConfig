@@ -82,13 +82,13 @@ export class HassDatapointsQuickCardEditor extends EditorBase {
         <editor-text-field
           .label=${msg("Card title (optional)")}
           .value=${c.title || ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("title", e.detail.value)}
         ></editor-text-field>
         <editor-text-field
           .label=${msg("Input placeholder text")}
           .value=${c.placeholder || ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("placeholder", e.detail.value)}
         ></editor-text-field>
 
@@ -97,13 +97,13 @@ export class HassDatapointsQuickCardEditor extends EditorBase {
           .label=${msg("Icon")}
           .value=${c.icon || "mdi:bookmark"}
           .hass=${this.hass}
-          @dp-icon-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("icon", e.detail.value)}
         ></editor-icon-picker>
         <color-swatch
           .label=${msg("Colour")}
           .color=${c.color || AMBER}
-          @dp-color-change=${(e: CustomEvent<{ color: string }>) =>
+          @dp-change=${(e: CustomEvent<{ color: string }>) =>
             this._set("color", e.detail.color)}
         ></color-swatch>
 
@@ -129,7 +129,7 @@ export class HassDatapointsQuickCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Show annotation field")}
           .checked=${!!c.show_annotation}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("show_annotation", e.detail.checked || undefined)}
         ></editor-switch>
       </div>

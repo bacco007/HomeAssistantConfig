@@ -5,7 +5,7 @@ export default {
   title: "Atoms/Form/Editor Text Field",
   component: "editor-text-field",
   parameters: {
-    actions: { handles: ["dp-field-change"] },
+    actions: { handles: ["dp-change"] },
   },
 };
 

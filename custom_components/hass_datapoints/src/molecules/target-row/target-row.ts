@@ -1,4 +1,4 @@
-import { LitElement, html, nothing } from "lit";
+import { LitElement, html, nothing, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { localized, msg } from "@/lib/i18n/localize";
 
@@ -85,6 +85,15 @@ export function _hasActiveAnalysis(
 // Component
 // ---------------------------------------------------------------------------
 
+/**
+ * Single entity row in the target list with color, visibility, and analysis controls.
+ * @fires dp-row-color-change - `{ index, color: string }` — color picker changed
+ * @fires dp-row-visibility-change - `{ entityId, visible: boolean }` — visibility checkbox toggled
+ * @fires dp-row-toggle-analysis - `{ entityId }` — analysis panel expand/collapse
+ * @fires dp-row-remove - `{ index }` — row remove button clicked
+ * @fires dp-row-analysis-change - `{ entityId, key, value }` — an analysis field changed
+ * @fires dp-row-copy-analysis-to-all - `{ entityId, analysis }` — copy-to-all triggered
+ */
 @localized()
 export class TargetRow extends LitElement {
   @property({ type: String }) accessor color: string = "#03a9f4";
@@ -147,32 +156,33 @@ export class TargetRow extends LitElement {
 
   static styles = styles;
 
-  /** Entity ID — from HA state when available, else from the config prop. */
-  private get _entityId(): string {
-    return (this.stateObj?.entity_id as string) ?? this.entityId ?? "";
-  }
+  // Derived from stateObj / entityId / label — recomputed in willUpdate, not getters,
+  // so the values are stable across the full render pass without extra re-renders.
+  private _entityId = "";
 
-  /** Display name: uses the explicit label override when provided, otherwise derives from the HA state object. */
-  private get _entityName(): string {
-    if (this.label) return this.label;
-    return (
-      ((this.stateObj?.attributes as RecordWithUnknownValues | undefined)
-        ?.friendly_name as string) ?? this._entityId
-    );
-  }
+  private _entityName = "";
 
-  /** Unit of measurement derived from the HA state object. */
-  private get _unit(): string {
-    return (
-      ((this.stateObj?.attributes as RecordWithUnknownValues | undefined)
-        ?.unit_of_measurement as string) ?? ""
-    );
-  }
+  private _unit = "";
 
-  private get _supportsAnalysis(): boolean {
-    return (
-      Boolean(this._entityId) && !this._entityId.startsWith("binary_sensor.")
-    );
+  private _supportsAnalysis = false;
+
+  override willUpdate(changed: PropertyValues) {
+    if (
+      changed.has("stateObj") ||
+      changed.has("entityId") ||
+      changed.has("label")
+    ) {
+      this._entityId =
+        (this.stateObj?.entity_id as string) ?? this.entityId ?? "";
+      const attrs = this.stateObj?.attributes as
+        | RecordWithUnknownValues
+        | undefined;
+      this._entityName =
+        this.label ?? (attrs?.friendly_name as string) ?? this._entityId;
+      this._unit = (attrs?.unit_of_measurement as string) ?? "";
+      this._supportsAnalysis =
+        Boolean(this._entityId) && !this._entityId.startsWith("binary_sensor.");
+    }
   }
 
   private _emit(name: string, detail: RecordWithUnknownValues) {

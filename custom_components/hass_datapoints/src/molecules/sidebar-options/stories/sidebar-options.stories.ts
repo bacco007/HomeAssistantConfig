@@ -17,8 +17,8 @@ export default {
       handles: [
         "dp-scope-change",
         "dp-display-change",
-        "dp-radio-change",
-        "dp-item-change",
+        "dp-change",
+        "dp-change",
       ],
     },
   },

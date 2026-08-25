@@ -2,6 +2,7 @@ import { LitElement, html } from "lit";
 import { property } from "lit/decorators.js";
 
 import { styles } from "./checkbox-list.styles";
+import { dispatchChange } from "@/lib/events";
 
 export interface CheckboxItem {
   name: string;
@@ -9,20 +10,24 @@ export interface CheckboxItem {
   checked: boolean;
 }
 
+/**
+ * List of labeled checkboxes driven by an items array.
+ * Each checkbox input carries a `name` attribute used as the item identifier.
+ * @fires dp-change - `{ type: "item", value: string, checked: boolean }` — `value` is the item's `name`
+ */
 export class CheckboxList extends LitElement {
+  /** Items to render; each must have a unique `name` used as the identifier. */
   @property({ type: Array }) accessor items: CheckboxItem[] = [];
 
   static styles = styles;
 
   _onChange(e: Event) {
     const input = e.target as HTMLInputElement;
-    this.dispatchEvent(
-      new CustomEvent("dp-item-change", {
-        detail: { name: input.name, checked: input.checked },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    dispatchChange(this, {
+      type: "item",
+      value: input.name,
+      checked: input.checked,
+    });
   }
 
   render() {

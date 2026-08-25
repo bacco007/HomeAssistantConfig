@@ -43,10 +43,42 @@ export const styles = css`
     color: var(--secondary-text-color);
   }
 
+  .history-target-picker-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--dp-spacing-sm);
+    min-width: 0;
+    margin-bottom: calc(var(--spacing, 8px) * 2);
+  }
+
   .history-target-picker-slot {
+    flex: 1 1 auto;
     min-width: 0;
     margin-top: 0;
-    margin-bottom: calc(var(--spacing, 8px) * 2);
+    margin-bottom: 0;
+  }
+
+  .history-targets-clear-all {
+    flex: 0 0 auto;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--primary-color, #3b82f6);
+    white-space: nowrap;
+    appearance: none;
+    -webkit-appearance: none;
+    line-height: 1;
+    opacity: 0.85;
+  }
+
+  .history-targets-clear-all:hover,
+  .history-targets-clear-all:focus-visible {
+    opacity: 1;
+    text-decoration: underline;
+    outline: none;
   }
 
   .history-targets-collapsed-summary {
@@ -197,6 +229,7 @@ export const styles = css`
   }
 
   :host([sidebar-collapsed]) .history-target-rows,
+  :host([sidebar-collapsed]) .history-target-picker-row,
   :host([sidebar-collapsed]) .history-target-picker-slot,
   :host([sidebar-collapsed]) .sidebar-section-header {
     display: none;

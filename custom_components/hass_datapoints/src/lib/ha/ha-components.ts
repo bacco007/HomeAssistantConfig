@@ -33,7 +33,7 @@ declare const logger: {
 
 interface PartialPanelResolverElement extends HTMLElement {
   hass?: unknown;
-  _updateRoutes?: () => void;
+  _updateRoutes?: () => void | Promise<void>;
   routerOptions?: {
     routes?: {
       history?: {
@@ -70,7 +70,8 @@ async function preloadHistoryRouteComponents(
     const app = document.querySelector("home-assistant") as Nullable<
       HTMLElement & { hass?: { panels?: RecordWithUnknownValues } }
     >;
-    const panels = app?.hass?.panels;
+    const hass = app?.hass;
+    const panels = hass?.panels;
     if (!panels?.history) {
       logger.warn(
         "[hass-datapoints ha] history panel not available for preload"
@@ -86,8 +87,15 @@ async function preloadHistoryRouteComponents(
       );
       return;
     }
-    resolver.hass = { panels };
-    resolver._updateRoutes();
+    // Pass the real hass object, not a { panels } stub: HA 2026.8's
+    // _updateRoutes reads additional hass fields (and .external off one of
+    // them), so a stub throws "Cannot read properties of undefined
+    // (reading 'external')". _updateRoutes is also async on recent cores, so
+    // await it — otherwise its rejection escapes this try/catch as an
+    // unhandled promise rejection and derails the panel's connectedCallback
+    // preload chain, leaving the panel blank.
+    resolver.hass = hass;
+    await resolver._updateRoutes();
     const load = resolver.routerOptions?.routes?.history?.load;
     if (typeof load !== "function") {
       logger.warn("[hass-datapoints ha] history route loader missing");

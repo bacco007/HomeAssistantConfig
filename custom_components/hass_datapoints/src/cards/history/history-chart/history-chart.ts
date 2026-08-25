@@ -600,6 +600,20 @@ export class HistoryChart extends HTMLElement {
   _getAvailableChartHeight(minChartHeight = 280): number {
     // Walk up to the ha-card ancestor which may live in the parent's shadow root.
     const card = this.closest("ha-card") as Nullable<HTMLElement>;
+
+    // Clear any inline height we set on ha-card in a previous split-chart draw.
+    // With height:auto, ha-card reports content-driven height (e.g. 1000px for 5
+    // series) instead of the CSS-layout-constrained height (e.g. 600px). Measuring
+    // the inflated value causes usePageScroll to flip false, which clears the inline
+    // style, which shrinks ha-card back, which fires ResizeObserver — an infinite
+    // oscillation. Clearing here ensures every measurement starts from the clean
+    // CSS-determined height. _drawSplitChart will re-apply the correct inline value
+    // immediately after, within the same synchronous draw call.
+    if (card?.style.height) {
+      card.style.height = "";
+      card.style.minHeight = "";
+    }
+
     const header = card?.querySelector(".card-header") as Nullable<HTMLElement>;
     const topSlot = this._el("chart-top-slot") as Nullable<HTMLElement>;
     const legend = this._el("legend") as Nullable<HTMLElement>;
@@ -1680,6 +1694,20 @@ export class HistoryChart extends HTMLElement {
       "--dp-chart-axis-bottom-height",
       `${bottomHeight}px`
     );
+
+    // Move the axis overlay inside chart-stage so it scrolls with the canvas
+    // rows when chart-scroll-viewport overflows vertically. Label positions are
+    // already in stage coordinates (rowOffset + renderer.yOf), so they stay
+    // correct. The overlay is restored to the chart element on non-split draws.
+    const stage = this.querySelector("#chart-stage") as HTMLElement | null;
+    if (stage && leftEl.parentElement !== stage) {
+      stage.appendChild(leftEl);
+    }
+    leftEl.style.position = "sticky";
+    leftEl.style.left = "0";
+    leftEl.style.top = "0";
+    leftEl.style.bottom = "";
+    leftEl.style.height = "100%";
 
     const labelRight = 10;
     const labelItems: import("lit").TemplateResult[] = [];
@@ -2811,6 +2839,16 @@ export class HistoryChart extends HTMLElement {
       "#chart-axis-right"
     ) as Nullable<HTMLElement>;
     if (axisLeftEl) {
+      // If a previous split draw moved the axis overlay inside chart-stage,
+      // restore it to the chart element so its CSS top/bottom positioning applies.
+      if (axisLeftEl.parentElement !== this) {
+        this.appendChild(axisLeftEl);
+      }
+      axisLeftEl.style.position = "";
+      axisLeftEl.style.left = "";
+      axisLeftEl.style.top = "";
+      axisLeftEl.style.bottom = "";
+      axisLeftEl.style.height = "";
       axisLeftEl.style.display = "";
     }
     if (axisRightEl) {
@@ -4135,7 +4173,10 @@ export class HistoryChart extends HTMLElement {
       }
     }
 
-    if (visibleSeries.length) {
+    const visibleBinaryBackgrounds = binaryBackgrounds.filter(
+      (entry) => !this._hiddenSeries.has(entry.entityId)
+    );
+    if (visibleSeries.length || visibleBinaryBackgrounds.length) {
       this._ensureContextAnnotationDialog();
       attachLineChartHover(
         this,
@@ -4154,9 +4195,7 @@ export class HistoryChart extends HTMLElement {
           onAddAnnotation: this._canAddAnnotation
             ? (hover: unknown) => this._handleChartAddAnnotation(hover)
             : undefined,
-          binaryStates: binaryBackgrounds.filter(
-            (entry) => !this._hiddenSeries.has(entry.entityId)
-          ) as HoverSeriesLike[],
+          binaryStates: visibleBinaryBackgrounds as HoverSeriesLike[],
           comparisonSeries: effectiveComparisonHoverSeries as HoverSeriesLike[],
           trendSeries: [
             ...trendHoverSeries,
@@ -4654,13 +4693,10 @@ export class HistoryChart extends HTMLElement {
     const N = (visibleSeries as unknown[]).length;
     const MIN_ROW_HEIGHT = 200;
     const minTotalHeight = MIN_ROW_HEIGHT * N;
-    // When the minimum required height exceeds the available space, use the
-    // minimum per-series height and let the page scroll rather than clipping
-    // rows into an internal scrollable area.
-    const usePageScroll = minTotalHeight > availableHeight;
-    const rowHeight = usePageScroll
-      ? MIN_ROW_HEIGHT
-      : Math.max(MIN_ROW_HEIGHT, Math.floor(availableHeight / N));
+    const rowHeight =
+      minTotalHeight > availableHeight
+        ? MIN_ROW_HEIGHT
+        : Math.max(MIN_ROW_HEIGHT, Math.floor(availableHeight / N));
     const totalHeight = rowHeight * N;
 
     if (chartStage) {
@@ -4668,40 +4704,28 @@ export class HistoryChart extends HTMLElement {
       chartStage.style.height = `${totalHeight}px`;
     }
 
-    // When the split rows exceed the available height, expand the chart element
-    // itself so the parent pane (.pane-first) can scroll vertically — giving a
-    // natural page-level scroll rather than a small internal viewport scroll.
-    const splitScrollViewport = this.querySelector("#chart-scroll-viewport");
-    if (totalHeight > availableHeight) {
-      wrap.style.height = `${totalHeight}px`;
-      // Keep the viewport non-scrolling vertically; the pane container scrolls.
-      if (splitScrollViewport) {
-        (splitScrollViewport as HTMLElement).style.overflowY = "hidden";
-      }
-    } else {
-      wrap.style.height = "";
-      if (splitScrollViewport) {
-        (splitScrollViewport as HTMLElement).style.overflowY = "hidden";
-      }
+    // When series exceed the available viewport height, scroll vertically inside
+    // chart-scroll-viewport so that chart-top-slot (comparison tabs) and the
+    // legend remain fixed outside the scrollable area.
+    const splitScrollViewport = this.querySelector(
+      "#chart-scroll-viewport"
+    ) as HTMLElement | null;
+    if (splitScrollViewport) {
+      splitScrollViewport.style.overflowY =
+        totalHeight > availableHeight ? "auto" : "hidden";
     }
 
-    // When page-scroll is needed, release the height constraints on the card
-    // so the layout can grow taller than the viewport.
+    // Keep the chart element and ha-card at their CSS-determined heights.
+    // Growing them caused a ResizeObserver feedback loop (the inflated
+    // ha-card.clientHeight flipped usePageScroll, cleared the inline style,
+    // shrank the card, re-fired the observer, and repeated indefinitely).
+    wrap.style.height = "";
+    this.style.height = "";
+    this.style.minHeight = "";
     const haCard = this.closest("ha-card") as HTMLElement | null;
-    if (usePageScroll) {
-      this.style.height = "auto";
-      this.style.minHeight = "100%";
-      if (haCard) {
-        haCard.style.height = "auto";
-        haCard.style.minHeight = "100%";
-      }
-    } else {
-      this.style.height = "";
-      this.style.minHeight = "";
-      if (haCard) {
-        haCard.style.height = "";
-        haCard.style.minHeight = "";
-      }
+    if (haCard) {
+      haCard.style.height = "";
+      haCard.style.minHeight = "";
     }
 
     this._setChartLoading(!!(options as RecordWithUnknownValues).loading);
@@ -5554,7 +5578,7 @@ export class HistoryChart extends HTMLElement {
     };
 
     // ── Hover ──────────────────────────────────────────────────────────────────
-    const buildSplitHover = (clientX: number) => {
+    const buildSplitHover = (clientX: number, clientY: number) => {
       const baseRect = (
         (tracks[0] as RecordWithUnknownValues).canvas as HTMLCanvasElement
       ).getBoundingClientRect();
@@ -5593,8 +5617,27 @@ export class HistoryChart extends HTMLElement {
       );
       const x = primaryRenderer.xOf(timeMs, t0, t1);
 
+      // Determine which row the user's cursor is physically over for the active indicator.
+      const overlayRect = overlayEl.getBoundingClientRect();
+      const localY = clientY - overlayRect.top;
+      const firstRowOffset = (tracks[0] as RecordWithUnknownValues)
+        .rowOffset as number;
+      const rowHeight =
+        tracks.length > 1
+          ? ((tracks[1] as RecordWithUnknownValues).rowOffset as number) -
+            firstRowOffset
+          : splitSelHeight;
+      const relY = localY - firstRowOffset;
+      const activeTrackIndex =
+        rowHeight > 0
+          ? Math.min(
+              Math.max(Math.floor(relY / rowHeight), 0),
+              tracks.length - 1
+            )
+          : 0;
+
       const values: HoverValueEntry[] = (tracks as unknown[]).map(
-        (trackItem: unknown) => {
+        (trackItem: unknown, trackIndex: number) => {
           const {
             renderer: trackRenderer,
             series,
@@ -5621,6 +5664,7 @@ export class HistoryChart extends HTMLElement {
               hasValue: false,
               axisSide: "left",
               axisSlot: 0,
+              splitActive: trackIndex === activeTrackIndex,
             };
           }
           return {
@@ -5643,6 +5687,7 @@ export class HistoryChart extends HTMLElement {
               ),
             axisSide: "left",
             axisSlot: 0,
+            splitActive: trackIndex === activeTrackIndex,
           };
         }
       );
@@ -6246,7 +6291,7 @@ export class HistoryChart extends HTMLElement {
       if (this._chartZoomDragging) {
         return;
       }
-      const hover = buildSplitHover(clientX);
+      const hover = buildSplitHover(clientX, clientY);
       if (!hover) {
         this._chartLastHover = null;
         hideLineChartHover(this);

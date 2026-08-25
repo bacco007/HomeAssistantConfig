@@ -243,6 +243,22 @@ export class RangeTimeline extends LitElement {
     }
   }
 
+  willUpdate(changed: Map<string, unknown>) {
+    const rangeProps = [
+      "startTime",
+      "endTime",
+      "rangeBounds",
+      "zoomLevel",
+      "dateSnapping",
+    ];
+    if (rangeProps.some((p) => changed.has(p)) && this.rangeBounds) {
+      this._draftStartTime = this.startTime ? new Date(this.startTime) : null;
+      this._draftEndTime = this.endTime ? new Date(this.endTime) : null;
+      this._updateHandleStacking();
+      this._updateRangePreview();
+    }
+  }
+
   firstUpdated() {
     if (typeof ResizeObserver !== "undefined") {
       this._resizeObserver = new ResizeObserver(() => {
@@ -255,7 +271,7 @@ export class RangeTimeline extends LitElement {
       }
     }
 
-    this._syncRangeControl();
+    this._scheduleDomSync();
   }
 
   updated(changed: Map<string, unknown>) {
@@ -267,8 +283,24 @@ export class RangeTimeline extends LitElement {
       "dateSnapping",
     ];
     if (rangeProps.some((p) => changed.has(p))) {
-      this._syncRangeControl();
+      this._scheduleDomSync();
     }
+  }
+
+  private _scheduleDomSync() {
+    this.updateComplete.then(() => {
+      if (
+        this.isConnected &&
+        this._rangeTrackEl &&
+        this._rangeStartHandleEl &&
+        this._rangeEndHandleEl &&
+        this.rangeBounds
+      ) {
+        this._syncTimelineWidth();
+        this._updateSelectionJumpControls();
+        this._revealSelectionInTimeline("auto");
+      }
+    });
   }
 
   render() {

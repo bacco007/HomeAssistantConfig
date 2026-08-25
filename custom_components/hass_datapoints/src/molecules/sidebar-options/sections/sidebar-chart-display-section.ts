@@ -77,7 +77,7 @@ export class SidebarChartDisplaySection extends LitElement {
   }
 
   private _onCheckboxChange(e: CustomEvent) {
-    const { name, checked } = e.detail;
+    const { value: name, checked } = e.detail;
     this._emitDisplay(name, checked);
   }
 
@@ -124,14 +124,14 @@ export class SidebarChartDisplaySection extends LitElement {
               checked: this.showDataGaps,
             },
           ]}
-          @dp-item-change=${this._onCheckboxChange}
+          @dp-change=${this._onCheckboxChange}
         ></checkbox-list>
         <div class="is-subopt ${this.showDataGaps ? "" : "is-disabled"}">
           <inline-select
             .value=${this.dataGapThreshold}
             .options=${this._localizedOptions(DATA_GAP_THRESHOLD_OPTIONS)}
             .disabled=${!this.showDataGaps}
-            @dp-select-change=${this._onGapThresholdChange}
+            @dp-change=${this._onGapThresholdChange}
           ></inline-select>
           <span>${msg("Gap threshold")}</span>
         </div>
@@ -140,7 +140,7 @@ export class SidebarChartDisplaySection extends LitElement {
             .name=${"chart-y-axis-mode"}
             .value=${this.yAxisMode}
             .options=${this._localizedOptions(Y_AXIS_MODE_OPTIONS)}
-            @dp-radio-change=${this._onYAxisModeChange}
+            @dp-change=${this._onYAxisModeChange}
           ></radio-group>
         </div>
         <div class="y-axis-group">
@@ -148,7 +148,7 @@ export class SidebarChartDisplaySection extends LitElement {
             .name=${"chart-hover-snap-mode"}
             .value=${this.hoverSnapMode}
             .options=${this._localizedOptions(HOVER_SNAP_MODE_OPTIONS)}
-            @dp-radio-change=${this._onHoverSnapModeChange}
+            @dp-change=${this._onHoverSnapModeChange}
           ></radio-group>
         </div>
       </sidebar-options-section>

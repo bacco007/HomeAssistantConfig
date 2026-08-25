@@ -13,7 +13,7 @@ export default {
   component: "sidebar-chart-display-section",
   parameters: {
     actions: {
-      handles: ["dp-display-change", "dp-item-change", "dp-radio-change"],
+      handles: ["dp-display-change", "dp-change", "dp-change"],
     },
   },
   argTypes: {

@@ -21,7 +21,7 @@ export class SidebarDatapointDisplaySection extends LitElement {
   static styles = styles;
 
   private _onCheckboxChange(e: CustomEvent) {
-    const { name, checked } = e.detail;
+    const { value: name, checked } = e.detail;
     this.dispatchEvent(
       new CustomEvent("dp-display-change", {
         detail: { kind: name, value: checked },
@@ -54,7 +54,7 @@ export class SidebarDatapointDisplaySection extends LitElement {
               checked: this.showLines,
             },
           ]}
-          @dp-item-change=${this._onCheckboxChange}
+          @dp-change=${this._onCheckboxChange}
         ></checkbox-list>
       </sidebar-options-section>
     `;

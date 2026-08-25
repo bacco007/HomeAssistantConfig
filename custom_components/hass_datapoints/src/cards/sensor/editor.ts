@@ -24,7 +24,7 @@ export class HassDatapointsSensorCardEditor extends EditorBase {
           .label=${msg("Sensor entity *")}
           .value=${c.entity || ""}
           .hass=${this.hass}
-          @dp-entity-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("entity", e.detail.value)}
         ></editor-entity-picker>
 
@@ -32,20 +32,20 @@ export class HassDatapointsSensorCardEditor extends EditorBase {
         <editor-text-field
           .label=${msg("Override display name (optional)")}
           .value=${c.name || ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("name", e.detail.value)}
         ></editor-text-field>
         <editor-text-field
           .label=${msg("Hours to show")}
           type="number"
           .value=${String(c.hours_to_show ?? 24)}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("hours_to_show", e.detail.value)}
         ></editor-text-field>
         <color-swatch
           .label=${msg("Graph colour")}
           .color=${c.graph_color || COLORS[0]}
-          @dp-color-change=${(e: CustomEvent<{ color: string }>) =>
+          @dp-change=${(e: CustomEvent<{ color: string }>) =>
             this._set("graph_color", e.detail.color)}
         ></color-swatch>
         <editor-select
@@ -55,13 +55,13 @@ export class HassDatapointsSensorCardEditor extends EditorBase {
             { value: "circle", label: msg("Circle on line") },
             { value: "line", label: msg("Dotted vertical line") },
           ]}
-          @dp-select-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("annotation_style", e.detail.value)}
         ></editor-select>
         <editor-switch
           .label=${msg("Show annotation tooltips")}
           .checked=${c.show_annotation_tooltips === true}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set(
               "show_annotation_tooltips",
               e.detail.checked ? true : undefined
@@ -72,7 +72,7 @@ export class HassDatapointsSensorCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Show records list below graph")}
           .checked=${showRecords}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("show_records", e.detail.checked || undefined)}
         ></editor-switch>
         <editor-text-field
@@ -81,14 +81,14 @@ export class HassDatapointsSensorCardEditor extends EditorBase {
           .value=${c.records_page_size != null
             ? String(c.records_page_size)
             : ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("records_page_size", e.detail.value)}
         ></editor-text-field>
         <editor-text-field
           .label=${msg("Max records to show (blank = all)")}
           type="number"
           .value=${c.records_limit != null ? String(c.records_limit) : ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("records_limit", e.detail.value)}
         ></editor-text-field>
         <editor-switch
@@ -97,7 +97,7 @@ export class HassDatapointsSensorCardEditor extends EditorBase {
           .tooltip=${msg("User will be able to expand the row if hidden", {
             id: "User will be able to expand the row if hidden",
           })}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set(
               "records_show_full_message",
               e.detail.checked ? undefined : false

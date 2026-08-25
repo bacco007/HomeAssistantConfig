@@ -1,7 +1,14 @@
 export const PANEL_HISTORY_STYLE = `
   :host {
     display: block;
-    height: 100%;
+    /* Fill the viewport directly rather than inheriting height:100% from the
+       ha-panel-custom / partial-panel-resolver chain: on HA 2026.8 that chain
+       resolves to height 0 (partial-panel-resolver is display:inline), which
+       collapsed the panel to 0px and rendered it blank. Viewport height equals
+       the old 100% on cores that did size the chain, so this is backward
+       compatible. 100dvh refines it where supported. */
+    height: 100vh;
+    height: 100dvh;
     color: var(--primary-text-color);
     background: var(--primary-background-color);
     --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
@@ -2207,7 +2214,14 @@ export const PANEL_HISTORY_STYLE = `
 export const PANEL_HISTORY_LOADING_STYLE = `
   :host {
     display: block;
-    height: 100%;
+    /* Fill the viewport directly rather than inheriting height:100% from the
+       ha-panel-custom / partial-panel-resolver chain: on HA 2026.8 that chain
+       resolves to height 0 (partial-panel-resolver is display:inline), which
+       collapsed the panel to 0px and rendered it blank. Viewport height equals
+       the old 100% on cores that did size the chain, so this is backward
+       compatible. 100dvh refines it where supported. */
+    height: 100vh;
+    height: 100dvh;
     color: var(--primary-text-color);
     background: var(--primary-background-color);
   }

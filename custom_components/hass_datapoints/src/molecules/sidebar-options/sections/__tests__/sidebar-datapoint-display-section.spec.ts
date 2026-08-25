@@ -81,14 +81,14 @@ describe("sidebar-datapoint-display-section", () => {
       await el.updateComplete;
     });
 
-    describe("WHEN the checkbox list emits dp-item-change for icons=false", () => {
+    describe("WHEN the checkbox list emits dp-change for icons=false", () => {
       it("THEN dispatches dp-display-change with kind=icons and value=false", () => {
         expect.assertions(3);
         const handler = vi.fn();
         el.addEventListener("dp-display-change", handler);
         getCheckboxList(el).dispatchEvent(
-          new CustomEvent("dp-item-change", {
-            detail: { name: "icons", checked: false },
+          new CustomEvent("dp-change", {
+            detail: { value: "icons", checked: false },
             bubbles: true,
             composed: true,
           })
@@ -99,14 +99,14 @@ describe("sidebar-datapoint-display-section", () => {
       });
     });
 
-    describe("WHEN the checkbox list emits dp-item-change for lines=false", () => {
+    describe("WHEN the checkbox list emits dp-change for lines=false", () => {
       it("THEN dispatches dp-display-change with kind=lines and value=false", () => {
         expect.assertions(3);
         const handler = vi.fn();
         el.addEventListener("dp-display-change", handler);
         getCheckboxList(el).dispatchEvent(
-          new CustomEvent("dp-item-change", {
-            detail: { name: "lines", checked: false },
+          new CustomEvent("dp-change", {
+            detail: { value: "lines", checked: false },
             bubbles: true,
             composed: true,
           })

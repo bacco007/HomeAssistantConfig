@@ -334,14 +334,14 @@ export class HassDatapointsHistoryCardEditor extends EditorBase {
         <editor-text-field
           .label=${msg("Card title (optional)")}
           .value=${c.title || ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("title", e.detail.value)}
         ></editor-text-field>
         <editor-text-field
           .label=${msg("Hours to show")}
           type="number"
           .value=${String(c.hours_to_show ?? 24)}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("hours_to_show", e.detail.value)}
         ></editor-text-field>
 
@@ -372,7 +372,7 @@ export class HassDatapointsHistoryCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Stepped series")}
           .checked=${analysis.stepped_series === true}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._updateGlobalAnalysis((currentAnalysis) => ({
               ...currentAnalysis,
               stepped_series: e.detail.checked,
@@ -442,7 +442,7 @@ export class HassDatapointsHistoryCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Show create datapoint button on chart crosshair")}
           .checked=${c.show_add_annotation_button !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set(
               "show_add_annotation_button",
               e.detail.checked ? undefined : false
@@ -453,7 +453,7 @@ export class HassDatapointsHistoryCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Hide raw data when analysis is enabled")}
           .checked=${c.hide_raw_data === true}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("hide_raw_data", e.detail.checked ? true : undefined)}
         ></editor-switch>
       </div>

@@ -77,10 +77,10 @@ describe("inline-select", () => {
     });
 
     describe("WHEN the user changes the selection", () => {
-      it("THEN it dispatches dp-select-change with the new value", () => {
+      it("THEN it dispatches dp-change with the new value", () => {
         expect.assertions(2);
         const handler = vi.fn();
-        el.addEventListener("dp-select-change", handler);
+        el.addEventListener("dp-change", handler);
         const select = el.shadowRoot!.querySelector(
           "select"
         ) as HTMLSelectElement;

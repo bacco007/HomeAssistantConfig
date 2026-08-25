@@ -5,7 +5,7 @@ export default {
   title: "Atoms/Form/Editor Select",
   component: "editor-select",
   parameters: {
-    actions: { handles: ["dp-select-change"] },
+    actions: { handles: ["dp-change"] },
   },
 };
 

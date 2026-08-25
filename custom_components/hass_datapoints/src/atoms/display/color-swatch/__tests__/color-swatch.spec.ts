@@ -60,9 +60,9 @@ describe("color-swatch", () => {
     });
 
     describe("WHEN the color input changes", () => {
-      it("THEN it fires a dp-color-change event with the new color", async () => {
+      it("THEN it fires a dp-change event with the new color", async () => {
         const handler = vi.fn();
-        el.addEventListener("dp-color-change", handler);
+        el.addEventListener("dp-change", handler);
 
         const input = el.shadowRoot!.querySelector(
           "input[type='color']"

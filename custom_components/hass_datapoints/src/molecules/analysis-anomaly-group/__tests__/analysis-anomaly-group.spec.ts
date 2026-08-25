@@ -230,7 +230,7 @@ describe("analysis-anomaly-group", () => {
           "analysis-method-subopts inline-select"
         )!;
         inlineSelect.dispatchEvent(
-          new CustomEvent("dp-select-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "ema" },
             bubbles: true,
             composed: true,
@@ -282,7 +282,7 @@ describe("analysis-anomaly-group", () => {
         );
         const windowSelect = inlineSelects[1]!;
         windowSelect.dispatchEvent(
-          new CustomEvent("dp-select-change", {
+          new CustomEvent("dp-change", {
             detail: { value: "24h" },
             bubbles: true,
             composed: true,

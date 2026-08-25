@@ -87,7 +87,7 @@ export class HassDatapointsActionCardEditor extends EditorBase {
         <editor-text-field
           .label=${msg("Card title (optional)")}
           .value=${c.title || ""}
-          @dp-field-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("title", e.detail.value)}
         ></editor-text-field>
 
@@ -111,7 +111,7 @@ export class HassDatapointsActionCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Show always included targets on card")}
           .checked=${c.show_config_targets !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set(
               "show_config_targets",
               e.detail.checked ? undefined : false
@@ -120,7 +120,7 @@ export class HassDatapointsActionCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Allow user to add more related items")}
           .checked=${c.show_target_picker !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set(
               "show_target_picker",
               e.detail.checked ? undefined : false
@@ -132,13 +132,13 @@ export class HassDatapointsActionCardEditor extends EditorBase {
           .label=${msg("Default icon")}
           .value=${c.default_icon || "mdi:bookmark"}
           .hass=${this.hass}
-          @dp-icon-change=${(e: CustomEvent<{ value: string }>) =>
+          @dp-change=${(e: CustomEvent<{ value: string }>) =>
             this._set("default_icon", e.detail.value)}
         ></editor-icon-picker>
         <color-swatch
           .label=${msg("Default colour")}
           .color=${c.default_color || "#03a9f4"}
-          @dp-color-change=${(e: CustomEvent<{ color: string }>) =>
+          @dp-change=${(e: CustomEvent<{ color: string }>) =>
             this._set("default_color", e.detail.color)}
         ></color-swatch>
 
@@ -146,13 +146,13 @@ export class HassDatapointsActionCardEditor extends EditorBase {
         <editor-switch
           .label=${msg("Show date & time field")}
           .checked=${c.show_date !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("show_date", e.detail.checked ? undefined : false)}
         ></editor-switch>
         <editor-switch
           .label=${msg("Show annotation field")}
           .checked=${c.show_annotation !== false}
-          @dp-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+          @dp-change=${(e: CustomEvent<{ checked: boolean }>) =>
             this._set("show_annotation", e.detail.checked ? undefined : false)}
         ></editor-switch>
       </div>

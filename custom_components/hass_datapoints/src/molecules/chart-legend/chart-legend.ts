@@ -5,6 +5,10 @@ import { styles } from "./chart-legend.styles";
 import type { SeriesItem } from "@/lib/types";
 import "@/atoms/interactive/legend-item/legend-item";
 
+/**
+ * Renders a row of legend items for a chart, with show/hide toggle support.
+ * @fires dp-series-toggle - `{ entityId, pressed: boolean }` — legend item toggled
+ */
 export class ChartLegend extends LitElement {
   @property({ type: Array }) accessor series: SeriesItem[] = [];
 

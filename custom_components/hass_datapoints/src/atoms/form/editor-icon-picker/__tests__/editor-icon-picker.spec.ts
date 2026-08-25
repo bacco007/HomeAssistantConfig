@@ -36,9 +36,9 @@ describe("editor-icon-picker", () => {
     });
 
     describe("WHEN value-changed fires", () => {
-      it("THEN it dispatches dp-icon-change", () => {
+      it("THEN it dispatches dp-change", () => {
         const handler = vi.fn();
-        el.addEventListener("dp-icon-change", handler);
+        el.addEventListener("dp-change", handler);
         const picker = el.shadowRoot!.querySelector("ha-icon-picker")!;
         picker.dispatchEvent(
           new CustomEvent("value-changed", {

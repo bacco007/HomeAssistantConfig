@@ -82,10 +82,10 @@ describe("color-picker-field", () => {
     });
 
     describe("WHEN the color input changes", () => {
-      it("THEN it dispatches dp-color-change with the new color", () => {
+      it("THEN it dispatches dp-change with the new color", () => {
         expect.assertions(2);
         const handler = vi.fn();
-        el.addEventListener("dp-color-change", handler);
+        el.addEventListener("dp-change", handler);
 
         const input = el.shadowRoot!.querySelector(
           "input[type='color']"

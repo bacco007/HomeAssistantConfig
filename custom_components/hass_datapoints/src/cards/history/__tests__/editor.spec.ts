@@ -78,7 +78,7 @@ describe("history editor", () => {
     });
 
     steppedSwitch?.dispatchEvent(
-      new CustomEvent("dp-switch-change", {
+      new CustomEvent("dp-change", {
         detail: { checked: false },
         bubbles: true,
         composed: true,

@@ -316,7 +316,7 @@ export class HassDatapointsActionCard extends LitElement {
           <div class="form-group color-col">
             <color-swatch
               .color=${this._color}
-              @dp-color-change=${this._onColorChange}
+              @dp-change=${this._onColorChange}
             ></color-swatch>
           </div>
         </div>

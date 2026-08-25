@@ -1,10 +1,9 @@
 import { LitElement, html, nothing } from "lit";
-import { property } from "lit/decorators.js";
 import { localized, msg } from "@/lib/i18n/localize";
 
+import { AnalysisGroupMixin } from "../analysis-group-shared/analysis-group.mixin";
 import { sharedStyles } from "../analysis-group-shared/analysis-group-shared.styles";
 import { styles } from "./analysis-trend-group.styles";
-import type { NormalizedAnalysis } from "@/molecules/target-row/types";
 import "@/atoms/analysis/analysis-group/analysis-group";
 import "@/atoms/form/inline-select/inline-select";
 
@@ -29,41 +28,15 @@ export const ANALYSIS_TREND_WINDOW_OPTIONS = [
   { value: "28d", label: "28 days" },
 ];
 
+/**
+ * @fires dp-group-analysis-change - `{ entityId, key: "show_trend_analysis" | "trend_method" | "trend_window" | "trend_polynomial_degree", value }` — analysis field changed
+ */
 @localized()
-export class AnalysisTrendGroup extends LitElement {
-  @property({ type: Object }) accessor analysis: NormalizedAnalysis =
-    {} as NormalizedAnalysis;
-
-  @property({ type: String, attribute: "entity-id" })
-  accessor entityId: string = "";
-
+export class AnalysisTrendGroup extends AnalysisGroupMixin(LitElement) {
   static styles = [sharedStyles, styles];
-
-  private _emit(key: string, value: unknown) {
-    this.dispatchEvent(
-      new CustomEvent("dp-group-analysis-change", {
-        detail: { entityId: this.entityId, key, value },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
-  private _localizedOptions(
-    options: Array<{ value: string; label: string }>
-  ): Array<{ value: string; label: string }> {
-    return options.map((opt) => ({
-      ...opt,
-      label: msg(opt.label),
-    }));
-  }
 
   private _onGroupChange(e: CustomEvent) {
     this._emit("show_trend_lines", e.detail.checked);
-  }
-
-  private _onCheckbox(key: string, e: Event) {
-    this._emit(key, (e.target as HTMLInputElement).checked);
   }
 
   render() {
@@ -88,7 +61,7 @@ export class AnalysisTrendGroup extends LitElement {
           <inline-select
             .value=${a.trend_method}
             .options=${this._localizedOptions(ANALYSIS_TREND_METHOD_OPTIONS)}
-            @dp-select-change=${(e: Event) =>
+            @dp-change=${(e: Event) =>
               this._emit(
                 "trend_method",
                 (e as CustomEvent<{ value: string }>).detail.value
@@ -104,7 +77,7 @@ export class AnalysisTrendGroup extends LitElement {
                   .options=${this._localizedOptions(
                     ANALYSIS_TREND_WINDOW_OPTIONS
                   )}
-                  @dp-select-change=${(e: Event) =>
+                  @dp-change=${(e: Event) =>
                     this._emit(
                       "trend_window",
                       (e as CustomEvent<{ value: string }>).detail.value

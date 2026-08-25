@@ -167,6 +167,7 @@ export interface HoverValueEntry {
   key?: string;
   showCrosshair?: boolean;
   active?: boolean;
+  splitActive?: boolean;
 }
 
 export interface HoverState {
@@ -1268,9 +1269,11 @@ export function showLineChartTooltip(
               class="tt-series-row ${entry.grouped === true &&
               entry.rawVisible === true
                 ? "subordinate"
-                : ""}"
+                : ""} ${entry.splitActive === true ? "split-active" : ""}"
             >
-              <div class="tt-series-main">
+              <div
+                class="tt-series-main ${entry.splitActive ? "active-row" : ""}"
+              >
                 ${entry.grouped === true && entry.rawVisible === true
                   ? ""
                   : html`<span

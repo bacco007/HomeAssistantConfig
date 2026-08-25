@@ -70,12 +70,11 @@ class AnomalyCache:
     # ------------------------------------------------------------------
 
     def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self._db_path, check_same_thread=False)
-        conn.execute("PRAGMA journal_mode=WAL")
-        return conn
+        return sqlite3.connect(self._db_path, check_same_thread=False)
 
     def _init_db(self) -> None:
         with self._connect() as conn:
+            conn.execute("PRAGMA journal_mode=WAL")
             conn.executescript(_SCHEMA_SQL)
 
     # ------------------------------------------------------------------

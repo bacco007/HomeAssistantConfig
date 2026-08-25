@@ -1,38 +1,20 @@
 import { LitElement, html } from "lit";
-import { property } from "lit/decorators.js";
 import { localized, msg } from "@/lib/i18n/localize";
 
+import { AnalysisGroupMixin } from "../analysis-group-shared/analysis-group.mixin";
 import { sharedStyles } from "../analysis-group-shared/analysis-group-shared.styles";
 import { styles } from "./analysis-summary-group.styles";
-import type { NormalizedAnalysis } from "@/molecules/target-row/types";
 import "@/atoms/analysis/analysis-group/analysis-group";
 
+/**
+ * @fires dp-group-analysis-change - `{ entityId, key: "show_summary_stats" | "show_summary_stats_shading", value }` — analysis field changed
+ */
 @localized()
-export class AnalysisSummaryGroup extends LitElement {
-  @property({ type: Object }) accessor analysis: NormalizedAnalysis =
-    {} as NormalizedAnalysis;
-
-  @property({ type: String, attribute: "entity-id" })
-  accessor entityId: string = "";
-
+export class AnalysisSummaryGroup extends AnalysisGroupMixin(LitElement) {
   static styles = [sharedStyles, styles];
-
-  private _emit(key: string, value: unknown) {
-    this.dispatchEvent(
-      new CustomEvent("dp-group-analysis-change", {
-        detail: { entityId: this.entityId, key, value },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
 
   private _onGroupChange(e: CustomEvent) {
     this._emit("show_summary_stats", e.detail.checked);
-  }
-
-  private _onCheckbox(key: string, e: Event) {
-    this._emit(key, (e.target as HTMLInputElement).checked);
   }
 
   render() {

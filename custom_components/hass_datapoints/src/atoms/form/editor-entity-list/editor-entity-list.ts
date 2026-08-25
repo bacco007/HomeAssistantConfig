@@ -4,18 +4,27 @@ import { property } from "lit/decorators.js";
 import type { I18nMap } from "@/lib/i18n/i18n-prop";
 import { createDefaultI18n, t } from "@/lib/i18n/i18n-prop";
 import { styles } from "./editor-entity-list.styles";
+import { dispatchChange } from "@/lib/events";
 import type { HassLike } from "@/lib/types";
 
 const DEFAULT_I18N = createDefaultI18n(["Add entity", "Remove entity"]);
 
+/**
+ * Editable list of entity pickers with add/remove controls.
+ * @fires dp-change - `{ type: "entity-list", value: string[] }` — full updated entity array
+ */
 export class EditorEntityList extends LitElement {
+  /** Current list of entity IDs. */
   @property({ type: Array }) accessor entities: string[] = [];
 
+  /** HA hass object forwarded to each `ha-selector`. */
   @property({ type: Object }) accessor hass: Nullable<HassLike> = null;
 
+  /** Label for the "add entity" button; falls back to the i18n default. */
   @property({ type: String, attribute: "button-label" })
   accessor buttonLabel: string = "";
 
+  /** Localization strings; defaults to English `"Add entity"` / `"Remove entity"`. */
   @property({ attribute: false }) accessor i18n: I18nMap = DEFAULT_I18N;
 
   static styles = styles;
@@ -27,35 +36,20 @@ export class EditorEntityList extends LitElement {
   _onRemove(index: number) {
     const next = [...this.entities];
     next.splice(index, 1);
-    this.dispatchEvent(
-      new CustomEvent("dp-entity-list-change", {
-        detail: { entities: next },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    dispatchChange(this, { type: "entity-list", value: next });
   }
 
   _onAdd() {
-    this.dispatchEvent(
-      new CustomEvent("dp-entity-list-change", {
-        detail: { entities: [...this.entities, ""] },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    dispatchChange(this, {
+      type: "entity-list",
+      value: [...this.entities, ""],
+    });
   }
 
   _onEntityChange(index: number, e: CustomEvent<{ value: string }>) {
     const next = [...this.entities];
     next[index] = e.detail.value;
-    this.dispatchEvent(
-      new CustomEvent("dp-entity-list-change", {
-        detail: { entities: next },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    dispatchChange(this, { type: "entity-list", value: next });
   }
 
   render() {

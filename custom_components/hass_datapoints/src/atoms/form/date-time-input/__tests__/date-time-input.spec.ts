@@ -49,9 +49,9 @@ describe("date-time-input", () => {
     });
 
     describe("WHEN the input value changes", () => {
-      it("THEN it fires dp-datetime-change", () => {
+      it("THEN it fires dp-change", () => {
         const handler = vi.fn();
-        el.addEventListener("dp-datetime-change", handler);
+        el.addEventListener("dp-change", handler);
         const input = el.shadowRoot!.querySelector("input") as HTMLInputElement;
         input.value = "2026-04-01T10:30";
         input.dispatchEvent(new Event("change", { bubbles: true }));

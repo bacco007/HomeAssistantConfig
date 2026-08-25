@@ -54,7 +54,7 @@ export class SidebarAnalysisSection extends LitElement {
   }
 
   private _onCheckboxChange(e: CustomEvent) {
-    const { name, checked } = e.detail;
+    const { value: name, checked } = e.detail;
     this.dispatchEvent(
       new CustomEvent("dp-display-change", {
         detail: { kind: name, value: checked },
@@ -84,7 +84,7 @@ export class SidebarAnalysisSection extends LitElement {
                     checked: this.showCorrelatedAnomalies,
                   },
                 ]}
-                @dp-item-change=${this._onCheckboxChange}
+                @dp-change=${this._onCheckboxChange}
               ></checkbox-list>
               <radio-group
                 .name=${"chart-anomaly-overlap-mode"}
@@ -92,7 +92,7 @@ export class SidebarAnalysisSection extends LitElement {
                 .options=${this._localizedOptions(
                   ANALYSIS_ANOMALY_OVERLAP_MODE_OPTIONS
                 )}
-                @dp-radio-change=${this._onAnomalyOverlapModeChange}
+                @dp-change=${this._onAnomalyOverlapModeChange}
               ></radio-group>
             `
           : html`
