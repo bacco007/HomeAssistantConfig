@@ -56,13 +56,21 @@ async def async_setup_entry(
 
     # Add lights
     for light_id, light_data in coordinator.data["protect"]["lights"].items():
-        _LOGGER.debug("Adding light entity for %s", light_data.get("name", light_id))
-        entities.append(
-            UnifiProtectLight(
-                coordinator=coordinator,
-                light_id=light_id,
+        # Skip malformed entries to avoid crashing the entire setup
+        if not isinstance(light_data, dict) or "name" not in light_data and "id" not in light_data:
+            _LOGGER.warning("Skipping malformed light entry: %s", light_id)
+            continue
+        try:
+            _LOGGER.debug("Adding light entity for %s", light_data.get("name", light_id))
+            entities.append(
+                UnifiProtectLight(
+                    coordinator=coordinator,
+                    light_id=light_id,
+                )
             )
-        )
+        except (KeyError, TypeError, ValueError) as err:
+            _LOGGER.warning("Skipping light %s due to error: %s", light_id, err)
+            continue
 
     _LOGGER.info("Adding %d UniFi Protect lights", len(entities))
     async_add_entities(entities)

@@ -46,6 +46,8 @@ DEVICE_TYPE_SENSOR: Final = "sensor"
 DEVICE_TYPE_NVR: Final = "nvr"
 DEVICE_TYPE_VIEWER: Final = "viewer"
 DEVICE_TYPE_CHIME: Final = "chime"
+DEVICE_TYPE_DOORLOCK: Final = "doorlock"
+DEVICE_TYPE_VIEWPORT: Final = "viewport"
 
 # Camera attributes
 ATTR_CAMERA_ID: Final = "camera_id"
@@ -283,6 +285,18 @@ API_PATH_NETWORK_CLIENT_ACTION: Final = "/v1/sites/{siteId}/clients/{clientId}/a
 API_PATH_NETWORK_VOUCHERS: Final = "/v1/sites/{siteId}/hotspot/vouchers"
 API_PATH_NETWORK_VOUCHER: Final = "/v1/sites/{siteId}/hotspot/vouchers/{voucherId}"
 
+# UniFi Network switching endpoints (Network 10.4.57)
+API_PATH_NETWORK_LAGS: Final = "/v1/sites/{siteId}/switching/lags"
+API_PATH_NETWORK_LAG: Final = "/v1/sites/{siteId}/switching/lags/{lagId}"
+API_PATH_NETWORK_MC_LAG_DOMAINS: Final = "/v1/sites/{siteId}/switching/mc-lag-domains"
+API_PATH_NETWORK_MC_LAG_DOMAIN: Final = (
+    "/v1/sites/{siteId}/switching/mc-lag-domains/{mcLagDomainId}"
+)
+API_PATH_NETWORK_SWITCH_STACKS: Final = "/v1/sites/{siteId}/switching/switch-stacks"
+API_PATH_NETWORK_SWITCH_STACK: Final = (
+    "/v1/sites/{siteId}/switching/switch-stacks/{switchStackId}"
+)
+
 # UniFi Protect additional API endpoints
 API_PATH_VIEWERS: Final = "/proxy/protect/integration/v1/viewers"
 API_PATH_VIEWER: Final = "/proxy/protect/integration/v1/viewers/{id}"
@@ -295,6 +309,41 @@ API_PATH_CAMERA_TALKBACK: Final = (
     "/proxy/protect/integration/v1/cameras/{id}/talkback-session"
 )
 API_PATH_FILES: Final = "/proxy/protect/integration/v1/files/{fileType}"
+
+# UniFi Protect additional device families (Protect 7.1.87)
+API_PATH_ALARM_HUBS: Final = "/proxy/protect/integration/v1/alarm-hubs"
+API_PATH_ALARM_HUB: Final = "/proxy/protect/integration/v1/alarm-hubs/{id}"
+API_PATH_ALARM_HUB_OUTPUT_TRIGGER: Final = (
+    "/proxy/protect/integration/v1/alarm-hubs/{id}/outputs/{outputId}/trigger"
+)
+API_PATH_ARM_PROFILES: Final = "/proxy/protect/integration/v1/arm-profiles"
+API_PATH_ARM_PROFILE: Final = "/proxy/protect/integration/v1/arm-profiles/{id}"
+API_PATH_ARM_PROFILES_ENABLE: Final = (
+    "/proxy/protect/integration/v1/arm-profiles/enable"
+)
+API_PATH_ARM_PROFILES_DISABLE: Final = (
+    "/proxy/protect/integration/v1/arm-profiles/disable"
+)
+API_PATH_ARM_PROFILES_SETTINGS: Final = (
+    "/proxy/protect/integration/v1/arm-profiles/settings"
+)
+API_PATH_BRIDGES: Final = "/proxy/protect/integration/v1/bridges"
+API_PATH_BRIDGE: Final = "/proxy/protect/integration/v1/bridges/{id}"
+API_PATH_FOBS: Final = "/proxy/protect/integration/v1/fobs"
+API_PATH_FOB: Final = "/proxy/protect/integration/v1/fobs/{id}"
+API_PATH_RELAYS: Final = "/proxy/protect/integration/v1/relays"
+API_PATH_RELAY: Final = "/proxy/protect/integration/v1/relays/{id}"
+API_PATH_RELAY_OUTPUT_ACTIVATE: Final = (
+    "/proxy/protect/integration/v1/relays/{id}/outputs/{outputId}/activate"
+)
+API_PATH_SIRENS: Final = "/proxy/protect/integration/v1/sirens"
+API_PATH_SIREN: Final = "/proxy/protect/integration/v1/sirens/{id}"
+API_PATH_SIREN_PLAY: Final = "/proxy/protect/integration/v1/sirens/{id}/play"
+API_PATH_SIREN_STOP: Final = "/proxy/protect/integration/v1/sirens/{id}/stop"
+API_PATH_SPEAKERS: Final = "/proxy/protect/integration/v1/speakers"
+API_PATH_SPEAKER: Final = "/proxy/protect/integration/v1/speakers/{id}"
+API_PATH_LINK_STATIONS: Final = "/proxy/protect/integration/v1/link-stations"
+API_PATH_LINK_STATION: Final = "/proxy/protect/integration/v1/link-stations/{id}"
 
 # UniFi Network Services
 SERVICE_POWER_CYCLE_PORT: Final = "power_cycle_port"

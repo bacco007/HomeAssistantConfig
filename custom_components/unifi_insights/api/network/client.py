@@ -21,9 +21,11 @@ from .endpoints import (
     DevicesEndpoint,
     DNSEndpoint,
     FirewallEndpoint,
+    LagsEndpoint,
     NetworksEndpoint,
     ResourcesEndpoint,
     SitesEndpoint,
+    StacksEndpoint,
     TrafficEndpoint,
     VouchersEndpoint,
     WifiEndpoint,
@@ -133,6 +135,8 @@ class UniFiNetworkClient(BaseUniFiClient):
         self._traffic = TrafficEndpoint(self)
         self._resources = ResourcesEndpoint(self)
         self._dns = DNSEndpoint(self)
+        self._lags = LagsEndpoint(self)
+        self._stacks = StacksEndpoint(self)
 
     @property
     def connection_type(self) -> ConnectionType:
@@ -284,6 +288,16 @@ class UniFiNetworkClient(BaseUniFiClient):
     def dns(self) -> DNSEndpoint:
         """Access DNS policy management endpoints."""
         return self._dns
+
+    @property
+    def lags(self) -> LagsEndpoint:
+        """Access switching LAG and MC-LAG domain endpoints."""
+        return self._lags
+
+    @property
+    def stacks(self) -> StacksEndpoint:
+        """Access switch stack endpoints."""
+        return self._stacks
 
     async def validate_connection(self) -> bool:
         """

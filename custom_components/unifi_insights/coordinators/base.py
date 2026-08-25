@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta  # noqa: TC003
+from http import HTTPStatus
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.exceptions import ConfigEntryAuthFailed
@@ -110,7 +111,14 @@ class UnifiBaseCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def _handle_response_error(self, err: UniFiResponseError) -> None:
         """Handle API response error."""
         self._available = False
-        _LOGGER.exception("API error during update")
+        status_code = getattr(err, "status_code", None)
+        if (
+            isinstance(status_code, int)
+            and status_code >= HTTPStatus.INTERNAL_SERVER_ERROR
+        ):
+            _LOGGER.warning("Server error during update: %s", err)
+        else:
+            _LOGGER.exception("API error during update")
         msg = f"API error: {err}"
         raise UpdateFailed(msg) from err
 

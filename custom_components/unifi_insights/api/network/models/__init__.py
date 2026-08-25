@@ -17,9 +17,15 @@ from .application import ApplicationInfo
 from .client import Client, ClientType
 from .device import (
     Device,
+    DeviceFeatures,
+    DeviceInterfacePort,
+    DeviceInterfaces,
     DevicePort,
+    DevicePortPoE,
     DeviceState,
+    DeviceSwitchingFeature,
     DeviceType,
+    DeviceUplink,
     LegacyPortMetrics,
     PortBytesMetrics,
 )
@@ -30,6 +36,15 @@ from .firewall import (
     FirewallRule,
     FirewallZone,
     OrderedFirewallPolicyIds,
+)
+from .lag import (
+    LAG,
+    LagMember,
+    LagType,
+    McLagDomain,
+    McLagLocalLag,
+    McLagPeer,
+    McLagRole,
 )
 from .network import Network, NetworkPurpose, NetworkType
 from .resources import (
@@ -43,6 +58,7 @@ from .resources import (
     WANStatus,
 )
 from .site import Site, SiteHealth
+from .stack import SwitchStack, SwitchStackLag, SwitchStackMember
 from .traffic import (
     Country,
     DPIApplication,
@@ -71,9 +87,15 @@ __all__ = [
     "ClientType",
     # Device
     "Device",
+    "DeviceFeatures",
+    "DeviceInterfacePort",
+    "DeviceInterfaces",
     "DevicePort",
+    "DevicePortPoE",
     "DeviceState",
+    "DeviceSwitchingFeature",
     "DeviceType",
+    "DeviceUplink",
     "LegacyPortMetrics",
     "PortBytesMetrics",
     # DNS
@@ -86,6 +108,17 @@ __all__ = [
     "FirewallRule",
     "FirewallZone",
     "OrderedFirewallPolicyIds",
+    # LAG / switch stacking
+    "LAG",
+    "LagMember",
+    "LagType",
+    "McLagDomain",
+    "McLagLocalLag",
+    "McLagPeer",
+    "McLagRole",
+    "SwitchStack",
+    "SwitchStackLag",
+    "SwitchStackMember",
     # Network
     "Network",
     "NetworkPurpose",

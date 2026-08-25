@@ -36,8 +36,71 @@ class DeviceState(str, Enum):
     ADOPTING = "adopting"
     PROVISIONING = "provisioning"
     UPGRADING = "upgrading"
+    UPDATING = "UPDATING"  # Network 10.4.57
+    DELETING = "DELETING"  # Network 10.4.57
+    CONNECTION_INTERRUPTED = "CONNECTION_INTERRUPTED"  # Network 10.4.57
+    ISOLATED = "ISOLATED"  # Network 10.4.57
+    U5G_INCORRECT_TOPOLOGY = "U5G_INCORRECT_TOPOLOGY"  # Network 10.4.57
     GETTING_READY = "GETTING_READY"  # API returns during device startup
     UNKNOWN = "unknown"
+
+
+class DevicePortPoE(BaseModel):
+    """Model representing PoE state for a device port."""
+
+    enabled: bool | None = None
+    standard: str | None = None
+    state: str | None = None
+    type: int | None = None
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+class DeviceInterfacePort(BaseModel):
+    """Physical port as reported under ``interfaces.ports`` (Network 10.4.57)."""
+
+    idx: int | None = None
+    connector: str | None = None
+    state: str | None = None
+    max_speed_mbps: int | None = Field(default=None, alias="maxSpeedMbps")
+    speed_mbps: int | None = Field(default=None, alias="speedMbps")
+    poe: DevicePortPoE | None = None
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+class DeviceInterfaces(BaseModel):
+    """Container for a device's physical interfaces (Network 10.4.57)."""
+
+    ports: list[DeviceInterfacePort] = Field(default_factory=list)
+    radios: list[dict[str, Any]] = Field(default_factory=list)
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+class DeviceSwitchingFeature(BaseModel):
+    """Switching feature overview, including LAG membership (Network 10.4.57)."""
+
+    lags: list[dict[str, Any]] = Field(default_factory=list)
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+class DeviceFeatures(BaseModel):
+    """Feature overview for a device (Network 10.4.57)."""
+
+    switching: DeviceSwitchingFeature | None = None
+    access_point: dict[str, Any] | None = Field(default=None, alias="accessPoint")
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+class DeviceUplink(BaseModel):
+    """Uplink interface overview for a device (Network 10.4.57)."""
+
+    device_id: str | None = Field(default=None, alias="deviceId")
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
 
 
 class DevicePort(BaseModel):
@@ -75,6 +138,9 @@ class Device(BaseModel):
     memory_utilization: float | None = Field(default=None, alias="memoryUtilization")
     tx_bytes: int | None = Field(default=None, alias="txBytes")
     rx_bytes: int | None = Field(default=None, alias="rxBytes")
+    features: DeviceFeatures | None = None
+    interfaces: DeviceInterfaces | None = None
+    uplink: DeviceUplink | None = None
     extra: dict[str, Any] = Field(default_factory=dict)
 
     model_config = {"populate_by_name": True, "extra": "allow"}

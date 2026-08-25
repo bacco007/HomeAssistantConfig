@@ -121,6 +121,8 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     "nvrs": {},
                     "viewers": {},
                     "chimes": {},
+                    "doorlocks": {},
+                    "viewports": {},
                     "liveviews": {},
                     "protect_info": {},
                     "events": {},

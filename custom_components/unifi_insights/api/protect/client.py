@@ -17,14 +17,22 @@ from ..const import (
 )
 from ..exceptions import UniFiConnectionError, UniFiTimeoutError
 from .endpoints import (
+    AlarmHubsEndpoint,
     ApplicationEndpoint,
+    ArmProfilesEndpoint,
+    BridgesEndpoint,
     CamerasEndpoint,
     ChimesEndpoint,
     EventsEndpoint,
+    FobsEndpoint,
     LightsEndpoint,
+    LinkStationsEndpoint,
     LiveViewsEndpoint,
     NVREndpoint,
+    RelaysEndpoint,
     SensorsEndpoint,
+    SirensEndpoint,
+    SpeakersEndpoint,
     ViewersEndpoint,
 )
 from .websocket import ProtectWebSocket
@@ -139,6 +147,14 @@ class UniFiProtectClient(BaseUniFiClient):
         self._events = EventsEndpoint(self)
         self._viewers = ViewersEndpoint(self)
         self._application = ApplicationEndpoint(self)
+        self._alarm_hubs = AlarmHubsEndpoint(self)
+        self._arm_profiles = ArmProfilesEndpoint(self)
+        self._bridges = BridgesEndpoint(self)
+        self._fobs = FobsEndpoint(self)
+        self._relays = RelaysEndpoint(self)
+        self._sirens = SirensEndpoint(self)
+        self._speakers = SpeakersEndpoint(self)
+        self._link_stations = LinkStationsEndpoint(self)
         self._websocket = ProtectWebSocket(self)
 
     @property
@@ -225,6 +241,46 @@ class UniFiProtectClient(BaseUniFiClient):
     def application(self) -> ApplicationEndpoint:
         """Access application info and file management endpoints."""
         return self._application
+
+    @property
+    def alarm_hubs(self) -> AlarmHubsEndpoint:
+        """Access alarm hub management endpoints."""
+        return self._alarm_hubs
+
+    @property
+    def arm_profiles(self) -> ArmProfilesEndpoint:
+        """Access arm profile management endpoints."""
+        return self._arm_profiles
+
+    @property
+    def bridges(self) -> BridgesEndpoint:
+        """Access bridge management endpoints."""
+        return self._bridges
+
+    @property
+    def fobs(self) -> FobsEndpoint:
+        """Access key fob management endpoints."""
+        return self._fobs
+
+    @property
+    def relays(self) -> RelaysEndpoint:
+        """Access relay management endpoints."""
+        return self._relays
+
+    @property
+    def sirens(self) -> SirensEndpoint:
+        """Access siren management endpoints."""
+        return self._sirens
+
+    @property
+    def speakers(self) -> SpeakersEndpoint:
+        """Access speaker management endpoints."""
+        return self._speakers
+
+    @property
+    def link_stations(self) -> LinkStationsEndpoint:
+        """Access link station management endpoints."""
+        return self._link_stations
 
     @property
     def websocket(self) -> ProtectWebSocket:
