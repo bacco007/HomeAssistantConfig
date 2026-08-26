@@ -3,15 +3,15 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 from dataclasses import dataclass
+import logging
 from typing import TYPE_CHECKING, TypeAlias
 
-import homeassistant.helpers.config_validation as cv
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_VERIFY_SSL, Platform
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+import homeassistant.helpers.config_validation as cv
 
 from .api import (
     ApiKeyAuth,
@@ -27,11 +27,9 @@ from .const import (
     CONF_CONNECTION_TYPE,
     CONF_CONSOLE_ID,
     CONNECTION_TYPE_LOCAL,
+    CONNECTION_TYPE_REMOTE as CONNECTION_TYPE_REMOTE,
     DEFAULT_API_HOST,
     DOMAIN,
-)
-from .const import (
-    CONNECTION_TYPE_REMOTE as CONNECTION_TYPE_REMOTE,
 )
 from .coordinators import (
     UnifiConfigCoordinator,
@@ -159,22 +157,6 @@ async def async_setup_entry(
                 session=websession,
             )
 
-        # Verify we can authenticate with Network API by fetching sites
-        _LOGGER.debug("Validating Network API connection")
-        try:
-            sites = await network_client.sites.get_all()
-            if not sites:
-                msg = "No sites found - API key may be invalid"
-                _LOGGER.error(msg)
-                raise ConfigEntryAuthFailed(msg)
-            _LOGGER.info(
-                "Network API validated successfully, found %d sites", len(sites)
-            )
-        except UniFiAuthenticationError as err:
-            msg = "Invalid API key or unable to connect to Network API"
-            _LOGGER.warning(msg)
-            raise ConfigEntryAuthFailed(msg) from err
-
         # Initialize UniFi Protect API client
         protect_client: UniFiProtectClient | None = None
         if is_local:
@@ -196,7 +178,35 @@ async def async_setup_entry(
                 session=websession,
             )
 
-        # Verify UniFi Protect API connection by fetching cameras
+        # Verify Network API connectivity
+        _LOGGER.debug("Validating Network API connection")
+        network_available = False
+        network_auth_error = False
+        network_conn_error: Exception | None = None
+        try:
+            sites = await network_client.sites.get_all()
+            if sites:
+                network_available = True
+                _LOGGER.info(
+                    "Network API validated successfully, found %d sites", len(sites)
+                )
+            else:
+                _LOGGER.debug("Network API returned no sites")
+        except UniFiAuthenticationError:
+            network_auth_error = True
+            _LOGGER.debug("Network API authentication failed")
+        except (UniFiConnectionError, UniFiTimeoutError) as err:
+            network_conn_error = err
+            _LOGGER.debug("Network API connection error: %s", err)
+        except Exception as err:
+            _LOGGER.debug(
+                "Network API unavailable (e.g. Protect-only console): %s", err
+            )
+
+        # Verify UniFi Protect API connection
+        protect_available = False
+        protect_auth_error = False
+        protect_conn_error: Exception | None = None
         if protect_client:
             _LOGGER.debug("Validating Protect API connection")
             try:
@@ -230,14 +240,22 @@ async def async_setup_entry(
                             )
                             protect_client = None
                         else:
+                            protect_available = True
                             _LOGGER.info(
                                 "Protect API validated successfully, no cameras found"
                             )
                 else:
+                    protect_available = True
                     _LOGGER.info(
                         "UniFi Protect API validated successfully, found %d cameras",
                         len(cameras),
                     )
+            except UniFiAuthenticationError:
+                protect_auth_error = True
+                protect_client = None
+            except (UniFiConnectionError, UniFiTimeoutError) as err:
+                protect_conn_error = err
+                protect_client = None
             except Exception as err:
                 _LOGGER.warning(
                     "Error validating UniFi Protect API connection, "
@@ -245,6 +263,20 @@ async def async_setup_entry(
                     err,
                 )
                 protect_client = None
+
+        if not network_available and not protect_available:
+            if network_auth_error or protect_auth_error:
+                msg = "Invalid API key or unable to connect to UniFi API"
+                _LOGGER.warning(msg)
+                raise ConfigEntryAuthFailed(msg)
+            if network_conn_error or protect_conn_error:
+                conn_err = network_conn_error or protect_conn_error
+                msg = f"Error communicating with UniFi API: {conn_err}"
+                _LOGGER.warning(msg)
+                raise ConfigEntryNotReady(msg) from conn_err
+            msg = "No Network sites or Protect NVR found on console"
+            _LOGGER.error(msg)
+            raise ConfigEntryAuthFailed(msg)
 
     # Note: UniFiAuthenticationError is already handled in the inner try block
     # at lines 176-179, which converts it to ConfigEntryAuthFailed

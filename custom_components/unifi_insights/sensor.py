@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
+import logging
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.sensor import (
@@ -46,8 +46,12 @@ from .const import (
     MANUFACTURER,
 )
 from .coordinators import UnifiFacadeCoordinator
-from .entity import UnifiInsightsEntity, UnifiProtectEntity, get_field
-from .entity import get_client_type as _get_client_type
+from .entity import (
+    UnifiInsightsEntity,
+    UnifiProtectEntity,
+    get_client_type as _get_client_type,
+    get_field,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable

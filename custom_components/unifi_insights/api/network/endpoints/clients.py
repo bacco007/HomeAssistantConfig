@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Any
 
 from ...exceptions import UniFiResponseError
@@ -9,6 +10,8 @@ from ..models import Client
 
 if TYPE_CHECKING:
     from ..client import UniFiNetworkClient
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class ClientsEndpoint:
@@ -80,9 +83,17 @@ class ClientsEndpoint:
 
             data = response.get("data", response)
             if isinstance(data, list):
-                all_clients.extend(
-                    Client.model_validate(item) for item in data
-                )
+                for item in data:
+                    if not isinstance(item, dict):
+                        continue
+                    try:
+                        all_clients.append(Client.model_validate(item))
+                    except Exception as err:
+                        _LOGGER.warning(
+                            "Failed to validate client (%s): %s",
+                            item.get("id") or item.get("macAddress") or "unknown",
+                            err,
+                        )
 
             total_count = response.get("totalCount")
             count = response.get("count", 0)
@@ -110,7 +121,19 @@ class ClientsEndpoint:
             response.get("data", response) if isinstance(response, dict) else response
         )
         if isinstance(data, list):
-            return [Client.model_validate(item) for item in data]
+            page_clients: list[Client] = []
+            for item in data:
+                if not isinstance(item, dict):
+                    continue
+                try:
+                    page_clients.append(Client.model_validate(item))
+                except Exception as err:
+                    _LOGGER.warning(
+                        "Failed to validate client (%s): %s",
+                        item.get("id") or item.get("macAddress") or "unknown",
+                        err,
+                    )
+            return page_clients
         return []
 
     async def get_active_legacy(self, site_name: str) -> list[dict[str, Any]]:

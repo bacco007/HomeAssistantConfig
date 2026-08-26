@@ -78,6 +78,7 @@
       "invalid_console_id": "The selected console could not be accessed with this API key.",
       "no_remote_consoles": "No remote UniFi consoles were found for this API key.",
       "api_unsupported": "The UniFi controller did not respond to the official Network Integration API (HTTP 404). This integration requires UniFi OS (e.g. UDM, UDR, Cloud Key Gen2+, UCG) or UniFi Cloud access. Self-hosted UniFi Network installations (Linux/Docker/Proxmox) do not expose this API.",
+      "site_parse_error": "Failed to parse site data from the UniFi controller. Please ensure your UniFi OS controller firmware is up to date.",
       "unknown": "Unexpected error"
     },
     "abort": {

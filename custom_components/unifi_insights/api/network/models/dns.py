@@ -36,7 +36,7 @@ class DNSPolicy(BaseModel):
     """
 
     id: str
-    type: DNSRecordType
+    type: DNSRecordType | str
     enabled: bool = True
     metadata: DNSPolicyMetadata | None = None
     domain: str | None = None

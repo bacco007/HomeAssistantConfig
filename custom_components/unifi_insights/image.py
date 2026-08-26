@@ -6,12 +6,12 @@ import io
 import logging
 from typing import TYPE_CHECKING, Any
 
-import segno
 from homeassistant.components.image import ImageEntity
 from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
+import segno
 
 from .const import DOMAIN, MANUFACTURER
 from .coordinators import UnifiFacadeCoordinator

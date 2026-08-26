@@ -25,7 +25,7 @@ class WANInterface(BaseModel):
 
     id: str = Field(..., description="Interface identifier")
     name: str = Field(..., description="Interface name")
-    status: WANStatus | None = Field(None, description="Interface status")
+    status: WANStatus | str | None = Field(None, description="Interface status")
     ip_address: str | None = Field(None, alias="ipAddress")
     gateway: str | None = Field(None, description="Gateway address")
     dns: list[str] | None = Field(None, description="DNS servers")
@@ -51,7 +51,7 @@ class VPNTunnel(BaseModel):
 
     id: str = Field(..., description="Tunnel identifier")
     name: str | None = Field(None, description="Tunnel name")
-    status: VPNTunnelStatus | None = Field(None, description="Tunnel status")
+    status: VPNTunnelStatus | str | None = Field(None, description="Tunnel status")
     local_network: str | None = Field(None, alias="localNetwork")
     remote_network: str | None = Field(None, alias="remoteNetwork")
     remote_ip: str | None = Field(None, alias="remoteIp")

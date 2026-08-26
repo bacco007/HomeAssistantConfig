@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Any
+
+from pydantic import ValidationError
 
 from ..models import Site
 
 if TYPE_CHECKING:
     from ..client import UniFiNetworkClient
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class SitesEndpoint:
@@ -60,8 +65,21 @@ class SitesEndpoint:
             response.get("data", response) if isinstance(response, dict) else response
         )
         if isinstance(data, list):
-            return [Site.model_validate(item) for item in data]
+            sites: list[Site] = []
+            for item in data:
+                try:
+                    sites.append(Site.model_validate(item))
+                except ValidationError as err:
+                    _LOGGER.warning(
+                        "Skipping site that failed to parse (id=%s): %s",
+                        item.get("id") or item.get("internalReference")
+                        if isinstance(item, dict)
+                        else "?",
+                        err,
+                    )
+            return sites
         return []
+
 
     async def get(self, site_id: str) -> Site:
         """

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import timedelta  # noqa: TC003
 from http import HTTPStatus
+import logging
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.exceptions import ConfigEntryAuthFailed

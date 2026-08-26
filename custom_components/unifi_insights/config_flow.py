@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import voluptuous as vol
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -20,6 +19,8 @@ from homeassistant.helpers.selector import (
     SelectSelectorConfig,
     SelectSelectorMode,
 )
+from pydantic import ValidationError
+import voluptuous as vol
 
 from .api import (
     ApiKeyAuth,
@@ -31,6 +32,7 @@ from .api import (
     UniFiTimeoutError,
 )
 from .api.network import UniFiNetworkClient
+from .api.protect import UniFiProtectClient
 from .const import (
     CONF_CLIENT_CONTROL,
     CONF_CONNECTION_TYPE,
@@ -140,6 +142,83 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return self._extract_remote_console_options(hosts)
 
+    async def _async_validate_local_connection(
+        self,
+        host: str,
+        api_key: str,
+        *,
+        verify_ssl: bool = False,
+    ) -> tuple[bool, str | None]:
+        """Validate local connection against Network and/or Protect APIs."""
+        auth = LocalAuth(api_key=api_key, verify_ssl=verify_ssl)
+        last_auth_error = False
+        last_conn_error = False
+        last_not_found = False
+        last_parse_error = False
+        last_unknown_error = False
+
+        # Try Network API
+        try:
+            async with UniFiNetworkClient(
+                auth=auth,
+                base_url=host,
+                connection_type=ConnectionType.LOCAL,
+                timeout=30,
+            ) as network_client:
+                sites = await network_client.sites.get_all()
+                if sites:
+                    return True, None
+        except UniFiAuthenticationError:
+            last_auth_error = True
+        except UniFiConnectionError, UniFiTimeoutError:
+            last_conn_error = True
+        except UniFiNotFoundError:
+            last_not_found = True
+        except ValidationError:
+            last_parse_error = True
+        except Exception:
+            last_unknown_error = True
+            _LOGGER.debug("Network API validation encountered error", exc_info=True)
+
+        # Try Protect API (e.g. UNVR / UNVR-Instant / Protect-only console)
+        try:
+            async with UniFiProtectClient(
+                auth=auth,
+                base_url=host,
+                connection_type=ConnectionType.LOCAL,
+                timeout=30,
+            ) as protect_client:
+                cameras = await protect_client.cameras.get_all()
+                if cameras:
+                    return True, None
+                nvr = await protect_client.nvr.get()
+                if nvr:
+                    return True, None
+        except UniFiAuthenticationError:
+            last_auth_error = True
+        except UniFiConnectionError, UniFiTimeoutError:
+            last_conn_error = True
+        except ValidationError:
+            last_parse_error = True
+        except UniFiNotFoundError, ValueError:
+            last_not_found = True
+        except Exception:
+            last_unknown_error = True
+            _LOGGER.debug("Protect API validation encountered error", exc_info=True)
+
+        # If neither succeeded, determine best error code
+        if last_auth_error:
+            return False, "invalid_auth"
+        if last_parse_error:
+            return False, "site_parse_error"
+        if last_conn_error:
+            return False, "cannot_connect"
+        if last_not_found:
+            return False, "api_unsupported"
+        if last_unknown_error:
+            return False, "unknown"
+        return False, "invalid_auth"
+
     async def _async_validate_remote_console(
         self,
         api_key: str,
@@ -147,15 +226,47 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> bool:
         """Validate remote connectivity for a specific console host ID."""
         auth = ApiKeyAuth(api_key=api_key)
-        async with UniFiNetworkClient(
-            auth=auth,
-            connection_type=ConnectionType.REMOTE,
-            console_id=console_id,
-            timeout=30,
-        ) as network_client:
-            sites = await network_client.sites.get_all()
 
-        return bool(sites)
+        # Try Network API first
+        try:
+            async with UniFiNetworkClient(
+                auth=auth,
+                connection_type=ConnectionType.REMOTE,
+                console_id=console_id,
+                timeout=30,
+            ) as network_client:
+                sites = await network_client.sites.get_all()
+                if sites:
+                    return True
+        except UniFiConnectionError, UniFiTimeoutError:
+            raise
+        except Exception:
+            _LOGGER.debug(
+                "Remote Network validation failed, checking Protect API",
+                exc_info=True,
+            )
+
+        # Try Protect API (e.g. UNVR / UNVR-Instant)
+        try:
+            async with UniFiProtectClient(
+                auth=auth,
+                connection_type=ConnectionType.REMOTE,
+                console_id=console_id,
+                timeout=30,
+            ) as protect_client:
+                cameras = await protect_client.cameras.get_all()
+                if cameras:
+                    return True
+                nvr = await protect_client.nvr.get()
+                if nvr:
+                    return True
+
+        except UniFiConnectionError, UniFiTimeoutError:
+            raise
+        except Exception:
+            _LOGGER.debug("Remote Protect validation failed", exc_info=True)
+
+        return False
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -200,51 +311,30 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             try:
-                # Create authentication object for local connection
-                auth = LocalAuth(
+                is_valid, error_code = await self._async_validate_local_connection(
+                    host=user_input[CONF_HOST],
                     api_key=user_input[CONF_API_KEY],
                     verify_ssl=user_input.get(CONF_VERIFY_SSL, False),
                 )
+                if is_valid:
+                    await self.async_set_unique_id(user_input[CONF_API_KEY])
+                    self._abort_if_unique_id_configured()
 
-                # Use context manager to ensure proper cleanup
-                async with UniFiNetworkClient(
-                    auth=auth,
-                    base_url=user_input[CONF_HOST],
-                    connection_type=ConnectionType.LOCAL,
-                    timeout=30,
-                ) as network_client:
-                    # Validate by fetching sites
-                    sites = await network_client.sites.get_all()
-                    if sites:
-                        await self.async_set_unique_id(user_input[CONF_API_KEY])
-                        self._abort_if_unique_id_configured()
+                    return self.async_create_entry(
+                        title="UniFi Insights (Local)",
+                        data={
+                            CONF_CONNECTION_TYPE: CONNECTION_TYPE_LOCAL,
+                            CONF_HOST: user_input[CONF_HOST],
+                            CONF_API_KEY: user_input[CONF_API_KEY],
+                            CONF_VERIFY_SSL: user_input.get(CONF_VERIFY_SSL, False),
+                        },
+                    )
 
-                        return self.async_create_entry(
-                            title="UniFi Insights (Local)",
-                            data={
-                                CONF_CONNECTION_TYPE: CONNECTION_TYPE_LOCAL,
-                                CONF_HOST: user_input[CONF_HOST],
-                                CONF_API_KEY: user_input[CONF_API_KEY],
-                                CONF_VERIFY_SSL: user_input.get(CONF_VERIFY_SSL, False),
-                            },
-                        )
-
+                if error_code == "invalid_auth":
                     errors[CONF_API_KEY] = "invalid_auth"
+                else:
+                    errors["base"] = error_code or "cannot_connect"
 
-            except UniFiAuthenticationError:
-                errors[CONF_API_KEY] = "invalid_auth"
-            except UniFiConnectionError:
-                errors["base"] = "cannot_connect"
-            except UniFiTimeoutError:
-                errors["base"] = "cannot_connect"
-            except UniFiNotFoundError:
-                _LOGGER.exception(
-                    "UniFi controller returned 404 for the integration API. "
-                    "This typically means the controller does not expose the "
-                    "official Network Integration API (e.g. self-hosted "
-                    "Network application installs without UniFi OS)."
-                )
-                errors["base"] = "api_unsupported"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -352,6 +442,9 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                     "Integration API."
                 )
                 errors["base"] = "api_unsupported"
+            except ValidationError:
+                _LOGGER.exception("Failed to parse site data from remote UniFi console")
+                errors["base"] = "site_parse_error"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception during console selection")
                 errors["base"] = "unknown"
@@ -394,26 +487,23 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 if connection_type == CONNECTION_TYPE_LOCAL:
-                    auth = LocalAuth(
+                    is_valid, error_code = await self._async_validate_local_connection(
+                        host=reauth_entry.data.get(CONF_HOST, DEFAULT_API_HOST),
                         api_key=user_input[CONF_API_KEY],
                         verify_ssl=reauth_entry.data.get(CONF_VERIFY_SSL, False),
                     )
-                    async with UniFiNetworkClient(
-                        auth=auth,
-                        base_url=reauth_entry.data.get(CONF_HOST, DEFAULT_API_HOST),
-                        connection_type=ConnectionType.LOCAL,
-                        timeout=30,
-                    ) as network_client:
-                        sites = await network_client.sites.get_all()
-                        if sites:
-                            return self.async_update_reload_and_abort(
-                                reauth_entry,
-                                data={
-                                    **reauth_entry.data,
-                                    CONF_API_KEY: user_input[CONF_API_KEY],
-                                },
-                            )
+                    if is_valid:
+                        return self.async_update_reload_and_abort(
+                            reauth_entry,
+                            data={
+                                **reauth_entry.data,
+                                CONF_API_KEY: user_input[CONF_API_KEY],
+                            },
+                        )
+                    if error_code == "invalid_auth":
                         errors[CONF_API_KEY] = "invalid_auth"
+                    else:
+                        errors["base"] = error_code or "cannot_connect"
                 else:
                     api_key = user_input[CONF_API_KEY].strip()
                     discovered_consoles = await self._async_discover_remote_consoles(
@@ -459,6 +549,9 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                     "controller may not expose the Network Integration API."
                 )
                 errors["base"] = "api_unsupported"
+            except ValidationError:
+                _LOGGER.exception("Failed to parse site data during reauth")
+                errors["base"] = "site_parse_error"
             except Exception:
                 errors["base"] = "unknown"
 
@@ -479,33 +572,28 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 if connection_type == CONNECTION_TYPE_LOCAL:
-                    auth = LocalAuth(
+                    is_valid, error_code = await self._async_validate_local_connection(
+                        host=user_input[CONF_HOST],
                         api_key=user_input[CONF_API_KEY],
                         verify_ssl=user_input.get(CONF_VERIFY_SSL, False),
                     )
-                    async with UniFiNetworkClient(
-                        auth=auth,
-                        base_url=user_input[CONF_HOST],
-                        connection_type=ConnectionType.LOCAL,
-                        timeout=30,
-                    ) as network_client:
-                        sites = await network_client.sites.get_all()
-                        if sites:
-                            await self.async_set_unique_id(user_input[CONF_API_KEY])
-                            self._abort_if_unique_id_mismatch(reason="account_mismatch")
+                    if is_valid:
+                        await self.async_set_unique_id(user_input[CONF_API_KEY])
+                        self._abort_if_unique_id_mismatch(reason="account_mismatch")
 
-                            return self.async_update_reload_and_abort(
-                                entry,
-                                data={
-                                    CONF_CONNECTION_TYPE: CONNECTION_TYPE_LOCAL,
-                                    CONF_HOST: user_input[CONF_HOST],
-                                    CONF_API_KEY: user_input[CONF_API_KEY],
-                                    CONF_VERIFY_SSL: user_input.get(
-                                        CONF_VERIFY_SSL, False
-                                    ),
-                                },
-                            )
+                        return self.async_update_reload_and_abort(
+                            entry,
+                            data={
+                                CONF_CONNECTION_TYPE: CONNECTION_TYPE_LOCAL,
+                                CONF_HOST: user_input[CONF_HOST],
+                                CONF_API_KEY: user_input[CONF_API_KEY],
+                                CONF_VERIFY_SSL: user_input.get(CONF_VERIFY_SSL, False),
+                            },
+                        )
+                    if error_code == "invalid_auth":
                         errors[CONF_API_KEY] = "invalid_auth"
+                    else:
+                        errors["base"] = error_code or "cannot_connect"
                 else:
                     api_key = user_input[CONF_API_KEY].strip()
                     discovered_consoles = await self._async_discover_remote_consoles(
@@ -558,6 +646,9 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                     "API."
                 )
                 errors["base"] = "api_unsupported"
+            except ValidationError:
+                _LOGGER.exception("Failed to parse site data during reconfiguration")
+                errors["base"] = "site_parse_error"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception during reconfiguration")
                 errors["base"] = "unknown"

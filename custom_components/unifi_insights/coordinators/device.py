@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime
 import logging
 import time
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.helpers import device_registry as dr
@@ -329,7 +329,7 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
                                     or site_obj.get("internal_reference")
                                     or site_name
                                 )
-                    except Exception:  # noqa: S110
+                    except Exception:
                         pass
 
                 if device_mac and site_name:
@@ -497,9 +497,11 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
             site_ids = self.config_coordinator.get_site_ids()
 
             if not site_ids:
-                _LOGGER.warning(
+                _LOGGER.debug(
                     "Device coordinator: No sites available from config coordinator"
                 )
+                self._available = True
+                self.data["last_update"] = datetime.now(tz=UTC)
                 return self.data
 
             _LOGGER.debug(

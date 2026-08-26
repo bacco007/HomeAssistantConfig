@@ -31,7 +31,7 @@ class WifiNetwork(BaseModel):
     type: str | None = None  # API returns type like "__STANDARD"
     site_id: str | None = Field(default=None, alias="siteId")
     network_id: str | None = Field(default=None, alias="networkId")
-    security: WifiSecurity | None = None
+    security: WifiSecurity | str | None = None
     passphrase: str | None = None
     hidden: bool = Field(default=False, alias="hideName")
     band: str | None = None

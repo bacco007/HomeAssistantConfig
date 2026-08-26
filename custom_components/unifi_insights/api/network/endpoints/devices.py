@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Any
 
 from ..models import Device, LegacyPortMetrics, PortBytesMetrics
 
 if TYPE_CHECKING:
     from ..client import UniFiNetworkClient
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class DevicesEndpoint:
@@ -62,7 +65,19 @@ class DevicesEndpoint:
             response.get("data", response) if isinstance(response, dict) else response
         )
         if isinstance(data, list):
-            return [Device.model_validate(item) for item in data]
+            devices: list[Device] = []
+            for item in data:
+                if not isinstance(item, dict):
+                    continue
+                try:
+                    devices.append(Device.model_validate(item))
+                except Exception as err:
+                    _LOGGER.warning(
+                        "Failed to validate device (%s): %s",
+                        item.get("id") or item.get("name") or "unknown",
+                        err,
+                    )
+            return devices
         return []
 
     async def get(self, site_id: str, device_id: str) -> Device:
@@ -198,7 +213,19 @@ class DevicesEndpoint:
             response.get("data", response) if isinstance(response, dict) else response
         )
         if isinstance(data, list):
-            return [Device.model_validate(item) for item in data]
+            devices = []
+            for item in data:
+                if not isinstance(item, dict):
+                    continue
+                try:
+                    devices.append(Device.model_validate(item))
+                except Exception as err:
+                    _LOGGER.warning(
+                        "Failed to validate pending device (%s): %s",
+                        item.get("id") or item.get("name") or "unknown",
+                        err,
+                    )
+            return devices
         return []
 
     async def get_statistics(

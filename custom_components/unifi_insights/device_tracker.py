@@ -21,8 +21,7 @@ from .const import (
     MANUFACTURER,
 )
 from .coordinators import UnifiFacadeCoordinator
-from .entity import get_client_type as _get_client_type
-from .entity import get_field
+from .entity import get_client_type as _get_client_type, get_field
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant

@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 import logging
 from typing import TYPE_CHECKING, Any
 
 from custom_components.unifi_insights.api import (
     UniFiAuthenticationError,
     UniFiConnectionError,
+    UniFiNotFoundError,
     UniFiResponseError,
     UniFiTimeoutError,
 )
@@ -198,7 +200,19 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
         try:
             # Get all sites
             _LOGGER.debug("Config coordinator: Fetching sites")
-            sites_models = await self.network_client.sites.get_all()
+            sites_models = []
+            try:
+                sites_models = await self.network_client.sites.get_all()
+            except (UniFiNotFoundError, UniFiAuthenticationError) as err:
+                if self.protect_client is not None:
+                    _LOGGER.debug(
+                        "Config coordinator: Network API not available on Protect "
+                        "console: %s",
+                        err,
+                    )
+                else:
+                    raise
+
             sites = [self._model_to_dict(s) for s in sites_models]
             self.data["sites"] = {
                 site.get("id"): site for site in sites if site.get("id")
@@ -208,6 +222,14 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
                 "Config coordinator: Found %d sites",
                 len(self.data["sites"]),
             )
+
+            if not self.data["sites"]:
+                self.data["wifi"] = {}
+                self.data["firewall_rules"] = {}
+                self.data["network_info"] = {}
+                self._available = True
+                self.data["last_update"] = datetime.now(tz=UTC)
+                return self.data
 
             # Resolve classic site names so we can enrich WiFi data with secrets
             # and per-SSID client counts that the official API does not expose.
