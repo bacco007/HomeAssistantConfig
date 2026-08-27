@@ -9583,7 +9583,7 @@ var require_leaflet_src = __commonJS({
 });
 
 // src/radarwise-card.js
-var CARD_VERSION = "0.8.18";
+var CARD_VERSION = "0.8.20";
 var FORECAST_REFRESH_MS = 15 * 60 * 1e3;
 var ENVIRONMENT_REFRESH_MS = 60 * 60 * 1e3;
 var CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
@@ -9627,6 +9627,17 @@ var RADARWISE_FORECAST_MODES = {
   daily: "Daily",
   twice_daily: "Twice daily"
 };
+var RADARWISE_THEME_MODES = {
+  radarwise: "RadarWise",
+  dark: "RadarWise Dark",
+  auto: "Match Home Assistant theme"
+};
+var RADARWISE_FORECAST_FEATURES = {
+  daily: 1,
+  hourly: 2,
+  twice_daily: 4
+};
+var RADARWISE_FORECAST_TYPES = ["hourly", "daily", "twice_daily"];
 var RADARWISE_LAYOUTS = {
   auto: "Auto",
   wide_panel: "Wide panel",
@@ -10719,7 +10730,7 @@ var RadarWiseCard = class extends HTMLElement {
   _normalizeConfig(config) {
     const country = String(config.country || "us").toLowerCase();
     const radarProvider = String(config.radar_provider || "auto").toLowerCase();
-    const themeMode = String(config.theme_mode || "radarwise").toLowerCase() === "auto" ? "auto" : "radarwise";
+    const themeMode = String(config.theme_mode || "radarwise").toLowerCase();
     const units = ["auto", "imperial", "metric"].includes(String(config.units || "auto").toLowerCase()) ? String(config.units || "auto").toLowerCase() : "auto";
     const radarStyle = String(config.radar_style || "standard").toLowerCase();
     const radarBasemap = String(config.radar_basemap || "light").toLowerCase();
@@ -10747,11 +10758,11 @@ var RadarWiseCard = class extends HTMLElement {
       mold_pollen_entity: "",
       country: RADARWISE_COUNTRIES[country] ? country : "global",
       radar_provider: RADARWISE_RADAR[radarProvider] ? radarProvider : "auto",
-      theme_mode: themeMode,
       units,
       radar_zoom: 7,
       debug: { enabled: false, panel: false },
       ...config,
+      theme_mode: RADARWISE_THEME_MODES[themeMode] ? themeMode : "radarwise",
       radar_style: RADARWISE_RADAR_STYLES[radarStyle] ? radarStyle : "standard",
       radar_basemap: RADARWISE_BASEMAPS[radarBasemap] ? radarBasemap : "light",
       radar_timeline: RADARWISE_RADAR_TIMELINES[radarTimeline] ? radarTimeline : "loop",
@@ -10948,9 +10959,31 @@ var RadarWiseCard = class extends HTMLElement {
       ]
     });
   }
+  _forecastCapabilities(entityId) {
+    const raw = this._hass?.states?.[entityId]?.attributes?.supported_features;
+    if (raw === void 0 || raw === null || raw === "") return null;
+    const supported = Number(raw);
+    if (!Number.isFinite(supported)) return null;
+    return Object.fromEntries(Object.entries(RADARWISE_FORECAST_FEATURES).map(([type, feature]) => [type, Boolean(supported & feature)]));
+  }
+  _forecastTypesToLoad(entityId) {
+    const mode = this._config.forecast_mode || "auto";
+    const capabilities = this._forecastCapabilities(entityId);
+    let types;
+    if (mode === "daily") {
+      types = ["hourly", "daily"];
+      if (capabilities && !capabilities.daily && capabilities.twice_daily) types = ["hourly", "twice_daily"];
+    } else if (mode === "twice_daily") {
+      types = ["hourly", "twice_daily"];
+      if (capabilities && !capabilities.twice_daily && capabilities.daily) types = ["hourly", "daily"];
+    } else {
+      types = RADARWISE_FORECAST_TYPES.slice();
+    }
+    return capabilities ? types.filter((type) => capabilities[type]) : types;
+  }
   async _loadForecasts(entityId) {
     if (!this._hass?.connection?.sendMessagePromise) return;
-    const types = ["hourly", "daily", "twice_daily"];
+    const types = this._forecastTypesToLoad(entityId);
     const entries = await Promise.all(types.map(async (type) => {
       try {
         const response = await this._hass.connection.sendMessagePromise({
@@ -10966,7 +10999,7 @@ var RadarWiseCard = class extends HTMLElement {
         return [type, []];
       }
     }));
-    this._forecasts = Object.fromEntries(entries);
+    this._forecasts = { hourly: [], daily: [], twice_daily: [], ...Object.fromEntries(entries) };
     this._lastRenderKey = "";
     this._render();
   }
@@ -12512,18 +12545,24 @@ var RadarWiseCard = class extends HTMLElement {
     }).addTo(this._radarMap);
   }
   _basemap(kind = this._config.radar_basemap) {
+    const url = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+    const options = {
+      maxZoom: 19,
+      crossOrigin: true,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    };
     const basemaps = {
       dark: {
-        url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        options: { subdomains: "abcd", maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; CARTO" }
+        url,
+        options: { ...options, className: "radarwise-basemap radarwise-basemap-dark" }
       },
       osm: {
-        url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        options: { subdomains: "abcd", maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; CARTO" }
+        url,
+        options: { ...options, className: "radarwise-basemap radarwise-basemap-osm" }
       },
       light: {
-        url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-        options: { subdomains: "abcd", maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; CARTO" }
+        url,
+        options: { ...options, className: "radarwise-basemap radarwise-basemap-light" }
       }
     };
     return basemaps[kind] || basemaps.light;
@@ -13023,10 +13062,20 @@ var RadarWiseCard = class extends HTMLElement {
     return `
       :host{--ww-wave:#2a7a94;--ww-wave-dark:#1a5f72;--ww-gold:#e8b84b;--ww-text:#0a1e28;--ww-muted:#1e4d5e;--ww-panel:rgba(255,255,255,0.35);--ww-line:rgba(42,122,148,0.20);display:block;color:var(--ww-text);font-family:var(--ha-font-family-body,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Arial,sans-serif)}
       :host([theme-mode="auto"]){--ww-wave:var(--primary-color,#2a7a94);--ww-wave-dark:var(--accent-color,var(--primary-color,#1a5f72));--ww-gold:var(--warning-color,#e8b84b);--ww-text:var(--primary-text-color,#0a1e28);--ww-muted:var(--secondary-text-color,#1e4d5e);--ww-panel:color-mix(in srgb,var(--card-background-color,#fff) 76%,transparent);--ww-line:color-mix(in srgb,var(--primary-color,#2a7a94) 30%,transparent)}
+      :host([theme-mode="dark"]){--ww-wave:#67e8f9;--ww-wave-dark:#22d3ee;--ww-gold:#fbbf24;--ww-text:#f3f4f6;--ww-muted:#aab5c4;--ww-panel:rgba(30,41,59,.84);--ww-line:rgba(148,163,184,.28)}
       ha-card{background:transparent!important;box-shadow:none!important;border-radius:22px!important;overflow:hidden;font-family:var(--radarwise-font-family,inherit)}
       *{box-sizing:border-box}
       .card-outer{container-type:inline-size;background:rgba(232,246,250,0.74);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:22px;border:1px solid rgba(255,255,255,0.42);box-shadow:0 4px 28px rgba(0,0,0,0.10);position:relative;overflow:hidden}
       :host([theme-mode="auto"]) .card-outer{background:linear-gradient(135deg,color-mix(in srgb,var(--card-background-color,#fff) 88%,transparent),color-mix(in srgb,var(--primary-color,#2a7a94) 14%,var(--card-background-color,#fff)))}
+      :host([theme-mode="dark"]) .card-outer{background:linear-gradient(135deg,#172033,#111827);border-color:rgba(148,163,184,.24);box-shadow:0 4px 28px rgba(0,0,0,.34)}
+      :host([theme-mode="dark"]) .left,:host([theme-mode="dark"]) .center{border-color:rgba(148,163,184,.20)}
+      :host([theme-mode="dark"]) .left{background:linear-gradient(90deg,rgba(51,65,85,.32),rgba(30,41,59,.18))}
+      :host([theme-mode="dark"]) .env-tile,:host([theme-mode="dark"]) .forecast-summary,:host([theme-mode="dark"]) .current-uv{background:rgba(51,65,85,.44);box-shadow:inset 0 1px 0 rgba(226,232,240,.06)}
+      :host([theme-mode="dark"]) .hour-bar-wrap{background:rgba(148,163,184,.18)}
+      :host([theme-mode="dark"]) .env-good .env-note,:host([theme-mode="dark"]) .uv-good em{color:#86efac}
+      :host([theme-mode="dark"]) .env-moderate .env-note,:host([theme-mode="dark"]) .uv-moderate em{color:#fde68a}
+      :host([theme-mode="dark"]) .env-sensitive .env-note,:host([theme-mode="dark"]) .env-unhealthy .env-note,:host([theme-mode="dark"]) .env-very-high .env-note,:host([theme-mode="dark"]) .env-hazardous .env-note,:host([theme-mode="dark"]) .uv-unhealthy em,:host([theme-mode="dark"]) .uv-very-high em,:host([theme-mode="dark"]) .uv-hazardous em{color:#fca5a5}
+      :host([theme-mode="dark"]) .env-sensitive,:host([theme-mode="dark"]) .env-unhealthy,:host([theme-mode="dark"]) .env-very-high,:host([theme-mode="dark"]) .env-hazardous,:host([theme-mode="dark"]) .uv-unhealthy,:host([theme-mode="dark"]) .uv-very-high,:host([theme-mode="dark"]) .uv-hazardous{background:rgba(127,29,29,.24)}
       .card-outer::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ww-wave) 62%,transparent),transparent)}
       .card-grid{display:grid;grid-template-columns:var(--ww-grid-template,minmax(0,var(--ww-col1,1fr)) minmax(0,var(--ww-col2,2fr)) minmax(0,var(--ww-col3,1fr)));height:var(--radarwise-card-height,clamp(450px,24cqw,540px));min-height:0;max-height:var(--radarwise-card-max-height,580px)}
       .card-grid.no-radar{grid-template-columns:var(--ww-grid-template,minmax(260px,34%) minmax(0,1fr))}
@@ -13151,6 +13200,8 @@ var RadarWiseCard = class extends HTMLElement {
       .leaflet-container img.leaflet-tile,.leaflet-container img.leaflet-image-layer{max-width:none!important;max-height:none!important}
       .leaflet-tile{filter:inherit;visibility:hidden}
       .leaflet-tile-loaded{visibility:inherit}
+      .leaflet-layer.radarwise-basemap-light{filter:grayscale(.38) saturate(.72) brightness(1.08) contrast(.92)}
+      .leaflet-layer.radarwise-basemap-dark{filter:invert(1) hue-rotate(180deg) brightness(.72) contrast(.92) saturate(.65)}
       .leaflet-map-pane canvas{z-index:100}
       .leaflet-map-pane svg{z-index:200}
       .leaflet-tile-pane{z-index:200}
@@ -13174,6 +13225,16 @@ var RadarWiseCard = class extends HTMLElement {
       .radar-controls[hidden]{display:none}
       .radar-controls button{width:31px;height:31px;border:1px solid rgba(255,255,255,.62);border-radius:999px;background:rgba(255,255,255,.78);color:#0a1e2e;box-shadow:0 2px 10px rgba(10,30,46,.12);font:800 15px/1 var(--ha-font-family-body,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif);display:grid;place-items:center;cursor:pointer;padding:0}
       .radar-controls button:hover{background:rgba(255,255,255,.94)}
+      :host([theme-mode="dark"]) .radar-lbl{color:#e5e7eb;background:rgba(15,23,42,.84);border-color:rgba(148,163,184,.34)}
+      :host([theme-mode="dark"]) .radar-controls button{border-color:rgba(148,163,184,.42);background:rgba(15,23,42,.84);color:#e5e7eb;box-shadow:0 2px 10px rgba(0,0,0,.28)}
+      :host([theme-mode="dark"]) .radar-controls button:hover{background:rgba(30,41,59,.96)}
+      :host([theme-mode="dark"]) .leaflet-control-zoom a{color:#e5e7eb!important;background:rgba(15,23,42,.88)!important;border-color:rgba(148,163,184,.25)!important}
+      :host([theme-mode="dark"]) .leaflet-control-attribution{background:rgba(15,23,42,.76)!important;color:rgba(226,232,240,.78)!important}
+      :host([theme-mode="dark"]) .leaflet-popup-content-wrapper{background:rgba(15,23,42,.96);color:#e5e7eb;border-color:rgba(148,163,184,.28)}
+      :host([theme-mode="dark"]) .alert-popup-item+.alert-popup-item{border-color:rgba(148,163,184,.22)}
+      :host([theme-mode="dark"]) .alert-popup-severity{color:rgba(226,232,240,.78)}
+      :host([theme-mode="dark"]) .leaflet-popup-tip{background:rgba(15,23,42,.96)}
+      :host([theme-mode="dark"]) .leaflet-popup-close-button{color:#e5e7eb}
       .leaflet-control-zoom{border:0!important;box-shadow:0 2px 12px rgba(10,30,46,.13)!important}
       .leaflet-control-zoom a{width:34px!important;height:34px!important;line-height:31px!important;color:#0a1e2e!important;background:rgba(255,255,255,.82)!important;border-color:rgba(10,30,46,.10)!important;font-weight:650!important}
       .leaflet-control-attribution{background:rgba(255,255,255,.68)!important;color:rgba(10,30,46,.72)!important;font-size:10px!important;line-height:1.2!important;box-shadow:0 1px 8px rgba(10,30,46,.10)}
@@ -13218,7 +13279,7 @@ var RadarWiseCard = class extends HTMLElement {
       @container ww-center (max-width:480px){.daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(86px,1fr));min-height:148px}.details-grid,.stats-row,.custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-val{font-size:14px}.current-row{align-items:flex-start;flex-wrap:wrap}.temp-block{text-align:left}}
       @container(max-width:980px){.card-grid:not(.layout-wide_panel){height:var(--radarwise-card-height,clamp(560px,58cqw,680px))}.card-grid:not(.layout-wide_panel) .center{border-right:0}.card-grid:not(.layout-wide_panel) .right{grid-column:1 / -1;height:240px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid:not(.layout-wide_panel) #rmap{height:240px}.card-grid:not(.layout-wide_panel) .daily-strip{min-height:150px;max-height:none}}
       .card-grid.layout-wide_panel{height:var(--radarwise-card-height,clamp(390px,22cqw,500px))}
-      .card-grid.layout-stacked,.card-grid.layout-compact{display:flex;flex-direction:column;height:auto;max-height:none}.card-grid.layout-stacked .left,.card-grid.layout-compact .left{display:contents}.card-grid.layout-stacked .clock-panel,.card-grid.layout-compact .clock-panel{order:1;padding:18px 22px 0;background:linear-gradient(90deg,rgba(255,255,255,0.20),rgba(255,255,255,0.08))}.card-grid.layout-stacked .center,.card-grid.layout-compact .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid.layout-stacked .left>.section-title,.card-grid.layout-compact .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 22px;margin-top:4px}.card-grid.layout-stacked .hourly-left,.card-grid.layout-compact .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 22px 16px}.card-grid.layout-stacked .right,.card-grid.layout-compact .right{order:var(--ww-ord-radar,30);border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid.layout-stacked .right,.card-grid.layout-stacked #rmap{height:300px;min-height:300px}.card-grid.layout-compact .right,.card-grid.layout-compact #rmap{height:220px;min-height:220px}.card-grid.layout-compact .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));min-height:150px}.card-grid.layout-compact .fc-slot:nth-child(n+4){display:none}
+      :host([theme-mode="dark"]) .card-grid.layout-stacked .clock-panel,:host([theme-mode="dark"]) .card-grid.layout-compact .clock-panel{background:linear-gradient(90deg,rgba(51,65,85,.32),rgba(30,41,59,.18))}
       @container(max-width:720px){.card-grid:not(.layout-wide_panel),.card-grid.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid:not(.layout-wide_panel) .left{display:contents}.card-grid:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30)}.clock-time{font-size:48px}.current-row{align-items:flex-start;gap:12px;flex-wrap:wrap}.temp-block{text-align:left}.card-grid:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.details-grid,.stats-row,.custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr))}.right,#rmap{height:300px;min-height:300px}.card-grid.layout-wide_panel{display:grid;grid-template-columns:var(--ww-grid-template,minmax(120px,24%) minmax(230px,1fr) minmax(150px,28%));height:360px;max-height:360px}.card-grid.layout-wide_panel .left{display:flex;padding:12px 10px}.card-grid.layout-wide_panel .center{padding:12px 10px}.card-grid.layout-wide_panel .clock-time{font-size:38px}.card-grid.layout-wide_panel .clock-date{font-size:12px;margin:5px 0 7px}.card-grid.layout-wide_panel .forecast-summary{min-height:26px;margin-bottom:8px}.card-grid.layout-wide_panel .forecast-summary-text{font-size:11px;padding:6px 14px}.card-grid.layout-wide_panel .current-icon{width:44px;height:44px}.card-grid.layout-wide_panel .cond-name{font-size:21px}.card-grid.layout-wide_panel .temp-now{font-size:38px}.card-grid.layout-wide_panel .daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(70px,1fr));gap:6px;overflow:hidden}.card-grid.layout-wide_panel .fc-temp{font-size:28px}.card-grid.layout-wide_panel .details-grid,.card-grid.layout-wide_panel .stats-row,.card-grid.layout-wide_panel .custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.card-grid.layout-wide_panel .custom-sensors-row{margin-top:6px}.card-grid.layout-wide_panel .right,.card-grid.layout-wide_panel #rmap{height:100%;min-height:0}}
       @container(max-width:720px){.card-grid.layout-wide_panel .clock-context{grid-template-columns:1fr;gap:6px;margin-bottom:8px}.card-grid.layout-wide_panel .environment-strip{grid-template-columns:1fr;gap:5px}.card-grid.layout-wide_panel .env-tile{grid-template-columns:20px minmax(0,1fr);min-height:40px;padding:5px 7px}.card-grid.layout-wide_panel .env-ico,.card-grid.layout-wide_panel .env-ico svg{width:20px;height:20px}.card-grid.layout-wide_panel .env-lbl,.card-grid.layout-wide_panel .env-note{font-size:9px}.card-grid.layout-wide_panel .env-val{font-size:13px}.card-grid.layout-wide_panel .env-note{display:none}}
       @container(max-width:720px){.card-grid.layout-wide_panel{height:var(--radarwise-card-height,360px);max-height:var(--radarwise-card-max-height,360px)}.card-grid.layout-wide_panel .leaflet-control-attribution{max-width:min(58%,260px);max-height:30px;font-size:9px!important}}
@@ -13642,8 +13703,7 @@ var RadarWiseCardEditor = class extends HTMLElement {
             </label>
             <label>Theme
               <select id="theme_mode">
-                <option value="radarwise" ${config.theme_mode !== "auto" ? "selected" : ""}>RadarWise</option>
-                <option value="auto" ${config.theme_mode === "auto" ? "selected" : ""}>Match Home Assistant theme</option>
+                ${Object.entries(RADARWISE_THEME_MODES).map(([value, label]) => `<option value="${value}" ${(config.theme_mode || "radarwise") === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
             <label>Language
