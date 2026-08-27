@@ -8,13 +8,15 @@ from pathlib import Path
 from typing import Any
 
 from homeassistant.core import HomeAssistant
+from homeassistant.loader import async_get_integration
 
-from .const import REPORTS_DIR
+from .const import DOMAIN, REPORTS_DIR
 
 _LOGGER = logging.getLogger(__name__)
 
 import json as _json
 from pathlib import Path as _Path
+import re as _re
 
 def _load_translations_from_json(language: str) -> dict:
     """Return the ``report`` translation section for the given language.
@@ -47,6 +49,57 @@ def _load_translations_from_json(language: str) -> dict:
         return {}
 
 
+# ── Session ids, shared by the listing and the delete path ──────────────────
+
+_AUDIT_SESSION_RE = _re.compile(r"^report_(\d{8}_\d{6})")
+_AGENT_SESSION_RE = _re.compile(r"^agent_report_(\d{8}_\d{6})")
+
+
+def report_session_id(stem: str) -> str | None:
+    """Return the session a report filename belongs to, or None.
+
+    Mirrors the ids ``list_reports`` hands to the panel, so a delete removes
+    exactly the session the user clicked — including agent reports, whose
+    files are named ``agent_report_<ts>_score<NN>.md``.
+    """
+    match = _AGENT_SESSION_RE.match(stem)
+    if match:
+        return "agent_" + match.group(1)
+    match = _AUDIT_SESSION_RE.match(stem)
+    if match:
+        return match.group(1)
+    return None
+
+
+# ── Filename guard, shared by the WS endpoint and the HTTP view ──────────────
+
+ALLOWED_REPORT_SUFFIXES = frozenset({".md", ".json", ".pdf", ".html"})
+_SAFE_REPORT_NAME = _re.compile(r"^[A-Za-z0-9._-]+$")
+
+
+def resolve_report_path(reports_dir: Path, filename: str) -> Path | None:
+    """Return the on-disk path of ``filename`` inside ``reports_dir``, or None.
+
+    The name must be a bare filename made of ``[A-Za-z0-9._-]`` with a known
+    report extension, and the resolved path must sit directly in the reports
+    directory — no traversal (``../secrets.yaml``), no absolute path, no
+    quote that could break a Content-Disposition header. Blocking (stat +
+    symlink resolution): call it from the executor.
+    """
+    if not filename or not _SAFE_REPORT_NAME.match(filename) or filename in (".", ".."):
+        return None
+    if Path(filename).suffix.lower() not in ALLOWED_REPORT_SUFFIXES:
+        return None
+    try:
+        base = reports_dir.resolve(strict=False)
+        path = (base / filename).resolve(strict=False)
+    except (OSError, ValueError):
+        return None
+    if path.parent != base or not path.is_file():
+        return None
+    return path
+
+
 class ReportGenerator:
     """Generate comprehensive reports from audit data."""
 
@@ -56,6 +109,24 @@ class ReportGenerator:
         self._reports_dir = Path(hass.config.config_dir) / REPORTS_DIR
         self._reports_dir.mkdir(exist_ok=True)
         self._translations: dict = {}
+        self._version: str | None = None
+
+    async def _integration_version(self) -> str:
+        """Version stamped on generated reports, read from manifest.json.
+
+        It used to be hardcoded, so every report claimed v1.3.0 whatever was
+        installed. async_get_integration() serves the manifest from HA's own
+        cache and does its first read in an executor, so this never touches
+        the disk from the event loop.
+        """
+        if self._version is None:
+            try:
+                integration = await async_get_integration(self.hass, DOMAIN)
+                self._version = str(integration.version) if integration.version else "?"
+            except Exception as exc:  # not loadable outside a running HA
+                _LOGGER.debug("HACA: could not resolve integration version: %s", exc)
+                self._version = "?"
+        return self._version
 
     def _load_translations(self, language: str) -> dict:
         """Load translations from JSON for the specified language."""
@@ -229,7 +300,8 @@ class ReportGenerator:
         report += f"## 💡 {self._t('recommendations')}\n\n"
         report += self._generate_recommendations(health_score, automation_issues, entity_issues)
         
-        report += f"\n\n---\n\n*{self._t('report_generated_by')} v1.3.0 - {timestamp_display}*\n"
+        version = await self._integration_version()
+        report += f"\n\n---\n\n*{self._t('report_generated_by')} v{version} - {timestamp_display}*\n"
         
         # Save report with provided timestamp
         filename = f"report_{timestamp_str}.md"
@@ -338,232 +410,242 @@ class ReportGenerator:
         timestamp_display = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         health_score = summary.get("health_score", 0)
 
-        # ── Font strategy ────────────────────────────────────────────────────────
-        # Priority order for each font family:
-        #
-        # DejaVuSans (Latin + Latin-Extended + Cyrillic):
-        #   1. matplotlib bundled fonts  → always present in HA
-        #   2. Integration bundled fonts → fonts/ subdirectory
-        #   3. System fonts              → /usr/share/fonts/truetype/dejavu/
-        #
-        # NotoSansCJK (CJK Unified + Hiragana + Katakana):
-        #   1. System TTC                → /usr/share/fonts/opentype/noto/ (Debian HA)
-        #   2. Integration bundled TTF   → fonts/ (subsetted, TTF/glyf format)
-        #
-        # For CJK languages (zh-Hans, ja) NotoSansCJK is used as the PRIMARY font
-        # because fpdf2 computes line-break widths from the primary font metrics.
-        # Using a Latin font as primary for CJK text produces blank/invisible output.
-        # ─────────────────────────────────────────────────────────────────────────
-        _integration_fonts = Path(__file__).parent / "fonts"
-
-        def _find_dejavu() -> tuple[Path, Path, Path] | None:
-            """Return (regular, bold, italic) DejaVu TTF paths, or None."""
-            candidates = []
-            # 1. matplotlib (always in HA)
-            try:
-                import matplotlib as _mpl
-                _mpl_fonts = Path(_mpl.__file__).parent / "mpl-data" / "fonts" / "ttf"
-                candidates.append(_mpl_fonts)
-            except ImportError:
-                pass
-            # 2. Integration bundled
-            candidates.append(_integration_fonts)
-            # 3. System
-            candidates += [
-                Path("/usr/share/fonts/truetype/dejavu"),
-                Path("/usr/share/fonts/dejavu"),
-            ]
-            for d in candidates:
-                r = d / "DejaVuSans.ttf"
-                b = d / "DejaVuSans-Bold.ttf"
-                i = d / ("DejaVuSans-Oblique.ttf" if (d / "DejaVuSans-Oblique.ttf").exists()
-                         else "DejaVuSans-BoldOblique.ttf")
-                if r.exists() and b.exists():
-                    return r, b, (i if i.exists() else r)
-            return None
-
-        def _find_noto_cjk() -> tuple[Path, Path] | None:
-            """Return (regular, bold) NotoSansCJK font paths (TTF), or None."""
-            # 1. Integration bundled TTF (proper glyf outlines, browser-compatible)
-            r = _integration_fonts / "NotoSansCJK-SC-Regular.ttf"
-            b = _integration_fonts / "NotoSansCJK-SC-Bold.ttf"
-            if r.exists():
-                return r, (b if b.exists() else r)
-            # 2. System TTC (Debian / HA Docker) – fallback if bundled OTF is absent
-            system_ttc = [
-                Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
-                Path("/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"),
-                Path("/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"),
-            ]
-            for r in system_ttc:
-                b = r.parent / r.name.replace("Regular", "Bold")
-                if r.exists():
-                    return r, (b if b.exists() else r)
-            return None
-
-        _dejavu_paths = _find_dejavu()
-        _noto_paths   = _find_noto_cjk()
-
-        # Detect CJK language from the "title" translation key
-        _lang_title = self._translations.get("title", "")
-        _is_cjk = any(0x2E80 <= ord(c) <= 0x9FFF or 0x3040 <= ord(c) <= 0x30FF
-                      for c in _lang_title)
-
-        # Choose primary / fallback based on script
-        if _is_cjk and _noto_paths:
-            _primary_font, _fallback_font = "NotoSC", ("DejaVu" if _dejavu_paths else None)
-        elif _dejavu_paths:
-            _primary_font, _fallback_font = "DejaVu", ("NotoSC" if _noto_paths else None)
-        else:
-            _primary_font, _fallback_font = "helvetica", None  # last-resort
-
-        class HACA_PDF(FPDF):
-            def __init__(self, translations, primary, fallback,
-                         dejavu_paths, noto_paths):
-                super().__init__()
-                self._translations = translations
-                self._font = primary
-                if dejavu_paths:
-                    self.add_font("DejaVu", "",  str(dejavu_paths[0]))
-                    self.add_font("DejaVu", "B", str(dejavu_paths[1]))
-                    self.add_font("DejaVu", "I", str(dejavu_paths[2]))
-                if noto_paths:
-                    self.add_font("NotoSC", "",  str(noto_paths[0]))
-                    self.add_font("NotoSC", "B", str(noto_paths[1]))
-                    self.add_font("NotoSC", "I", str(noto_paths[0]))  # no italic variant
-                if fallback:
-                    self.set_fallback_fonts([fallback])
-
-            def _t(self, key):
-                return self._translations.get(key, key)
-
-            def header(self):
-                self.set_font(self._font, "B", 15)
-                self.cell(0, 10, self._t("title"), border=True,
-                          new_x="LMARGIN", new_y="NEXT", align="C")
-                self.ln(5)
-
-            def footer(self):
-                self.set_y(-15)
-                self.set_font(self._font, "I", 8)
-                self.cell(0, 10, f"{self._t('page')} {self.page_no()}/{{nb}}", align="C")
-
-        pdf = HACA_PDF(self._translations, _primary_font, _fallback_font,
-                       _dejavu_paths, _noto_paths)
-        _pdf_font = pdf._font
-        pdf.add_page()
-        pdf.set_font(_pdf_font, "", 12)
-
-        # Executive Summary
-        pdf.set_font(_pdf_font, "B", 14)
-        pdf.cell(0, 10, t("executive_summary"), ln=1)
-        pdf.set_font(_pdf_font, "", 12)
-        pdf.cell(0, 8, f"{t('generated')}: {timestamp_display}", ln=1)
-        pdf.cell(0, 8, f"{t('health_score')}: {health_score}%", ln=1)
-        pdf.ln(5)
-
-        # Issues counts
-        pdf.cell(0, 8, f"{t('automation_issues')}: {summary.get('automation_issues', 0)}", ln=1)
-        pdf.cell(0, 8, f"{t('entity_issues')}: {summary.get('entity_issues', 0)}", ln=1)
-        pdf.cell(0, 8, f"{t('script_issues')}: {summary.get('script_issues', 0)}", ln=1)
-        pdf.cell(0, 8, f"{t('scene_issues')}: {summary.get('scene_issues', 0)}", ln=1)
-        pdf.cell(0, 8, f"{t('blueprint_issues')}: {summary.get('blueprint_issues', 0)}", ln=1)
-        pdf.cell(0, 8, f"{t('performance_issues')}: {summary.get('performance_issues', 0)}", ln=1)
-        pdf.cell(0, 8, f"{t('security_issues')}: {summary.get('security_issues', 0)}", ln=1)
-        pdf.cell(0, 8, f"{t('dashboard_issues')}: {summary.get('dashboard_issues', 0)}", ln=1)
-        pdf.ln(5)
-        
-        # Status
-        pdf.set_font(_pdf_font, "B", 12)
-        pdf.cell(0, 8, t("overall_status"), ln=1)
-        pdf.set_font(_pdf_font, "", 10)
-        pdf.multi_cell(0, 6, self._get_status_text_pdf(health_score))
-        pdf.ln(10)
-
-        # Automations
-        pdf.set_font(_pdf_font, "B", 14)
-        pdf.cell(0, 10, f"{t('automation_issues')} ({len(automation_issues)})", ln=1)
-        pdf.set_font(_pdf_font, "", 10)
-        
-        if automation_issues:
-            for issue in automation_issues[:20]:  # Limit to 20 for PDF
-                severity = issue.get('severity', 'low').upper()
-                entity = issue.get('entity_id', issue.get('alias', 'N/A'))
-                msg = issue.get('message', '')
-                pdf.set_font(_pdf_font, "B", 10)
-                pdf.cell(0, 6, f"[{severity}] {entity}", ln=1)
-                pdf.set_font(_pdf_font, "", 10)
-                pdf.multi_cell(0, 5, msg)
-                pdf.ln(2)
-        else:
-            pdf.cell(0, 8, f"[OK] {t('no_automation_issues')}", ln=1)
-
-        # Entities
-        pdf.add_page()
-        pdf.set_font(_pdf_font, "B", 14)
-        pdf.cell(0, 10, f"{t('entity_issues')} ({len(entity_issues)})", ln=1)
-        pdf.set_font(_pdf_font, "", 10)
-        
-        if entity_issues:
-            for issue in entity_issues[:30]:
-                pdf.cell(0, 7, f"- {issue.get('entity_id')}: {issue.get('message')}", ln=1)
-                pdf.ln(1)
-        else:
-            pdf.cell(0, 8, f"[OK] {t('no_entity_issues')}", ln=1)
-        
-        # ── Extra issue sections (6.2) ─────────────────────────────────
-        def _pdf_section(issues, section_key, no_issues_key, max_items=20):
-            if not issues:
-                return
-            pdf.add_page()
-            pdf.set_font(_pdf_font, "B", 14)
-            pdf.cell(0, 10, f"{t(section_key)} ({len(issues)})", ln=1)
-            pdf.set_font(_pdf_font, "", 10)
-            for iss in issues[:max_items]:
-                sev = iss.get("severity", "low").upper()
-                ent = iss.get("entity_id", iss.get("alias", "N/A"))
-                msg = iss.get("message", "")
-                pdf.set_font(_pdf_font, "B", 10)
-                pdf.cell(0, 6, f"[{sev}] {ent}", ln=1)
-                pdf.set_font(_pdf_font, "", 10)
-                pdf.multi_cell(0, 5, msg)
-                pdf.ln(2)
-
-        _pdf_section(script_issues,      "script_issues_section",      "no_script_issues")
-        _pdf_section(scene_issues,       "scene_issues_section",       "no_scene_issues")
-        _pdf_section(blueprint_issues,   "blueprint_issues_section",   "no_blueprint_issues")
-        _pdf_section(performance_issues, "performance_issues_section", "no_performance_issues")
-        _pdf_section(security_issues,    "security_issues_section",    "no_security_issues")
-        _pdf_section(dashboard_issues,   "dashboard_issues_section",   "no_dashboard_issues")
-
-        # Recommendations
-        pdf.ln(10)
-        pdf.set_font(_pdf_font, "B", 14)
-        pdf.cell(0, 10, f">> {t('recommendations')}", ln=1)
-        pdf.set_font(_pdf_font, "", 10)
-        pdf.multi_cell(0, 6, self._generate_recommendations_pdf(health_score, automation_issues, entity_issues))
-        
-        # Footer
-        pdf.ln(10)
-        pdf.set_font(_pdf_font, "I", 9)
-        pdf.cell(0, 8, f"{t('report_generated_by')} v1.3.0 - {timestamp_display}", ln=1)
+        version = await self._integration_version()
 
         filename = f"report_{timestamp_str}.pdf"
         filepath = self._reports_dir / filename
-        
-        def save_pdf():
+
+        def _build_pdf() -> None:
+            """Build the PDF and write it out.
+
+            Runs whole in an executor: fpdf2's add_font() opens the .ttf
+            files and output() writes the report. Both block, so building
+            on the loop trips HA's event-loop watchdog.
+            """
+            # ── Font strategy ────────────────────────────────────────────────────────
+            # Priority order for each font family:
+            #
+            # DejaVuSans (Latin + Latin-Extended + Cyrillic):
+            #   1. matplotlib bundled fonts  → always present in HA
+            #   2. Integration bundled fonts → fonts/ subdirectory
+            #   3. System fonts              → /usr/share/fonts/truetype/dejavu/
+            #
+            # NotoSansCJK (CJK Unified + Hiragana + Katakana):
+            #   1. System TTC                → /usr/share/fonts/opentype/noto/ (Debian HA)
+            #   2. Integration bundled TTF   → fonts/ (subsetted, TTF/glyf format)
+            #
+            # For CJK languages (zh-Hans, ja) NotoSansCJK is used as the PRIMARY font
+            # because fpdf2 computes line-break widths from the primary font metrics.
+            # Using a Latin font as primary for CJK text produces blank/invisible output.
+            # ─────────────────────────────────────────────────────────────────────────
+            _integration_fonts = Path(__file__).parent / "fonts"
+
+            def _find_dejavu() -> tuple[Path, Path, Path] | None:
+                """Return (regular, bold, italic) DejaVu TTF paths, or None."""
+                candidates = []
+                # 1. matplotlib (always in HA)
+                try:
+                    import matplotlib as _mpl
+                    _mpl_fonts = Path(_mpl.__file__).parent / "mpl-data" / "fonts" / "ttf"
+                    candidates.append(_mpl_fonts)
+                except ImportError:
+                    pass
+                # 2. Integration bundled
+                candidates.append(_integration_fonts)
+                # 3. System
+                candidates += [
+                    Path("/usr/share/fonts/truetype/dejavu"),
+                    Path("/usr/share/fonts/dejavu"),
+                ]
+                for d in candidates:
+                    r = d / "DejaVuSans.ttf"
+                    b = d / "DejaVuSans-Bold.ttf"
+                    i = d / ("DejaVuSans-Oblique.ttf" if (d / "DejaVuSans-Oblique.ttf").exists()
+                             else "DejaVuSans-BoldOblique.ttf")
+                    if r.exists() and b.exists():
+                        return r, b, (i if i.exists() else r)
+                return None
+
+            def _find_noto_cjk() -> tuple[Path, Path] | None:
+                """Return (regular, bold) NotoSansCJK font paths (TTF), or None."""
+                # 1. Integration bundled TTF (proper glyf outlines, browser-compatible)
+                r = _integration_fonts / "NotoSansCJK-SC-Regular.ttf"
+                b = _integration_fonts / "NotoSansCJK-SC-Bold.ttf"
+                if r.exists():
+                    return r, (b if b.exists() else r)
+                # 2. System TTC (Debian / HA Docker) – fallback if bundled OTF is absent
+                system_ttc = [
+                    Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
+                    Path("/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc"),
+                    Path("/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"),
+                ]
+                for r in system_ttc:
+                    b = r.parent / r.name.replace("Regular", "Bold")
+                    if r.exists():
+                        return r, (b if b.exists() else r)
+                return None
+
+            _dejavu_paths = _find_dejavu()
+            _noto_paths   = _find_noto_cjk()
+
+            # Detect CJK language from the "title" translation key
+            _lang_title = self._translations.get("title", "")
+            _is_cjk = any(0x2E80 <= ord(c) <= 0x9FFF or 0x3040 <= ord(c) <= 0x30FF
+                          for c in _lang_title)
+
+            # Choose primary / fallback based on script
+            if _is_cjk and _noto_paths:
+                _primary_font, _fallback_font = "NotoSC", ("DejaVu" if _dejavu_paths else None)
+            elif _dejavu_paths:
+                _primary_font, _fallback_font = "DejaVu", ("NotoSC" if _noto_paths else None)
+            else:
+                _primary_font, _fallback_font = "helvetica", None  # last-resort
+
+            class HACA_PDF(FPDF):
+                def __init__(self, translations, primary, fallback,
+                             dejavu_paths, noto_paths):
+                    super().__init__()
+                    self._translations = translations
+                    self._font = primary
+                    if dejavu_paths:
+                        self.add_font("DejaVu", "",  str(dejavu_paths[0]))
+                        self.add_font("DejaVu", "B", str(dejavu_paths[1]))
+                        self.add_font("DejaVu", "I", str(dejavu_paths[2]))
+                    if noto_paths:
+                        self.add_font("NotoSC", "",  str(noto_paths[0]))
+                        self.add_font("NotoSC", "B", str(noto_paths[1]))
+                        self.add_font("NotoSC", "I", str(noto_paths[0]))  # no italic variant
+                    if fallback:
+                        self.set_fallback_fonts([fallback])
+
+                def _t(self, key):
+                    return self._translations.get(key, key)
+
+                def header(self):
+                    self.set_font(self._font, "B", 15)
+                    self.cell(0, 10, self._t("title"), border=True,
+                              new_x="LMARGIN", new_y="NEXT", align="C")
+                    self.ln(5)
+
+                def footer(self):
+                    self.set_y(-15)
+                    self.set_font(self._font, "I", 8)
+                    self.cell(0, 10, f"{self._t('page')} {self.page_no()}/{{nb}}", align="C")
+
+            pdf = HACA_PDF(self._translations, _primary_font, _fallback_font,
+                           _dejavu_paths, _noto_paths)
+            _pdf_font = pdf._font
+            pdf.add_page()
+            pdf.set_font(_pdf_font, "", 12)
+
+            # Executive Summary
+            pdf.set_font(_pdf_font, "B", 14)
+            pdf.cell(0, 10, t("executive_summary"), ln=1)
+            pdf.set_font(_pdf_font, "", 12)
+            pdf.cell(0, 8, f"{t('generated')}: {timestamp_display}", ln=1)
+            pdf.cell(0, 8, f"{t('health_score')}: {health_score}%", ln=1)
+            pdf.ln(5)
+
+            # Issues counts
+            pdf.cell(0, 8, f"{t('automation_issues')}: {summary.get('automation_issues', 0)}", ln=1)
+            pdf.cell(0, 8, f"{t('entity_issues')}: {summary.get('entity_issues', 0)}", ln=1)
+            pdf.cell(0, 8, f"{t('script_issues')}: {summary.get('script_issues', 0)}", ln=1)
+            pdf.cell(0, 8, f"{t('scene_issues')}: {summary.get('scene_issues', 0)}", ln=1)
+            pdf.cell(0, 8, f"{t('blueprint_issues')}: {summary.get('blueprint_issues', 0)}", ln=1)
+            pdf.cell(0, 8, f"{t('performance_issues')}: {summary.get('performance_issues', 0)}", ln=1)
+            pdf.cell(0, 8, f"{t('security_issues')}: {summary.get('security_issues', 0)}", ln=1)
+            pdf.cell(0, 8, f"{t('dashboard_issues')}: {summary.get('dashboard_issues', 0)}", ln=1)
+            pdf.ln(5)
+
+            # Status
+            pdf.set_font(_pdf_font, "B", 12)
+            pdf.cell(0, 8, t("overall_status"), ln=1)
+            pdf.set_font(_pdf_font, "", 10)
+            pdf.multi_cell(0, 6, self._get_status_text_pdf(health_score))
+            pdf.ln(10)
+
+            # Automations
+            pdf.set_font(_pdf_font, "B", 14)
+            pdf.cell(0, 10, f"{t('automation_issues')} ({len(automation_issues)})", ln=1)
+            pdf.set_font(_pdf_font, "", 10)
+
+            if automation_issues:
+                for issue in automation_issues[:20]:  # Limit to 20 for PDF
+                    severity = issue.get('severity', 'low').upper()
+                    entity = issue.get('entity_id', issue.get('alias', 'N/A'))
+                    msg = issue.get('message', '')
+                    pdf.set_font(_pdf_font, "B", 10)
+                    pdf.cell(0, 6, f"[{severity}] {entity}", ln=1)
+                    pdf.set_font(_pdf_font, "", 10)
+                    pdf.multi_cell(0, 5, msg)
+                    pdf.ln(2)
+            else:
+                pdf.cell(0, 8, f"[OK] {t('no_automation_issues')}", ln=1)
+
+            # Entities
+            pdf.add_page()
+            pdf.set_font(_pdf_font, "B", 14)
+            pdf.cell(0, 10, f"{t('entity_issues')} ({len(entity_issues)})", ln=1)
+            pdf.set_font(_pdf_font, "", 10)
+
+            if entity_issues:
+                for issue in entity_issues[:30]:
+                    pdf.cell(0, 7, f"- {issue.get('entity_id')}: {issue.get('message')}", ln=1)
+                    pdf.ln(1)
+            else:
+                pdf.cell(0, 8, f"[OK] {t('no_entity_issues')}", ln=1)
+
+            # ── Extra issue sections (6.2) ─────────────────────────────────
+            def _pdf_section(issues, section_key, no_issues_key, max_items=20):
+                if not issues:
+                    return
+                pdf.add_page()
+                pdf.set_font(_pdf_font, "B", 14)
+                pdf.cell(0, 10, f"{t(section_key)} ({len(issues)})", ln=1)
+                pdf.set_font(_pdf_font, "", 10)
+                for iss in issues[:max_items]:
+                    sev = iss.get("severity", "low").upper()
+                    ent = iss.get("entity_id", iss.get("alias", "N/A"))
+                    msg = iss.get("message", "")
+                    pdf.set_font(_pdf_font, "B", 10)
+                    pdf.cell(0, 6, f"[{sev}] {ent}", ln=1)
+                    pdf.set_font(_pdf_font, "", 10)
+                    pdf.multi_cell(0, 5, msg)
+                    pdf.ln(2)
+
+            _pdf_section(script_issues,      "script_issues_section",      "no_script_issues")
+            _pdf_section(scene_issues,       "scene_issues_section",       "no_scene_issues")
+            _pdf_section(blueprint_issues,   "blueprint_issues_section",   "no_blueprint_issues")
+            _pdf_section(performance_issues, "performance_issues_section", "no_performance_issues")
+            _pdf_section(security_issues,    "security_issues_section",    "no_security_issues")
+            _pdf_section(dashboard_issues,   "dashboard_issues_section",   "no_dashboard_issues")
+
+            # Recommendations
+            pdf.ln(10)
+            pdf.set_font(_pdf_font, "B", 14)
+            pdf.cell(0, 10, f">> {t('recommendations')}", ln=1)
+            pdf.set_font(_pdf_font, "", 10)
+            pdf.multi_cell(0, 6, self._generate_recommendations_pdf(health_score, automation_issues, entity_issues))
+
+            # Footer
+            pdf.ln(10)
+            pdf.set_font(_pdf_font, "I", 9)
+            pdf.cell(0, 8, f"{t('report_generated_by')} v{version} - {timestamp_display}", ln=1)
+
             pdf.output(str(filepath))
-            
-        await self.hass.async_add_executor_job(save_pdf)
+
+        await self.hass.async_add_executor_job(_build_pdf)
         _LOGGER.info("Generated PDF report: %s", filepath)
         return str(filepath)
 
     async def get_report_content(self, filename: str) -> dict[str, Any] | None:
         """Get the content of a report file."""
-        filepath = self._reports_dir / filename
-        if not filepath.exists() or not filepath.is_file():
+        filepath = await self.hass.async_add_executor_job(
+            resolve_report_path, self._reports_dir, filename
+        )
+        if filepath is None:
             return None
-            
+
         def read_file():
             if filepath.suffix == '.json':
                 with open(filepath, "r", encoding="utf-8") as f:
@@ -747,28 +829,33 @@ class ReportGenerator:
         return sorted_sessions[:30]  # 30 rapports max
 
     async def delete_report_session(self, session_id: str) -> dict:
-        """Delete all report files for a given session ID."""
-        import re
-        
+        """Delete every report file belonging to a session ID."""
+        def _collect() -> list[Path]:
+            if not self._reports_dir.is_dir():
+                return []
+            return [
+                p for p in self._reports_dir.iterdir()
+                if p.is_file() and report_session_id(p.stem) == session_id
+            ]
+
+        # Previously: glob("report_*") + a prefix regex. Agent sessions
+        # (agent_report_<ts>…, id "agent_<ts>") never matched that glob, so
+        # deleting one silently removed nothing, and a truncated id matched
+        # several sessions by prefix. Both go through report_session_id now.
+        targets = await self.hass.async_add_executor_job(_collect)
+
         deleted_files = []
         errors = []
-        
-        # Find all files matching this session
-        pattern = re.compile(f"report_{re.escape(session_id)}")
-        
-        for report_file in self._reports_dir.glob("report_*"):
-            if pattern.match(report_file.name):
-                try:
-                    def delete_file():
-                        report_file.unlink()
-                    
-                    await self.hass.async_add_executor_job(delete_file)
-                    deleted_files.append(report_file.name)
-                    _LOGGER.info("Deleted report file: %s", report_file.name)
-                except Exception as e:
-                    errors.append(f"{report_file.name}: {str(e)}")
-                    _LOGGER.error("Failed to delete report file %s: %s", report_file.name, e)
-        
+
+        for report_file in targets:
+            try:
+                await self.hass.async_add_executor_job(report_file.unlink)
+                deleted_files.append(report_file.name)
+                _LOGGER.info("Deleted report file: %s", report_file.name)
+            except Exception as e:
+                errors.append(f"{report_file.name}: {str(e)}")
+                _LOGGER.error("Failed to delete report file %s: %s", report_file.name, e)
+
         if not deleted_files and not errors:
             return {
                 "success": False,

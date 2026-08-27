@@ -25,7 +25,7 @@
           "scan_interval": "Scanintervall (Minuten)",
           "auto_fix_enabled": "Automatische Korrekturen aktivieren",
           "backup_enabled": "Automatische Backups aktivieren",
-          "startup_delay_seconds": "Startverzögerung für Scan (Sekunden)",
+          "startup_delay_seconds": "Start-Scan: maximale Wartezeit (Sekunden)",
           "event_monitoring_enabled": "Kontinuierliche Überwachung (Autoscan bei Ereignissen)",
           "event_debounce_seconds": "Entprellverzögerung für Ereignisüberwachung (Sekunden)"
         }
@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Konfigurationsprüfer",
-    "version": "v1.7.5",
+    "version": "v1.7.6",
     "buttons": {
       "scan_all": "Vollständiger Scan",
       "automations": "Automatisierungen",
@@ -335,7 +335,8 @@
       "loading_proposal": "Vorschlag wird geladen...",
       "error_loading": "Fehler beim Laden der Berichte",
       "error_display": "Fehler beim Anzeigen der Berichte",
-      "generating": "Generieren…"
+      "generating": "Generieren…",
+      "deleting": "Löschen…"
     },
     "ai": {
       "analyzing": "KI analysiert dein Problem...",
@@ -481,10 +482,6 @@
       "id_copied": "ID {id} in Zwischenablage kopiert",
       "fixable": "Behebbar",
       "not_fixable": "Nicht behebbar",
-      "generic_high_issue": {
-        "title": "HACA: {type} — {entity}",
-        "description": "{message}\n\nÖffnen Sie das HACA-Panel für Details und verfügbare Korrekturen."
-      },
       "recorder_exclude_effective": "Wirksam beim nächsten HACA-Scan.",
       "recorder_exclude_to_revert": "Um dieses Problem wieder anzuzeigen, entferne die Entität aus configuration.yaml.",
       "recorder_exclude_explanation": "Um dieses Problem vom Recorder auszuschließen, können Sie entweder configuration.yaml manuell bearbeiten (erstellen Sie zuerst eine Sicherung) oder auf die Schaltfläche „Vom Recorder ausschließen“ klicken. In diesem Fall ändert HACA Ihre Datei configuration.yaml, erstellt jedoch zuvor eine Sicherung."
@@ -537,7 +534,8 @@
       "estimated_total": "Geschätzte Gesamtgröße: ~{mb} MB über {count} Entität(en)",
       "subtab_orphans": "DB-Waisen",
       "subtab_impact": "DB-Auswirkung",
-      "orphan_badge": "{count} Waise(n) · ~{mb} MB"
+      "orphan_badge": "{count} Waise(n) · ~{mb} MB",
+      "selected_count": "{n} ausgewählt"
     },
     "graph": {
       "title": "Abhängigkeitsgraph",
@@ -680,7 +678,7 @@
       "subtitle": "Allgemeine Einstellungen, Schwellwerte und aktive Problemtypen",
       "scan_section": "Automatischer Scan",
       "scan_interval": "Scanintervall (Minuten)",
-      "startup_delay": "Startverzögerung (Sekunden)",
+      "startup_delay": "Maximale Wartezeit beim Start (Sekunden)",
       "event_section": "Ereignisüberwachung",
       "event_active": "Aktive Überwachung",
       "event_rescan": "Autoscan nach Änderungen",
@@ -884,6 +882,7 @@
         "missing_state_class": "Fehlende state_class",
         "expensive_template_selectattr": "Teures selectattr-Template",
         "expensive_template_states_all": "Teures states.all-Template",
+        "noisy_entity": "Laute Entität",
         "blueprint_missing_path": "Fehlender Blueprint-Pfad",
         "blueprint_file_not_found": "Blueprint-Datei nicht gefunden",
         "blueprint_empty_input": "Leerer Blueprint-Input",
@@ -1829,5 +1828,11 @@
     "workflow_fix_title": "Workflow zur Fehlerbehebung:",
     "workflow_fix": "1. haca_list_issue_catalog() um Kategorien, Typen und behebbare Fehler zu entdecken\n2. haca_get_issues(category?, type?, severity?) um bestimmte Fehler aufzulisten\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') um einen einzelnen Fehler zu beheben (dry_run=true Standard)\n4. haca_fix_batch(category?, type?, severity?) um mehrere Fehler gleichzeitig zu beheben\n5. Immer zuerst mit dry_run=true prüfen, dann dry_run=false nach Benutzerbestätigung\nID-Format: HACA-{CATEGORY}-{TYPE}-{HASH6}, z.B. HACA-AUTO-NO_ALIAS-a3f2c1",
     "rule_use_haca_id": "Jedes Problem hat eine eindeutige haca_id (Format: HACA-CAT-TYPE-hash). Verwenden Sie IMMER die bereitgestellte haca_id — NIEMALS eine ID erfinden oder raten."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nÖffnen Sie das HACA-Panel für Details und verfügbare Korrekturen."
+    }
   }
 }

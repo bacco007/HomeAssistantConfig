@@ -80,6 +80,7 @@ def async_register_websocket_handlers(hass: HomeAssistant) -> None:
     # ── v1.5.0 ─────────────────────────────────────────────────────────────
     websocket_api.async_register_command(hass, handle_get_battery_predictions)
     websocket_api.async_register_command(hass, handle_export_battery_csv)
+    websocket_api.async_register_command(hass, handle_get_report_url)
     websocket_api.async_register_command(hass, handle_get_area_complexity)
     websocket_api.async_register_command(hass, handle_get_redundancy)
     websocket_api.async_register_command(hass, handle_get_recorder_impact)
@@ -1449,6 +1450,20 @@ async def handle_save_options(
         if not isinstance(entry_data, dict):
             continue
 
+        # excluded_issue_types → démarrer/arrêter le tracker noisy en direct.
+        # Il écoute EVENT_STATE_CHANGED pour toute l'instance : inutile de le
+        # laisser tourner si l'utilisateur a désactivé le type "noisy_entity".
+        if "excluded_issue_types" in incoming:
+            tracker = entry_data.get("noisy_tracker")
+            if tracker is not None:
+                from .performance_analyzer import noisy_scan_enabled
+                enabled = noisy_scan_enabled(hass)
+                tracker.start() if enabled else tracker.stop()
+                _LOGGER.info(
+                    "[HACA] noisy-entity scan %s",
+                    "enabled" if enabled else "disabled",
+                )
+
         # scan_interval → mettre à jour l'intervalle du coordinator (0 = manual only)
         if "scan_interval" in incoming:
             coordinator = entry_data.get("coordinator")
@@ -1816,12 +1831,72 @@ async def handle_export_battery_csv(
         if not MODULE_18_BATTERY_PREDICTOR:
             connection.send_result(msg["id"], {"csv": "date,entity_id,level\n"})
             return
-        from .battery_predictor import BatteryPredictor
-        predictor = BatteryPredictor(hass)
+        # Reuse the loaded instance so we hit the in-memory .storage cache
+        entries = hass.config_entries.async_entries(DOMAIN)
+        domain_data = hass.data.get(DOMAIN, {}).get(entries[0].entry_id, {}) if entries else {}
+        predictor = domain_data.get("battery_predictor")
+        if predictor is None:
+            from .battery_predictor import BatteryPredictor
+            predictor = BatteryPredictor(hass)
         csv_data = await predictor.async_export_csv()
         connection.send_result(msg["id"], {"csv": csv_data})
     except Exception as exc:
         connection.send_error(msg["id"], "csv_error", str(exc))
+
+
+# ── Reports ────────────────────────────────────────────────────────────────
+
+@websocket_api.websocket_command({
+    vol.Required("type"): "haca/get_report_url",
+    vol.Required("filename"): str,
+})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_get_report_url(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return a short-lived signed URL for one report file.
+
+    The reports endpoint requires authentication, which an <iframe src> or a
+    download link cannot carry. A signed path can: HA validates the signature
+    and resolves it back to this admin's refresh token.
+    """
+    from datetime import timedelta
+
+    from .const import REPORTS_DIR
+    from .report_generator import resolve_report_path
+    from .report_view import REPORT_URL_PREFIX
+
+    reports_dir = Path(hass.config.path(REPORTS_DIR))
+    path = await hass.async_add_executor_job(
+        resolve_report_path, reports_dir, msg["filename"]
+    )
+    if path is None:
+        connection.send_error(
+            msg["id"], "not_found", f"Report '{msg['filename']}' not found"
+        )
+        return
+
+    try:
+        from homeassistant.components.http.auth import async_sign_path
+    except ImportError:      # older layouts re-export it from the package
+        from homeassistant.components.http import async_sign_path
+
+    try:
+        signed = async_sign_path(
+            hass,
+            f"{REPORT_URL_PREFIX}/{path.name}",
+            timedelta(minutes=30),
+            refresh_token_id=connection.refresh_token_id,
+        )
+    except Exception as exc:
+        _LOGGER.error("HACA: could not sign report URL: %s", exc)
+        connection.send_error(msg["id"], "sign_error", str(exc))
+        return
+
+    connection.send_result(msg["id"], {"url": signed})
 
 
 # ── Area complexity ────────────────────────────────────────────────────────────

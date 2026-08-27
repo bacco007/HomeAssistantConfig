@@ -1,34 +1,45 @@
 """H.A.C.A — Battery Failure Predictor (Module 18).
 
-Reads per-entity battery levels stored by HistoryManager across scans,
-performs a linear regression on the last 30 days and predicts:
+Reads per-entity battery levels stored across scans, performs a linear
+regression on the last 30 days and predicts:
   • slope (% per day)
   • predicted date when level hits critical threshold
   • J-7 alert flag (discharge within 7 days)
   • trend confidence (R²)
 
-Battery snapshots are stored separately in .haca_battery_history/ as daily
-JSON files (one per scan date, keyed by entity_id).
+Battery snapshots live in `.storage/config_auditor.battery_history` (helper
+`Store` de HA), sous la forme {date: {entity_id: level}}.
+
+Migration : au premier chargement, l'ancien dossier `.haca_battery_history/`
+(< 1.7.6) est importé puis supprimé.
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
-import math
-import os
+import shutil
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
 
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.storage import Store
+
+from .const import (
+    LEGACY_BATTERY_HISTORY_DIR,
+    STORAGE_KEY_BATTERY_HISTORY,
+    STORAGE_VERSION,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
-BATTERY_HISTORY_DIR = ".haca_battery_history"
 PREDICTION_WINDOW_DAYS = 30
 ALERT_HORIZON_DAYS = 7
 MIN_DATAPOINTS = 3          # minimum points for reliable regression
 CRITICAL_THRESHOLD = 10     # % below which we consider recharge needed
+RETENTION_DAYS = PREDICTION_WINDOW_DAYS + 5   # petit tampon au-delà de la fenêtre
+SAVE_DELAY = 10             # secondes — Store flush aussi à l'arrêt de HA
 
 
 class BatteryPredictor:
@@ -36,8 +47,10 @@ class BatteryPredictor:
 
     def __init__(self, hass: HomeAssistant, critical_threshold: int = CRITICAL_THRESHOLD) -> None:
         self.hass = hass
-        self._dir = Path(hass.config.config_dir) / BATTERY_HISTORY_DIR
-        self._dir.mkdir(exist_ok=True)
+        self._store: Store = Store(hass, STORAGE_VERSION, STORAGE_KEY_BATTERY_HISTORY)
+        self._days: dict[str, dict[str, float]] = {}
+        self._loaded = False
+        self._load_lock = asyncio.Lock()
         self._critical = critical_threshold
         self.predictions: list[dict[str, Any]] = []
 
@@ -52,15 +65,24 @@ class BatteryPredictor:
             for b in battery_list
             if b.get("level") is not None
         }
+        if not snapshot:
+            return
+
+        await self._async_ensure_loaded()
+
+        # Merge with any existing data for that day (multiple scans same day)
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        await self.hass.async_add_executor_job(self._write_snapshot, today, snapshot)
+        self._days.setdefault(today, {}).update(snapshot)
+        self._prune()
+        self._store.async_delay_save(self._data_to_save, SAVE_DELAY)
 
     async def async_compute_predictions(
         self,
         battery_list: list[dict[str, Any]],
     ) -> list[dict[str, Any]]:
         """Run regression on stored history and return prediction list."""
-        history = await self.hass.async_add_executor_job(self._load_history)
+        await self._async_ensure_loaded()
+        history = self._days
         self.predictions = []
 
         # Build {entity_id: [(day_offset, level), ...]} from history
@@ -137,46 +159,104 @@ class BatteryPredictor:
 
     async def async_export_csv(self) -> str:
         """Return CSV string of full battery discharge history."""
-        history = await self.hass.async_add_executor_job(self._load_history)
-        if not history:
+        await self._async_ensure_loaded()
+        if not self._days:
             return "date,entity_id,level\n"
 
         rows: list[str] = ["date,entity_id,level"]
-        for day_str, levels in sorted(history.items()):
+        for day_str, levels in sorted(self._days.items()):
             for eid, lvl in sorted(levels.items()):
                 rows.append(f"{day_str},{eid},{lvl}")
         return "\n".join(rows)
 
-    # ── File I/O (executor) ───────────────────────────────────────────────
+    async def async_flush(self) -> None:
+        """Écrit immédiatement une sauvegarde différée en attente (unload/reload)."""
+        if self._loaded:
+            await self._store.async_save(self._data_to_save())
 
-    def _write_snapshot(self, day: str, snapshot: dict[str, float]) -> None:
-        path = self._dir / f"{day}.json"
-        try:
-            # Merge with any existing data for that day (multiple scans same day)
-            existing: dict = {}
-            if path.exists():
-                existing = json.loads(path.read_text(encoding="utf-8"))
-            existing.update(snapshot)
-            path.write_text(json.dumps(existing, ensure_ascii=False), encoding="utf-8")
-        except OSError as exc:
-            _LOGGER.warning("BatteryPredictor: write failed for %s: %s", day, exc)
+    # ── Storage (.storage via Store helper) ───────────────────────────────
 
-        # Prune files older than PREDICTION_WINDOW_DAYS + 5 buffer
-        cutoff = (datetime.now(timezone.utc).date() - timedelta(days=PREDICTION_WINDOW_DAYS + 5)).strftime("%Y-%m-%d")
-        for p in sorted(self._dir.glob("*.json")):
-            if p.stem < cutoff:
-                p.unlink(missing_ok=True)
+    def _data_to_save(self) -> dict[str, Any]:
+        """Payload écrit dans .storage (appelé par Store, y compris en différé)."""
+        return {"days": self._days}
 
-    def _load_history(self) -> dict[str, dict[str, float]]:
-        """Return {date_str: {entity_id: level}} for last PREDICTION_WINDOW_DAYS days."""
-        result: dict[str, dict[str, float]] = {}
-        for path in sorted(self._dir.glob("*.json")):
+    def _prune(self) -> None:
+        """Drop days older than the prediction window (+ buffer)."""
+        cutoff = (
+            datetime.now(timezone.utc).date() - timedelta(days=RETENTION_DAYS)
+        ).strftime("%Y-%m-%d")
+        for day in [d for d in self._days if d < cutoff]:
+            del self._days[day]
+
+    async def _async_ensure_loaded(self) -> None:
+        """Charge l'historique depuis .storage (migre l'ancien dossier si besoin)."""
+        if self._loaded:
+            return
+        async with self._load_lock:
+            if self._loaded:
+                return
             try:
-                data = json.loads(path.read_text(encoding="utf-8"))
+                data = await self._store.async_load()
+            except Exception as exc:      # store illisible → on repart à vide
+                _LOGGER.warning("BatteryPredictor: could not read store: %s", exc)
+                data = None
+
+            if data is None:
+                self._days = await self._async_migrate_legacy()
+            else:
+                self._days = dict(data.get("days") or {})
+            self._loaded = True
+
+    async def _async_migrate_legacy(self) -> dict[str, dict[str, float]]:
+        """Import one-shot de `<config>/.haca_battery_history/` (< 1.7.6)."""
+        legacy_dir = Path(self.hass.config.config_dir) / LEGACY_BATTERY_HISTORY_DIR
+        days = await self.hass.async_add_executor_job(_read_legacy_days, legacy_dir)
+        if days is None:
+            return {}       # pas d'ancien dossier — rien à migrer
+
+        try:
+            await self._store.async_save({"days": days})
+        except Exception as exc:
+            # L'ancien dossier reste en place : on retentera au prochain démarrage
+            _LOGGER.error("BatteryPredictor: migration to .storage failed: %s", exc)
+            return days
+
+        await self.hass.async_add_executor_job(_remove_legacy_dir, legacy_dir)
+        _LOGGER.info(
+            "BatteryPredictor: %d day(s) migrated from %s to .storage/%s",
+            len(days), LEGACY_BATTERY_HISTORY_DIR, STORAGE_KEY_BATTERY_HISTORY,
+        )
+        return days
+
+
+# ── Legacy directory I/O (executor thread) ────────────────────────────────────
+
+def _read_legacy_days(legacy_dir: Path) -> dict[str, dict[str, float]] | None:
+    """Lit les fichiers jour du dossier < 1.7.6. None si le dossier n'existe pas."""
+    if not legacy_dir.is_dir():
+        return None
+    result: dict[str, dict[str, float]] = {}
+    cutoff = (
+        datetime.now(timezone.utc).date() - timedelta(days=RETENTION_DAYS)
+    ).strftime("%Y-%m-%d")
+    for path in sorted(legacy_dir.glob("*.json")):
+        if path.stem < cutoff:
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(data, dict) and data:
                 result[path.stem] = data
-            except Exception:
-                pass
-        return result
+        except Exception as exc:
+            _LOGGER.debug("BatteryPredictor: skip %s during migration — %s", path.name, exc)
+    return result
+
+
+def _remove_legacy_dir(legacy_dir: Path) -> None:
+    """Supprime le dossier migré (best effort)."""
+    try:
+        shutil.rmtree(legacy_dir)
+    except OSError as exc:
+        _LOGGER.warning("BatteryPredictor: could not remove %s: %s", legacy_dir, exc)
 
 
 # ── Math helpers ──────────────────────────────────────────────────────────────

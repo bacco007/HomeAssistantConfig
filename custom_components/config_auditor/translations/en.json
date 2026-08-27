@@ -25,7 +25,7 @@
           "scan_interval": "Scan interval (minutes)",
           "auto_fix_enabled": "Enable automatic fixes",
           "backup_enabled": "Enable automatic backups",
-          "startup_delay_seconds": "Startup scan delay (seconds)",
+          "startup_delay_seconds": "Startup scan: max wait (seconds)",
           "event_monitoring_enabled": "Continuous monitoring (auto-scan on events)",
           "event_debounce_seconds": "Event monitoring debounce delay (seconds)"
         }
@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "v1.7.5",
+    "version": "v1.7.6",
     "buttons": {
       "scan_all": "Full Scan",
       "automations": "Automations",
@@ -335,7 +335,8 @@
       "loading_proposal": "Loading proposal...",
       "error_loading": "Error loading reports",
       "error_display": "Error displaying reports",
-      "generating": "Generating…"
+      "generating": "Generating…",
+      "deleting": "Deleting…"
     },
     "ai": {
       "analyzing": "AI is analyzing your problem...",
@@ -481,10 +482,6 @@
       "id_copied": "ID {id} copied to clipboard",
       "fixable": "Fixable",
       "not_fixable": "Not fixable",
-      "generic_high_issue": {
-        "title": "HACA: {type} — {entity}",
-        "description": "{message}\n\nOpen the HACA panel for details and available fixes."
-      },
       "recorder_exclude_effective": "Effective at the next HACA scan.",
       "recorder_exclude_to_revert": "To make this issue visible again, remove the entity from configuration.yaml.",
       "recorder_exclude_explanation": "To exclude this issue from the Recorder, you can either edit configuration.yaml manually (make a backup first) or click the Exclude from Recorder button. In that case, HACA will modify your configuration.yaml file but will create a backup before the change."
@@ -537,7 +534,8 @@
       "estimated_total": "Estimated total: ~{mb} MB across {count} entity/entities",
       "subtab_orphans": "DB Orphans",
       "subtab_impact": "DB Impact",
-      "orphan_badge": "{count} orphan(s) · ~{mb} MB"
+      "orphan_badge": "{count} orphan(s) · ~{mb} MB",
+      "selected_count": "{n} selected"
     },
     "graph": {
       "title": "Dependency Graph",
@@ -680,7 +678,7 @@
       "subtitle": "General settings, thresholds and active issue types",
       "scan_section": "Automatic scan",
       "scan_interval": "Scan interval (minutes)",
-      "startup_delay": "Startup delay (seconds)",
+      "startup_delay": "Startup wait, max (seconds)",
       "event_section": "Event monitoring",
       "event_active": "Active monitoring",
       "event_rescan": "Auto-rescan after changes",
@@ -884,6 +882,7 @@
         "missing_state_class": "Missing state_class",
         "expensive_template_selectattr": "Expensive selectattr template",
         "expensive_template_states_all": "Expensive states.all template",
+        "noisy_entity": "Noisy entity",
         "blueprint_missing_path": "Missing blueprint path",
         "blueprint_file_not_found": "Blueprint file not found",
         "blueprint_empty_input": "Empty blueprint input",
@@ -1829,5 +1828,11 @@
     "workflow_fix_title": "Fix issues workflow:",
     "workflow_fix": "1. haca_list_issue_catalog() to discover categories, types, and fixable issues\n2. haca_get_issues(category?, type?, severity?) to list specific issues\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') to fix a single issue (dry_run=true by default)\n4. haca_fix_batch(category?, type?, severity?) to fix multiple issues in batch\n5. Always preview with dry_run=true first, then set dry_run=false to apply after user confirmation\nIssue IDs use format: HACA-{CATEGORY}-{TYPE}-{HASH6}, e.g. HACA-AUTO-NO_ALIAS-a3f2c1",
     "rule_use_haca_id": "Each issue has a unique haca_id (format: HACA-CAT-TYPE-hash). ALWAYS use the exact haca_id provided — NEVER fabricate or guess an ID."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen the HACA panel for details and available fixes."
+    }
   }
 }

@@ -25,7 +25,7 @@
           "scan_interval": "Scaninterval (minuten)",
           "auto_fix_enabled": "Automatische correcties inschakelen",
           "backup_enabled": "Automatische back-ups inschakelen",
-          "startup_delay_seconds": "Startscandeling (seconden)",
+          "startup_delay_seconds": "Scan bij opstarten: maximale wachttijd (seconden)",
           "event_monitoring_enabled": "Continue monitoring (auto-scan bij gebeurtenissen)",
           "event_debounce_seconds": "Debounce vertraging gebeurtenismonitoring (seconden)"
         }
@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant configuratie-auditor",
-    "version": "v1.7.5",
+    "version": "v1.7.6",
     "buttons": {
       "scan_all": "Volledige scan",
       "automations": "Automatiseringen",
@@ -335,7 +335,8 @@
       "loading_proposal": "Voorstel laden...",
       "error_loading": "Fout bij laden van rapporten",
       "error_display": "Fout bij weergeven van rapporten",
-      "generating": "Genereren…"
+      "generating": "Genereren…",
+      "deleting": "Verwijderen…"
     },
     "ai": {
       "analyzing": "AI analyseert uw probleem...",
@@ -481,10 +482,6 @@
       "id_copied": "ID {id} gekopieerd naar klembord",
       "fixable": "Herstelbaar",
       "not_fixable": "Niet herstelbaar",
-      "generic_high_issue": {
-        "title": "HACA: {type} — {entity}",
-        "description": "{message}\n\nOpen the HACA panel for details and available fixes."
-      },
       "recorder_exclude_effective": "Van kracht bij de volgende HACA-scan.",
       "recorder_exclude_to_revert": "Om dit probleem weer zichtbaar te maken, verwijder de entiteit uit configuration.yaml.",
       "recorder_exclude_explanation": "Om dit probleem uit te sluiten van de Recorder kunt u configuration.yaml handmatig bewerken (maak eerst een back-up) of op de knop 'Uitsluiten van Recorder' klikken. In dat geval wijzigt HACA uw configuration.yaml-bestand, maar maakt eerst een back-up."
@@ -537,7 +534,8 @@
       "estimated_total": "Geschat totaal: ~{mb} MB over {count} entiteit(en)",
       "subtab_orphans": "DB-wezen",
       "subtab_impact": "DB-impact",
-      "orphan_badge": "{count} wees(entiteit) · ~{mb} MB"
+      "orphan_badge": "{count} wees(entiteit) · ~{mb} MB",
+      "selected_count": "{n} geselecteerd"
     },
     "graph": {
       "title": "Afhankelijkheidsgrafiek",
@@ -680,7 +678,7 @@
       "subtitle": "Algemene instellingen, drempels en actieve probleemtypes",
       "scan_section": "Automatische scan",
       "scan_interval": "Scaninterval (minuten)",
-      "startup_delay": "Opstartvertraging (seconden)",
+      "startup_delay": "Maximale wachttijd bij opstarten (seconden)",
       "event_section": "Evenementbewaking",
       "event_active": "Actieve bewaking",
       "event_rescan": "Automatisch opnieuw scannen na wijzigingen",
@@ -884,6 +882,7 @@
         "missing_state_class": "Ontbrekende state_class",
         "expensive_template_selectattr": "Duur sjabloon selectattr",
         "expensive_template_states_all": "Duur sjabloon states.all",
+        "noisy_entity": "Lawaaierige entiteit",
         "blueprint_missing_path": "Ontbrekend blauwdrukpad",
         "blueprint_file_not_found": "Blauwdrukbestand niet gevonden",
         "blueprint_empty_input": "Lege blauwdrukinput",
@@ -1829,5 +1828,11 @@
     "workflow_fix_title": "Workflow probleemoplossing:",
     "workflow_fix": "1. haca_list_issue_catalog() om categorieën, types en herstelbare problemen te ontdekken\n2. haca_get_issues(category?, type?, severity?) om specifieke problemen op te lijsten\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') om één probleem op te lossen (dry_run=true standaard)\n4. haca_fix_batch(category?, type?, severity?) voor bulkherstel\n5. Altijd eerst voorvertoning met dry_run=true, dan dry_run=false na gebruikersbevestiging\nID-formaat: HACA-{CATEGORY}-{TYPE}-{HASH6}, bijv. HACA-AUTO-NO_ALIAS-a3f2c1",
     "rule_use_haca_id": "Elk probleem heeft een uniek haca_id (formaat: HACA-CAT-TYPE-hash). Gebruik ALTIJD het opgegeven haca_id — NOOIT een ID verzinnen of raden."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen het HACA-paneel voor details en beschikbare oplossingen."
+    }
   }
 }

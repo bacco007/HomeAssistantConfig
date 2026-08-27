@@ -1320,7 +1320,7 @@ async def _tool_ha_call_service(hass: HomeAssistant, params: dict) -> dict:
         return {"error": "domain and service are required"}
 
     try:
-        await hass.services.async_call(domain, service, data, blocking=True, limit=10)
+        await hass.services.async_call(domain, service, data, blocking=True)
         return {
             "success": True,
             "called": f"{domain}.{service}",
@@ -1585,6 +1585,9 @@ async def _tool_ha_get_lovelace(hass: HomeAssistant, params: dict) -> dict:
         if not config or not isinstance(config, dict):
             return {"error": f"Dashboard '{dashboard_id}' returned empty config."}
 
+        if (strategy_err := _lovelace_strategy_error(dashboard_id, config)) is not None:
+            return strategy_err
+
         views = config.get("views", [])
         return {
             "dashboard_id": dashboard_id,
@@ -1604,7 +1607,7 @@ async def _tool_ha_get_lovelace(hass: HomeAssistant, params: dict) -> dict:
             "raw_config_available": True,
         }
     except Exception as exc:
-        return {"error": f"Failed to read Lovelace config: {exc}"}
+        return {"error": f"Failed to read Lovelace config for '{dashboard_id}': {exc}"}
 
 
 async def _tool_ha_add_lovelace_card(hass: HomeAssistant, params: dict) -> dict:
@@ -1657,6 +1660,9 @@ async def _tool_ha_add_lovelace_card(hass: HomeAssistant, params: dict) -> dict:
             return {"error": "Dashboard is read-only (YAML mode). Switch to storage mode in Settings → Dashboards."}
 
         config = await dashboard.async_load(force=True)
+        if (strategy_err := _lovelace_strategy_error(dashboard_id, config)) is not None:
+            return strategy_err
+
         views = config.get("views", [])
 
         if not views:
@@ -1684,7 +1690,7 @@ async def _tool_ha_add_lovelace_card(hass: HomeAssistant, params: dict) -> dict:
             "message": f"Card '{card.get('type')}' added to view '{views[view_index].get('title', view_index)}'.",
         }
     except Exception as exc:
-        return {"error": f"Failed to add Lovelace card: {exc}"}
+        return {"error": f"Failed to add Lovelace card to '{dashboard_id}': {exc}"}
 
 
 async def _tool_ha_create_script(hass: HomeAssistant, params: dict) -> dict:
@@ -2067,7 +2073,7 @@ async def async_setup_mcp_server(hass: HomeAssistant) -> None:
 _HA_EXTENDED_TOOLS: list[dict[str, Any]] = [
     {
         "name": "ha_backup_create",
-        "description": "Create a backup before any modification. ALWAYS call this before create/update/remove operations.",
+        "description": "Start a backup before any modification. ALWAYS call this before create/update/remove operations. Returns as soon as the backup is STARTED (started: true, completed: false) — never report the backup as finished, tell the user to check Settings → System → Backups.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -2269,7 +2275,7 @@ async def _auto_backup(hass: HomeAssistant, reason: str) -> None:
     async def _run():
         try:
             result = await _tool_ha_backup_create(hass, {"name": name})
-            if result.get("success"):
+            if result.get("success") or result.get("started"):
                 _LOGGER.info("[HACA] Auto-backup lancé : %s", name)
             else:
                 _LOGGER.warning("[HACA] Auto-backup résultat : %s", result)
@@ -2341,16 +2347,39 @@ async def _tool_ha_backup_create(hass: HomeAssistant, params: dict) -> dict:
                         if "name" in sig.parameters:
                             kwargs["name"] = name
 
-                    # Fire as background task — backups take minutes
-                    hass.async_create_task(create_fn(**kwargs))
-                    return {
-                        "success": True,
-                        "name": name,
-                        "message": (
-                            f"Backup '{name}' started via BackupManager. "
-                            "This may take several minutes — check Settings → System → Backups."
-                        ),
-                    }
+                    # Fail fast on the one failure mode we can already see:
+                    # async_create_backup rejects an empty agent list, and that
+                    # error would otherwise vanish inside the background task.
+                    if "agent_ids" in sig.parameters and not kwargs.get("agent_ids"):
+                        errors.append(
+                            "No backup agent registered (manager.backup_agents is empty) "
+                            "— the backup component may not be fully started yet."
+                        )
+                    else:
+                        # Fire as background task — backups take minutes and the MCP
+                        # client would time out long before completion.
+                        task = hass.async_create_task(create_fn(**kwargs))
+
+                        def _log_backup_result(t: asyncio.Task, _name: str = name) -> None:
+                            if t.cancelled():
+                                _LOGGER.warning("[HACA] Background backup '%s' was cancelled", _name)
+                                return
+                            if (exc := t.exception()) is not None:
+                                _LOGGER.error("[HACA] Background backup '%s' failed: %s", _name, exc)
+                            else:
+                                _LOGGER.info("[HACA] Background backup '%s' finished", _name)
+
+                        task.add_done_callback(_log_backup_result)
+                        return {
+                            "started": True,
+                            "completed": False,
+                            "name": name,
+                            "message": (
+                                f"Backup '{name}' STARTED via BackupManager — it is NOT finished yet. "
+                                "This may take several minutes: verify in Settings → System → Backups "
+                                "before reporting the backup as done."
+                            ),
+                        }
         except Exception as exc:
             errors.append(f"BackupManager API: {exc}")
 
@@ -2359,10 +2388,12 @@ async def _tool_ha_backup_create(hass: HomeAssistant, params: dict) -> dict:
         try:
             await hass.services.async_call("backup", "create", blocking=False)
             return {
-                "success": True,
+                "started": True,
+                "completed": False,
                 "name": name,
-                "message": "Backup triggered via backup.create service. "
-                           "Check Settings → System → Backups in a few minutes.",
+                "message": "Backup TRIGGERED via the backup.create service — it is NOT finished yet. "
+                           "Verify in Settings → System → Backups in a few minutes "
+                           "before reporting the backup as done.",
             }
         except Exception as exc:
             errors.append(f"backup.create service: {exc}")
@@ -2410,49 +2441,30 @@ async def _tool_ha_backup_create(hass: HomeAssistant, params: dict) -> dict:
 
 
 async def _tool_ha_check_config(hass: HomeAssistant, params: dict) -> dict:
-    """Validate HA config files without restarting."""
+    """Validate HA config files without restarting.
+
+    Uses the check_config helper directly: the homeassistant.check_config
+    service is registered without supports_response, so calling it with
+    return_response=True always raises before the handler even runs.
+    """
     try:
-        result = await hass.services.async_call(
-            "homeassistant",
-            "check_config",
-            blocking=True,
-            return_response=True,
-        )
-
-        if isinstance(result, dict):
-            errors = result.get("errors") or result.get("error")
-            warnings = result.get("warnings", [])
-
-            if not errors:
-                return {
-                    "valid": True,
-                    "warnings": warnings if warnings else [],
-                    "message": "Configuration is valid. No errors found.",
-                }
-            return {
-                "valid": False,
-                "errors": errors if isinstance(errors, list) else [str(errors)],
-                "warnings": warnings if warnings else [],
-                "message": "Configuration has errors — do NOT reload until fixed.",
-            }
-
-        # Fallback: use the check_config component directly
         from homeassistant.helpers.check_config import async_check_ha_config_file
-        result2 = await async_check_ha_config_file(hass)
-        errors2 = result2.errors if hasattr(result2, "errors") else []
-        warnings2 = result2.warnings if hasattr(result2, "warnings") else []
 
-        if not errors2:
+        result = await async_check_ha_config_file(hass)
+        errors = result.errors if hasattr(result, "errors") else []
+        warnings = result.warnings if hasattr(result, "warnings") else []
+
+        if not errors:
             return {
                 "valid": True,
-                "warnings": [str(w) for w in warnings2],
+                "warnings": [str(w) for w in warnings],
                 "message": "Configuration is valid.",
             }
         return {
             "valid": False,
-            "errors": [str(e) for e in errors2],
-            "warnings": [str(w) for w in warnings2],
-            "message": f"{len(errors2)} error(s) found in configuration.",
+            "errors": [str(e) for e in errors],
+            "warnings": [str(w) for w in warnings],
+            "message": f"{len(errors)} error(s) found in configuration — do NOT reload until fixed.",
         }
 
     except Exception as exc:
@@ -4587,6 +4599,33 @@ async def _get_lovelace_dashboard(hass: HomeAssistant, dashboard_id: str = None)
     }
 
 
+def _lovelace_strategy_error(dashboard_id: str, config) -> dict | None:
+    """Return an explicit error when a dashboard is strategy-generated.
+
+    Strategy dashboards ('original-states', 'areas', custom strategies...)
+    store no 'views' key: their content is generated at render time. Without
+    this guard the tools silently report views_count: 0 or "no views", which
+    is misleading — there is simply nothing stored to read or edit.
+    """
+    if not isinstance(config, dict) or "views" in config or "strategy" not in config:
+        return None
+
+    strategy = config.get("strategy")
+    strategy_type = strategy.get("type", "unknown") if isinstance(strategy, dict) else "unknown"
+    return {
+        "error": (
+            f"Dashboard '{dashboard_id}' uses the Lovelace strategy '{strategy_type}': "
+            "its views are generated at render time and are not stored, so they cannot "
+            "be introspected or edited."
+        ),
+        "strategy": strategy_type,
+        "hint": (
+            "Take control of the dashboard first (dashboard → pencil icon → 3-dot menu "
+            "→ Take control) to convert it into editable stored views."
+        ),
+    }
+
+
 async def _tool_ha_list_dashboards(hass: HomeAssistant, params: dict) -> dict:
     """List all Lovelace dashboards (default + custom)."""
     results: list[dict] = []
@@ -4652,6 +4691,9 @@ async def _tool_ha_update_lovelace_card(hass: HomeAssistant, params: dict) -> di
             return err
 
         ll = await dashboard.async_load(False)
+        if (strategy_err := _lovelace_strategy_error(dashboard_id, ll)) is not None:
+            return strategy_err
+
         views = ll.get("views", [])
         if view_index >= len(views):
             return {"error": f"view_index {view_index} out of range (dashboard has {len(views)} views)"}
@@ -4685,7 +4727,7 @@ async def _tool_ha_update_lovelace_card(hass: HomeAssistant, params: dict) -> di
             "message": "Card updated successfully.",
         }
     except Exception as exc:
-        return {"error": f"Failed to update Lovelace card: {exc}"}
+        return {"error": f"Failed to update Lovelace card on '{dashboard_id}': {exc}"}
 
 
 async def _tool_ha_remove_lovelace_card(hass: HomeAssistant, params: dict) -> dict:
@@ -4704,6 +4746,9 @@ async def _tool_ha_remove_lovelace_card(hass: HomeAssistant, params: dict) -> di
             return err
 
         ll = await dashboard.async_load(False)
+        if (strategy_err := _lovelace_strategy_error(dashboard_id, ll)) is not None:
+            return strategy_err
+
         views = ll.get("views", [])
         if view_index >= len(views):
             return {"error": f"view_index {view_index} out of range"}
@@ -4733,7 +4778,7 @@ async def _tool_ha_remove_lovelace_card(hass: HomeAssistant, params: dict) -> di
             "message": f"Card (type={removed.get('type')}) removed from view {view_index}.",
         }
     except Exception as exc:
-        return {"error": f"Failed to remove Lovelace card: {exc}"}
+        return {"error": f"Failed to remove Lovelace card from '{dashboard_id}': {exc}"}
 
 
 # ── HELPERS EDIT ──────────────────────────────────────────────────────────────

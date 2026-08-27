@@ -24,6 +24,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_call_later
 
 from .const import DOMAIN, VERSION
+from .report_view import REPORT_URL_PREFIX, HacaReportView
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -236,10 +237,13 @@ async def async_register_panel(hass: HomeAssistant) -> None:
             )
 
             brand_dir = integration_dir / "brand"
+            # The reports directory is deliberately NOT a static path: HA serves
+            # those without authentication (like /local/) and report filenames
+            # are guessable. It goes through HacaReportView, which requires an
+            # authenticated admin. See report_view.py.
             static_paths = [
                 StaticPathConfig(f"/{DOMAIN}_static", str(www_dir), cache_headers=True),
                 StaticPathConfig(f"/{DOMAIN}_brand", str(brand_dir), cache_headers=True),
-                StaticPathConfig("/haca_reports", str(reports_dir), cache_headers=True),
             ]
             try:
                 await hass.http.async_register_static_paths(static_paths)
@@ -247,7 +251,15 @@ async def async_register_panel(hass: HomeAssistant) -> None:
             except Exception as static_err:
                 _LOGGER.debug("Static path already registered (safe): %s", static_err)
                 hass.data[_STATIC_PATHS_KEY] = True
-            _LOGGER.info("Static paths registered: /%s, /haca_reports", DOMAIN)
+
+            try:
+                hass.http.register_view(HacaReportView(hass))
+            except Exception as view_err:
+                _LOGGER.debug("Report view already registered (safe): %s", view_err)
+            _LOGGER.info(
+                "Static paths registered: /%s_static, /%s_brand — reports served on %s",
+                DOMAIN, DOMAIN, REPORT_URL_PREFIX,
+            )
 
         # ── Panel : register or update ────────────────────────────────────
         # The bundle filename embeds the content hash (haca-panel.<hash>.js)

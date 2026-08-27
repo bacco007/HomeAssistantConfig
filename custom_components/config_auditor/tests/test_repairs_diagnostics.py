@@ -88,9 +88,22 @@ class TestRepairsMaxLimit:
         from custom_components.config_auditor.repairs import MAX_REPAIR_ISSUES
         assert 5 <= MAX_REPAIR_ISSUES <= 50
 
-    def test_fixable_types_are_strings(self):
-        from custom_components.config_auditor.repairs import FIXABLE_ISSUE_TYPES
-        assert all(isinstance(t, str) for t in FIXABLE_ISSUE_TYPES)
+    def test_repairs_are_never_fixable_without_a_fix_flow(self):
+        """A fixable repair needs async_create_fix_flow; this module has none.
+
+        Marking an issue fixable without it gives the user a "Fix" button HA
+        cannot open (no flow handler to load). Replaces the old
+        FIXABLE_ISSUE_TYPES test, which guarded a whitelist that had outlived
+        the HacaFixFlow it fed.
+        """
+        from custom_components.config_auditor import repairs
+        assert not hasattr(repairs, "async_create_fix_flow"), (
+            "A fix flow is back — re-enable per-type fixability deliberately, "
+            "then update this test."
+        )
+        source = Path(repairs.__file__).read_text(encoding="utf-8")
+        assert "is_fixable=False" in source
+        assert "is_fixable=True" not in source
 
 
 # ── Diagnostics tests ──────────────────────────────────────────────────────────

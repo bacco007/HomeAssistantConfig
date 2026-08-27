@@ -25,7 +25,7 @@
           "scan_interval": "スキャン間隔（分）",
           "auto_fix_enabled": "自動修正を有効にする",
           "backup_enabled": "自動バックアップを有効にする",
-          "startup_delay_seconds": "起動時スキャンの遅延（秒）",
+          "startup_delay_seconds": "起動時スキャン：最大待機時間（秒）",
           "event_monitoring_enabled": "継続的監視（イベント発生時に自動スキャン）",
           "event_debounce_seconds": "イベント監視のディバウンス遅延（秒）"
         }
@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "v1.7.5",
+    "version": "v1.7.6",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",
@@ -335,7 +335,8 @@
       "loading_proposal": "提案読み込み中...",
       "error_loading": "レポートの読み込みエラー",
       "error_display": "レポート表示エラー",
-      "generating": "生成中…"
+      "generating": "生成中…",
+      "deleting": "削除中…"
     },
     "ai": {
       "analyzing": "AIが問題を分析中です...",
@@ -481,10 +482,6 @@
       "id_copied": "ID {id} をクリップボードにコピーしました",
       "fixable": "修正可能",
       "not_fixable": "修正不可",
-      "generic_high_issue": {
-        "title": "HACA: {type} — {entity}",
-        "description": "{message}\n\nOpen the HACA panel for details and available fixes."
-      },
       "recorder_exclude_effective": "次回の HACA スキャンから有効になります。",
       "recorder_exclude_to_revert": "この問題を再表示するには、configuration.yaml からエンティティを削除してください。",
       "recorder_exclude_explanation": "この問題を Recorder から除外するには、configuration.yaml を手動で編集する（先にバックアップを取ってください）か、「Recorder から除外」ボタンをクリックします。後者の場合、HACA は configuration.yaml を変更しますが、変更前にバックアップを作成します。"
@@ -537,7 +534,8 @@
       "estimated_total": "推定合計: 約 {mb} MB / {count} エンティティ",
       "subtab_orphans": "DB Orphans",
       "subtab_impact": "DB Impact",
-      "orphan_badge": "{count} 孤立エンティティ · ~{mb} MB"
+      "orphan_badge": "{count} 孤立エンティティ · ~{mb} MB",
+      "selected_count": "{n} 件選択中"
     },
     "graph": {
       "title": "依存関係グラフ",
@@ -680,7 +678,7 @@
       "subtitle": "一般設定、閾値、検出する問題タイプ",
       "scan_section": "自動スキャン",
       "scan_interval": "スキャン間隔（分）",
-      "startup_delay": "起動遅延（秒）",
+      "startup_delay": "起動時の最大待機時間（秒）",
       "event_section": "イベント監視",
       "event_active": "有効な監視",
       "event_rescan": "変更後の自動再スキャン",
@@ -884,6 +882,7 @@
         "missing_state_class": "state_class が欠落",
         "expensive_template_selectattr": "高コストの selectattr テンプレート",
         "expensive_template_states_all": "高コストの states.all テンプレート",
+        "noisy_entity": "ノイズの多いエンティティ",
         "blueprint_missing_path": "ブループリントのパスが不足",
         "blueprint_file_not_found": "ブループリントファイルが見つかりません",
         "blueprint_empty_input": "空のブループリント入力",
@@ -1829,5 +1828,11 @@
     "workflow_fix_title": "問題修正ワークフロー：",
     "workflow_fix": "1. haca_list_issue_catalog() でカテゴリ、タイプ、修正可能な問題を確認\n2. haca_get_issues(category?, type?, severity?) で特定の問題を一覧表示\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') で単一の問題を修正（dry_run=trueがデフォルト）\n4. haca_fix_batch(category?, type?, severity?) で一括修正\n5. まずdry_run=trueでプレビュー、ユーザー確認後にdry_run=falseで適用\nIDフォーマット: HACA-{CATEGORY}-{TYPE}-{HASH6}、例: HACA-AUTO-NO_ALIAS-a3f2c1",
     "rule_use_haca_id": "各問題には固有のhaca_id（形式：HACA-CAT-TYPE-hash）があります。提供されたhaca_idを必ず使用し、IDを推測しないでください。"
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\n詳細と利用可能な修正は HACA パネルで確認してください。"
+    }
   }
 }

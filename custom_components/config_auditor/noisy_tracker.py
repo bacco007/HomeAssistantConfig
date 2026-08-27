@@ -80,9 +80,18 @@ class NoisyEntityTracker:
         self._unsub_listener = None
 
     def start(self) -> None:
-        """Subscribe to state changes. Safe to call once per integration."""
+        """Subscribe to state changes. Idempotent — a second call is a no-op.
+
+        Also called when the user switches the noisy-entity scan back on in
+        the panel, hence the window reset: ``stop()`` emptied the buckets, and
+        without a fresh start time ``_rotate_buckets_if_needed`` would append
+        one bucket per hour elapsed while we were off and ``has_warmed_up()``
+        would claim a full 24h of data we never collected.
+        """
         if self._unsub_listener is not None:
             return
+        self._buckets = [{}]
+        self._current_bucket_start = time.time()
         self._unsub_listener = self.hass.bus.async_listen(
             EVENT_STATE_CHANGED, self._handle_state_change
         )

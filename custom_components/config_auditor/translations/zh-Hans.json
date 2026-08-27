@@ -25,7 +25,7 @@
           "scan_interval": "扫描间隔（分钟）",
           "auto_fix_enabled": "启用自动修复",
           "backup_enabled": "启用自动备份",
-          "startup_delay_seconds": "启动扫描延迟（秒）",
+          "startup_delay_seconds": "启动扫描：最长等待（秒）",
           "event_monitoring_enabled": "持续监控（事件自动扫描）",
           "event_debounce_seconds": "事件监控防抖延迟（秒）"
         }
@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 配置审计器",
-    "version": "v1.7.5",
+    "version": "v1.7.6",
     "buttons": {
       "scan_all": "全面扫描",
       "automations": "自动化",
@@ -335,7 +335,8 @@
       "loading_proposal": "建议加载中...",
       "error_loading": "加载报告时出错",
       "error_display": "显示报告时出错",
-      "generating": "生成中…"
+      "generating": "生成中…",
+      "deleting": "删除中…"
     },
     "ai": {
       "analyzing": "AI 正在分析您的问题...",
@@ -481,10 +482,6 @@
       "id_copied": "ID {id} 已复制到剪贴板",
       "fixable": "可修复",
       "not_fixable": "不可修复",
-      "generic_high_issue": {
-        "title": "HACA: {type} — {entity}",
-        "description": "{message}\n\nOpen the HACA panel for details and available fixes."
-      },
       "recorder_exclude_effective": "在下次 HACA 扫描时生效。",
       "recorder_exclude_to_revert": "要再次查看此问题，请从 configuration.yaml 中移除该实体。",
       "recorder_exclude_explanation": "如需将此问题从 Recorder 中排除，您可以手动编辑 configuration.yaml（请先创建备份），或点击「从 Recorder 排除」按钮。在后一种情况下，HACA 会修改您的 configuration.yaml 文件，但会在修改前先创建备份。"
@@ -537,7 +534,8 @@
       "estimated_total": "估计总计：约 {mb} MB，覆盖 {count} 个实体",
       "subtab_orphans": "孤立记录",
       "subtab_impact": "数据库影响",
-      "orphan_badge": "{count} 孤立条目 · ~{mb} MB"
+      "orphan_badge": "{count} 孤立条目 · ~{mb} MB",
+      "selected_count": "已选择 {n} 项"
     },
     "graph": {
       "title": "依赖关系图",
@@ -680,7 +678,7 @@
       "subtitle": "通用设置、阈值及启用的问题类型",
       "scan_section": "自动扫描",
       "scan_interval": "扫描间隔（分钟）",
-      "startup_delay": "启动延迟（秒）",
+      "startup_delay": "启动时最长等待（秒）",
       "event_section": "事件监控",
       "event_active": "激活监控",
       "event_rescan": "更改后自动重新扫描",
@@ -884,6 +882,7 @@
         "missing_state_class": "缺失 state_class",
         "expensive_template_selectattr": "资源消耗大的 selectattr 模板",
         "expensive_template_states_all": "资源消耗大的 states.all 模板",
+        "noisy_entity": "嘈杂实体",
         "blueprint_missing_path": "缺失蓝图路径",
         "blueprint_file_not_found": "蓝图文件未找到",
         "blueprint_empty_input": "蓝图输入为空",
@@ -1829,5 +1828,11 @@
     "workflow_fix_title": "问题修复工作流：",
     "workflow_fix": "1. haca_list_issue_catalog() 查看所有类别、类型和可修复的问题\n2. haca_get_issues(category?, type?, severity?) 列出特定问题\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') 修复单个问题（dry_run=true为默认值）\n4. haca_fix_batch(category?, type?, severity?) 批量修复\n5. 始终先用dry_run=true预览，用户确认后再设dry_run=false执行\nID格式：HACA-{CATEGORY}-{TYPE}-{HASH6}，例：HACA-AUTO-NO_ALIAS-a3f2c1",
     "rule_use_haca_id": "每个问题都有唯一的haca_id（格式：HACA-CAT-TYPE-hash）。始终使用提供的haca_id——绝不要编造或猜测ID。"
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA：{type} — {entity}",
+      "description": "{message}\n\n打开 HACA 面板查看详情和可用的修复。"
+    }
   }
 }

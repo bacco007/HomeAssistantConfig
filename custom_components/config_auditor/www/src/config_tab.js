@@ -119,6 +119,10 @@ var ISSUE_TYPES_BY_CATEGORY = [
       { id: 'missing_state_class', fixable: false },
       { id: 'expensive_template_selectattr', fixable: false },
       { id: 'expensive_template_states_all', fixable: false },
+      // Switching this one off also stops the recorder query and the
+      // in-memory state-change listener that feed it (see performance_analyzer
+      // .noisy_scan_enabled) — not just the display of the issues.
+      { id: 'noisy_entity', fixable: false },
     ]
   },
   {

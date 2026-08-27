@@ -17,6 +17,7 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse, callback
+from homeassistant.exceptions import Unauthorized
 from homeassistant.config_entries import ConfigEntry
 from homeassistant import config_entries as ce
 import homeassistant.helpers.config_validation as cv
@@ -327,6 +328,16 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
         async def handle_get_report_content(call: ServiceCall) -> dict:
             """Handle get_report_content service."""
+            # Reports mirror the panel, which is admin-only. Plain
+            # async_register leaves a service callable by any logged-in user,
+            # so the check lives here (user_id is None for automations and
+            # for calls the system makes on its own behalf).
+            user_id = call.context.user_id
+            if user_id is not None:
+                user = await hass.auth.async_get_user(user_id)
+                if user is None or not user.is_admin:
+                    raise Unauthorized(context=call.context)
+
             filename = call.data.get("filename")
             data = hass.data[DOMAIN][entry.entry_id]
             report_gen = data["report_generator"]
@@ -339,6 +350,13 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
         
         async def handle_delete_report(call: ServiceCall) -> dict:
             """Handle delete_report service."""
+            # Admin-only, same reasoning as handle_get_report_content.
+            user_id = call.context.user_id
+            if user_id is not None:
+                user = await hass.auth.async_get_user(user_id)
+                if user is None or not user.is_admin:
+                    raise Unauthorized(context=call.context)
+
             session_id = call.data.get("session_id")
             data = hass.data[DOMAIN][entry.entry_id]
             report_gen = data["report_generator"]

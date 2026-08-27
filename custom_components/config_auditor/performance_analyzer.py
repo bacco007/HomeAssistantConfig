@@ -41,6 +41,24 @@ def _get_noisy_exclude_patterns(hass: HomeAssistant) -> list[str]:
     return []
 
 
+def noisy_scan_enabled(hass: HomeAssistant) -> bool:
+    """False when the user switched the noisy-entity scan off.
+
+    The switch is the regular per-issue-type toggle (panel → Configuration →
+    Performance → "Noisy entity"), stored in ``excluded_issue_types``. The
+    coordinator already drops the issues after the fact; checking it here also
+    skips the recorder query that produces them — that query aggregates the
+    whole ``states`` table, which is the expensive part on a large database.
+    """
+    try:
+        for entry in hass.config_entries.async_entries(DOMAIN):
+            excluded = entry.options.get("excluded_issue_types") or []
+            return "noisy_entity" not in excluded
+    except Exception:
+        pass
+    return True
+
+
 def _matches_noisy_exclude(entity_id: str, patterns: list[str]) -> bool:
     """True if ``entity_id`` matches any of the user-defined glob patterns."""
     if not patterns:
@@ -267,6 +285,12 @@ class PerformanceAnalyzer:
     async def _detect_noisy_entities_from_db(self) -> None:
         """Query the recorder DB to find entities with excessive state changes."""
         t = self._translator.t
+
+        if not noisy_scan_enabled(self.hass):
+            _LOGGER.debug(
+                "[HACA] noisy-entity scan disabled in configuration — skipping DB query"
+            )
+            return
 
         try:
             from homeassistant.helpers.recorder import get_instance

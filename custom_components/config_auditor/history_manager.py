@@ -1,23 +1,31 @@
 """H.A.C.A — Audit History Manager.
 
-Stocke chaque résultat de scan dans .haca_history/ en JSON chronologique.
+Stocke chaque résultat de scan dans `.storage/config_auditor.history` via le
+helper `Store` de Home Assistant (une écriture atomique coalescée au lieu d'un
+fichier JSON par scan dans /config).
 Fournit :
   • save_scan()       — persiste un snapshot après chaque audit
   • get_history()     — retourne les N derniers snapshots
   • check_regression()— détecte une baisse > THRESHOLD pts sur WINDOW jours
                         et déclenche une notification HA + persistent_notification
+
+Migration : au premier chargement, l'ancien dossier `.haca_history/` (< 1.7.6)
+est importé puis supprimé.
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
-import os
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.storage import Store
 
+from .const import LEGACY_HISTORY_DIR, STORAGE_KEY_HISTORY, STORAGE_VERSION
 from .translation_utils import TranslationHelper
 
 _LOGGER = logging.getLogger(__name__)
@@ -26,7 +34,7 @@ _LOGGER = logging.getLogger(__name__)
 REGRESSION_THRESHOLD = 10      # points
 REGRESSION_WINDOW_DAYS = 7     # jours
 MAX_HISTORY_ENTRIES = 365      # default; overridden by entry options
-HISTORY_DIR_NAME = ".haca_history"
+SAVE_DELAY = 10                # secondes — Store flush aussi à l'arrêt de HA
 
 
 class HistoryManager:
@@ -34,23 +42,26 @@ class HistoryManager:
 
     def __init__(self, hass: HomeAssistant, retention_days: int = MAX_HISTORY_ENTRIES) -> None:
         self.hass = hass
-        self._dir = Path(hass.config.config_dir) / HISTORY_DIR_NAME
-        self._dir.mkdir(exist_ok=True)
+        self._store: Store = Store(hass, STORAGE_VERSION, STORAGE_KEY_HISTORY)
         self._history: list[dict[str, Any]] = []
         self._loaded = False
-        self._retention_days = retention_days
+        self._load_lock = asyncio.Lock()
+        # Guard against a bogus option value (the panel enforces 30..730, the
+        # websocket handler does not) — 0 would otherwise wipe the history.
+        self._retention_days = max(1, int(retention_days or MAX_HISTORY_ENTRIES))
         self._translator = TranslationHelper(hass)
 
     # ── Public API ────────────────────────────────────────────────────────
 
     async def async_save_scan(self, scan_data: dict[str, Any]) -> None:
         """Persiste le snapshot du scan courant et vérifie les régressions."""
-        snapshot = self._build_snapshot(scan_data)
-        await self.hass.async_add_executor_job(self._write_snapshot, snapshot)
+        await self._async_ensure_loaded()
 
-        # Reload full history cache
-        self._history = await self.hass.async_add_executor_job(self._load_all)
-        self._loaded = True
+        snapshot = self._build_snapshot(scan_data)
+        self._history.append(snapshot)
+        if len(self._history) > self._retention_days:
+            del self._history[: len(self._history) - self._retention_days]
+        self._store.async_delay_save(self._data_to_save, SAVE_DELAY)
 
         # Check for regression after update
         # Load translations so regression notifications use the HA system language
@@ -60,11 +71,8 @@ class HistoryManager:
 
     async def async_get_history(self, limit: int = 90) -> list[dict[str, Any]]:
         """Retourne les `limit` derniers snapshots (du plus ancien au plus récent)."""
-        if not self._loaded:
-            self._history = await self.hass.async_add_executor_job(self._load_all)
-            self._loaded = True
+        await self._async_ensure_loaded()
         return self._history[-limit:]
-
 
     async def async_delete_entries(self, timestamps: list[str]) -> int:
         """Supprime les entrées d'historique correspondant aux timestamps fournis.
@@ -73,31 +81,73 @@ class HistoryManager:
             timestamps: liste de valeurs `ts` (ISO 8601) des entrées à supprimer.
 
         Returns:
-            Nombre de fichiers effectivement supprimés.
+            Nombre d'entrées effectivement supprimées.
         """
         if not timestamps:
             return 0
+        await self._async_ensure_loaded()
+
         ts_set = set(timestamps)
+        before = len(self._history)
+        self._history = [e for e in self._history if e.get("ts") not in ts_set]
+        count = before - len(self._history)
 
-        def _delete_files() -> int:
-            deleted = 0
-            for path in sorted(self._dir.glob("*.json")):
-                try:
-                    data = json.loads(path.read_text(encoding="utf-8"))
-                    if data.get("ts") in ts_set:
-                        path.unlink(missing_ok=True)
-                        deleted += 1
-                except Exception as exc:
-                    _LOGGER.debug("HACA History: skip %s during delete — %s", path.name, exc)
-            return deleted
-
-        count = await self.hass.async_add_executor_job(_delete_files)
-
-        # Invalider le cache
-        self._history = await self.hass.async_add_executor_job(self._load_all)
-        self._loaded = True
+        if count:
+            await self._store.async_save(self._data_to_save())
         _LOGGER.info("HACA History: %d entrée(s) supprimée(s)", count)
         return count
+
+    async def async_flush(self) -> None:
+        """Écrit immédiatement une sauvegarde différée en attente (unload/reload)."""
+        if self._loaded:
+            await self._store.async_save(self._data_to_save())
+
+    # ── Storage (.storage via Store helper) ───────────────────────────────
+
+    def _data_to_save(self) -> dict[str, Any]:
+        """Payload écrit dans .storage (appelé par Store, y compris en différé)."""
+        return {"snapshots": self._history}
+
+    async def _async_ensure_loaded(self) -> None:
+        """Charge l'historique depuis .storage (migre l'ancien dossier si besoin)."""
+        if self._loaded:
+            return
+        async with self._load_lock:
+            if self._loaded:
+                return
+            try:
+                data = await self._store.async_load()
+            except Exception as exc:      # store illisible → on repart à vide
+                _LOGGER.warning("HACA History: could not read store: %s", exc)
+                data = None
+
+            if data is None:
+                self._history = await self._async_migrate_legacy()
+            else:
+                self._history = list(data.get("snapshots") or [])
+            self._loaded = True
+
+    async def _async_migrate_legacy(self) -> list[dict[str, Any]]:
+        """Import one-shot de `<config>/.haca_history/` (< 1.7.6), puis suppression."""
+        legacy_dir = Path(self.hass.config.config_dir) / LEGACY_HISTORY_DIR
+        entries = await self.hass.async_add_executor_job(_read_legacy_snapshots, legacy_dir)
+        if entries is None:
+            return []       # pas d'ancien dossier — rien à migrer
+
+        entries = entries[-self._retention_days:]
+        try:
+            await self._store.async_save({"snapshots": entries})
+        except Exception as exc:
+            # L'ancien dossier reste en place : on retentera au prochain démarrage
+            _LOGGER.error("HACA History: migration to .storage failed: %s", exc)
+            return entries
+
+        await self.hass.async_add_executor_job(_remove_legacy_dir, legacy_dir)
+        _LOGGER.info(
+            "HACA History: %d snapshot(s) migrated from %s to .storage/%s",
+            len(entries), LEGACY_HISTORY_DIR, STORAGE_KEY_HISTORY,
+        )
+        return entries
 
     # ── Snapshot build ────────────────────────────────────────────────────
 
@@ -158,34 +208,6 @@ class HistoryManager:
             "delta_issues": delta_issues,
             "top_issues":   top5_serialisable,
         }
-
-    # ── File I/O (executor thread) ────────────────────────────────────────
-
-    def _write_snapshot(self, snapshot: dict[str, Any]) -> None:
-        """Write one JSON file per scan, named by timestamp."""
-        ts_safe = snapshot["ts"].replace(":", "-").replace("+", "Z")
-        path = self._dir / f"{ts_safe}.json"
-        try:
-            path.write_text(json.dumps(snapshot, ensure_ascii=False), encoding="utf-8")
-        except OSError as exc:
-            _LOGGER.warning("HACA History: could not write snapshot: %s", exc)
-            return
-
-        # Prune oldest files to stay within configured retention limit
-        files = sorted(self._dir.glob("*.json"))
-        while len(files) > self._retention_days:
-            files.pop(0).unlink(missing_ok=True)
-
-    def _load_all(self) -> list[dict[str, Any]]:
-        """Load all snapshot files, sorted chronologically (oldest first)."""
-        entries: list[dict[str, Any]] = []
-        for path in sorted(self._dir.glob("*.json")):
-            try:
-                data = json.loads(path.read_text(encoding="utf-8"))
-                entries.append(data)
-            except Exception as exc:
-                _LOGGER.debug("HACA History: skip %s — %s", path.name, exc)
-        return entries
 
     # ── Regression detection ──────────────────────────────────────────────
 
@@ -248,3 +270,29 @@ class HistoryManager:
             )
         except Exception as exc:
             _LOGGER.debug("HACA History: regression notification failed: %s", exc)
+
+
+# ── Legacy directory I/O (executor thread) ────────────────────────────────────
+
+def _read_legacy_snapshots(legacy_dir: Path) -> list[dict[str, Any]] | None:
+    """Lit tous les snapshots du dossier < 1.7.6. None si le dossier n'existe pas."""
+    if not legacy_dir.is_dir():
+        return None
+    entries: list[dict[str, Any]] = []
+    for path in sorted(legacy_dir.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(data, dict) and data.get("ts"):
+                entries.append(data)
+        except Exception as exc:
+            _LOGGER.debug("HACA History: skip %s during migration — %s", path.name, exc)
+    entries.sort(key=lambda e: e["ts"])
+    return entries
+
+
+def _remove_legacy_dir(legacy_dir: Path) -> None:
+    """Supprime le dossier migré (best effort)."""
+    try:
+        shutil.rmtree(legacy_dir)
+    except OSError as exc:
+        _LOGGER.warning("HACA History: could not remove %s: %s", legacy_dir, exc)

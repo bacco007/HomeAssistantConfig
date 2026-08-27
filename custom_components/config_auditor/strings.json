@@ -24,7 +24,7 @@
           "scan_interval": "Scan interval (minutes)",
           "auto_fix_enabled": "Enable automatic fixes",
           "backup_enabled": "Enable automatic backups",
-          "startup_delay_seconds": "Startup scan delay (seconds)",
+          "startup_delay_seconds": "Startup scan: max wait (seconds)",
           "event_monitoring_enabled": "Continuous monitoring (auto-scan on events)",
           "event_debounce_seconds": "Event monitoring debounce delay (seconds)"
         }

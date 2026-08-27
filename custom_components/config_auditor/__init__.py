@@ -9,12 +9,13 @@ import shutil
 import json
 from datetime import timedelta
 from pathlib import Path
+from time import monotonic
 from typing import Any
 
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import Platform, STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse, callback
 from homeassistant.helpers import device_registry as dr, config_validation as cv
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -50,6 +51,11 @@ from .const import (
     MODULE_5_REFACTORING_ASSISTANT,
     BACKUP_DIR,
     REPORTS_DIR,
+    LEGACY_HISTORY_DIR,
+    LEGACY_BATTERY_HISTORY_DIR,
+    STORAGE_KEY_HISTORY,
+    STORAGE_KEY_BATTERY_HISTORY,
+    STORAGE_VERSION,
 )
 from .automation_analyzer import AutomationAnalyzer
 from .entity_analyzer import EntityAnalyzer
@@ -194,6 +200,83 @@ async def _async_preload_ts_cache(hass: "HomeAssistant") -> None:
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = [Platform.SENSOR]
+
+# Réglages de _wait_for_entities_to_settle() (détecteur de stabilisation au
+# démarrage, utilisé par async_setup_entry) : combien de temps les états doivent
+# cesser de bouger avant que le premier scan soit considéré comme fiable, à
+# quelle fréquence on regarde, et le plancher en dessous duquel on ne déclare
+# jamais « stabilisé ». Le plancher existe parce qu'un démarrage n'enregistre pas
+# les entités de façon continue : un creux entre deux intégrations ressemble à
+# une stabilisation, et sans lui une pause de quelques secondes juste après
+# EVENT_HOMEASSISTANT_STARTED suffirait à lancer le scan avant que Zigbee/Z-Wave
+# n'aient commencé à restaurer les leurs.
+SETTLE_QUIET_SECONDS = 10
+SETTLE_POLL_SECONDS = 2
+SETTLE_MIN_SECONDS = 15
+
+
+async def _wait_for_entities_to_settle(
+    hass: HomeAssistant, ceiling_seconds: int
+) -> None:
+    """Attendre que la machine d'états cesse de bouger, au lieu de deviner.
+
+    EVENT_HOMEASSISTANT_STARTED signifie seulement que le async_setup_entry()
+    de chaque intégration a rendu la main : les intégrations lentes (Zigbee,
+    Z-Wave, plateformes cloud à polling) continuent de restaurer des entités et
+    de les faire sortir de unavailable/unknown bien après ce point (observé sur
+    une instance réelle : le nombre total d'états grimpait encore ~35 s après le
+    démarrage).
+
+    On suit l'ensemble réel des entity_ids unavailable/unknown (plus le nombre
+    total d'entités, pour attraper les entités nouvellement enregistrées déjà
+    disponibles) plutôt qu'un simple compteur : deux entités qui se croisent
+    (l'une revient pendant qu'une autre tombe) laisseraient un compteur inchangé
+    alors que l'instance bouge encore beaucoup. Dès que cette signature n'a pas
+    changé pendant SETTLE_QUIET_SECONDS — et qu'au moins SETTLE_MIN_SECONDS se
+    sont écoulées —, on considère que c'est stable. ceiling_seconds reste un
+    plafond dur pour qu'une entité réellement et définitivement cassée ne puisse
+    pas repousser le scan indéfiniment : elle sera simplement rapportée une fois
+    le plafond atteint, comme avant. Un plafond réglé sous SETTLE_MIN_SECONDS
+    l'emporte, ce qui permet de forcer un scan précoce.
+    """
+    start = monotonic()
+    deadline = start + ceiling_seconds
+    last_signature: tuple[int, frozenset[str]] | None = None
+    changed_at = start
+
+    while True:
+        now = monotonic()
+        states = hass.states.async_all()
+        unavailable_ids = frozenset(
+            st.entity_id for st in states
+            if st.state in (STATE_UNAVAILABLE, STATE_UNKNOWN)
+        )
+        signature = (len(states), unavailable_ids)
+
+        if signature != last_signature:
+            last_signature = signature
+            changed_at = now
+        elif (
+            now - changed_at >= SETTLE_QUIET_SECONDS
+            and now - start >= SETTLE_MIN_SECONDS
+        ):
+            _LOGGER.info(
+                "HACA: entity states settled (%d entities, %d unavailable/unknown) "
+                "after %.0fs — running initial scan",
+                len(states), len(unavailable_ids), now - start,
+            )
+            return
+
+        if now >= deadline:
+            _LOGGER.info(
+                "HACA: startup settle ceiling (%ds) reached before states stopped "
+                "changing (%d entities, %d unavailable/unknown) — running initial "
+                "scan anyway",
+                ceiling_seconds, len(states), len(unavailable_ids),
+            )
+            return
+
+        await asyncio.sleep(SETTLE_POLL_SECONDS)
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
@@ -687,9 +770,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # entities even when HA's recorder is currently filtering them
     # (otherwise the SQL query has nothing to find for ~24h after the
     # user un-excludes an entity in configuration.yaml).
+    #
+    # The listener sees every state change on the instance, so it only runs
+    # while the noisy-entity scan is switched on (panel → Configuration →
+    # Performance → "Noisy entity"). haca/save_options starts/stops it live.
     from .noisy_tracker import NoisyEntityTracker
+    from .performance_analyzer import noisy_scan_enabled
     noisy_tracker = NoisyEntityTracker(hass)
-    noisy_tracker.start()
+    if noisy_scan_enabled(hass):
+        noisy_tracker.start()
+    else:
+        _LOGGER.debug("[HACA] noisy-entity scan disabled — tracker not started")
 
     hass.data[DOMAIN][entry.entry_id] = {
         "coordinator": coordinator,
@@ -704,6 +795,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "dashboard_analyzer": dashboard_analyzer,
         "recorder_analyzer": recorder_analyzer,
         "history_manager": history_manager,
+        "battery_predictor": battery_predictor,
         "automation_optimizer": automation_optimizer,
         "compliance_analyzer": compliance_analyzer,
         "integration_analyzer": integration_analyzer,
@@ -777,8 +869,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         Even after EVENT_HOMEASSISTANT_STARTED some integrations (Zigbee,
         Z-Wave, cloud platforms) continue restoring entities asynchronously.
-        We wait an extra configurable delay before scanning so those entities
-        are present and won't be reported as false-positive issues.
+        We watch the state machine until it stops changing before scanning, so
+        those entities are present and won't be reported as false-positive
+        issues. startup_delay_seconds is the ceiling of that wait, not a fixed
+        sleep: a fast boot scans as soon as things are stable, a slow one is
+        still capped.
         """
         # Check if startup scan is disabled
         startup_scan = entry.options.get("startup_scan_enabled",
@@ -793,11 +888,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         if startup_delay > 0:
             _LOGGER.info(
-                "Home Assistant started — HACA initial scan delayed by %ds "
-                "(waiting for slow integrations to finish restoring entities)",
+                "Home Assistant started — HACA waiting up to %ds for entity "
+                "states to settle before the initial scan",
                 startup_delay,
             )
-            await asyncio.sleep(startup_delay)
+            await _wait_for_entities_to_settle(hass_, startup_delay)
 
         _LOGGER.info("Running HACA initial scan now")
         try:
@@ -854,6 +949,33 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # précédent et envoie une notification persistante pour les nouvelles issues.
     _prev_high_issue_keys: set[str] = set()
 
+    # Le premier scan d'une session se compare à un historique vide : *toutes*
+    # les issues présentes y paraissent nouvelles, y compris celles qui
+    # existaient déjà avant le redémarrage et les entités que Home Assistant
+    # n'a pas fini de restaurer si le plafond de _wait_for_entities_to_settle()
+    # a été atteint. Il sert donc de référence, pas d'alerte : on enregistre sa
+    # photo, et notification comme Repairs ne parlent qu'à partir du deuxième
+    # scan. Le panneau, lui, affiche tout dès le premier.
+    _scan_count = 0
+    _counted_data: Any = None
+
+    @callback
+    def _session_scan_number() -> int:
+        """Rang du scan courant dans la session (1 = scan de référence).
+
+        Le compteur avance quand coordinator.data change d'objet — le
+        coordinator en construit un neuf à chaque refresh réussi — et non à
+        chaque appel : les deux listeners d'un même scan lisent donc la même
+        valeur, quel que soit l'ordre dans lequel ils sont appelés. Un refresh
+        en échec laisse data inchangé et ne compte pas, sinon un premier scan
+        raté consommerait la référence et le suivant alerterait sur tout.
+        """
+        nonlocal _scan_count, _counted_data
+        if coordinator.last_update_success and coordinator.data is not _counted_data:
+            _counted_data = coordinator.data
+            _scan_count += 1
+        return _scan_count
+
     @callback
     def _on_coordinator_update() -> None:
         """Detect new issues and send persistent notifications based on severity options."""
@@ -906,6 +1028,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     ])
                     current_issues[key] = issue
 
+        if _session_scan_number() <= 1:
+            _prev_high_issue_keys = set(current_issues)
+            _LOGGER.info(
+                "[HACA] First scan of the session: %d issue(s) recorded as the "
+                "baseline, no notification — new issues are reported from the "
+                "next scan on",
+                len(current_issues),
+            )
+            return
+
         new_keys = set(current_issues) - _prev_high_issue_keys
         _prev_high_issue_keys = set(current_issues)
 
@@ -957,6 +1089,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Sync HIGH issues to HA native Repairs panel after each scan."""
         # Check option dynamically — user can toggle without restart
         if not entry.options.get("repairs_enabled", True):
+            return
+        if _session_scan_number() <= 1:
+            # Scan de référence : on ne touche pas au panneau Réparations, qui
+            # garde donc les entrées du dernier scan d'avant le redémarrage
+            # jusqu'à ce que le deuxième scan les remplace en bloc.
+            _LOGGER.info(
+                "[HACA] First scan of the session: Repairs left untouched "
+                "(baseline scan) — entries are refreshed at the next scan"
+            )
             return
         cdata = coordinator.data
         if cdata:
@@ -1015,6 +1156,16 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         except Exception:
             pass
 
+    # Flush any delayed .storage write: a reload happening seconds after a scan
+    # must not drop the snapshot that is still waiting in the Store delay timer.
+    for _key in ("history_manager", "battery_predictor"):
+        _component = entry_data.get(_key)
+        if _component is not None:
+            try:
+                await _component.async_flush()
+            except Exception as _flush_err:
+                _LOGGER.warning("HACA: %s flush failed: %s", _key, _flush_err)
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
@@ -1039,8 +1190,9 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     # 1. Paths
     reports_path = hass.config.path(REPORTS_DIR)
     backups_path = hass.config.path(BACKUP_DIR)
-    history_path = Path(hass.config.config_dir) / ".haca_history"
-    battery_history_path = Path(hass.config.config_dir) / ".haca_battery_history"
+    # Legacy pre-1.7.6 directories — normally already migrated to .storage
+    history_path = Path(hass.config.config_dir) / LEGACY_HISTORY_DIR
+    battery_history_path = Path(hass.config.config_dir) / LEGACY_BATTERY_HISTORY_DIR
 
     # 2. Blocking cleanup — runs in the executor to avoid blocking the event loop
     def _cleanup_files() -> None:
@@ -1056,7 +1208,17 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
     await hass.async_add_executor_job(_cleanup_files)
 
-    # 3. Persistent notification
+    # 3. Remove .storage data (audit history + battery snapshots)
+    from homeassistant.helpers.storage import Store
+
+    for storage_key in (STORAGE_KEY_HISTORY, STORAGE_KEY_BATTERY_HISTORY):
+        try:
+            await Store(hass, STORAGE_VERSION, storage_key).async_remove()
+            _LOGGER.info("Removed .storage/%s", storage_key)
+        except Exception as e:
+            _LOGGER.error("Failed to remove .storage/%s: %s", storage_key, e)
+
+    # 4. Persistent notification
     await hass.services.async_call(
         "persistent_notification",
         "create",

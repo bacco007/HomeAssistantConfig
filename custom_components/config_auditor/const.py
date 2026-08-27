@@ -2,7 +2,7 @@
 
 DOMAIN = "config_auditor"
 NAME = "H.A.C.A"
-VERSION = "1.7.5"
+VERSION = "1.7.6"
 
 # Configuration
 DEFAULT_SCAN_INTERVAL = 60
@@ -108,8 +108,15 @@ ISSUE_TEMPLATE_MISSING_AVAILABILITY = "template_missing_availability"
 # Paths
 BACKUP_DIR = ".haca_backups"
 REPORTS_DIR = "haca_reports"
-# HISTORY_FILE kept for backwards compatibility; new code uses .haca_history/ directory
+# Legacy on-disk locations (pre-1.7.6) — kept for one-shot migration to .storage
 HISTORY_FILE = ".haca_history.json"
+LEGACY_HISTORY_DIR = ".haca_history"
+LEGACY_BATTERY_HISTORY_DIR = ".haca_battery_history"
+
+# .storage keys (HA Store helper) — audit history + battery snapshots
+STORAGE_VERSION = 1
+STORAGE_KEY_HISTORY = f"{DOMAIN}.history"
+STORAGE_KEY_BATTERY_HISTORY = f"{DOMAIN}.battery_history"
 
 # Thresholds
 STALE_ENTITY_DAYS = 7

@@ -1,4 +1,4 @@
-// HACA-BUILD: a970a31b  2026-05-30T09:51:18Z
+// HACA-BUILD: 26114fa8  2026-08-21T14:15:26Z
 // ── config_tab.js ──────────────────────────────────────────
 // ── config_tab.js ─────────────────────────────────────────────────────────
 // Onglet Configuration du panel HACA
@@ -121,6 +121,10 @@ var ISSUE_TYPES_BY_CATEGORY = [
       { id: 'missing_state_class', fixable: false },
       { id: 'expensive_template_selectattr', fixable: false },
       { id: 'expensive_template_states_all', fixable: false },
+      // Switching this one off also stops the recorder query and the
+      // in-memory state-change listener that feed it (see performance_analyzer
+      // .noisy_scan_enabled) — not just the display of the issues.
+      { id: 'noisy_entity', fixable: false },
     ]
   },
   {
@@ -513,7 +517,7 @@ function _updateTypeCounts(el) {
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.7.5'; // build marker
+  const HACA_VERSION = '1.7.6'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -4165,6 +4169,15 @@ function _updateTypeCounts(el) {
       const mb = data.recorder_wasted_mb || 0;
       const dbOk = data.recorder_db_available !== false;
 
+      // Sélection persistante : elle survit aux re-renders (scan automatique,
+      // pagination, tri). Rien n'est pré-coché — avant, chaque scan auto
+      // re-cochait toutes les lignes et écrasait une sélection en cours.
+      if (!this._orphanSel) this._orphanSel = new Set();
+      const knownOrphanIds = new Set(orphans.map(o => o.entity_id));
+      for (const id of [...this._orphanSel]) {
+        if (!knownOrphanIds.has(id)) this._orphanSel.delete(id);
+      }
+
       // Stat card
       const countEl = this.shadowRoot.querySelector('#recorder-orphan-count');
       const mbEl = this.shadowRoot.querySelector('#recorder-orphan-mb');
@@ -4239,6 +4252,7 @@ function _updateTypeCounts(el) {
 
       const st = this._pagState(PAG_ID);
       const pagedOrphans = this._pagSlice(sorted, st.page, st.pageSize);
+      const pagedIds = pagedOrphans.map(o => o.entity_id);
 
       const sortArrow = (key) => sortKey === key ? (sortDir === 'desc' ? ' ▼' : ' ▲') : '';
       const sortBtn = (key, label) =>
@@ -4265,7 +4279,7 @@ function _updateTypeCounts(el) {
           ${pagedOrphans.map((o, idx) => `
             <tr style="border-bottom:1px solid var(--divider-color);">
               <td style="padding:8px 12px;">
-                <input type="checkbox" class="recorder-orphan-cb" data-entity="${this.escapeHtml(o.entity_id)}" checked>
+                <input type="checkbox" class="recorder-orphan-cb" data-entity="${this.escapeHtml(o.entity_id)}"${this._orphanSel.has(o.entity_id) ? ' checked' : ''}>
               </td>
               <td style="padding:8px 12px;font-family:monospace;color:var(--primary-text-color);">
                 ${this.escapeHtml(o.entity_id)}
@@ -4288,6 +4302,7 @@ function _updateTypeCounts(el) {
       <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         <span style="font-size:12px;color:var(--secondary-text-color);">
           ${this.t('recorder.estimated_total', {mb, count})}
+          <span id="recorder-sel-count" style="margin-left:8px;font-weight:600;"></span>
         </span>
         <button id="recorder-purge-selected-btn" style="background:#ff7043;color:#fff;font-size:12px;padding:6px 14px;">
           ${_icon("delete-sweep-outline", 15)} ${this.t('misc.purge_selection')}
@@ -4308,13 +4323,44 @@ function _updateTypeCounts(el) {
         });
       });
 
-      // Wire up select-all
+      // Sélection : la case d'en-tête reflète l'état de la page courante,
+      // le compteur reflète la sélection globale (toutes pages confondues).
       const selectAll = listEl.querySelector('#recorder-select-all');
+      const selCountEl = listEl.querySelector('#recorder-sel-count');
+      const refreshSelUI = () => {
+        if (selectAll) {
+          const nSel = pagedIds.filter(id => this._orphanSel.has(id)).length;
+          selectAll.checked = pagedIds.length > 0 && nSel === pagedIds.length;
+          selectAll.indeterminate = nSel > 0 && nSel < pagedIds.length;
+        }
+        if (selCountEl) {
+          selCountEl.textContent = this._orphanSel.size > 0
+            ? this.t('recorder.selected_count', { n: this._orphanSel.size })
+            : '';
+        }
+      };
+
+      listEl.querySelectorAll('.recorder-orphan-cb').forEach(cb => {
+        cb.addEventListener('change', () => {
+          if (cb.checked) this._orphanSel.add(cb.dataset.entity);
+          else this._orphanSel.delete(cb.dataset.entity);
+          refreshSelUI();
+        });
+      });
+
       if (selectAll) {
         selectAll.addEventListener('change', (e) => {
-          listEl.querySelectorAll('.recorder-orphan-cb').forEach(cb => cb.checked = e.target.checked);
+          const on = e.target.checked;
+          listEl.querySelectorAll('.recorder-orphan-cb').forEach(cb => {
+            cb.checked = on;
+            if (on) this._orphanSel.add(cb.dataset.entity);
+            else this._orphanSel.delete(cb.dataset.entity);
+          });
+          refreshSelUI();
         });
       }
+
+      refreshSelUI();
 
       // Wire up individual purge buttons
       listEl.querySelectorAll('.recorder-purge-one').forEach(btn => {
@@ -4325,8 +4371,8 @@ function _updateTypeCounts(el) {
       const purgeSelBtn = listEl.querySelector('#recorder-purge-selected-btn');
       if (purgeSelBtn) {
         purgeSelBtn.addEventListener('click', () => {
-          const selected = [...listEl.querySelectorAll('.recorder-orphan-cb:checked')]
-            .map(cb => cb.dataset.entity);
+          // Sélection globale, pas seulement la page affichée.
+          const selected = [...this._orphanSel];
           if (selected.length === 0) { alert(this.t('recorder.no_entity_selected')); return; }
           this._purgeRecorderOrphans(selected);
         });
@@ -4586,6 +4632,9 @@ function _updateTypeCounts(el) {
     _removeOrphansFromUI(purgedIds) {
       const purgedSet = new Set(purgedIds);
 
+      // Les entités purgées sortent aussi de la sélection persistante.
+      if (this._orphanSel) purgedIds.forEach(eid => this._orphanSel.delete(eid));
+
       // Update the orphan count badge
       const countEl = this.shadowRoot.querySelector('#recorder-orphan-count');
       const mbEl = this.shadowRoot.querySelector('#recorder-orphan-mb');
@@ -4602,6 +4651,12 @@ function _updateTypeCounts(el) {
           const btn = listEl.querySelector(`.recorder-purge-one[data-entity="${CSS.escape(eid)}"]`);
           if (btn) btn.closest('tr')?.remove();
         });
+
+        const selCountEl = listEl.querySelector('#recorder-sel-count');
+        if (selCountEl) {
+          const n = this._orphanSel ? this._orphanSel.size : 0;
+          selCountEl.textContent = n > 0 ? this.t('recorder.selected_count', { n }) : '';
+        }
 
         // Update remaining count in the stat card
         const remaining = listEl.querySelectorAll('.recorder-orphan-cb').length;
@@ -8333,11 +8388,25 @@ function _updateTypeCounts(el) {
     }
   }
 
+  // Reports are served by an authenticated endpoint (they used to sit on an
+  // unauthenticated static path). An <iframe> or a download link cannot send
+  // a bearer token, so we ask the backend for a short-lived signed URL.
+  async _reportUrl(name) {
+    const res = await this.hass.callWS({ type: 'haca/get_report_url', filename: name });
+    return res.url;
+  }
+
   async viewReport(name) {
     const esc = (s) => this.escapeHtml(s);
     if (name.endsWith('.pdf')) {
-      const safeName = encodeURIComponent(name);
-      const card = this.createModal('');
+      const card = this.createModal(this.t('reports.loading_report'));
+      let url;
+      try {
+        url = await this._reportUrl(name);
+      } catch (e) {
+        card._updateContent(`<div style="padding:20px;color:red">${this.t('notifications.error')}: ${esc(e.message)}</div>`);
+        return;
+      }
       // Enlarge modal for PDF to almost full screen
       card.style.width = '95%';
       card.style.height = '95%';
@@ -8351,7 +8420,7 @@ function _updateTypeCounts(el) {
                 <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${esc(name)}</span>
               </h2>
               <div style="display: flex; gap: 8px; flex-shrink: 0;">
-                <a href="/haca_reports/${safeName}" target="_blank" style="text-decoration: none;">
+                <a href="${url}" target="_blank" style="text-decoration: none;">
                   <button style="background: var(--primary-color); color: white; padding: 8px 12px; font-size: 12px;">
                     ${_icon("fullscreen")} ${this.t('actions.fullscreen')}
                   </button>
@@ -8359,7 +8428,7 @@ function _updateTypeCounts(el) {
               </div>
           </div>
           <div style="flex: 1; height: 100%; background: #525659;">
-              <iframe src="/haca_reports/${safeName}" style="width: 100%; height: 85vh; border: none;"></iframe>
+              <iframe src="${url}" style="width: 100%; height: 85vh; border: none;"></iframe>
           </div>
       `);
       return;
@@ -8394,8 +8463,15 @@ function _updateTypeCounts(el) {
   }
 
   async downloadReport(name) {
+    let url;
+    try {
+      url = await this._reportUrl(name);
+    } catch (e) {
+      this.showHANotification(this.t('notifications.error'), e.message, 'haca_error');
+      return;
+    }
     const a = document.createElement('a');
-    a.href = `/haca_reports/${encodeURIComponent(name)}`;
+    a.href = url;
     a.download = name;
     a.style.display = 'none';
     document.body.appendChild(a);
@@ -8407,6 +8483,30 @@ function _updateTypeCounts(el) {
 
   async deleteReport(sessionId) {
     if (!confirm(this.t('report.confirm_delete') + '\n\nID: ' + sessionId)) return;
+
+    // Deleting takes a round-trip plus the unlinks, and the result used to be
+    // announced only through an HA persistent notification — from inside the
+    // panel it looked like nothing had happened. Show it here instead: the
+    // button spins, its row dims, and a toast reports the outcome.
+    const btns = Array.from(this.shadowRoot.querySelectorAll(
+      `.delete-report-btn[data-session="${CSS.escape(sessionId)}"]`
+    ));
+    const originalHTML = btns.map(b => b.innerHTML);
+    const rowOf = (b) => b.closest('tr') || b.closest('.m-card');
+    btns.forEach(b => {
+      b.disabled = true;
+      b.innerHTML = `<span class="btn-loader"></span>`;
+      const row = rowOf(b);
+      if (row) row.style.opacity = '0.5';
+    });
+    const restore = () => btns.forEach((b, i) => {
+      b.disabled = false;
+      b.innerHTML = originalHTML[i];
+      const row = rowOf(b);
+      if (row) row.style.opacity = '';
+    });
+
+    this._showToast(this.t('reports.deleting'));
 
     try {
       const result = await this.hass.callWS({
@@ -8420,26 +8520,22 @@ function _updateTypeCounts(el) {
       const response = result.response || result;
 
       if (response.success) {
-        this.showHANotification(
-          this.t('notifications.report_deleted'),
-          `${response.deleted_count} ${this.t('notifications.files_deleted')}`,
-          'haca_report_deleted'
+        this._showToast(
+          `\u2705 ${response.deleted_count} ${this.t('notifications.files_deleted')}`,
+          'success'
         );
-        // Refresh the reports list
+        // Refresh the reports list (redraws the buttons, no restore needed)
         this.loadReports();
       } else {
-        this.showHANotification(
-          this.t('notifications.error'),
-          response.error || this.t('fix.error_unknown'),
-          'haca_error'
+        restore();
+        this._showToast(
+          `${this.t('notifications.error')}: ${response.error || this.t('fix.error_unknown')}`,
+          'error'
         );
       }
     } catch (error) {
-      this.showHANotification(
-        this.t('notifications.error'),
-        error.message,
-        'haca_error'
-      );
+      restore();
+      this._showToast(`${this.t('notifications.error')}: ${error.message}`, 'error');
     }
   }
 

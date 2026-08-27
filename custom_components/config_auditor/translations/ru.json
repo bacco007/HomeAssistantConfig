@@ -25,7 +25,7 @@
           "scan_interval": "Интервал сканирования (минуты)",
           "auto_fix_enabled": "Включить автоматическое исправление",
           "backup_enabled": "Включить автоматическое резервное копирование",
-          "startup_delay_seconds": "Задержка сканирования при запуске (секунды)",
+          "startup_delay_seconds": "Сканирование при запуске: макс. ожидание (секунды)",
           "event_monitoring_enabled": "Непрерывный мониторинг (автосканирование по событиям)",
           "event_debounce_seconds": "Задержка подавления событий (секунды)"
         }
@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Аудитор конфигураций Home Assistant",
-    "version": "v1.7.5",
+    "version": "v1.7.6",
     "buttons": {
       "scan_all": "Полное сканирование",
       "automations": "Автоматизации",
@@ -335,7 +335,8 @@
       "loading_proposal": "Загрузка предложения...",
       "error_loading": "Ошибка загрузки отчётов",
       "error_display": "Ошибка при отображении отчётов",
-      "generating": "Генерация…"
+      "generating": "Генерация…",
+      "deleting": "Удаление…"
     },
     "ai": {
       "analyzing": "ИИ анализирует вашу проблему...",
@@ -481,10 +482,6 @@
       "id_copied": "ID {id} скопирован в буфер обмена",
       "fixable": "Исправимо",
       "not_fixable": "Не исправимо",
-      "generic_high_issue": {
-        "title": "HACA: {type} — {entity}",
-        "description": "{message}\n\nOpen the HACA panel for details and available fixes."
-      },
       "recorder_exclude_effective": "Вступает в силу при следующем сканировании HACA.",
       "recorder_exclude_to_revert": "Чтобы снова увидеть эту проблему, удалите сущность из configuration.yaml.",
       "recorder_exclude_explanation": "Чтобы исключить эту проблему из Recorder, можно либо вручную отредактировать configuration.yaml (сначала сделайте резервную копию), либо нажать кнопку «Исключить из Recorder». В этом случае HACA изменит файл configuration.yaml, но перед изменением создаст резервную копию."
@@ -537,7 +534,8 @@
       "estimated_total": "Оценочно всего: ~{mb} МБ по {count} сущности(ям)",
       "subtab_orphans": "Сироты БД",
       "subtab_impact": "Влияние БД",
-      "orphan_badge": "{count} сирот · ~{mb} MB"
+      "orphan_badge": "{count} сирот · ~{mb} MB",
+      "selected_count": "Выбрано: {n}"
     },
     "graph": {
       "title": "Граф зависимостей",
@@ -680,7 +678,7 @@
       "subtitle": "Общие настройки, пороги и активные типы проблем",
       "scan_section": "Автоматическое сканирование",
       "scan_interval": "Интервал сканирования (минуты)",
-      "startup_delay": "Задержка запуска (секунды)",
+      "startup_delay": "Макс. ожидание при запуске (секунды)",
       "event_section": "Мониторинг событий",
       "event_active": "Активный мониторинг",
       "event_rescan": "Автоматический повторный скан после изменений",
@@ -884,6 +882,7 @@
         "missing_state_class": "Отсутствует state_class",
         "expensive_template_selectattr": "Дорогой шаблон selectattr",
         "expensive_template_states_all": "Дорогой шаблон states.all",
+        "noisy_entity": "Шумная сущность",
         "blueprint_missing_path": "Отсутствует путь шаблона",
         "blueprint_file_not_found": "Файл шаблона не найден",
         "blueprint_empty_input": "Пустой ввод шаблона",
@@ -1829,5 +1828,11 @@
     "workflow_fix_title": "Рабочий процесс исправления проблем:",
     "workflow_fix": "1. haca_list_issue_catalog() для обнаружения категорий, типов и исправимых проблем\n2. haca_get_issues(category?, type?, severity?) для списка конкретных проблем\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') для исправления одной проблемы (dry_run=true по умолчанию)\n4. haca_fix_batch(category?, type?, severity?) для массового исправления\n5. Всегда сначала предварительный просмотр с dry_run=true, затем dry_run=false после подтверждения пользователя\nФормат ID: HACA-{CATEGORY}-{TYPE}-{HASH6}, напр. HACA-AUTO-NO_ALIAS-a3f2c1",
     "rule_use_haca_id": "Каждая проблема имеет уникальный haca_id (формат: HACA-CAT-TYPE-hash). ВСЕГДА используйте предоставленный haca_id — НИКОГДА не выдумывайте ID."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nОткройте панель HACA, чтобы увидеть подробности и доступные исправления."
+    }
   }
 }

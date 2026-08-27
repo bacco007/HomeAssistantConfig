@@ -25,7 +25,7 @@
           "scan_interval": "Skanningsintervall (minuter)",
           "auto_fix_enabled": "Aktivera automatiska korrigeringar",
           "backup_enabled": "Aktivera automatiska säkerhetskopior",
-          "startup_delay_seconds": "Fördröjning vid uppstartsskanning (sekunder)",
+          "startup_delay_seconds": "Uppstartsskanning: maximal väntetid (sekunder)",
           "event_monitoring_enabled": "Kontinuerlig övervakning (automatisk skanning vid händelser)",
           "event_debounce_seconds": "Debounce-fördröjning för händelseövervakning (sekunder)"
         }
@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurationsgranskare",
-    "version": "v1.7.5",
+    "version": "v1.7.6",
     "buttons": {
       "scan_all": "Fullständig skanning",
       "automations": "Automationer",
@@ -335,7 +335,8 @@
       "loading_proposal": "Laddar förslag...",
       "error_loading": "Fel vid laddning av rapporter",
       "error_display": "Fel vid visning av rapporter",
-      "generating": "Genererar…"
+      "generating": "Genererar…",
+      "deleting": "Raderar…"
     },
     "ai": {
       "analyzing": "AI analyserar ditt problem...",
@@ -481,10 +482,6 @@
       "id_copied": "ID {id} kopierat till urklipp",
       "fixable": "Åtgärdbar",
       "not_fixable": "Ej åtgärdbar",
-      "generic_high_issue": {
-        "title": "HACA: {type} — {entity}",
-        "description": "{message}\n\nOpen the HACA panel for details and available fixes."
-      },
       "recorder_exclude_effective": "Träder i kraft vid nästa HACA-skanning.",
       "recorder_exclude_to_revert": "För att se detta problem igen, ta bort entiteten från configuration.yaml.",
       "recorder_exclude_explanation": "För att utesluta detta problem från Recorder kan du antingen redigera configuration.yaml manuellt (gör en säkerhetskopia först) eller klicka på knappen «Uteslut från Recorder». I så fall ändrar HACA din configuration.yaml-fil men skapar en säkerhetskopia före ändringen."
@@ -537,7 +534,8 @@
       "estimated_total": "Uppskattad total: ~{mb} MB för {count} enhet(er)",
       "subtab_orphans": "DB-föräldralösa",
       "subtab_impact": "DB-påverkan",
-      "orphan_badge": "{count} föräldralös/a · ~{mb} MB"
+      "orphan_badge": "{count} föräldralös/a · ~{mb} MB",
+      "selected_count": "{n} valda"
     },
     "graph": {
       "title": "Beroendegraf",
@@ -680,7 +678,7 @@
       "subtitle": "Allmänna inställningar, trösklar och aktiva problemtyper",
       "scan_section": "Automatisk skanning",
       "scan_interval": "Skanningsintervall (minuter)",
-      "startup_delay": "Uppstartsfördröjning (sekunder)",
+      "startup_delay": "Maximal väntetid vid uppstart (sekunder)",
       "event_section": "Händelseövervakning",
       "event_active": "Aktiv övervakning",
       "event_rescan": "Automatisk omskanning efter ändringar",
@@ -884,6 +882,7 @@
         "missing_state_class": "Saknad state_class",
         "expensive_template_selectattr": "Kostsam selectattr-mall",
         "expensive_template_states_all": "Kostsam states.all-mall",
+        "noisy_entity": "Brusig entitet",
         "blueprint_missing_path": "Saknad blueprint-sökväg",
         "blueprint_file_not_found": "Blueprint-fil hittades inte",
         "blueprint_empty_input": "Tomt blueprint-indata",
@@ -1829,5 +1828,11 @@
     "workflow_fix_title": "Arbetsflöde för problemlösning:",
     "workflow_fix": "1. haca_list_issue_catalog() för att upptäcka kategorier, typer och åtgärdbara problem\n2. haca_get_issues(category?, type?, severity?) för att lista specifika problem\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') för att åtgärda ett enskilt problem (dry_run=true standard)\n4. haca_fix_batch(category?, type?, severity?) för massåtgärd\n5. Alltid förhandsvisa med dry_run=true först, sedan dry_run=false efter användarbekräftelse\nID-format: HACA-{CATEGORY}-{TYPE}-{HASH6}, t.ex. HACA-AUTO-NO_ALIAS-a3f2c1",
     "rule_use_haca_id": "Varje problem har ett unikt haca_id (format: HACA-CAT-TYPE-hash). Använd ALLTID det angivna haca_id — HITTA ALDRIG PÅ ett ID."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nÖppna HACA-panelen för detaljer och tillgängliga korrigeringar."
+    }
   }
 }

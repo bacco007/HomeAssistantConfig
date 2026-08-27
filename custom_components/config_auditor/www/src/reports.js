@@ -213,11 +213,25 @@
     }
   }
 
+  // Reports are served by an authenticated endpoint (they used to sit on an
+  // unauthenticated static path). An <iframe> or a download link cannot send
+  // a bearer token, so we ask the backend for a short-lived signed URL.
+  async _reportUrl(name) {
+    const res = await this.hass.callWS({ type: 'haca/get_report_url', filename: name });
+    return res.url;
+  }
+
   async viewReport(name) {
     const esc = (s) => this.escapeHtml(s);
     if (name.endsWith('.pdf')) {
-      const safeName = encodeURIComponent(name);
-      const card = this.createModal('');
+      const card = this.createModal(this.t('reports.loading_report'));
+      let url;
+      try {
+        url = await this._reportUrl(name);
+      } catch (e) {
+        card._updateContent(`<div style="padding:20px;color:red">${this.t('notifications.error')}: ${esc(e.message)}</div>`);
+        return;
+      }
       // Enlarge modal for PDF to almost full screen
       card.style.width = '95%';
       card.style.height = '95%';
@@ -231,7 +245,7 @@
                 <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${esc(name)}</span>
               </h2>
               <div style="display: flex; gap: 8px; flex-shrink: 0;">
-                <a href="/haca_reports/${safeName}" target="_blank" style="text-decoration: none;">
+                <a href="${url}" target="_blank" style="text-decoration: none;">
                   <button style="background: var(--primary-color); color: white; padding: 8px 12px; font-size: 12px;">
                     ${_icon("fullscreen")} ${this.t('actions.fullscreen')}
                   </button>
@@ -239,7 +253,7 @@
               </div>
           </div>
           <div style="flex: 1; height: 100%; background: #525659;">
-              <iframe src="/haca_reports/${safeName}" style="width: 100%; height: 85vh; border: none;"></iframe>
+              <iframe src="${url}" style="width: 100%; height: 85vh; border: none;"></iframe>
           </div>
       `);
       return;
@@ -274,8 +288,15 @@
   }
 
   async downloadReport(name) {
+    let url;
+    try {
+      url = await this._reportUrl(name);
+    } catch (e) {
+      this.showHANotification(this.t('notifications.error'), e.message, 'haca_error');
+      return;
+    }
     const a = document.createElement('a');
-    a.href = `/haca_reports/${encodeURIComponent(name)}`;
+    a.href = url;
     a.download = name;
     a.style.display = 'none';
     document.body.appendChild(a);
@@ -287,6 +308,30 @@
 
   async deleteReport(sessionId) {
     if (!confirm(this.t('report.confirm_delete') + '\n\nID: ' + sessionId)) return;
+
+    // Deleting takes a round-trip plus the unlinks, and the result used to be
+    // announced only through an HA persistent notification — from inside the
+    // panel it looked like nothing had happened. Show it here instead: the
+    // button spins, its row dims, and a toast reports the outcome.
+    const btns = Array.from(this.shadowRoot.querySelectorAll(
+      `.delete-report-btn[data-session="${CSS.escape(sessionId)}"]`
+    ));
+    const originalHTML = btns.map(b => b.innerHTML);
+    const rowOf = (b) => b.closest('tr') || b.closest('.m-card');
+    btns.forEach(b => {
+      b.disabled = true;
+      b.innerHTML = `<span class="btn-loader"></span>`;
+      const row = rowOf(b);
+      if (row) row.style.opacity = '0.5';
+    });
+    const restore = () => btns.forEach((b, i) => {
+      b.disabled = false;
+      b.innerHTML = originalHTML[i];
+      const row = rowOf(b);
+      if (row) row.style.opacity = '';
+    });
+
+    this._showToast(this.t('reports.deleting'));
 
     try {
       const result = await this.hass.callWS({
@@ -300,26 +345,22 @@
       const response = result.response || result;
 
       if (response.success) {
-        this.showHANotification(
-          this.t('notifications.report_deleted'),
-          `${response.deleted_count} ${this.t('notifications.files_deleted')}`,
-          'haca_report_deleted'
+        this._showToast(
+          `\u2705 ${response.deleted_count} ${this.t('notifications.files_deleted')}`,
+          'success'
         );
-        // Refresh the reports list
+        // Refresh the reports list (redraws the buttons, no restore needed)
         this.loadReports();
       } else {
-        this.showHANotification(
-          this.t('notifications.error'),
-          response.error || this.t('fix.error_unknown'),
-          'haca_error'
+        restore();
+        this._showToast(
+          `${this.t('notifications.error')}: ${response.error || this.t('fix.error_unknown')}`,
+          'error'
         );
       }
     } catch (error) {
-      this.showHANotification(
-        this.t('notifications.error'),
-        error.message,
-        'haca_error'
-      );
+      restore();
+      this._showToast(`${this.t('notifications.error')}: ${error.message}`, 'error');
     }
   }
 

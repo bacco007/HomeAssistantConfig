@@ -23,14 +23,21 @@ _LOGGER = logging.getLogger(__name__)
 # Maximum number of issues pushed to Repairs (avoid flooding)
 MAX_REPAIR_ISSUES = 15
 
-# Issue types that map to fixable repairs (the user can click "Fix" in Repairs)
-# Only simple, safe fixes — NEVER complex automations
-FIXABLE_ISSUE_TYPES = {
-    "compliance_automation_no_description",
-    "compliance_script_no_description",
-    "no_description",
-    "no_alias",
-}
+# ⚠️  Every issue is pushed with is_fixable=False, on purpose.
+#
+# HA only shows a working "Fix" button when the integration's repairs platform
+# exposes `async_create_fix_flow()` returning a RepairsFlow. This module used to
+# ship a `HacaFixFlow` for a handful of simple types (no_description, no_alias,
+# compliance_*_no_description); it was removed along with the rest of the old
+# repairs platform (see tests/test_repairs.py, skipped for that reason) and this
+# file was reduced to a one-way push into the Repairs panel.
+#
+# Marking an issue fixable without that flow gives the user a "Fix" button that
+# cannot open anything — HA fails to load the flow handler. Fixes live in the
+# HACA panel, which the description links to.
+#
+# If a fix flow is ever reintroduced, restore `async_create_fix_flow` here first,
+# then re-enable per-type fixability — never the other way round.
 
 
 def _issue_key(issue: dict[str, Any]) -> str:
@@ -108,8 +115,6 @@ async def async_update_repairs(
         recommendation = (issue.get("recommendation") or "")[:200]
 
         try:
-            is_fixable = issue_type in FIXABLE_ISSUE_TYPES and issue.get("fix_available", False)
-
             # Build descriptive message with type explanation + recommendation
             description_parts = []
             if message_text:
@@ -121,7 +126,7 @@ async def async_update_repairs(
                 hass,
                 domain=DOMAIN,
                 issue_id=issue_id,
-                is_fixable=is_fixable,
+                is_fixable=False,  # see the module-level note — no fix flow exists
                 is_persistent=False,
                 severity=ir.IssueSeverity.WARNING,
                 translation_key="generic_high_issue",
