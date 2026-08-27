@@ -91,15 +91,8 @@ API_DISCOVERY = {
             "advisor_config",
             "checklist",
             "general_info",
-            "login_activity",
             "scan_config",
             "security_scan",
-        ],
-    },
-    "core_user": {
-        "class": "User",
-        "methods": [
-            "get_users",
         ],
     },
     "core_share": {
