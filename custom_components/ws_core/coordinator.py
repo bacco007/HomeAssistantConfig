@@ -3485,6 +3485,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "temp_history_24h": _dq(rt.temp_history_24h),
             "gust_history_24h": _dq(rt.gust_history_24h),
             "rain_total_history_24h": _dq(rt.rain_total_history_24h),
+            "rain_rate_history_24h": _dq(self._rain_rate_history_24h),
             "pressure_history": [float(v) for v in rt.pressure_history],
             "pressure_history_ts": pts.isoformat() if hasattr(pts, "isoformat") else None,
             "rain_today_mm": self._rain_today_mm,
@@ -3577,6 +3578,13 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         rt.temp_history_24h = _load_dq("temp_history_24h")
         rt.gust_history_24h = _load_dq("gust_history_24h")
         rt.rain_total_history_24h = _load_dq("rain_total_history_24h")
+        # v2.6.8 (issue #139): rain rate max 24h lives in a plain instance deque
+        # rather than the runtime dataclass, and was missing from this restore
+        # pair entirely - it always started empty on restart, so the very first
+        # coordinator tick after restart replaced the sensor's restored display
+        # value with a fresh single-sample "max" (whatever the current rain
+        # rate happened to be), which looks like a reset to zero.
+        self._rain_rate_history_24h = _load_dq("rain_rate_history_24h")
 
         ph: deque = deque(maxlen=PRESSURE_HISTORY_SAMPLES)
         for v in data.get("pressure_history") or []:

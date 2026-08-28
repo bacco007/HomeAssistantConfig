@@ -629,6 +629,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:cloud-arrow-up",
         native_unit="m",
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
         unit_group="altitude",
         attrs_fn=lambda d: {
             "temp_c": d.get(KEY_NORM_TEMP_C),
@@ -647,6 +648,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:snowflake",
         native_unit="m",
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
         unit_group="altitude",
         attrs_fn=lambda d: {
             "temp_c": d.get(KEY_NORM_TEMP_C),
