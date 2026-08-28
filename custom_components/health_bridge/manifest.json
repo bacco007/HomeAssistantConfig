@@ -1,0 +1,12 @@
+{
+  "domain": "health_bridge",
+  "name": "Health Bridge",
+  "config_flow": true,
+  "documentation": "https://github.com/gregt1993/Health_Bridge",
+  "issue_tracker": "https://github.com/gregt1993/Health_Bridge/issues",
+  "codeowners": ["@gregt1993"],
+  "dependencies": ["webhook"],
+  "requirements": [],
+  "iot_class": "cloud_push",
+  "version": "1.2.1"
+}

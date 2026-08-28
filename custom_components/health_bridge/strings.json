@@ -1,0 +1,114 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Health Bridge Connection",
+        "description": "Set up your Health Bridge integration to receive health data",
+        "data": {
+          "name": "Name",
+          "token": "Security Token"
+        }
+      }
+    },
+    "error": {
+      "invalid_token": "Invalid security token",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "Health Bridge is already configured"
+    }
+  },
+  "options": {
+    "abort": {
+      "device_not_found": "The selected device could not be found",
+      "no_devices": "No Health Bridge devices are available to delete"
+    },
+    "step": {
+      "init": {
+        "title": "Health Bridge Settings",
+        "description": "Choose what you want to manage",
+        "menu_options": {
+          "token": "Change secret token",
+          "units": "Units",
+          "edit_delete": "Edit/Delete"
+        },
+        "menu_option_descriptions": {
+          "token": "Update the secret token shared with the Health Assistant Link app.",
+          "units": "Open the unit selectors for nutrition and water.",
+          "edit_delete": "Choose a Health Bridge device to delete."
+        }
+      },
+      "token": {
+        "title": "Change Secret Token",
+        "description": "Enter the new secret token. It must match the token set in the Health Assistant Link app.",
+        "data": {
+          "token": "Security Token"
+        }
+      },
+      "units": {
+        "title": "Health Bridge Units",
+        "description": "Update your preferred units",
+        "data": {
+          "nutrient_mass_unit": "Nutrient mass unit",
+          "water_volume_unit": "Water volume unit"
+        }
+      },
+      "edit_delete": {
+        "title": "Edit/Delete Devices",
+        "description": "Choose a device to remove from Health Bridge",
+        "data": {
+          "device_id": "Device"
+        }
+      },
+      "confirm_delete": {
+        "title": "Delete Device",
+        "description": "Delete {device_name} and all of its Health Bridge entities?",
+        "data": {
+          "confirm": "Confirm delete"
+        }
+      }
+    }
+  },
+  "reconfigure": {
+    "step": {
+      "reconfigure": {
+        "title": "Health Bridge Connection",
+        "description": "Update the security token used by Health Bridge",
+        "data": {
+          "token": "Security Token"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "steps": {
+        "name": "Steps"
+      },
+      "heart_rate": {
+        "name": "Heart Rate"
+      },
+      "active_calories": {
+        "name": "Active Calories"
+      },
+      "resting_heart_rate": {
+        "name": "Resting Heart Rate"
+      },
+      "sleep_duration": {
+        "name": "Sleep Duration"
+      },
+      "distance": {
+        "name": "Distance"
+      },
+      "oxygen_saturation": {
+        "name": "Oxygen Saturation"
+      },
+      "respiratory_rate": {
+        "name": "Respiratory Rate"
+      },
+      "body_mass": {
+        "name": "Body Mass"
+      }
+    }
+  }
+}
