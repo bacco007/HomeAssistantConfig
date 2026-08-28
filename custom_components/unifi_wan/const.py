@@ -54,6 +54,13 @@ MAX_DUMP_KEEP: Final = 100
 SPEEDTEST_TIMEOUT_SECONDS: Final = 300
 SPEEDTEST_POLL_SECONDS: Final = 15
 
+# How close a per-WAN speedtest record has to be, in seconds, to the
+# gateway's own last-run block for the two to be the same run. Used only
+# where the gateway names no interface: a record of the same moment then
+# identifies the WAN that run was on, and stops the gateway-wide sensors
+# showing a non-active line's throughput.
+GATEWAY_RESULT_MATCH_SECONDS: Final = 120
+
 GATEWAY_DEVICES: Final = ["udm", "ugw", "uxg", "uxg-pro", "ucg-ultra", "ucg"]
 MAX_WAN_INTERFACES: Final = 4
 

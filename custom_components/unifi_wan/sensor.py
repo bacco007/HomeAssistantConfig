@@ -27,7 +27,7 @@ from .const import DOMAIN
 from . import (
     UniFiWanData,
     UniFiWanRuntimeData,
-    gateway_speedtest_wan,
+    gateway_result_wan,
     interface_to_wan_number,
     resolve_active_wan,
 )
@@ -66,6 +66,17 @@ def _mbps(val: Any) -> float | None:
         return round(float(val) * 8 / 1_000_000, 2)
     except (TypeError, ValueError):
         return None
+
+
+def _epoch(val: Any) -> int | None:
+    """A speedtest timestamp as epoch seconds, or None if there isn't one."""
+    try:
+        ts = int(val)
+    except (TypeError, ValueError):
+        return None
+    if ts <= 0:
+        return None
+    return ts // 1000 if ts > 100_000_000_000 else ts
 
 
 def _ts_date(val: Any) -> datetime | None:
@@ -198,19 +209,21 @@ def _active_wan_attributes(d: UniFiWanData) -> dict[str, Any]:
     }
 
 
-def _gateway_result_is_wan(d: UniFiWanData, wan_number: int | None) -> bool:
-    """Whether the gateway's last-run block holds that WAN's result.
+def _has_figures(result: dict[str, Any]) -> bool:
+    """Whether a speedtest result actually measured anything."""
+    return result.get("down") is not None or result.get("up") is not None
 
-    The block is overwritten by whichever WAN ran last, so it only counts as
-    a given WAN's when the controller names that interface - or when the
-    gateway has a single WAN and there is nothing else it could be.
+
+def _gateway_result_is_wan(d: UniFiWanData, wan_number: int | None) -> bool:
+    """Whether the gateway's last-run block may be shown as that WAN's result.
+
+    Defers to gateway_result_wan, the same rule the integration records
+    per-WAN results by, so a figure can never appear on these sensors
+    without appearing on that WAN's own.
     """
     if wan_number is None:
         return False
-    iface = d.speedtest.get("source_interface")
-    if iface:
-        return interface_to_wan_number(iface, d.wan) == wan_number
-    return len(d.wan) <= 1
+    return gateway_result_wan(d, wan_number) == wan_number
 
 
 def _displayed_speedtest(d: UniFiWanData) -> tuple[dict[str, Any], int | None]:
@@ -224,20 +237,43 @@ def _displayed_speedtest(d: UniFiWanData) -> tuple[dict[str, Any], int | None]:
     """
     active, _ = resolve_active_wan(d)
     candidates: list[dict[str, Any]] = []
-    if active is not None and d.per_wan_speedtest:
+    if active is not None:
+        # What this WAN's own sensors are showing. The integration records it
+        # from these same two sources, so it is normally the newest of the
+        # three - but unlike them it is remembered, which is what stops these
+        # sensors falling back to an older figure when the gateway rewrites
+        # its block or the controller drops a record.
+        latched = d.speedtest_latched.get(active)
+        if latched:
+            candidates.append(latched)
         record = d.per_wan_speedtest.get(active)
         if record:
             candidates.append(record)
     if _gateway_result_is_wan(d, active):
         candidates.append(d.speedtest)
+    # A result has to carry figures to be worth showing. The gateway rewrites
+    # its block around a run and can carry a fresh timestamp with nothing in
+    # it; picking that on newest-wins would blank sensors that have a
+    # perfectly good previous result to show.
+    candidates = [c for c in candidates if _has_figures(c)]
     if candidates:
-        return max(candidates, key=lambda r: r.get("lastrun") or 0), active
+        return max(candidates, key=lambda r: _epoch(r.get("lastrun")) or 0), active
 
     if d.per_wan_speedtest:
-        # Per-WAN records exist but none belong to the active WAN, and the
-        # gateway block belongs to a different one. Reporting nothing beats
-        # reporting another line's throughput.
-        return {}, None
+        if active is not None:
+            # The active WAN has simply never been tested, and the gateway
+            # block belongs to a different one. Reporting nothing beats
+            # reporting another line's throughput.
+            return {}, None
+        # Which WAN is the active uplink could not be resolved at all. The
+        # newest record there is, labelled with the WAN it came from, is
+        # more use than blank sensors - the WAN Interface sensor alongside
+        # them says which line it describes.
+        wan_number, record = max(
+            d.per_wan_speedtest.items(),
+            key=lambda item: _epoch(item[1].get("lastrun")) or 0,
+        )
+        return record, wan_number
 
     # No per-WAN records at all: the gateway's single result is everything
     # this controller offers, so report it and say which WAN it came from.
@@ -259,9 +295,16 @@ def _active_speedtest_server(d: UniFiWanData) -> dict[str, Any]:
     source for the newest-wins rule to arbitrate - applying it anyway would
     blank these sensors every time a per-WAN record happened to be the
     fresher of the two.
+
+    The block counts as the active WAN's on the same terms as its throughput
+    does, rather than on the stricter evidence gateway_speedtest_wan wants:
+    a gateway that names the interface only while a run is fresh would
+    otherwise blank these sensors again minutes later. Nothing latches here -
+    the next poll re-reads them - so the wrong-guess-forever risk that
+    strictness guards against does not arise.
     """
     active, _ = resolve_active_wan(d)
-    if active is None or gateway_speedtest_wan(d) != active:
+    if active is None or not _gateway_result_is_wan(d, active):
         return {}
     return d.speedtest
 
