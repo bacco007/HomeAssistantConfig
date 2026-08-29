@@ -1,66 +1,82 @@
 """Config flow for Transport NSW Mk II integration."""
 from __future__ import annotations
-from TransportNSWv2 import InvalidAPIKey, APIRateLimitExceeded, StopError, TripError
+from TransportNSWv2 import (
+    InvalidAPIKey,
+    APIRateLimitExceeded,
+    StopError,
+    TripError
+)
 
 import logging
-import random
 from typing import Any
 
 import voluptuous as vol
-#from homeassistant.helpers.selector import selector, BooleanSelector, BooleanSelectorConfig
-import homeassistant.helpers.config_validation as cv
-from homeassistant.data_entry_flow import section
+from homeassistant.helpers.selector import (
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+)
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
     ConfigSubentryFlow,
     OptionsFlow,
+    OptionsFlowWithReload,
     SOURCE_RECONFIGURE,
     SOURCE_IMPORT
 )
+from homeassistant.data_entry_flow import FlowResult
 from homeassistant.const import (
     CONF_API_KEY,
     CONF_SCAN_INTERVAL
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.components import persistent_notification
+from homeassistant.components.persistent_notification import async_create as async_create_notification
 
-from .const import *
-from .helpers import get_trips, check_stops, get_stop_detail#, set_optional_sensors
+from .const import (
+    API_DAILY_LIMIT,
+    CONF_API_PERCENT,
+    CONF_REQUEST_LOCATION_UPDATE,
+    DEFAULT_API_PERCENT,
+    DEFAULT_REQUEST_LOCATION_UPDATE,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    MIN_SCAN_INTERVAL,
+    STOP_TEST_ID,
+    SUBENTRY_TYPE_JOURNEY,
+    TFNSW_REGISTRATION,
+)
+from .helpers import check_stops
 from .subentry_flow import JourneySubEntryFlowHandler
 
 _LOGGER = logging.getLogger(__name__)
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
-    #Validate the user input is correct
-    # Check that the API key is valid by calling the quick and easy 'stops' API with a hard-coded, known good station ID (Central Station)
+    """ Validate the user input is correct
+        Check that the API key is valid by calling the quick and easy 'stops' API with a hard-coded, known good station ID (Central Station). """
 
     try:
+        # We don't actually care about the returned value, just need to force a check and see if any errors are raised
         stop_data = await hass.async_add_executor_job (
-             check_stops,
-             data[CONF_API_KEY],
-             [STOP_TEST_ID]
-             )
+            check_stops,
+            data[CONF_API_KEY],
+            [STOP_TEST_ID]
+        )
 
-    except InvalidAPIKey:
-        raise InvalidAPIKey
-    
-    except APIRateLimitExceeded:
-        raise APIRateLimitExceeded
-    
-    except StopError:
-        raise StopError
+    # Testing simpler exception type
+    except (InvalidAPIKey, APIRateLimitExceeded, StopError):
+        raise
 
     except Exception as ex:
-        raise StopError
+        raise StopError from ex
 
 
 class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Transport NSW Mk II"""
 
-    VERSION = 2
+    VERSION = 3
     MINOR_VERSION = 0
 
     _input_data: dict[str, Any]
@@ -106,7 +122,6 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                 except Exception as err:
                     errors["base"] = "unknown"
 
-
             if not errors:
                 # The API key is confirmed to be valid so set the entry unique ID based on the API key - we'll check for uniqueness shortly
                 existing_entry = await self.async_set_unique_id(user_input[CONF_API_KEY])
@@ -119,18 +134,27 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                         # Still here?  There's no existing integration with the new API key
                         reason = "reconfigure_successful"
                     else:
-                        # The API key hasn't changed - no need to check for a unique ID conflict
-                        reason = "reconfigure_successful_no_change"
+                        # The API key hasn't changed - and with no other options we can just abort
+                        return self.async_abort(
+                            reason="reconfigure_successful_no_change"
+                        )
 
                     # Get a reference to the config entry that's being reconfigured
                     config_entry = self._get_reconfigure_entry()
+
+                    # Get the scan_interval value now otherwise it will be lost
+                    current_data = dict(config_entry.data)
+                    combined_data = {
+                        **current_data,
+                        **user_input
+                    }
 
                     # We don't have an update listener in place (it causes problems when adding multiple subentries in one go) so we need to force a reload ourselves, rather than just doing the entry update and having a listener catch it
                     return self.async_update_reload_and_abort(
                         config_entry,
                         title=f"Transport NSW Mk II ({user_input[CONF_API_KEY][-4:]})",
                         unique_id=user_input[CONF_API_KEY],
-                        data=user_input,
+                        data=combined_data,
                         reload_even_if_entry_is_unchanged=False,
                         reason = f"reconfigure_successful_api_change_{str(user_input[CONF_API_KEY] != self._previous_key).lower()}"
                     )
@@ -138,7 +162,7 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                 elif self.source == SOURCE_IMPORT:
                     if existing_entry is not None:
                         # Looks like we're trying to re-import an existing entry, so create a persistent notification and abort
-                        persistent_notification.create(
+                        async_create_notification(
                             self.hass,
                             f"Skipping the migration of legacy configuration.yaml entries for API key ending `{user_input[CONF_API_KEY][-4:]}` as they've already been imported, or there's already a config entry with the same key.\n\nPlease remove those entries from configuration.yaml.",
                             title='Transport NSW Mk II',
@@ -159,7 +183,6 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                     # The data for the config entry is a subset of what we've been provided via the import process
                     self._input_data = {
                         CONF_API_KEY: user_input[CONF_API_KEY],
-                        CONF_SCAN_INTERVAL: user_input[CONF_SCAN_INTERVAL]
                         
                     }
                     subentry_data = user_input['subentry_data']
@@ -197,10 +220,6 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
         USER_DATA_SCHEMA = vol.Schema(
             {
                 vol.Required(CONF_API_KEY, default = user_input.get(CONF_API_KEY,'')): str,
-                vol.Required(
-                    CONF_SCAN_INTERVAL,
-                    default=user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): (vol.All(vol.Coerce(int), vol.Clamp(min=MIN_SCAN_INTERVAL))),
             }
         )
 
@@ -217,47 +236,60 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
             description_placeholders = description_placeholders
         )
 
-    async def async_step_import(self, user_input: dict[str, Any]):
+    async def async_step_import(self, user_input: dict[str, Any]) -> ConfigFlowResult:
         # We're here so the config entry for this import hasn't been created already
         # We've been passed a complete subentry data-set, plus what we need to set up the initial config entry as well
         return await self.async_step_user(user_input = user_input)
 
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None):
+        # Deliberately not passing user_input through, so the 'show form' code will run - there's specific SOURCE_RECONFIGURE to handle getting the current info
         return await self.async_step_user()
 
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(config_entry: ConfigEntry) -> TransportNSWOptionsFlowHandler:
         return TransportNSWOptionsFlowHandler()
 
-OPTIONS_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_REQUEST_LOCATION_UPDATE): bool,
-    }
-)
+class TransportNSWOptionsFlowHandler(OptionsFlowWithReload):
+    """TransportNSW config flow options handler - we don't have an options change listener hence using OptionsFlowWithReload"""
 
-class TransportNSWOptionsFlowHandler(OptionsFlow):
-    """TransportNSW config flow options handler"""
-
-    async def async_step_init(self, user_input=None) -> FlowResult:
+    async def async_step_init(
+        self,
+        user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Handle the options flow"""
 
+        errors: dict[str, str] = {}
+        description_placeholders: dict[str, str] = {}
+
+        OPTIONS_SCHEMA = vol.Schema(
+            {
+                vol.Required(CONF_SCAN_INTERVAL, default = self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): int,
+                vol.Required(CONF_API_PERCENT, default = self.config_entry.options.get(CONF_API_PERCENT, DEFAULT_API_PERCENT)): NumberSelector(NumberSelectorConfig(min=1, max=100, step=1, mode=NumberSelectorMode.BOX,)),
+                vol.Optional(CONF_REQUEST_LOCATION_UPDATE, default = self.config_entry.options.get(CONF_REQUEST_LOCATION_UPDATE, DEFAULT_REQUEST_LOCATION_UPDATE)): bool,
+            }
+        )
+
         if user_input is not None:
+            # Check for errors
+            update_interval = user_input[CONF_SCAN_INTERVAL]
+            if update_interval != 0 and update_interval < MIN_SCAN_INTERVAL:
+                errors['base'] = 'bad_update_interval'
+                description_placeholders['min_scan_interval'] = MIN_SCAN_INTERVAL
 
-            # Save and exit the options flow without forcing a reload of the config entry
-            return self.async_create_entry(
-                data=user_input
-                )
+            if 'base' not in errors:
+                return self.async_create_entry(data=user_input)
 
+        description_placeholders['api_daily_limit'] = API_DAILY_LIMIT
+        
         # Show the options form
         return self.async_show_form(
             step_id="init",
-            data_schema=self.add_suggested_values_to_schema(
-                OPTIONS_SCHEMA,
-                self.config_entry.options
-                )
+            errors=errors,
+            data_schema=OPTIONS_SCHEMA,
+            description_placeholders=description_placeholders,
             )
 
 class CannotConnect(HomeAssistantError):

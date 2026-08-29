@@ -1,4 +1,4 @@
-const CARD_VERSION = '3.0.0'
+const CARD_VERSION = '3.1.1'
 
 class VehicleOccupancyCard extends HTMLElement {
   constructor() {
@@ -170,6 +170,12 @@ class VehicleOccupancyCard extends HTMLElement {
   }
 
   connectedCallback() {
+    // This card uses the light DOM rather than a shadow root, so :host CSS
+    // would not apply. Set the custom element's sizing directly instead.
+    this.style.display = "block";
+    this.style.height = "100%";
+    this.style.minHeight = "0";
+
     if (this.entity2Timer) return;
 
     this.entity2Timer = window.setInterval(() => {
@@ -359,13 +365,25 @@ class VehicleOccupancyCard extends HTMLElement {
     }
 
 
-    this.innerHTML = `
-      <ha-card>
-        <div class="card-content occupancy-card">
-          <div class="top-region">
+    const hasRightSensor = rightSensor !== "";
+
+    const topRegion = hasRightSensor
+      ? `
+          <div class="top-region two-column">
             <div class="top-left">${autoTitle}</div>
             <div class="top-right">${rightSensor}</div>
           </div>
+        `
+      : `
+          <div class="top-region one-column">
+            <div class="top-left">${autoTitle}</div>
+          </div>
+        `;
+
+    this.innerHTML = `
+      <ha-card>
+        <div class="card-content occupancy-card">
+          ${topRegion}
 
           <div class="train-region">
             <div class="train">
@@ -387,16 +405,36 @@ class VehicleOccupancyCard extends HTMLElement {
 
 
       <style>
+        ha-card {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
+          min-height: 0;
+          box-sizing: border-box;
+        }
+
         .occupancy-card {
           display: grid;
-          grid-template-rows: minmax(28px, 20%) 1fr;
+          width: 100%;
+          height: 100%;
+          min-height: 0;
+          grid-template-rows: minmax(28px, 20%) minmax(0, 1fr);
           box-sizing: border-box;
         }
 
         .top-region {
           display: grid;
-          grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
           align-items: start;
+          min-width: 0;
+        }
+
+        .top-region.one-column {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .top-region.two-column {
+          grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
           gap: 12px;
         }
 
@@ -466,7 +504,7 @@ class VehicleOccupancyCard extends HTMLElement {
 
     let occupancy = carriage.occupancy || 0;
 
-    if (this.config.demo) {
+    if (this.config.demo === true) {
       occupancy = Math.floor(Math.random() * 3) + 1;
     }
 
@@ -589,18 +627,17 @@ class VehicleOccupancyCard extends HTMLElement {
     `;
   }
 
-  // The default height for the card in masonry view
   getCardSize() {
     return 3;
   }
 
-  // The default rules for the card in sections view
+  // The default rules for sizing the card in the grid in sections view
   getGridOptions() {
     return {
-      columns: 9,
+      columns: "full",
       min_columns: 9,
-      rows: "auto",
-      min_rows: 1
+      rows: 2,
+      min_rows: 2
     };
   }
 

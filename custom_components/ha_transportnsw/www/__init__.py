@@ -8,8 +8,13 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.lovelace import LOVELACE_DATA
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_call_later
+from homeassistant.helpers.storage import Store
 
-from ..const import JSMODULES, URL_BASE, INTEGRATION_VERSION
+from ..const import (
+    JSMODULES,
+    URL_BASE,
+    INTEGRATION_VERSION
+)
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -20,6 +20,7 @@ from homeassistant.core import (
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.device_registry import DeviceEntry
+from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.const import (
     Platform,
@@ -35,9 +36,52 @@ import voluptuous as vol
 
 from TransportNSWv2 import InvalidAPIKey, StopError
 
-from .helpers import check_stops, set_optional_sensors, get_optional_sensors
+from .helpers import (
+    check_stops,
+    set_optional_sensors,
+    get_optional_sensors,
+    delete_legacy_storage,
+)
+
 from .coordinator import TransportNSWCoordinator
-from .const import *
+from .const import (
+    CONF_ALERTS_SENSOR,
+    CONF_ALERT_SEVERITY,
+    CONF_ALERT_TYPES,
+    CONF_DESTINATION_DEVICE_TRACKER,
+    CONF_DESTINATION_ID,
+    CONF_DESTINATION_NAME,
+    CONF_DESTINATION_TRANSPORT_TYPE,
+    CONF_END_TIME,
+    CONF_FIRST_LEG_DEVICE_TRACKER,
+    CONF_INCLUDE_REALTIME_LOCATION,
+    CONF_LAST_LEG_DEVICE_TRACKER,
+    CONF_MAX_CHANGES,
+    CONF_ORIGIN_DEVICE_TRACKER,
+    CONF_ORIGIN_ID,
+    CONF_ORIGIN_NAME,
+    CONF_ORIGIN_TRANSPORT_TYPE,
+    CONF_RETURN_INFO,
+    CONF_ROUTE_FILTER,
+    CONF_RUN_FILTER,
+    CONF_SENSOR_CREATION,
+    CONF_START_TIME,
+    CONF_TRIPS_TO_CREATE,
+    CONF_TRIP_WAIT_TIME,
+    DEFAULT_DESTINATION_DEVICE_TRACKER,
+    DEFAULT_END_TIME,
+    DEFAULT_FIRST_LEG_DEVICE_TRACKER,
+    DEFAULT_LAST_LEG_DEVICE_TRACKER,
+    DEFAULT_ORIGIN_DEVICE_TRACKER,
+    DEFAULT_RUN_FILTER,
+    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_START_TIME,
+    DEFAULT_MAX_CHANGES,
+    DOMAIN,
+    INTEGRATION_VERSION,
+    STORAGE_VERSION,
+    SUBENTRY_TYPE_JOURNEY,
+)
 from .www import JSModuleRegistration
 
 _LOGGER = logging.getLogger(__name__)
@@ -45,17 +89,16 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.DEVICE_TRACKER]
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
-type MyConfigEntry = ConfigEntry[RuntimeData]
-
-
 @dataclass
-class RuntimeData:
-    """Class to hold your data."""
-
+class TransportNSWRuntimeData:
+    """Class to hold integration data for each entry."""
     coordinator: DataUpdateCoordinator
+    api_store: Store
+
+type TransportNSWConfigEntry = ConfigEntry[TransportNSWRuntimeData]
 
 async def get_migration_data(hass: HomeAssistant, yaml_entry):
-     # Convert a migrated YAML entry into ConfigSubentryData data and return it along with the api key
+    # Convert a migrated YAML entry into ConfigSubentryData data and return it along with the api key
 
     try:
         api_key = yaml_entry[CONF_API_KEY]
@@ -97,10 +140,10 @@ async def get_migration_data(hass: HomeAssistant, yaml_entry):
         # We need the stop names for the title, so get them now
         #stop_data = check_stops(api_key, [origin_id, destination_id])
         stop_data = await hass.async_add_executor_job (
-             check_stops,
-             api_key,
-             [origin_id, destination_id]
-             )
+            check_stops,
+            api_key,
+            [origin_id, destination_id]
+        )
 
         if stop_data['all_stops_valid']:
             # Get the origin and destination stop names
@@ -127,7 +170,7 @@ async def get_migration_data(hass: HomeAssistant, yaml_entry):
             CONF_ALERTS_SENSOR: include_alerts,
             CONF_ALERT_SEVERITY: alert_severity,
             CONF_ALERT_TYPES: alert_types
-            }
+        }
 
         subentry_data.update(sensor_options)
 
@@ -145,28 +188,32 @@ async def get_migration_data(hass: HomeAssistant, yaml_entry):
     return api_key, None, error
 
 # Schema migration
-async def async_migrate_entry(hass: HomeAssistant, config_entry: MyConfigEntry):
+async def async_migrate_entry(hass: HomeAssistant, config_entry: TransportNSWConfigEntry):
 
-    if config_entry.version > 2:
+    if config_entry.version > 3:
         # This means the user has downgraded from a future version
         return False
 
-    if config_entry.version == 1:
-        # Migrate old entry
-        _LOGGER.info(f"Migrating configuration from version {config_entry.version}")
+    new_data = {**config_entry.data}
+    new_options = {**config_entry.options}
+
+    if config_entry.version < 2:
+        # Migrate to version 2
+        _LOGGER.info(f"Interim migration of configuration to version 2")
 
         # Migrate all subentries to the version 2 data schema
         for subentry in config_entry.subentries.values():
             if subentry.subentry_type == SUBENTRY_TYPE_JOURNEY:
-                new_data = {**subentry.data}
+                new_subentry_data = {**subentry.data}
 
                 # We need to move a few entries around and create a whole new 'device_trackers' section
                 # Cater for missing options by using .get() although theoretically that's impossible
-                first_leg_device_tracker = new_data['origin_sensors'].get(CONF_FIRST_LEG_DEVICE_TRACKER, DEFAULT_FIRST_LEG_DEVICE_TRACKER)
-                last_leg_device_tracker = new_data['destination_sensors'].get(CONF_LAST_LEG_DEVICE_TRACKER, DEFAULT_LAST_LEG_DEVICE_TRACKER)
+                first_leg_device_tracker = new_subentry_data['origin_sensors'].get(CONF_FIRST_LEG_DEVICE_TRACKER, DEFAULT_FIRST_LEG_DEVICE_TRACKER)
+                last_leg_device_tracker = new_subentry_data['destination_sensors'].get(CONF_LAST_LEG_DEVICE_TRACKER, DEFAULT_LAST_LEG_DEVICE_TRACKER)
 
                 # Create the new sensor dictionary
-                new_options = {'device_trackers':
+                new_options = {
+                    'device_trackers':
                     {
                         CONF_FIRST_LEG_DEVICE_TRACKER: first_leg_device_tracker,
                         CONF_LAST_LEG_DEVICE_TRACKER: last_leg_device_tracker,
@@ -175,26 +222,79 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: MyConfigEntry):
                     }
                 }
 
-                new_data.update(new_options)
+                new_subentry_data.update(new_options)
                 
                 # Tidy up the old data a bit
-                if CONF_FIRST_LEG_DEVICE_TRACKER in new_data['origin_sensors']:
-                    del new_data['origin_sensors'][CONF_FIRST_LEG_DEVICE_TRACKER]
+                if CONF_FIRST_LEG_DEVICE_TRACKER in new_subentry_data['origin_sensors']:
+                    del new_subentry_data['origin_sensors'][CONF_FIRST_LEG_DEVICE_TRACKER]
 
-                if CONF_LAST_LEG_DEVICE_TRACKER in new_data['destination_sensors']:
-                    del new_data['destination_sensors'][CONF_LAST_LEG_DEVICE_TRACKER]
+                if CONF_LAST_LEG_DEVICE_TRACKER in new_subentry_data['destination_sensors']:
+                    del new_subentry_data['destination_sensors'][CONF_LAST_LEG_DEVICE_TRACKER]
 
                 # Update the subentry
-                # Do we need to do this?  The integration is still loading
                 hass.config_entries.async_update_subentry(
-                     config_entry,
-                     subentry,
-                     data = new_data
-                     )
+                    config_entry,
+                    subentry,
+                    data=new_subentry_data
+                )
 
-        # Finally, update the config entry itself - just the schema version number
-        hass.config_entries.async_update_entry(config_entry, minor_version=0, version=2)
-        _LOGGER.info(f"Migration to configuration version {config_entry.version} successful")
+    if config_entry.version < 3:
+        # Migrate to version 3
+        _LOGGER.info(f"Migrating configuration to version 3")
+
+        # Move CONF_SCAN_INTERVAL from .data to .options
+        if CONF_SCAN_INTERVAL in new_data:
+            new_options[CONF_SCAN_INTERVAL] = new_data[CONF_SCAN_INTERVAL]
+            del new_data[CONF_SCAN_INTERVAL]
+        else:
+            new_options[CONF_SCAN_INTERVAL] = new_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+
+        # Migrate all subentries to the version 3 data schema
+        for subentry in config_entry.subentries.values():
+            if subentry.subentry_type == SUBENTRY_TYPE_JOURNEY:
+                new_subentry_data = {**subentry.data}
+
+                # Convert *_transport_type to a list of strings
+                new_subentry_data[CONF_ORIGIN_TRANSPORT_TYPE] = strings = [str(transport_type) for transport_type in new_subentry_data[CONF_ORIGIN_TRANSPORT_TYPE]]
+                new_subentry_data[CONF_DESTINATION_TRANSPORT_TYPE] = strings = [str(transport_type) for transport_type in new_subentry_data[CONF_DESTINATION_TRANSPORT_TYPE]]
+
+                # Make sure that recent options such as CONF_RUN_FILTER and CONF_MAX_CHANGES are present
+                if CONF_RUN_FILTER not in new_subentry_data:
+                    new_subentry_data[CONF_RUN_FILTER] = DEFAULT_RUN_FILTER
+                
+                if CONF_MAX_CHANGES not in new_subentry_data:
+                    new_subentry_data[CONF_MAX_CHANGES] = DEFAULT_MAX_CHANGES
+
+                if CONF_START_TIME not in new_subentry_data:
+                    new_subentry_data[CONF_START_TIME] = DEFAULT_START_TIME
+
+                if CONF_END_TIME not in new_subentry_data:
+                    new_subentry_data[CONF_END_TIME] = DEFAULT_END_TIME
+
+                # Update the subentry
+                hass.config_entries.async_update_subentry(
+                    config_entry,
+                    subentry,
+                    data=new_subentry_data
+                )
+
+        # The last step for the migration to version 3 - delete the legacy api usage storage file
+        await hass.async_add_executor_job(
+            delete_legacy_storage,
+            hass.config.config_dir,
+            config_entry,
+        )
+
+    # Finally, update the config entry itself - just the schema version number
+    hass.config_entries.async_update_entry(
+        config_entry,
+        data=new_data,
+        options=new_options,
+        minor_version=0,
+        version=3
+    )
+
+    _LOGGER.info(f"Migration to configuration version {config_entry.version} successful")
 
     return True
 
@@ -220,7 +320,7 @@ async def websocket_get_version(
         {"version": INTEGRATION_VERSION},
     )
 
-async def async_setup(hass: HomeAssistant, config_entry: MyConfigEntry):
+async def async_setup(hass: HomeAssistant, config_entry: TransportNSWConfigEntry):
 
     # Check if there's an old YAML config to import...
     yaml_data = defaultdict(list)
@@ -259,12 +359,12 @@ async def async_setup(hass: HomeAssistant, config_entry: MyConfigEntry):
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: MyConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, config_entry: TransportNSWConfigEntry) -> bool:
     """Set up the ha_transportnsw integration from a config entry."""
 
-    """ We need to register the Frontend .JS module, which will be unloaded if the Integration is itself unloaded or reloaded by the user
-        We have to do this here as async_setup is only ever called at HA startup, never again for an Integration reload
-        As there could potentially be multiple config entries (unlikely, to be fair) we need to cater for that """
+    # We need to register the Frontend .JS module, which will be unloaded if the Integration is itself unloaded or reloaded by the user
+    # We have to do this here as async_setup is only ever called at HA startup, never again for an Integration reload
+    # As there could potentially be multiple config entries (unlikely, to be fair) we need to cater for that
 
     # Initialize our cross-entry tracking container if missing
     try:
@@ -315,19 +415,37 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: MyConfigEntry) ->
                         _LOGGER.debug (f"Sensors options unchanged")
 
     except Exception as ex:
-        _LOGGER.error(f"Error checking optional sensors: {ex}")
+        _LOGGER.error(f"Error updating optional sensors: {ex}")
+
+    try:
+        # Initialise the persistent api_data storage
+        api_store = Store(hass, STORAGE_VERSION, f"{DOMAIN}_{config_entry.entry_id}")
+        _LOGGER.debug (f"Initialised persistent storage for {config_entry.title}")
+
+    except Exception as ex:
+        # This is a fatal error
+        _LOGGER.error(f"Error initialising persistent storage: {ex}")
+        return False
 
     try:
         # Initialise the coordinator that manages data updates
         coordinator = TransportNSWCoordinator(hass, config_entry)
-    
-        # Add the coordinator and update listener to config runtime data to make
-        # it accessible throughout the integration
-        config_entry.runtime_data = RuntimeData(coordinator)
+
+        # Add the coordinator and API store to config runtime data to make
+        # them accessible throughout the integration
+        config_entry.runtime_data = TransportNSWRuntimeData(
+            coordinator,
+            api_store,
+        )
+
+        # Initiate the coordinator
+        await coordinator.async_config_entry_first_refresh()
         _LOGGER.debug (f"Initialised coordinator for {config_entry.title}")
 
     except Exception as ex:
+        # This is a fatal error
         _LOGGER.error(f"Error initialising coordinator: {ex}")
+        return False
 
     # Setup platforms
     await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
@@ -336,8 +454,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: MyConfigEntry) ->
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, config_entry: MyConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, config_entry: TransportNSWConfigEntry) -> bool:
     """Unload a config entry."""
+    _LOGGER.debug (f"Unloading entry {config_entry.title}")
 
     try:
         """Unregister frontend modules during unload"""
@@ -352,3 +471,12 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: MyConfigEntry) -
 
     # Unload platforms and return result
     return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+
+async def async_remove_entry(hass: HomeAssistant, config_entry: TransportNSWConfigEntry) -> None:
+    """Handle removal of an entry - clean up the api_data storage file."""
+    try:
+        await config_entry.runtime_data.api_store.async_remove()
+
+    finally:
+        _LOGGER.debug (f"Removed entry {config_entry.title}")
+
