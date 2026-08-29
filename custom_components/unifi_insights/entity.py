@@ -205,6 +205,13 @@ class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):
     @property
     def available(self) -> bool:
         """Return True if entity is available."""
+        # Cached device data can still read "online" long after the
+        # coordinator has stopped getting fresh data from the API (see
+        # UnifiProtectEntity.available for the incident this mirrors) - the
+        # facade's own `available` reflects sub-coordinator
+        # last_update_success and must gate this too.
+        if not self.coordinator.available:
+            return False
         device_data = (
             self.coordinator.data["devices"].get(self._site_id, {}).get(self._device_id)
         )
@@ -215,6 +222,11 @@ class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        if not self.coordinator.available:
+            self._attr_available = False
+            self.async_write_ha_state()
+            return
+
         device_data = (
             self.coordinator.data["devices"].get(self._site_id, {}).get(self._device_id)
         )
@@ -414,6 +426,15 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):
     @property
     def available(self) -> bool:
         """Return True if entity is available."""
+        # Cached protect device data keeps reporting the last-known
+        # "CONNECTED" state indefinitely once the protect coordinator stops
+        # getting fresh data (e.g. the NVR's local session periodically
+        # expiring) - this let entities serve frozen data for hours with no
+        # unavailable signal, invisible to HA and to the user, until an
+        # external reload forced a resync. Gate on the facade's own
+        # `available` (sub-coordinator last_update_success) first.
+        if not self.coordinator.available:
+            return False
         device_data = self.coordinator.data["protect"][f"{self._device_type}s"].get(
             self._device_id
         )
@@ -425,6 +446,11 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        if not self.coordinator.available:
+            self._attr_available = False
+            self.async_write_ha_state()
+            return
+
         device_data = self.device_data
         if not device_data:
             self._attr_available = False

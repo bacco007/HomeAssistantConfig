@@ -310,6 +310,14 @@ async def async_setup_entry(
     )
 
     # 3. Protect coordinator - fast updates (30 seconds) + WebSocket for events
+    # WebSocket site_id: LOCAL consoles ignore site_id for the Protect REST/WS
+    # paths, so "default" is fine. REMOTE (cloud connector) routing uses the
+    # console_id embedded in the path, but if the Network API returned sites
+    # for this console, prefer the first real site id over the placeholder.
+    protect_site_id = "default"
+    if not is_local and network_available and sites:
+        protect_site_id = sites[0].id
+
     protect_coordinator: UnifiProtectCoordinator | None = None
     if protect_client:
         protect_coordinator = UnifiProtectCoordinator(
@@ -317,6 +325,7 @@ async def async_setup_entry(
             network_client=network_client,
             protect_client=protect_client,
             entry=entry,
+            site_id=protect_site_id,
         )
 
     # Fetch initial data - config first, then device/protect in parallel
@@ -328,6 +337,16 @@ async def async_setup_entry(
     if protect_coordinator:
         refresh_tasks.append(protect_coordinator.async_config_entry_first_refresh())
     await asyncio.gather(*refresh_tasks)
+
+    # Start the real-time Protect WebSocket subscription (additive to the
+    # 30s poll above, which stays as the fallback - see
+    # UnifiProtectCoordinator.async_start_websocket). Registered for
+    # on-unload cleanup immediately so a setup failure later in this
+    # function (e.g. platform forwarding below) can't leak the background
+    # task - HA still runs async_on_unload callbacks when setup fails.
+    if protect_coordinator:
+        await protect_coordinator.async_start_websocket()
+        entry.async_on_unload(protect_coordinator.async_stop_websocket)
 
     # Create facade coordinator for backward compatibility with entity classes
     # (it aggregates the initial data from the sub-coordinators on creation)
@@ -378,13 +397,17 @@ async def async_unload_entry(
         data = entry.runtime_data
         _LOGGER.debug("Closing API clients")
         if data.protect_client:
-            # Stop WebSocket if active (on protect coordinator)
+            # Stop the WebSocket (and await its background task) *before*
+            # closing the client below - stopping it after would leave the
+            # loop trying to use an already-closed session for whatever
+            # brief window passes before entry.async_on_unload's registered
+            # copy of this same call runs (see async_setup_entry - that
+            # registration is the safety net for a setup failure that
+            # happens after the WebSocket starts but before this function
+            # ever runs; async_stop_websocket() is idempotent so running it
+            # twice on a normal unload is harmless).
             if data.protect_coordinator:
-                websocket_task = getattr(
-                    data.protect_coordinator, "websocket_task", None
-                )
-                if websocket_task:
-                    websocket_task.cancel()
+                await data.protect_coordinator.async_stop_websocket()
             # Close Protect client (await the async close)
             try:
                 await data.protect_client.close()

@@ -291,12 +291,25 @@ class BaseUniFiClient(ABC):
         try:
             data: dict[str, Any] | list[Any] = await response.json()
             return data
-        except (ValueError, aiohttp.ContentTypeError):
+        except (ValueError, aiohttp.ContentTypeError) as err:
+            # A 2xx status with a non-JSON body (e.g. an HTML login page from
+            # a proxy/console that considers the request unauthenticated) is
+            # not a successful empty response - treating it as one let this
+            # go completely unnoticed for 47h in production: no exception
+            # ever reached the coordinator, so `last_update_success` stayed
+            # True and entities kept serving stale cached data indefinitely
+            # instead of surfacing as unavailable and letting the
+            # coordinator's normal retry/backoff take over.
             redacted_response = (
                 _redact(response_text)[:200] if response_text else "empty"
             )
             _LOGGER.warning("Response is not JSON: %s", redacted_response)
-            return None
+            msg = f"API returned non-JSON response (status {status})"
+            raise UniFiResponseError(
+                msg,
+                status_code=status,
+                response_body=response_text,
+            ) from err
 
     async def _get(
         self,

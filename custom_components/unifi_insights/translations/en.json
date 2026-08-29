@@ -241,6 +241,36 @@
           "off": "Offline"
         }
       },
+      "camera_motion": {
+        "name": "Motion Detection"
+      },
+      "camera_person_detection": {
+        "name": "Person Detection"
+      },
+      "camera_vehicle_detection": {
+        "name": "Vehicle Detection"
+      },
+      "camera_animal_detection": {
+        "name": "Animal Detection"
+      },
+      "camera_package_detection": {
+        "name": "Package Detection"
+      },
+      "camera_doorbell_ring": {
+        "name": "Ring"
+      },
+      "sensor_motion": {
+        "name": "Motion Detection"
+      },
+      "sensor_door": {
+        "name": "Door/Window Status"
+      },
+      "sensor_tamper": {
+        "name": "Tamper Detection"
+      },
+      "sensor_leak": {
+        "name": "Leak Detection"
+      },
       "motion": {
         "name": "Motion"
       },

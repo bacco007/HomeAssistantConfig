@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import UTC, datetime
 import logging
 from typing import TYPE_CHECKING, Any
@@ -74,6 +75,11 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._device_coordinator = device_coordinator
         self._protect_coordinator = protect_coordinator
 
+        # Remove-callbacks returned by async_add_listener() below, released
+        # in async_shutdown() so this facade's forwarding listener doesn't
+        # outlive it on the sub-coordinators (see _setup_listeners).
+        self._sub_coordinator_unsubs: list[Callable[[], None]] = []
+
         # Register listeners to update when any coordinator updates
         self._setup_listeners()
 
@@ -83,13 +89,50 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     def _setup_listeners(self) -> None:
         """Set up listeners to aggregate data when coordinators update."""
-        # When device coordinator updates, trigger facade update
-        self._device_coordinator.async_add_listener(self._handle_coordinator_update)
-        self._config_coordinator.async_add_listener(self._handle_coordinator_update)
+        # async_add_listener() returns a remove-callback; it must be kept
+        # and invoked on shutdown (see async_shutdown) or this facade's
+        # listener registration outlives the facade itself - each
+        # config-entry reload builds a fresh facade + fresh sub-coordinators,
+        # but without releasing this, the outgoing facade stays reachable
+        # (and un-collectable) via the very listener slot it never freed.
+        self._sub_coordinator_unsubs.append(
+            self._device_coordinator.async_add_listener(self._handle_coordinator_update)
+        )
+        self._sub_coordinator_unsubs.append(
+            self._config_coordinator.async_add_listener(self._handle_coordinator_update)
+        )
         if self._protect_coordinator:
-            self._protect_coordinator.async_add_listener(
-                self._handle_coordinator_update
+            self._sub_coordinator_unsubs.append(
+                self._protect_coordinator.async_add_listener(
+                    self._handle_coordinator_update
+                )
             )
+
+    async def async_shutdown(self) -> None:
+        """
+        Shut down the facade and release its listeners on the sub-coordinators.
+
+        ``DataUpdateCoordinator.__init__`` auto-registers
+        ``config_entry.async_on_unload(self.async_shutdown)`` for every
+        coordinator constructed with a ``config_entry`` (all four of ours
+        qualify), so this already runs automatically on config-entry
+        unload/reload - no extra wiring is needed in
+        ``__init__.py::async_unload_entry``. That auto-registration is also
+        why a leaked facade doesn't keep the sub-coordinators *polling*:
+        each sub-coordinator's own auto-registered ``async_shutdown()``
+        cancels its scheduled refresh and sets ``_shutdown_requested``,
+        which ``_async_refresh()`` checks before it would ever fetch or
+        reschedule. What that auto-registration does *not* do is undo the
+        side effect *this* facade caused on *other* objects: the base
+        ``async_shutdown()`` never touches ``_listeners``, so the
+        remove-callbacks from ``_setup_listeners`` must be released here
+        explicitly, or the sub-coordinators keep a dead reference back to
+        this facade indefinitely.
+        """
+        for unsub in self._sub_coordinator_unsubs:
+            unsub()
+        self._sub_coordinator_unsubs.clear()
+        await super().async_shutdown()
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -171,14 +214,54 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return self.data
 
     async def async_request_refresh(self) -> None:
-        """Request refresh of all underlying coordinators."""
-        # Refresh all coordinators
-        await self._config_coordinator.async_request_refresh()
-        await self._device_coordinator.async_request_refresh()
+        """
+        Force a genuine refresh of all underlying coordinators and notify listeners.
+
+        Entity action handlers (see switch.py) call this right after a
+        mutating API call and expect the coordinator to reflect the change
+        by the time the await returns. Two deliberate departures from the
+        obvious implementation make that true:
+
+        1. Each sub-coordinator's own ``async_refresh()`` is used instead
+           of its ``async_request_refresh()``. The latter goes through
+           that coordinator's ``Debouncer`` - fine for coalescing
+           coordinator-internal refresh triggers, but wrong here: when a
+           debounce cooldown from unrelated recent activity is already
+           armed, ``async_request_refresh()`` returns immediately without
+           fetching anything, so aggregating right after it would silently
+           serve stale data. ``async_refresh()`` always performs (and
+           awaits) a real fetch. The trade-off is that this path no longer
+           benefits from that debounce - acceptable because it only runs
+           once per explicit, user-triggered action, not on a hot loop.
+        2. The three refreshes run concurrently via ``asyncio.gather``
+           rather than sequentially - three real HTTP round trips awaited
+           one after another would make every action handler noticeably
+           slower for no benefit, since the coordinators are independent.
+
+        Each sub-coordinator's own refresh already calls
+        ``async_update_listeners()`` when its data changes, which cascades
+        into this facade's ``_handle_coordinator_update`` via the listener
+        chain from ``_setup_listeners`` - re-aggregating and notifying
+        this facade's listeners already in the common case. The explicit
+        ``_aggregate_data()`` + ``async_update_listeners()`` below is kept
+        anyway so a caller of this method is *always* notified even in the
+        edge case where none of the three sub-refreshes produced a change
+        (so that cascade stays silent) - the base
+        ``DataUpdateCoordinator.async_request_refresh()`` this replaces
+        never called ``async_update_listeners()`` at all, which was the
+        second half of the original defect.
+        """
+        refresh_tasks = [
+            self._config_coordinator.async_refresh(),
+            self._device_coordinator.async_refresh(),
+        ]
         if self._protect_coordinator:
-            await self._protect_coordinator.async_request_refresh()
-        # Aggregate the updated data
+            refresh_tasks.append(self._protect_coordinator.async_refresh())
+        await asyncio.gather(*refresh_tasks)
+
+        # Aggregate the updated data and notify this facade's own listeners.
         self._aggregate_data()
+        self.async_update_listeners()
 
     def _require_protect_client(self) -> UniFiProtectClient:
         """Return the Protect client or raise a user-facing error."""

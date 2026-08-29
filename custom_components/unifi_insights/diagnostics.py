@@ -85,10 +85,19 @@ async def async_get_config_entry_diagnostics(
         "protect_client_connected": coordinator.protect_client is not None,
     }
 
+    # WS health signal (task 5): previously no way to tell "connected and
+    # delivering" from "connected but silent" from "reconnect-looping" -
+    # this is the first place an operator would look for that.
+    protect_coordinator = data.protect_coordinator
+    websocket_info = (
+        protect_coordinator.websocket_health if protect_coordinator else None
+    )
+
     # Get the raw data but remove sensitive information
     diagnostics_data = {
         "library_version": library_version,
         "connection": connection_info,
+        "websocket": websocket_info,
         "entry": async_redact_data(entry.as_dict(), TO_REDACT),
         "data": async_redact_data(coordinator.data, TO_REDACT),
     }
