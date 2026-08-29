@@ -9583,10 +9583,11 @@ var require_leaflet_src = __commonJS({
 });
 
 // src/radarwise-card.js
-var CARD_VERSION = "0.8.22";
+var CARD_VERSION = "0.8.23";
 var FORECAST_REFRESH_MS = 15 * 60 * 1e3;
 var ENVIRONMENT_REFRESH_MS = 60 * 60 * 1e3;
 var CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
+var NOAA_RADAR_WMS = "https://opengeo.ncep.noaa.gov/geoserver/wms";
 var RADARWISE_COUNTRIES = {
   us: "United States",
   ca: "Canada",
@@ -9809,6 +9810,7 @@ var RADARWISE_TEXT = {
     nightPeriod: "Night",
     humidity: "Humidity",
     dewPoint: "Dew Point",
+    feelsLike: "Feels like",
     airQuality: "Air Quality",
     uvIndex: "UV Index",
     pollen: "Pollen",
@@ -9889,6 +9891,7 @@ var RADARWISE_TEXT = {
     nightPeriod: "Nuit",
     humidity: "Humidit\xE9",
     dewPoint: "Point de ros\xE9e",
+    feelsLike: "Ressenti",
     airQuality: "Qualite de l'air",
     uvIndex: "Indice UV",
     pollen: "Pollen",
@@ -9969,6 +9972,7 @@ var RADARWISE_TEXT = {
     nightPeriod: "Noche",
     humidity: "Humedad",
     dewPoint: "Punto de roc\xEDo",
+    feelsLike: "Sensaci\xF3n",
     airQuality: "Calidad del aire",
     uvIndex: "Indice UV",
     pollen: "Polen",
@@ -10049,6 +10053,7 @@ var RADARWISE_TEXT = {
     nightPeriod: "Nacht",
     humidity: "Luftfeuchtigkeit",
     dewPoint: "Taupunkt",
+    feelsLike: "Gef\xFChlt",
     airQuality: "Luftqualitat",
     uvIndex: "UV-Index",
     pollen: "Pollen",
@@ -10129,6 +10134,7 @@ var RADARWISE_TEXT = {
     nightPeriod: "Noite",
     humidity: "Humidade",
     dewPoint: "Ponto de orvalho",
+    feelsLike: "Sensa\xE7\xE3o",
     airQuality: "Qualidade do ar",
     uvIndex: "Indice UV",
     pollen: "Polen",
@@ -10209,6 +10215,7 @@ var RADARWISE_TEXT = {
     nightPeriod: "Nacht",
     humidity: "Luchtvochtigheid",
     dewPoint: "Dauwpunt",
+    feelsLike: "Gevoelstemperatuur",
     airQuality: "Luchtkwaliteit",
     uvIndex: "UV-index",
     pollen: "Pollen",
@@ -10893,6 +10900,7 @@ var RadarWiseCard = class extends HTMLElement {
       state: stateObj?.state,
       updated: stateObj?.last_updated,
       temp: attrs.temperature,
+      apparentTemperature: attrs.apparent_temperature ?? attrs.native_apparent_temperature ?? attrs.feels_like,
       temperatureState: this._config.temperature_entity ? this._hass?.states?.[this._config.temperature_entity]?.state : void 0,
       humidity: attrs.humidity,
       humidityState: this._config.humidity_entity ? this._hass?.states?.[this._config.humidity_entity]?.state : void 0,
@@ -11168,6 +11176,7 @@ var RadarWiseCard = class extends HTMLElement {
     const displayCondition = this._displayCondition(condition, sunStateObj);
     const units = this._unitContext(attrs);
     const temp = this._displayTemp(this._currentTemperature(attrs), units);
+    const feelsLike = this._apparentTemperature(attrs, units);
     const windInfo = this._windInfo(attrs, units);
     const wind = windInfo.display;
     const hourly = this._forecasts.hourly || [];
@@ -11249,6 +11258,7 @@ var RadarWiseCard = class extends HTMLElement {
                     </div>
                     <div class="temp-block">
                       <div class="temp-now">${temp}</div>
+                      ${feelsLike ? `<div class="temp-feels">${_wwEscape(text.feelsLike)} ${_wwEscape(feelsLike)}</div>` : ""}
                       <div class="temp-hilo">${hiLo}</div>
                     </div>
                   </div>
@@ -12150,10 +12160,9 @@ var RadarWiseCard = class extends HTMLElement {
     this._radarLabelText = selectedFrames.length === 1 ? `NOAA ${this._t("currentRadar")}` : `NOAA ${this._t("radarLoop")}`;
     this._replaceRadarLayers(selectedFrames.map((frameTime, index) => ({
       time: frameTime,
-      layer: window.L.imageOverlay(this._noaaUrl(frameTime), this._radarMap.getBounds(), {
+      layer: this._noaaLayer(frameTime, {
         opacity: index === selectedFrames.length - 1 ? this._radarOpacity() : 0,
-        zIndex: 20,
-        interactive: false
+        zIndex: 20
       })
     })));
     const label = this.shadowRoot?.getElementById("radar-lbl");
@@ -12493,13 +12502,71 @@ var RadarWiseCard = class extends HTMLElement {
     }
     return data?.radar?.past || [];
   }
-  _noaaUrl(frameTime) {
-    const bounds = this._radarMap.getBounds();
-    const size = this._radarMap.getSize();
-    const sw = bounds.getSouthWest();
-    const ne = bounds.getNorthEast();
-    const service = "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer";
-    return `${service}/exportImage?bbox=${encodeURIComponent([sw.lng, sw.lat, ne.lng, ne.lat].join(","))}&bboxSR=4326&imageSR=4326&size=${Math.max(256, Math.round(size.x))},${Math.max(256, Math.round(size.y))}&format=png32&transparent=true&f=image&time=${frameTime.getTime()}&_=${Date.now()}`;
+  _noaaLayerName() {
+    const { lat, lon } = this._latLon();
+    if (lat >= 50 && (lon <= -129 || lon >= 170)) return "alaska:alaska_bref_qcd";
+    if (lat >= 18 && lat <= 23.5 && lon >= -161.5 && lon <= -154) return "hawaii:hawaii_bref_qcd";
+    if (lat >= 12 && lat <= 16 && lon >= 143 && lon <= 147) return "guam:guam_bref_qcd";
+    if (lat >= 14 && lat <= 23 && lon >= -70 && lon <= -59) return "carib:carib_bref_qcd";
+    return "conus:conus_bref_qcd";
+  }
+  _noaaLayer(frameTime, options = {}) {
+    const card = this;
+    const ClassicPrecipitationLayer = window.L.TileLayer.WMS.extend({
+      createTile(coords, done) {
+        const tile = document.createElement("canvas");
+        const size = this.getTileSize();
+        tile.width = size.x;
+        tile.height = size.y;
+        tile.dataset.radarwiseLayer = "noaa-precipitation";
+        const image = document.createElement("img");
+        image.alt = "";
+        image.crossOrigin = "anonymous";
+        image.referrerPolicy = this.options.referrerPolicy || "origin";
+        image.onload = () => {
+          try {
+            const context = tile.getContext("2d", { willReadFrequently: true });
+            context.drawImage(image, 0, 0, tile.width, tile.height);
+            const pixels = context.getImageData(0, 0, tile.width, tile.height);
+            tile.dataset.filteredPixels = String(card._filterNoaaWeakEchoes(pixels));
+            context.putImageData(pixels, 0, 0);
+            done(null, tile);
+          } catch (error) {
+            done(error, tile);
+          }
+        };
+        image.onerror = () => done(new Error("NOAA precipitation radar tile failed to load"), tile);
+        image.src = this.getTileUrl(coords);
+        return tile;
+      }
+    });
+    return new ClassicPrecipitationLayer(NOAA_RADAR_WMS, {
+      layers: this._noaaLayerName(),
+      styles: "radar_reflectivity",
+      format: "image/png",
+      transparent: true,
+      version: "1.3.0",
+      time: frameTime.toISOString(),
+      crossOrigin: true,
+      referrerPolicy: "origin",
+      attribution: "Radar &copy; NOAA/NWS",
+      ...options
+    });
+  }
+  _filterNoaaWeakEchoes(imageData) {
+    const pixels = imageData?.data || [];
+    let filtered = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      const red = pixels[index];
+      const green = pixels[index + 1];
+      const blue = pixels[index + 2];
+      const alpha = pixels[index + 3];
+      if (alpha && red < 120 && green < 220 && blue >= green - 20) {
+        pixels[index + 3] = 0;
+        filtered += 1;
+      }
+    }
+    return filtered;
   }
   _radarOpacity() {
     const values = { standard: 0.76, vivid: 0.9, soft: 0.58 };
@@ -12715,6 +12782,15 @@ var RadarWiseCard = class extends HTMLElement {
       };
     }
     return attrs.temperature;
+  }
+  _apparentTemperature(attrs, units) {
+    const value = [
+      attrs.apparent_temperature,
+      attrs.native_apparent_temperature,
+      attrs.feels_like,
+      attrs.feels_like_temperature
+    ].find((candidate) => Number.isFinite(this._candidateNumber(candidate)));
+    return value === void 0 ? "" : this._displayTemp(value, units);
   }
   _displayTemp(value, units, includeUnit = true) {
     const number = this._tempValue(value, units);
@@ -13167,7 +13243,8 @@ var RadarWiseCard = class extends HTMLElement {
       .updated-note{font-size:14px;color:var(--ww-muted);font-weight:850;margin-top:7px;text-transform:uppercase;letter-spacing:.04em}
       .temp-block{text-align:right;flex-shrink:0;min-width:max-content}
       .temp-now{font-size:66px;font-weight:800;color:var(--ww-text);line-height:1.08;letter-spacing:0}
-      .temp-hilo{font-size:20px;color:var(--ww-muted);font-weight:800;margin-top:9px}
+      .temp-feels{font-size:13px;color:var(--ww-muted);font-weight:850;margin-top:3px;text-transform:uppercase;letter-spacing:.035em}
+      .temp-hilo{font-size:20px;color:var(--ww-muted);font-weight:800;margin-top:6px}
       .daily-strip{display:grid;grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(0,1fr));gap:12px;min-height:188px;max-height:232px;margin-bottom:12px;flex:1}
       .fc-slot{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 8px;background:var(--ww-panel);border-radius:14px;border:1px solid var(--ww-line);min-width:0}
       .fc-day{font-size:22px;font-weight:850;color:var(--ww-text);text-transform:uppercase;line-height:1.05;text-align:center}
