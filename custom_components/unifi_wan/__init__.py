@@ -566,27 +566,47 @@ def _extract_speedtest(
 
     The authoritative source is the gateway's ``speedtest-status`` block,
     which is the only place the controller records *which* interface the
-    test actually ran on (``source_interface``). The ``uplink`` fields carry
-    the same numbers under different names and are used as a fallback for
-    firmware that omits the block.
+    test actually ran on (``source_interface``). The ``uplink`` section
+    carries the same figures under older names, and firmware that reports
+    no block at all is the reason it is read.
+
+    The two are separate records of separate runs, so one result is taken
+    whole from one of them and they are never merged field by field. The
+    gateway rewrites its block around a run and can be caught with a field
+    missing; filling that field in from the uplink section produced a result
+    pairing today's throughput with the timestamp of whichever older run the
+    legacy fields last caught - months earlier on firmware that no longer
+    maintains them.
     """
     raw = gateway.get("speedtest-status") if gateway else None
     status = raw if isinstance(raw, dict) else {}
-
-    def pick(primary: Any, fallback: Any) -> Any:
-        return primary if primary is not None else fallback
-
-    return {
-        "down": pick(status.get("xput_download"), uplink.get("xput_down")),
-        "up": pick(status.get("xput_upload"), uplink.get("xput_up")),
-        "ping": pick(status.get("latency"), uplink.get("speedtest_ping")),
-        "lastrun": pick(status.get("rundate"), uplink.get("speedtest_lastrun")),
-        "status": pick(status.get("status_summary"), uplink.get("speedtest_status")),
+    result = {
+        "down": status.get("xput_download"),
+        "up": status.get("xput_upload"),
+        "ping": status.get("latency"),
+        "lastrun": status.get("rundate"),
+        "status": status.get("status_summary"),
         # None when the controller does not say; never guessed.
         "source_interface": _normalise_interface(status.get("source_interface")),
         # The far end of that run. Only the block's own "server" sub-object
         # is consulted, never the uplink section, which describes the line.
         **_extract_server_fields(status),
+    }
+    if any(result[key] is not None for key in ("down", "up", "lastrun")):
+        return result
+
+    # The gateway has no block, or none it has filled in yet. The uplink's
+    # legacy fields are then the only record of a run there is, and they are
+    # taken as one - a result of theirs is judged against the others by its
+    # own timestamp, so a stale one simply loses.
+    return {
+        "down": uplink.get("xput_down"),
+        "up": uplink.get("xput_up"),
+        "ping": uplink.get("speedtest_ping"),
+        "lastrun": uplink.get("speedtest_lastrun"),
+        "status": uplink.get("speedtest_status"),
+        "source_interface": None,
+        **dict.fromkeys(SPEEDTEST_SERVER_FIELDS),
     }
 
 
@@ -1205,6 +1225,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 "Speedtest result could not be attributed to a WAN "
                 "(source_interface=%r)",
                 result.get("source_interface"),
+            )
+            return
+
+        # A WAN's result never moves backwards in time. The controller can
+        # report an older run than the one already recorded - a block caught
+        # mid-rewrite falls back to the uplink's legacy fields, which on some
+        # firmware describe a run months earlier - and that must not replace
+        # a newer result with a stale one for as long as it takes the next
+        # poll to correct it.
+        stored = speedtest_results.get(wan_number)
+        if stored is not None and not _is_newer(lastrun, stored.get("lastrun")):
+            _LOGGER.debug(
+                "Ignored a speedtest result for WAN%s older than the one held "
+                "(reported %s, holding %s)",
+                wan_number,
+                lastrun,
+                stored.get("lastrun"),
             )
             return
 

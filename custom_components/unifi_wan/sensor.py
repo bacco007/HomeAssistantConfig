@@ -23,7 +23,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.config_entries import ConfigEntry
 
-from .const import DOMAIN
+from .const import DOMAIN, SPEEDTEST_SERVER_FIELDS
 from . import (
     UniFiWanData,
     UniFiWanRuntimeData,
@@ -296,15 +296,19 @@ def _active_speedtest_server(d: UniFiWanData) -> dict[str, Any]:
     blank these sensors every time a per-WAN record happened to be the
     fresher of the two.
 
-    The block counts as the active WAN's on the same terms as its throughput
-    does, rather than on the stricter evidence gateway_speedtest_wan wants:
-    a gateway that names the interface only while a run is fresh would
-    otherwise blank these sensors again minutes later. Nothing latches here -
-    the next poll re-reads them - so the wrong-guess-forever risk that
-    strictness guards against does not arise.
+    What the integration recorded for that WAN comes first, for the reason
+    the throughput sensors read it: the gateway rewrites its block around a
+    run, and reading the block alone blanks these sensors every time it is
+    caught mid-rewrite. The block is consulted where nothing has been
+    recorded yet, on the same terms its throughput is displayed by.
     """
     active, _ = resolve_active_wan(d)
-    if active is None or not _gateway_result_is_wan(d, active):
+    if active is None:
+        return {}
+    latched = d.speedtest_latched.get(active) or {}
+    if any(latched.get(name) is not None for name in SPEEDTEST_SERVER_FIELDS):
+        return latched
+    if not _gateway_result_is_wan(d, active):
         return {}
     return d.speedtest
 
