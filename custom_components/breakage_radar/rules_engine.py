@@ -177,11 +177,27 @@ def normalise_version(version: str) -> str:
     return version
 
 
+def _release_key(version: str) -> tuple[int, ...]:
+    """Sortable key for a release label, ignoring any patch part."""
+    return parse_version(normalise_version(version))
+
+
 def is_future(breaks_in: str, current: str) -> bool:
     """True when ``breaks_in`` is a release strictly after ``current``."""
-    return parse_version(normalise_version(breaks_in)) > parse_version(
-        normalise_version(current)
-    )
+    return _release_key(breaks_in) > _release_key(current)
+
+
+def is_pending(breaks_in: str, core_version: str) -> bool:
+    """True when the removal has not reached the version compared against.
+
+    The crawler passes the earliest release nobody runs yet (resolved from the
+    newest release on PyPI, or dev minus one without a network -- see
+    ``tools/release.py``), so a removal landing in that release is still ahead
+    of every user and the most urgent thing the tool has. The local scan passes
+    the running version, so a removal landing in it is already biting and must
+    stay matched. Compare a *running* version's future with :func:`is_future`.
+    """
+    return _release_key(breaks_in) >= _release_key(core_version)
 
 
 # --------------------------------------------------------------------------- #
@@ -1141,9 +1157,9 @@ def load_rules(payload: Iterable[dict[str, Any]]) -> list[Rule]:
 
 
 def matchable_rules(rules: Iterable[Rule], *, current_version: str) -> list[Rule]:
-    """Rules that can actually be matched *and* break in a future release."""
+    """Rules that can actually be matched *and* whose removal is still pending."""
     return [
         rule
         for rule in rules
-        if rule.matchable and is_future(rule.breaks_in, current_version)
+        if rule.matchable and is_pending(rule.breaks_in, current_version)
     ]
