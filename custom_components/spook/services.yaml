@@ -20,6 +20,42 @@ blueprint_import:
       selector:
         text:
 
+automation_snooze:
+  name: Snooze 👻
+  description: >-
+    Turns an automation off for a while, and turns it back on when the time is
+    up. It survives a restart of Home Assistant, so a snooze does not quietly
+    become a disable.
+  target:
+    entity:
+      domain: automation
+  fields:
+    duration:
+      name: Duration
+      description: How long the automation stays off.
+      required: true
+      example: "01:00:00"
+      selector:
+        duration:
+
+automation_turn_on_for:
+  name: Turn on for 👻
+  description: >-
+    Turns an automation on for a while, and turns it back off when the time is
+    up. It survives a restart of Home Assistant, so "just for tonight" does not
+    quietly become forever.
+  target:
+    entity:
+      domain: automation
+  fields:
+    duration:
+      name: Duration
+      description: How long the automation stays on.
+      required: true
+      example: "01:00:00"
+      selector:
+        duration:
+
 homeassistant_create_area:
   name: Create an area 👻
   description: >-
@@ -186,11 +222,11 @@ homeassistant_delete_area:
 homeassistant_disable_config_entry:
   name: Disable an integration 👻
   description: >-
-    Disables an integration configuration entry.
+    Disables an integration entry.
   fields:
     config_entry_id:
-      name: Config entry
-      description: The integration configuration entry to disable.
+      name: Integration entry
+      description: The integration entry to disable.
       required: true
       selector:
         config_entry:
@@ -198,11 +234,11 @@ homeassistant_disable_config_entry:
 homeassistant_enable_config_entry:
   name: Enable an integration 👻
   description: >-
-    Enables an integration configuration entry.
+    Enables an integration entry.
   fields:
     config_entry_id:
-      name: Config entry
-      description: The integration configuration entry to enable.
+      name: Integration entry
+      description: The integration entry to enable.
       required: true
       selector:
         config_entry:
@@ -302,6 +338,33 @@ homeassistant_enable_entity:
         entity:
           multiple: true
 
+homeassistant_expose_entity:
+  name: Expose an entity to assistants 👻
+  description: >-
+    Exposes an entity (or entities) to voice assistants.
+  fields:
+    entity_id:
+      name: Entity
+      description: The entity/entities to expose.
+      required: true
+      selector:
+        entity:
+          multiple: true
+    assistants:
+      name: Assistants
+      description: The assistant(s) to apply this to.
+      required: true
+      selector:
+        select:
+          multiple: true
+          options:
+            - label: Alexa
+              value: cloud.alexa
+            - label: Google Assistant
+              value: cloud.google_assistant
+            - label: Assist
+              value: conversation
+
 homeassistant_hide_entity:
   name: Hide an entity 👻
   description: >-
@@ -333,6 +396,33 @@ homeassistant_rename_entity:
       required: true
       selector:
         text:
+
+homeassistant_unexpose_entity:
+  name: Stop exposing an entity to assistants 👻
+  description: >-
+    Stops exposing an entity (or entities) to voice assistants.
+  fields:
+    entity_id:
+      name: Entity
+      description: The entity/entities to stop exposing.
+      required: true
+      selector:
+        entity:
+          multiple: true
+    assistants:
+      name: Assistants
+      description: The assistant(s) to apply this to.
+      required: true
+      selector:
+        select:
+          multiple: true
+          options:
+            - label: Alexa
+              value: cloud.alexa
+            - label: Google Assistant
+              value: cloud.google_assistant
+            - label: Assist
+              value: conversation
 
 homeassistant_unhide_entity:
   name: Unhide an entity 👻
@@ -715,11 +805,11 @@ homeassistant_ignore_all_discovered:
 homeassistant_disable_polling:
   name: Disable polling for updates 👻
   description: >-
-    Disables polling for updates for an integration configuration entry.
+    Disables polling for updates for an integration entry.
   fields:
     config_entry_id:
-      name: Config entry
-      description: The integration configuration entry to disable polling for.
+      name: Integration entry
+      description: The integration entry to disable polling for.
       required: true
       selector:
         config_entry:
@@ -727,11 +817,11 @@ homeassistant_disable_polling:
 homeassistant_enable_polling:
   name: Enable polling for updates 👻
   description: >-
-    Enables polling for updates for an integration configuration entry.
+    Enables polling for updates for an integration entry.
   fields:
     config_entry_id:
-      name: Config entry
-      description: The integration configuration entry to enable polling for.
+      name: Integration entry
+      description: The integration entry to enable polling for.
       required: true
       selector:
         config_entry:
@@ -947,6 +1037,15 @@ input_number_decrement:
       required: false
       selector:
         number:
+    cycle:
+      name: Cycle
+      description: >-
+        Carry on from the other end of the range instead of stopping at this
+        one, the same way selecting the next option cycles a select.
+      required: false
+      default: false
+      selector:
+        boolean:
 
 input_number_increment:
   name: Increase value 👻
@@ -964,6 +1063,15 @@ input_number_increment:
       required: false
       selector:
         number:
+    cycle:
+      name: Cycle
+      description: >-
+        Carry on from the other end of the range instead of stopping at this
+        one, the same way selecting the next option cycles a select.
+      required: false
+      default: false
+      selector:
+        boolean:
 
 input_number_max:
   name: Set maximum value 👻
@@ -1209,6 +1317,29 @@ repairs_unignore_all:
   description: >-
     Unignore all issues currently raised in Home Assistant Repairs.
 
+sensor_set_display_precision:
+  name: Set display precision 👻
+  description: >-
+    Sets the number of decimals shown for one or more sensors.
+  fields:
+    entity_id:
+      name: Entity
+      description: The sensor entity/entities to update.
+      required: true
+      selector:
+        entity:
+          multiple: true
+          domain: sensor
+    display_precision:
+      name: Display precision
+      description: The number of decimals to show for the sensor.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 100
+          mode: box
+
 timer_set_duration:
   name: Set duration 👻
   description: >-
@@ -1333,3 +1464,23 @@ zone_delete:
           multiple: true
           filter:
             - domain: zone
+
+wait_for_condition:
+  name: Wait for a condition 👻
+  description: >-
+    Wait until a condition is true. Returns straight away if it already is.
+  fields:
+    condition:
+      name: Condition
+      description: The condition to wait for.
+      required: true
+      selector:
+        condition:
+    timeout:
+      name: Timeout
+      description: >-
+        How long to wait before giving up. Waits indefinitely when left out.
+      required: false
+      example: "00:05:00"
+      selector:
+        duration:
