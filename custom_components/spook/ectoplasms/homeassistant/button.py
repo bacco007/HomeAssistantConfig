@@ -78,7 +78,7 @@ async def async_setup_entry(
 
 
 class HomeAssistantSpookButtonEntity(HomeAssistantSpookEntity, ButtonEntity):
-    """Spook button providing Home Assistant actions."""
+    """Spook button providig Home Asistant actions."""
 
     entity_description: HomeAssistantSpookButtonEntityDescription
 

@@ -10,7 +10,7 @@
                 "title": "Käännä 👻"
             },
             "user": {
-                "description": "Tämän apurin avulla voit kääntää entiteetin käyttäytymisen. Voit esimerkiksi vaihtaa binäärisensoreiden arvot ja kytkimien auki/kiinni -tilat käänteisiksi.",
+                "description": "Tämän apurin avulla voit kääntää entiteetin käyttäytymisen. Voit esimerkiksi vaihtaa binääriantureiden arvot ja kytkimien auki/kiinni -tilat käänteisiksi.",
                 "menu_options": {
                     "binary_sensor": "Käännä binäärisensori",
                     "switch": "Käännä kytkin"
