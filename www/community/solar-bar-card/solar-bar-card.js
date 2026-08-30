@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 3.0.2 - Flow dots now driven by JS instead of SVG SMIL for cross-browser reliability
+// Version 3.0.3 - Option to hide EV potential bar segment when charger is idle
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -212,6 +212,7 @@ class SolarBarCard extends HTMLElement {
       show_consumers_when_idle: false,
       // EV idle visibility
       show_ev_when_idle: false,
+      show_ev_potential_when_idle: true,
       // History entities for EV and consumers
       ev_history_entity: null,
       consumer_1_history_entity: null,
@@ -575,6 +576,7 @@ class SolarBarCard extends HTMLElement {
       show_consumers_when_idle = false,
       // EV idle visibility
       show_ev_when_idle = false,
+      show_ev_potential_when_idle = true,
       // History entities for EV and consumers
       ev_history_entity = null,
       consumer_1_history_entity = null,
@@ -806,8 +808,8 @@ class SolarBarCard extends HTMLElement {
     // 0211 change, from const to let
     const totalGridImport = gridImportPower;
 
-    // EV Potential display (only when not charging)
-    const evDisplayPower = isActuallyCharging ? 0 : Math.max(0, car_charger_load - exportPower);
+    // EV Potential display (only when not charging, and only if idle display isn't hidden)
+    const evDisplayPower = (isActuallyCharging || !show_ev_potential_when_idle) ? 0 : Math.max(0, car_charger_load - exportPower);
 
     // Calculate excess solar for EV ready indicator
     const excessSolar = solarProduction - effectiveConsumption;
@@ -2814,6 +2816,7 @@ class SolarBarCardEditor extends HTMLElement {
       show_stats_detail: "Show Stats Detail Row",
       stats_detail_position: "Stats Detail Position",
       show_ev_when_idle: "Show EV When Idle",
+      show_ev_potential_when_idle: "Show EV Potential When Idle",
       ev_history_entity: "EV Daily Energy Sensor",
       consumer_1_entity: "Consumer 1 Power Sensor",
       consumer_1_name: "Consumer 1 Name",
@@ -2906,6 +2909,7 @@ class SolarBarCardEditor extends HTMLElement {
       show_stats_detail: "Show the detail row on stats tiles (daily kWh, net position, battery %). Disable to save vertical space.",
       stats_detail_position: "Where to show the detail: 'below' as a 3rd row, or 'inline' next to the kW value separated by a slash.",
       show_ev_when_idle: "Always show EV tile even when not charging. When off, the EV tile only appears while actively charging.",
+      show_ev_potential_when_idle: "Show the grey dashed EV potential capacity segment on the bar while the EV charger is idle (default on). Turn off to hide it whenever the EV charger sensor reports 0 kW, keeping the bar focused on live power flows.",
       ev_history_entity: "Daily EV energy sensor (kWh) - shows daily total on EV tile when stats detail is enabled.",
       consumer_1_entity: "Power sensor for an additional consumer (e.g., heat pump, pool heater). Shows as a stats tile only.",
       consumer_1_name: "Display name for Consumer 1 (e.g., 'Heat Pump', 'Pool')",
@@ -3280,6 +3284,12 @@ class SolarBarCardEditor extends HTMLElement {
             type: "grid",
             schema: [
               { name: "show_ev_when_idle", default: false, selector: { boolean: {} } },
+              { name: "show_ev_potential_when_idle", default: true, selector: { boolean: {} } }
+            ]
+          },
+          {
+            type: "grid",
+            schema: [
               { name: "show_consumers_when_idle", default: false, selector: { boolean: {} } }
             ]
           }
@@ -3340,7 +3350,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v3.0.2 ',
+  '%c SOLAR-BAR-CARD %c v3.0.3 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
