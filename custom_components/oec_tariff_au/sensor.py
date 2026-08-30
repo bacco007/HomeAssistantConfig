@@ -3,7 +3,6 @@
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
-    SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
@@ -67,7 +66,6 @@ class OecCurrentRateSensor(OecBaseSensor):
         self._attr_name = "Current Rate"
         self._attr_native_unit_of_measurement = "$/kWh"
         self._attr_device_class = SensorDeviceClass.MONETARY
-        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 5
 
     @property
@@ -118,7 +116,6 @@ class OecDailySupplyChargeSensor(OecBaseSensor):
         self._attr_name = "Daily Supply Charge"
         self._attr_native_unit_of_measurement = "$/day"
         self._attr_device_class = SensorDeviceClass.MONETARY
-        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 4
 
     @property
@@ -138,7 +135,6 @@ class OecDemandRateSensor(OecBaseSensor):
         self._attr_name = "Demand Rate"
         self._attr_native_unit_of_measurement = "$/kW/month"
         self._attr_device_class = SensorDeviceClass.MONETARY
-        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_suggested_display_precision = 2
 
     @property
