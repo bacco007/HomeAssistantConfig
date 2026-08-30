@@ -176,6 +176,7 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         # different failure classes.
         self._ws_parse_warned = False
         self._ws_event_parse_warned = False
+        self._ws_event_error_warned: bool = False
 
         # WebSocket health signal (task 5, hardened by review finding 1):
         # there was previously no way to tell "connected and delivering"
@@ -679,6 +680,25 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         containers = [c for c in (payload, item, action) if isinstance(c, dict)]
         if not containers:
             containers = [message]
+
+        # The console reports its own faults on this stream as a frame with
+        # an "error" field and no event fields, a rate-limit notice being the
+        # common one. That is not a parse failure, and letting it fall through
+        # to the unparseable path spends the one-time WARNING that exists to
+        # surface a genuinely wrong frame shape, leaving a real problem to be
+        # logged at DEBUG afterwards. Reported on its own warned-once flag.
+        error: Any = _pick_field(containers, "error")
+        if error:
+            level: int = (
+                logging.DEBUG if self._ws_event_error_warned else logging.WARNING
+            )
+            _LOGGER.log(
+                level,
+                "Protect coordinator: events stream reported an error: %s",
+                message,
+            )
+            self._ws_event_error_warned = True
+            return
 
         event_type = _pick_field(containers, "type", "eventType", "event_type")
         if not event_type:

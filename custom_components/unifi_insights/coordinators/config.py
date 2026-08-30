@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from http import HTTPStatus
 import logging
 from typing import TYPE_CHECKING, Any
 
@@ -212,6 +213,25 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
                     )
                 else:
                     raise
+            except UniFiResponseError as err:
+                # A console with no Network application answers this endpoint
+                # with 200 and an HTML body. api/base.py raises for a 2xx
+                # non-JSON response rather than returning None, which is right
+                # in general, but here it is a permanent property of the
+                # hardware rather than a transient fault, and setup validation
+                # in __init__.py already tolerates it. Left unhandled, the
+                # first refresh raises UpdateFailed, then ConfigEntryNotReady,
+                # and the entry never loads. Only a 200 is tolerated, so a
+                # redirect or any other sub-400 status still fails.
+                # UniFiNotFoundError subclasses UniFiResponseError, so this
+                # clause has to stay below the tuple above.
+                if self.protect_client is None or err.status_code != HTTPStatus.OK:
+                    raise
+                _LOGGER.debug(
+                    "Config coordinator: sites endpoint returned a non-JSON "
+                    "body (status %s) - console has no Network application",
+                    err.status_code,
+                )
 
             sites = [self._model_to_dict(s) for s in sites_models]
             self.data["sites"] = {
