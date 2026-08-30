@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional
 
 from aiohttp import ClientError, ClientResponseError, ClientSession
 
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
 from .const import (
@@ -23,6 +23,15 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT = 15
 CLIENT_VERSION = "0.1.0"
+
+
+class WhoopUnauthorized(HomeAssistantError):
+    """WHOOP rejected the access token with HTTP 401.
+
+    The base class matters: UpdateFailed would be swallowed by the get_* helpers
+    below, and ConfigEntryAuthFailed stops the coordinator permanently.
+    async_update_data decides when a 401 is actually fatal.
+    """
 
 
 class WhoopApiClient:
@@ -75,8 +84,9 @@ class WhoopApiClient:
                 response_text_for_error,
             )
             if err.status == 401:
-                raise ConfigEntryAuthFailed(
-                    f"Authentication failed: {err.message}"
+                raise WhoopUnauthorized(
+                    f"401 from {path}: "
+                    f"{response_text_for_error.strip() or err.message}"
                 ) from err
             if err.status == 429:
                 raise UpdateFailed(f"Rate limit exceeded: {err.message}") from err

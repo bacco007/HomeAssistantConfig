@@ -202,8 +202,15 @@ class WhoopConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
         return WhoopOptionsFlowHandler()
 
 
-class WhoopOptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle WHOOP options."""
+class WhoopOptionsFlowHandler(config_entries.OptionsFlowWithReload):
+    """Handle WHOOP options.
+
+    OptionsFlowWithReload (not plain OptionsFlow) so core reloads the entry when
+    - and only when - the options actually changed. The integration must not
+    register a config entry update listener as well: core raises ValueError if
+    both are present, and an update listener would also fire on the hourly OAuth
+    token write, reloading the integration ~24x/day. See async_setup_entry.
+    """
 
     async def async_step_init(
         self, user_input: Dict[str, Any] | None = None
