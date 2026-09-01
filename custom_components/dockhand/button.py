@@ -266,6 +266,7 @@ class _BaseFastContainerButton(
     def device_info(self) -> DeviceInfo:
         c = self._container()
         return _container_device(
+            self._entry_id,
             self._container_name,
             self._env_id,
             self._env_name,
@@ -304,6 +305,7 @@ class _BaseFastStackButton(CoordinatorEntity[DockhandFastCoordinator], ButtonEnt
     def device_info(self) -> DeviceInfo:
         s = self._stack()
         return _stack_device(
+            self._entry_id,
             self._stack_name,
             self._env_id,
             self._env_name,
@@ -537,7 +539,7 @@ class DockhandEnvBulkUpdateButton(
 
     @property
     def device_info(self) -> DeviceInfo:
-        return _env_device(self._env_id, self._env_name, self._base_url)
+        return _env_device(self._entry_id, self._env_id, self._env_name, self._base_url)
 
     async def _vulnerability_criteria(self) -> str | None:
         """Same best-effort fetch-then-fall-back-to-Dockhand's-own-default
@@ -715,7 +717,7 @@ class DockhandCheckUpdatesButton(
 
     @property
     def device_info(self) -> DeviceInfo:
-        return _env_device(self._env_id, self._env_name, self._base_url)
+        return _env_device(self._entry_id, self._env_id, self._env_name, self._base_url)
 
     async def async_press(self) -> None:
         try:
@@ -780,6 +782,7 @@ class _BaseSlowGitStackButton(CoordinatorEntity[DockhandSlowCoordinator], Button
     @property
     def device_info(self) -> DeviceInfo:
         return _stack_device(
+            self._entry_id,
             self._stack_name,
             self._env_id,
             self._env_name,

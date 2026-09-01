@@ -8,8 +8,6 @@ auto-revert safety check here — only the shared warnings-to-repair-issue
 handling.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from homeassistant.components.select import SelectEntity
@@ -116,7 +114,7 @@ class DockhandContainerRestartPolicySelect(
             f"{entry_id}_{env_id}_container_{container_name}_restart_policy"
         )
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, f"container_{env_id}_{container_name}")},
+            identifiers={(DOMAIN, f"{entry_id}_container_{env_id}_{container_name}")},
         )
 
     def _container(self) -> dict | None:

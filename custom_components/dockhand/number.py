@@ -40,8 +40,6 @@ from a container failing afterward) surface as a repair issue too, since a
 warning means part of the request may not have been applied as asked.
 """
 
-from __future__ import annotations
-
 import logging
 from typing import Any
 

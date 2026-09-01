@@ -43,9 +43,11 @@ from .helpers import (
     _container_has_healthcheck,
     _container_has_pending_update,
     _coordinator_env,
+    _device_id_container,
+    _device_id_schedule,
+    _device_id_stack,
     _ensure_env_devices,
     _ensure_hub_devices,
-    _sched_key,
     _stack_has_system_container,
 )
 from .migration import async_run_migrations
@@ -269,18 +271,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: DockhandConfigEntry) -> 
         update_coordinator=update_coordinator,
     )
 
+    # Run any pending one-time registry migrations BEFORE pre-registering
+    # devices.  Migration must see the old registry state; _register_devices
+    # calls async_get_or_create with the new entry-scoped identifiers, so if
+    # it ran first the new-format devices would already exist and migration
+    # would collide trying to rename the old bare-identifier devices to the
+    # same names.  Migrations are idempotent — safe to call on every setup.
+    # All migration logic lives in migration.py.  Unwrapped here
+    # (fast_coordinator.data is now {"environments": {...}}) so migration.py's
+    # own functions keep receiving the same flat per-env dict shape they always
+    # have — they don't need to know about the wrapper at all.
+    async_run_migrations(hass, entry, _all_envs(fast_coordinator.data))
+
     # Pre-register group devices so they appear with correct names before
-    # entity platforms load.
+    # entity platforms load.  Must run AFTER async_run_migrations (above) so
+    # that async_get_or_create finds already-renamed identifiers in the
+    # registry rather than creating duplicate new-format devices alongside
+    # surviving old-format ones.
     base_url = entry.data.get(CONF_API_URL, "")
     _register_devices(hass, entry, fast_coordinator, slow_coordinator, config, base_url)
-
-    # Run any pending one-time registry migrations (idempotent — safe to call
-    # on every setup). All migration logic lives in migration.py. Unwrapped
-    # here (fast_coordinator.data is now {"environments": {...}}) so
-    # migration.py's own functions keep receiving the same flat per-env
-    # dict shape they always have — they don't need to know about the
-    # wrapper at all.
-    async_run_migrations(hass, entry, _all_envs(fast_coordinator.data))
 
     # Run cleanup immediately on setup so that stale registry entries from a
     # previous install/reload are removed before platforms add new entities.
@@ -632,7 +641,7 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
             for c in env_containers:
                 name = c.get("name", "")
                 if name:
-                    containers.add(f"container_{env_id}_{name}")
+                    containers.add(_device_id_container(entry.entry_id, env_id, name))
                     if update_entities_enabled and update_check_enabled:
                         update_uids.add(f"{entry.entry_id}_{env_id}_update_{name}")
                     if not c.get("systemContainer"):
@@ -667,7 +676,7 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
             stacks_fetch_ok_env_ids.add(env_id)
             for s in env_data.get("stacks") or []:
                 stack_name = s["name"]
-                stacks.add(f"stack_{env_id}_{stack_name}")
+                stacks.add(_device_id_stack(entry.entry_id, env_id, stack_name))
                 stacks_group_env_ids.add(env_id)
                 has_system = _stack_has_system_container(s, env_containers)
                 if not has_system:
@@ -749,7 +758,9 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
         if schedules_enabled:
             for sched in slow_data.get("schedules") or []:
                 if sched.get("id") is not None:
-                    schedules.add(f"schedule_{_sched_key(sched)}")
+                    schedules.add(
+                        _device_id_schedule(entry.entry_id, sched["id"], sched["type"])
+                    )
                     sched_env_id = sched.get("environmentId")
                     if sched_env_id is not None:
                         schedule_env_group_ids.add(sched_env_id)
@@ -907,12 +918,21 @@ def _cleanup_stale_registry(
             if domain != DOMAIN:
                 continue
 
-            if identifier.startswith("container_"):
+            # All Dockhand device identifiers are scoped to the config entry:
+            # "{entry_id}_{bare_identifier}".  Skip devices that belong to a
+            # different entry (shouldn't happen, but be defensive) and strip
+            # the prefix so the bare-identifier checks below stay readable.
+            entry_prefix = f"{entry.entry_id}_"
+            if not identifier.startswith(entry_prefix):
+                continue
+            bare = identifier[len(entry_prefix) :]
+
+            if bare.startswith("container_"):
                 # Container identifiers: container_{env_id}_{name}
                 # Name-based so devices survive container recreation.
                 # Extract env_id from position [1] for the per-env offline guard.
                 try:
-                    env_id = int(identifier.split("_")[1])
+                    env_id = int(bare.split("_")[1])
                 except ValueError:
                     continue
                 if identifier not in live["containers"]:
@@ -941,11 +961,11 @@ def _cleanup_stale_registry(
                             identifier,
                         )
 
-            elif identifier.startswith("stack_"):
+            elif bare.startswith("stack_"):
                 # Stack identifiers are "stack_{env_id}_{name}" — extract env_id
                 # for the same precise per-env offline guard.
                 try:
-                    env_id = int(identifier.split("_")[1])
+                    env_id = int(bare.split("_")[1])
                 except ValueError:
                     continue
                 if identifier not in live["stacks"]:
@@ -973,13 +993,13 @@ def _cleanup_stale_registry(
                             identifier,
                         )
 
-            elif identifier.startswith("env_"):
+            elif bare.startswith("env_"):
                 # Covers both env hub devices ("env_5") and group devices
                 # ("env_5_Containers", "env_5_Stacks", "env_5_Schedules",
                 # etc.) — all keyed to the same env_id in position [1] after
                 # splitting on "_".
                 try:
-                    env_id = int(identifier.split("_")[1])
+                    env_id = int(bare.split("_")[1])
                 except ValueError:
                     continue
                 if env_id not in live["env_ids"]:
@@ -1001,7 +1021,7 @@ def _cleanup_stale_registry(
                 # empty" (needs the online/slow_valid two-case safety rule,
                 # since a temporarily unreachable host or a failed slow poll
                 # must not be mistaken for "actually empty now").
-                if identifier == f"env_{env_id}_Containers":
+                if bare == f"env_{env_id}_Containers":
                     if (
                         env_id in live["online_env_ids"]
                         and env_id in live["containers_fetch_ok_env_ids"]
@@ -1012,7 +1032,7 @@ def _cleanup_stale_registry(
                             env_id,
                         )
                         dev_registry.async_remove_device(device.id)
-                elif identifier == f"env_{env_id}_Stacks":
+                elif bare == f"env_{env_id}_Stacks":
                     if (
                         env_id in live["online_env_ids"]
                         and env_id in live["stacks_fetch_ok_env_ids"]
@@ -1023,7 +1043,7 @@ def _cleanup_stale_registry(
                             env_id,
                         )
                         dev_registry.async_remove_device(device.id)
-                elif identifier == f"env_{env_id}_Images":
+                elif bare == f"env_{env_id}_Images":
                     if not live["enable_images"] or (
                         live["slow_valid"]
                         and env_id in live["online_env_ids"]
@@ -1035,7 +1055,7 @@ def _cleanup_stale_registry(
                             env_id,
                         )
                         dev_registry.async_remove_device(device.id)
-                elif identifier == f"env_{env_id}_Networks":
+                elif bare == f"env_{env_id}_Networks":
                     if not live["enable_networks"] or (
                         live["slow_valid"]
                         and env_id in live["online_env_ids"]
@@ -1047,7 +1067,7 @@ def _cleanup_stale_registry(
                             env_id,
                         )
                         dev_registry.async_remove_device(device.id)
-                elif identifier == f"env_{env_id}_Volumes":
+                elif bare == f"env_{env_id}_Volumes":
                     if not live["enable_volumes"] or (
                         live["slow_valid"]
                         and env_id in live["online_env_ids"]
@@ -1059,7 +1079,7 @@ def _cleanup_stale_registry(
                             env_id,
                         )
                         dev_registry.async_remove_device(device.id)
-                elif identifier == f"env_{env_id}_Schedules":
+                elif bare == f"env_{env_id}_Schedules":
                     if not live["schedules_feature_enabled"] or (
                         live["schedules_enabled"]
                         and env_id in live["online_env_ids"]
@@ -1071,7 +1091,7 @@ def _cleanup_stale_registry(
                         )
                         dev_registry.async_remove_device(device.id)
 
-            elif identifier == "schedules_hub":
+            elif bare == "schedules_hub":
                 # Remove the schedules hub device when schedules are disabled
                 # in the config. It has no cleanup path otherwise since it has
                 # no env_id and is not in any live set. Uses the raw config
@@ -1082,7 +1102,7 @@ def _cleanup_stale_registry(
                     _LOGGER.debug("Dockhand: removing stale schedules_hub device")
                     dev_registry.async_remove_device(device.id)
 
-            elif identifier.startswith("schedule_"):
+            elif bare.startswith("schedule_"):
                 # Two removal cases: the feature is off entirely (poll-
                 # independent — remove unconditionally, same as schedules_hub
                 # above), or the feature is on, the slow coordinator has valid

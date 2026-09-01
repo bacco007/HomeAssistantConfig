@@ -239,15 +239,94 @@ def _schedules_url(base_url: str) -> str | None:
 
 
 # --------------------------------------------------------------------------- #
+# Device identifier builders                                                   #
+# --------------------------------------------------------------------------- #
+#
+# These are the single source of truth for every device identifier string used
+# in this integration.  All HA device registry identifiers take the form
+# (DOMAIN, <id_string>), where <id_string> is produced by one of these helpers.
+#
+# Using builders rather than inline f-strings means:
+#   • One place to change if the naming convention ever needs to change.
+#   • Call sites cannot accidentally invert the field order — the bug that
+#     caused 1.9.0 to ship device identifiers without the entry_id prefix,
+#     fixed in 1.9.1.
+#
+# Device identifiers vs entity unique_ids
+# ----------------------------------------
+# Device identifiers (these functions) follow: {entry_id}_{type}_{env_id}_{name}
+# Entity unique_ids follow a different order:  {entry_id}_{env_id}_{type}_{name}
+# Never mix the two — they have different field orders for historical reasons.
+#
+# All callers in this file, __init__.py, and migration.py must use these
+# functions rather than building the strings inline.
+
+
+def _device_id_env(entry_id: str, env_id: int) -> str:
+    """Identifier string for an environment hub device."""
+    return f"{entry_id}_env_{env_id}"
+
+
+def _device_id_containers_group(entry_id: str, env_id: int) -> str:
+    """Identifier string for an environment's Containers group device."""
+    return f"{entry_id}_env_{env_id}_Containers"
+
+
+def _device_id_stacks_group(entry_id: str, env_id: int) -> str:
+    """Identifier string for an environment's Stacks group device."""
+    return f"{entry_id}_env_{env_id}_Stacks"
+
+
+def _device_id_networks_group(entry_id: str, env_id: int) -> str:
+    """Identifier string for an environment's Networks group device."""
+    return f"{entry_id}_env_{env_id}_Networks"
+
+
+def _device_id_images_group(entry_id: str, env_id: int) -> str:
+    """Identifier string for an environment's Images group device."""
+    return f"{entry_id}_env_{env_id}_Images"
+
+
+def _device_id_volumes_group(entry_id: str, env_id: int) -> str:
+    """Identifier string for an environment's Volumes group device."""
+    return f"{entry_id}_env_{env_id}_Volumes"
+
+
+def _device_id_schedules_group(entry_id: str, env_id: int) -> str:
+    """Identifier string for an environment's Schedules group device."""
+    return f"{entry_id}_env_{env_id}_Schedules"
+
+
+def _device_id_schedules_hub(entry_id: str) -> str:
+    """Identifier string for the global Schedules hub device."""
+    return f"{entry_id}_schedules_hub"
+
+
+def _device_id_container(entry_id: str, env_id: int, container_name: str) -> str:
+    """Identifier string for a container device."""
+    return f"{entry_id}_container_{env_id}_{container_name}"
+
+
+def _device_id_stack(entry_id: str, env_id: int, stack_name: str) -> str:
+    """Identifier string for a stack device."""
+    return f"{entry_id}_stack_{env_id}_{stack_name}"
+
+
+def _device_id_schedule(entry_id: str, sched_id: Any, sched_type: str) -> str:
+    """Identifier string for an individual schedule device."""
+    return f"{entry_id}_schedule_{sched_id}_{sched_type}"
+
+
+# --------------------------------------------------------------------------- #
 # Device info helpers
 # --------------------------------------------------------------------------- #
 
 
 def _env_device(
-    env_id: int, env_name: str, base_url: str, stats: dict | None = None
+    entry_id: str, env_id: int, env_name: str, base_url: str, stats: dict | None = None
 ) -> DeviceInfo:
     info: dict[str, Any] = {
-        "identifiers": {(DOMAIN, f"env_{env_id}")},
+        "identifiers": {(DOMAIN, _device_id_env(entry_id, env_id))},
         "name": env_name,
         "manufacturer": "Dockhand",
         "model": "Environment",
@@ -261,55 +340,64 @@ def _env_device(
     return DeviceInfo(**info)
 
 
-def _containers_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+def _containers_group_device(
+    entry_id: str, env_id: int, env_name: str, base_url: str
+) -> DeviceInfo:
     return DeviceInfo(
-        identifiers={(DOMAIN, f"env_{env_id}_Containers")},
+        identifiers={(DOMAIN, _device_id_containers_group(entry_id, env_id))},
         name=f"{env_name} – Containers",
         manufacturer="Dockhand",
         model="Environment Group",
         configuration_url=_container_url(base_url),
-        via_device=(DOMAIN, f"env_{env_id}"),
+        via_device=(DOMAIN, _device_id_env(entry_id, env_id)),
         entry_type=DeviceEntryType.SERVICE,
     )
 
 
-def _stacks_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+def _stacks_group_device(
+    entry_id: str, env_id: int, env_name: str, base_url: str
+) -> DeviceInfo:
     return DeviceInfo(
-        identifiers={(DOMAIN, f"env_{env_id}_Stacks")},
+        identifiers={(DOMAIN, _device_id_stacks_group(entry_id, env_id))},
         name=f"{env_name} – Stacks",
         manufacturer="Dockhand",
         model="Environment Group",
         configuration_url=_stack_url(base_url),
-        via_device=(DOMAIN, f"env_{env_id}"),
+        via_device=(DOMAIN, _device_id_env(entry_id, env_id)),
         entry_type=DeviceEntryType.SERVICE,
     )
 
 
-def _network_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+def _network_group_device(
+    entry_id: str, env_id: int, env_name: str, base_url: str
+) -> DeviceInfo:
     return DeviceInfo(
-        identifiers={(DOMAIN, f"env_{env_id}_Networks")},
+        identifiers={(DOMAIN, _device_id_networks_group(entry_id, env_id))},
         name=f"{env_name} – Networks",
         manufacturer="Dockhand",
         model="Environment Group",
         configuration_url=_network_url(base_url),
-        via_device=(DOMAIN, f"env_{env_id}"),
+        via_device=(DOMAIN, _device_id_env(entry_id, env_id)),
         entry_type=DeviceEntryType.SERVICE,
     )
 
 
-def _volume_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+def _volume_group_device(
+    entry_id: str, env_id: int, env_name: str, base_url: str
+) -> DeviceInfo:
     return DeviceInfo(
-        identifiers={(DOMAIN, f"env_{env_id}_Volumes")},
+        identifiers={(DOMAIN, _device_id_volumes_group(entry_id, env_id))},
         name=f"{env_name} – Volumes",
         manufacturer="Dockhand",
         model="Environment Group",
         configuration_url=_volume_url(base_url),
-        via_device=(DOMAIN, f"env_{env_id}"),
+        via_device=(DOMAIN, _device_id_env(entry_id, env_id)),
         entry_type=DeviceEntryType.SERVICE,
     )
 
 
 def _container_device(
+    entry_id: str,
     container_name: str,
     env_id: int,
     env_name: str,
@@ -318,7 +406,7 @@ def _container_device(
 ) -> DeviceInfo:
     """Device info for a container.
 
-    Identifier format: container_{env_id}_{container_name}
+    Identifier format: {entry_id}_container_{env_id}_{container_name}
     Name format: "{env_name} – Containers – {container_name}"
 
     HA slugifies the device name to "{env_slug}_containers_{name}", producing
@@ -330,11 +418,11 @@ def _container_device(
     Docker enforces unique container names per host, making this a safe key.
     """
     if stack_name:
-        parent: tuple = (DOMAIN, f"stack_{env_id}_{stack_name}")
+        parent: tuple = (DOMAIN, _device_id_stack(entry_id, env_id, stack_name))
     else:
-        parent = (DOMAIN, f"env_{env_id}_Containers")
+        parent = (DOMAIN, _device_id_containers_group(entry_id, env_id))
     return DeviceInfo(
-        identifiers={(DOMAIN, f"container_{env_id}_{container_name}")},
+        identifiers={(DOMAIN, _device_id_container(entry_id, env_id, container_name))},
         name=f"{env_name} – Containers – {container_name}",
         manufacturer="Dockhand",
         model="Container",
@@ -352,6 +440,7 @@ _STACK_MODEL_BY_SOURCE_TYPE = {
 
 
 def _stack_device(
+    entry_id: str,
     stack_name: str,
     env_id: int,
     env_name: str,
@@ -380,26 +469,28 @@ def _stack_device(
     recorded in its database.
     """
     return DeviceInfo(
-        identifiers={(DOMAIN, f"stack_{env_id}_{stack_name}")},
+        identifiers={(DOMAIN, _device_id_stack(entry_id, env_id, stack_name))},
         name=f"{env_name} – Stacks – {stack_name}",
         manufacturer="Dockhand",
         model=_STACK_MODEL_BY_SOURCE_TYPE.get(
             source_type or "external", "Untracked Stack"
         ),
         configuration_url=_stack_url(base_url),
-        via_device=(DOMAIN, f"env_{env_id}_Stacks"),
+        via_device=(DOMAIN, _device_id_stacks_group(entry_id, env_id)),
         entry_type=DeviceEntryType.SERVICE,
     )
 
 
-def _image_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+def _image_group_device(
+    entry_id: str, env_id: int, env_name: str, base_url: str
+) -> DeviceInfo:
     return DeviceInfo(
-        identifiers={(DOMAIN, f"env_{env_id}_Images")},
+        identifiers={(DOMAIN, _device_id_images_group(entry_id, env_id))},
         name=f"{env_name} – Images",
         manufacturer="Dockhand",
         model="Environment Group",
         configuration_url=_image_url(base_url),
-        via_device=(DOMAIN, f"env_{env_id}"),
+        via_device=(DOMAIN, _device_id_env(entry_id, env_id)),
         entry_type=DeviceEntryType.SERVICE,
     )
 
@@ -409,7 +500,9 @@ def _sched_key(sched: dict) -> str:
     return f"{sched['id']}_{sched['type']}"
 
 
-def _schedule_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+def _schedule_group_device(
+    entry_id: str, env_id: int, env_name: str, base_url: str
+) -> DeviceInfo:
     """DeviceInfo for an environment's Schedules group — parents every
     schedule device whose `environmentId` matches this environment.
 
@@ -418,17 +511,18 @@ def _schedule_group_device(env_id: int, env_name: str, base_url: str) -> DeviceI
     need to exist as their own devices regardless of this grouping.
     """
     return DeviceInfo(
-        identifiers={(DOMAIN, f"env_{env_id}_Schedules")},
+        identifiers={(DOMAIN, _device_id_schedules_group(entry_id, env_id))},
         name=f"{env_name} – Schedules",
         manufacturer="Dockhand",
         model="Environment Group",
         configuration_url=_schedules_url(base_url),
-        via_device=(DOMAIN, f"env_{env_id}"),
+        via_device=(DOMAIN, _device_id_env(entry_id, env_id)),
         entry_type=DeviceEntryType.SERVICE,
     )
 
 
 def _sched_device(
+    entry_id: str,
     sched_id: Any,
     sched_type: str,
     sched_name: str,
@@ -467,15 +561,14 @@ def _sched_device(
     factory, never inline fields, or the two can silently drift apart on
     the next coordinator update).
     """
-    key = _sched_key({"id": sched_id, "type": sched_type})
     if environment_id is not None:
-        via_device = (DOMAIN, f"env_{environment_id}_Schedules")
+        via_device = (DOMAIN, _device_id_schedules_group(entry_id, environment_id))
         prefix = environment_name or f"Environment {environment_id}"
     else:
-        via_device = (DOMAIN, "schedules_hub")
+        via_device = (DOMAIN, _device_id_schedules_hub(entry_id))
         prefix = "Dockhand"
     return DeviceInfo(
-        identifiers={(DOMAIN, f"schedule_{key}")},
+        identifiers={(DOMAIN, _device_id_schedule(entry_id, sched_id, sched_type))},
         name=f"{prefix} – Schedules – {sched_name}",
         manufacturer="Dockhand",
         model="Schedule",
@@ -732,7 +825,7 @@ def _ensure_hub_devices(
     registry = dr.async_get(hass)
     registry.async_get_or_create(
         config_entry_id=entry_id,
-        identifiers={(DOMAIN, "schedules_hub")},
+        identifiers={(DOMAIN, _device_id_schedules_hub(entry_id))},
         name="Dockhand – Schedules",
         manufacturer="Dockhand",
         model="Service",
@@ -746,7 +839,12 @@ def _ensure_hub_devices(
         registry.async_get_or_create(
             config_entry_id=entry_id,
             **_sched_device(
-                sched["id"], sched["type"], sched_name, base_url, environment_id=None
+                entry_id,
+                sched["id"],
+                sched["type"],
+                sched_name,
+                base_url,
+                environment_id=None,
             ),
         )
 
@@ -821,7 +919,7 @@ def _ensure_env_devices(
     # as a separator — a hyphen could appear in the resource name itself.
     registry.async_get_or_create(
         config_entry_id=entry_id,
-        **_env_device(env_id, env_name, base_url),
+        **_env_device(entry_id, env_id, env_name, base_url),
     )
 
     # ── Containers group — only when freestanding containers exist ───────────
@@ -830,7 +928,7 @@ def _ensure_env_devices(
         if has_freestanding:
             registry.async_get_or_create(
                 config_entry_id=entry_id,
-                **_containers_group_device(env_id, env_name, base_url),
+                **_containers_group_device(entry_id, env_id, env_name, base_url),
             )
 
     # ── Stacks group + individual stack devices ──────────────────────────────
@@ -839,7 +937,7 @@ def _ensure_env_devices(
     if stacks:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            **_stacks_group_device(env_id, env_name, base_url),
+            **_stacks_group_device(entry_id, env_id, env_name, base_url),
         )
         for stack in stacks:
             stack_name = stack.get("name", "")
@@ -847,6 +945,7 @@ def _ensure_env_devices(
                 registry.async_get_or_create(
                     config_entry_id=entry_id,
                     **_stack_device(
+                        entry_id,
                         stack_name,
                         env_id,
                         env_name,
@@ -859,17 +958,17 @@ def _ensure_env_devices(
     if enable_networks and networks:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            **_network_group_device(env_id, env_name, base_url),
+            **_network_group_device(entry_id, env_id, env_name, base_url),
         )
     if enable_images and images:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            **_image_group_device(env_id, env_name, base_url),
+            **_image_group_device(entry_id, env_id, env_name, base_url),
         )
     if enable_volumes and volumes:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            **_volume_group_device(env_id, env_name, base_url),
+            **_volume_group_device(entry_id, env_id, env_name, base_url),
         )
 
     # ── Schedules group + individual schedule devices (env-scoped only) ──────
@@ -878,7 +977,7 @@ def _ensure_env_devices(
     if enable_schedules and schedules:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            **_schedule_group_device(env_id, env_name, base_url),
+            **_schedule_group_device(entry_id, env_id, env_name, base_url),
         )
         for sched in schedules:
             if sched.get("id") is None:
@@ -887,6 +986,7 @@ def _ensure_env_devices(
             registry.async_get_or_create(
                 config_entry_id=entry_id,
                 **_sched_device(
+                    entry_id,
                     sched["id"],
                     sched["type"],
                     sched_name,

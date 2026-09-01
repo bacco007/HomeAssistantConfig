@@ -144,7 +144,9 @@ class BaseEnvBinarySensor(
     def device_info(self) -> DeviceInfo:
         stats = self._stats()
         env_name = stats.get("name", f"Environment {self._env_id}")
-        return _env_device(self._env_id, env_name, self._base_url, stats)
+        return _env_device(
+            self._entry_id, self._env_id, env_name, self._base_url, stats
+        )
 
 
 class DockhandEnvOnlineSensor(BaseEnvBinarySensor):
@@ -338,7 +340,7 @@ class DockhandEnvImagePruneBinarySensor(
 
     @property
     def device_info(self) -> DeviceInfo:
-        return _env_device(self._env_id, self._env_name, self._base_url)
+        return _env_device(self._entry_id, self._env_id, self._env_name, self._base_url)
 
 
 class DockhandStackUpdatesAvailableBinarySensor(
@@ -445,6 +447,7 @@ class DockhandStackUpdatesAvailableBinarySensor(
     def device_info(self) -> DeviceInfo:
         s = self._stack()
         return _stack_device(
+            self._entry_id,
             self._stack_name,
             self._env_id,
             self._env_name,
@@ -507,6 +510,7 @@ class DockhandGitStackSyncErrorBinarySensor(
     @property
     def device_info(self) -> DeviceInfo:
         return _stack_device(
+            self._entry_id,
             self._stack_name,
             self._env_id,
             self._env_name,

@@ -190,6 +190,7 @@ class _BaseFastContainerSwitch(
     def device_info(self) -> DeviceInfo:
         c = self._container()
         return _container_device(
+            self._entry_id,
             self._container_name,
             self._env_id,
             self._env_name,
@@ -228,6 +229,7 @@ class _BaseFastStackSwitch(CoordinatorEntity[DockhandFastCoordinator], SwitchEnt
     def device_info(self) -> DeviceInfo:
         s = self._stack()
         return _stack_device(
+            self._entry_id,
             self._stack_name,
             self._env_id,
             self._env_name,
@@ -461,6 +463,7 @@ class DockhandContainerAutoUpdateSwitch(
     def device_info(self) -> DeviceInfo:
         c = self._container()
         return _container_device(
+            self._entry_id,
             self._container_name,
             self._env_id,
             self._env_name,
@@ -552,6 +555,7 @@ class DockhandGitStackAutoUpdateSwitch(
     @property
     def device_info(self) -> DeviceInfo:
         return _stack_device(
+            self._entry_id,
             self._stack_name,
             self._env_id,
             self._env_name,

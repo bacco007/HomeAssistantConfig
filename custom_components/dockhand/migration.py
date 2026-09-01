@@ -12,6 +12,7 @@ Active migrations:
   migrate_1_8_0_container_stats_option              — retire after ~1.11.0
   migrate_1_8_0_reenable_container_stats_entities   — retire after ~1.11.0
   migrate_1_8_0_remove_consolidated_disk_sensors    — retire after ~1.11.0
+  migrate_1_9_0_entry_scoped_device_identifiers     — retire after ~1.12.0
 
 Migrations are for entity/device registry changes between released
 versions only (e.g. 1.7.3 -> 1.8.0) — never add one for churn within an
@@ -62,6 +63,7 @@ def async_run_migrations(
     migrate_1_8_0_container_stats_option(hass, entry)
     migrate_1_8_0_reenable_container_stats_entities(hass, entry)
     migrate_1_8_0_remove_consolidated_disk_sensors(hass, entry)
+    migrate_1_9_0_entry_scoped_device_identifiers(hass, entry.entry_id)
 
 
 def _is_hex64(s: str) -> bool:
@@ -456,3 +458,76 @@ def migrate_1_8_0_remove_consolidated_disk_sensors(
                 "the single disk_usage sensor's attributes in 1.8.0",
                 entity_entry.entity_id,
             )
+
+
+def migrate_1_9_0_entry_scoped_device_identifiers(
+    hass: HomeAssistant,
+    entry_id: str,
+) -> None:
+    """Migrate device identifiers to the entry-scoped format.
+
+    Pre-1.9.0 identifiers used bare names that collided across config entries:
+      env_{env_id}, env_{env_id}_Containers, env_{env_id}_Stacks, etc.
+      container_{env_id}_{name}, stack_{env_id}_{name}
+      schedule_{id}_{type}, schedules_hub
+
+    Post-1.9.0 all identifiers are prefixed with the config entry's own UUID:
+      {entry_id}_env_{env_id}, {entry_id}_env_{env_id}_Containers, etc.
+      {entry_id}_container_{env_id}_{name}, {entry_id}_stack_{env_id}_{name}
+      {entry_id}_schedule_{id}_{type}, {entry_id}_schedules_hub
+
+    Without this, two Dockhand config entries (two separate Dockhand instances
+    registered in the same HA installation) that happen to manage an environment
+    with the same numeric ID (e.g. both have an env_id=1) would register the
+    same device identifiers. HA's device registry merges devices that share an
+    identifier, causing devices from both instances to appear merged in the UI —
+    reported as issue #28 (ha-dockhand) and the root cause of issue #1
+    (ha-dockhand-cards, container duplication across Overview cards).
+
+    Entity unique_ids were already scoped to entry_id by
+    migrate_1_7_3_entry_scoped_unique_ids (fixing a similar collision at the
+    entity level). This migration completes the fix at the device level.
+
+    HA 2026.8 silently worked around the collision by changing device
+    deduplication to use a composite (config_entry_id, identifiers) key rather
+    than identifiers alone — which is why upgrading HA "fixed" issue #28 without
+    a real integration fix. This migration removes the dependency on that HA
+    version-specific behavior.
+
+    Is idempotent: identifiers that already start with entry_id are skipped.
+    Since entry_id is a UUID (hex + hyphens) and all old identifiers start with
+    a plain word (env_, container_, stack_, schedule_, schedules_hub), there is
+    no ambiguity between old and new formats.
+    """
+    dev_registry = dr.async_get(hass)
+    prefix = f"{entry_id}_"
+    migrated = 0
+
+    for device in dr.async_entries_for_config_entry(dev_registry, entry_id):
+        old_identifiers = device.identifiers
+        new_identifiers: set[tuple[str, str]] = set()
+        changed = False
+
+        for domain, identifier in old_identifiers:
+            if domain == DOMAIN and not identifier.startswith(prefix):
+                new_identifiers.add((domain, f"{prefix}{identifier}"))
+                changed = True
+            else:
+                new_identifiers.add((domain, identifier))
+
+        if changed:
+            dev_registry.async_update_device(device.id, new_identifiers=new_identifiers)
+            _LOGGER.debug(
+                "Dockhand: scoped device %s identifiers to entry %s",
+                device.id,
+                entry_id[:8],
+            )
+            migrated += 1
+
+    if migrated:
+        _LOGGER.info(
+            "Dockhand: scoped %d device identifier(s) to config entry %s "
+            "(fixes multi-instance identifier collisions; see issue #28)",
+            migrated,
+            entry_id[:8],
+        )
