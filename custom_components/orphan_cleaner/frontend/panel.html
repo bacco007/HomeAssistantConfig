@@ -523,6 +523,14 @@ function sortBy(field) {
   renderTable(filteredOrphans());
 }
 
+function _fnmatch(str, pattern) {
+  // Converte pattern glob (*, ?) in regex
+  const re = '^' + pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&')
+                           .replace(/\*/g, '.*')
+                           .replace(/\?/g, '.') + '$';
+  return new RegExp(re).test(str);
+}
+
 function filteredOrphans() {
   const q      = (document.getElementById('filter').value || '').toLowerCase();
   const heur   = document.getElementById('heur-on')?.checked;
@@ -531,7 +539,20 @@ function filteredOrphans() {
     .filter(e => (heur || e.method !== 'heuristic') &&
                  (!method || e.method === method) &&
                  (!q || e.entity_id.includes(q) || e.platform.includes(q)))
-    .map(e => ({ ...e, _ignored: ignorePlatforms.has((e.platform || '').trim().toLowerCase()) }))
+    .map(e => {
+      const plat = (e.platform || '').trim().toLowerCase();
+      const eid  = (e.entity_id || '').toLowerCase();
+      let ignored = ignorePlatforms.has(plat);
+      if (!ignored) {
+        // Controlla anche i pattern glob nel set di sessione
+        for (const pat of ignorePlatforms) {
+          if (pat.includes('*') || pat.includes('?') || pat.includes('.')) {
+            if (_fnmatch(eid, pat) || _fnmatch(plat, pat)) { ignored = true; break; }
+          }
+        }
+      }
+      return { ...e, _ignored: ignored };
+    })
     .sort((a, b) => {
       if (!sortField) return 0;
       let va = a[sortField], vb = b[sortField];
