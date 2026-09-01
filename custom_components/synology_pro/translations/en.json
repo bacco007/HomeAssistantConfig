@@ -9,6 +9,28 @@
           "port": "Port",
           "username": "Username",
           "password": "Password",
+          "otp_code": "Verification code (2FA, optional)",
+          "use_ssl": "Use SSL (HTTPS)",
+          "verify_ssl": "Verify SSL Certificate",
+          "dsm_version": "DSM Version",
+          "scan_interval": "Poll Interval (seconds)"
+        }
+      },
+      "otp": {
+        "title": "Two-factor authentication",
+        "description": "This account requires a two-factor authentication code. Enter the 6-digit code from your authenticator app.",
+        "data": {
+          "otp_code": "Verification code"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Synology NAS",
+        "description": "Update your Synology NAS connection details. Leave the password blank to keep the current one.",
+        "data": {
+          "host": "Host / IP Address",
+          "port": "Port",
+          "username": "Username",
+          "password": "Password (leave blank to keep current)",
           "use_ssl": "Use SSL (HTTPS)",
           "verify_ssl": "Verify SSL Certificate",
           "dsm_version": "DSM Version",
@@ -19,6 +41,8 @@
     "error": {
       "cannot_connect": "Failed to connect to the NAS. Check IP, port, and network.",
       "invalid_auth": "Invalid username or password.",
+      "invalid_otp": "Invalid verification code.",
+      "two_factor_required": "This account has two-factor authentication enabled, which is not supported yet. Use a dedicated DSM account without 2FA, or exclude this account from 2FA enforcement.",
       "unknown": "An unexpected error occurred."
     },
     "abort": {

@@ -337,6 +337,7 @@ class SynologyDynamicCoordinator(DataUpdateCoordinator):
                 secure=config.get("use_ssl", True),
                 cert_verify=config.get("verify_ssl", False),
                 dsm_version=config.get("dsm_version", 7),
+                device_id=config.get("device_id"),
             )
         except Exception as e:
             _LOGGER.debug("Module %s unavailable: %s", module_name, e)

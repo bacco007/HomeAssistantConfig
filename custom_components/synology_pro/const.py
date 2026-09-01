@@ -15,6 +15,8 @@ CONF_SSL = "use_ssl"
 CONF_VERIFY_SSL = "verify_ssl"
 CONF_DSM_VERSION = "dsm_version"
 CONF_SCAN_INTERVAL = "scan_interval"
+CONF_OTP_CODE = "otp_code"
+CONF_DEVICE_ID = "device_id"
 
 # Defaults
 DEFAULT_PORT = 5001

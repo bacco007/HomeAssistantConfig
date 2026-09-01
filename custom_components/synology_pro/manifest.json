@@ -8,6 +8,6 @@
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/N4S4/homeassistant-synology-pro/issues",
-  "requirements": ["synology-api>=0.7.0"],
-  "version": "0.2.1"
+  "requirements": ["synology-api>=0.9.3"],
+  "version": "0.2.3"
 }
