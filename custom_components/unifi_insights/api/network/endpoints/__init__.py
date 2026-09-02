@@ -10,10 +10,12 @@ from .firewall import FirewallEndpoint
 from .lags import LagsEndpoint
 from .networks import NetworksEndpoint
 from .resources import ResourcesEndpoint
+from .routes import RoutesEndpoint
 from .sites import SitesEndpoint
 from .stacks import StacksEndpoint
 from .traffic import TrafficEndpoint
 from .vouchers import VouchersEndpoint
+from .vpn_clients import VpnClientsEndpoint
 from .wifi import WifiEndpoint
 
 __all__ = [
@@ -25,9 +27,11 @@ __all__ = [
     "LagsEndpoint",
     "NetworksEndpoint",
     "ResourcesEndpoint",
+    "RoutesEndpoint",
     "SitesEndpoint",
     "StacksEndpoint",
     "TrafficEndpoint",
     "VouchersEndpoint",
+    "VpnClientsEndpoint",
     "WifiEndpoint",
 ]

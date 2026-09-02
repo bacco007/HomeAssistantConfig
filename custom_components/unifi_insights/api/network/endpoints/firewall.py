@@ -218,11 +218,7 @@ class FirewallEndpoint:
             all_rules.extend(rules)
 
             # Check if there are more pages.
-            total = (
-                response.get("totalCount")
-                if isinstance(response, dict)
-                else None
-            )
+            total = response.get("totalCount") if isinstance(response, dict) else None
             if total is None or current_offset + page_size >= total:
                 break
             current_offset += page_size

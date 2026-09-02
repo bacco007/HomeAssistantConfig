@@ -50,4 +50,3 @@ class Site(BaseModel):
     def display_name(self) -> str:
         """Get the display name for the site."""
         return self.name or self.internal_reference or self.id or "Default"
-

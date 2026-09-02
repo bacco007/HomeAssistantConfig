@@ -80,7 +80,6 @@ class SitesEndpoint:
             return sites
         return []
 
-
     async def get(self, site_id: str) -> Site:
         """
         Get a specific site.

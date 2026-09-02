@@ -39,6 +39,15 @@ NETWORK_INTEGRATION_PATH: Final[str] = "/proxy/network/integration/v1"
 # Network legacy API path prefix (used for both local and remote)
 NETWORK_LEGACY_PATH: Final[str] = "/proxy/network/api"
 
+# Network legacy v2 API path prefix (used for traffic routes / policy-based routes)
+NETWORK_LEGACY_V2_PATH: Final[str] = "/proxy/network/v2/api"
+
+# Network legacy v2 endpoints
+ENDPOINT_TRAFFIC_ROUTES: Final[str] = "trafficroutes"
+
+# Network legacy REST endpoints
+ENDPOINT_NETWORKCONF: Final[str] = "rest/networkconf"
+
 # Protect Integration API path prefix (used for both local and remote)
 PROTECT_INTEGRATION_PATH: Final[str] = "/proxy/protect/integration/v1"
 

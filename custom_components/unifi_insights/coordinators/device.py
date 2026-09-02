@@ -329,8 +329,13 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
                                     or site_obj.get("internal_reference")
                                     or site_name
                                 )
-                    except Exception:
-                        pass
+                    except Exception as err:
+                        _LOGGER.debug(
+                            "Device coordinator: Unable to resolve internal "
+                            "site reference for %s: %s",
+                            site_id,
+                            err,
+                        )
 
                 if device_mac and site_name:
                     metrics = await self.network_client.devices.get_port_metrics(
@@ -350,8 +355,7 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
                         stats["poe_total_w"] = metrics.poe_total_w
             except Exception as err:
                 _LOGGER.debug(
-                    "Legacy PoE wattage fetch failed for %s: %s",
-                    device_mac or device_id,
+                    "Legacy PoE wattage fetch failed: %s",
                     err,
                 )
 

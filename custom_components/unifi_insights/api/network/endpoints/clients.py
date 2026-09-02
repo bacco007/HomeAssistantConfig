@@ -90,9 +90,8 @@ class ClientsEndpoint:
                         all_clients.append(Client.model_validate(item))
                     except Exception as err:
                         _LOGGER.warning(
-                            "Failed to validate client (%s): %s",
-                            item.get("id") or item.get("macAddress") or "unknown",
-                            err,
+                            "Failed to validate client payload (%s)",
+                            err.__class__.__name__,
                         )
 
             total_count = response.get("totalCount")
@@ -129,9 +128,8 @@ class ClientsEndpoint:
                     page_clients.append(Client.model_validate(item))
                 except Exception as err:
                     _LOGGER.warning(
-                        "Failed to validate client (%s): %s",
-                        item.get("id") or item.get("macAddress") or "unknown",
-                        err,
+                        "Failed to validate client payload (%s)",
+                        err.__class__.__name__,
                     )
             return page_clients
         return []
@@ -311,9 +309,7 @@ class ClientsEndpoint:
         }
         command = command_map.get(action)
         if command is None:
-            raise ValueError(
-                f"Action must be one of: {', '.join(sorted(command_map))}"
-            )
+            raise ValueError(f"Action must be one of: {', '.join(sorted(command_map))}")
         return await self._stamgr_command(site_name, command, mac)
 
     async def authorize_guest(
@@ -357,7 +353,5 @@ class ClientsEndpoint:
         path = self._client.build_api_path(
             f"/sites/{site_id}/clients/{client_id}/actions"
         )
-        await self._client._post(
-            path, json_data={"action": "UNAUTHORIZE_GUEST_ACCESS"}
-        )
+        await self._client._post(path, json_data={"action": "UNAUTHORIZE_GUEST_ACCESS"})
         return True

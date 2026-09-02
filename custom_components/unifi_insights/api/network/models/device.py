@@ -90,7 +90,9 @@ class DeviceFeatures(BaseModel):
     """Feature overview for a device (Network 10.4.57)."""
 
     switching: DeviceSwitchingFeature | dict[str, Any] | bool | None = None
-    access_point: dict[str, Any] | bool | None = Field(default=None, alias="accessPoint")
+    access_point: dict[str, Any] | bool | None = Field(
+        default=None, alias="accessPoint"
+    )
 
     model_config = {"populate_by_name": True, "extra": "allow"}
 

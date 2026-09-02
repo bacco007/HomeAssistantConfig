@@ -1117,7 +1117,7 @@ async def async_setup_entry(
                 *,
                 _site_id: str = site_id,
                 _device_id: str = device_id,
-                _device_features: dict[str, Any] = device_features,
+                _device_features: list[Any] | set[Any] = device_features,
                 _active_ports: set[int] = active_port_indices,
             ) -> None:
                 """Create per-port sensors from stats."""

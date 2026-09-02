@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-import logging
 from datetime import UTC, datetime, timedelta
+import logging
 from typing import TYPE_CHECKING, Any, Final
 
 from homeassistant.core import callback
@@ -313,7 +313,7 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
                         await task
 
     @callback
-    def _on_websocket_message(self, message: dict[str, Any]) -> None:
+    def _on_websocket_message(self, message: Any) -> None:
         """
         Adapt a raw WebSocket "devices" message to `_handle_device_update`.
 
@@ -424,7 +424,7 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         self._recompute_ws_health_rollup()
 
     @callback
-    def _on_devices_connection_state_change(self, connected: bool) -> None:  # noqa: FBT001
+    def _on_devices_connection_state_change(self, connected: bool) -> None:
         """
         Adapt the devices subscription's connect/disconnect callback.
 
@@ -436,7 +436,7 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         self._on_websocket_connection_state_change("devices", connected=connected)
 
     @callback
-    def _on_events_connection_state_change(self, connected: bool) -> None:  # noqa: FBT001
+    def _on_events_connection_state_change(self, connected: bool) -> None:
         """
         Adapt the events subscription's connect/disconnect callback.
 
@@ -640,7 +640,7 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         return normalized
 
     @callback
-    def _on_websocket_event_message(self, message: dict[str, Any]) -> None:
+    def _on_websocket_event_message(self, message: Any) -> None:
         """
         Adapt a raw WebSocket "events" message to `_handle_event_update`.
 

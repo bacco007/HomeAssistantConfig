@@ -368,9 +368,7 @@ class DevicesEndpoint:
             # Only include PoE data for ports with PoE hardware.
             # The legacy API reports "poe_power": "0.00" even on non-PoE
             # ports (e.g. UDM Pro), so we must check the port_poe flag.
-            poe_capable = port.get("port_poe", False) or port.get(
-                "portPoe", False
-            )
+            poe_capable = port.get("port_poe", False) or port.get("portPoe", False)
             if poe_capable:
                 poe_power = port.get("poe_power")
                 if poe_power is None:
