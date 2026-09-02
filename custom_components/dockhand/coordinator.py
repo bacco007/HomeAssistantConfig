@@ -35,6 +35,15 @@ from .helpers import (
 
 _LOGGER = logging.getLogger(__name__)
 
+# Seconds to wait before each successive 401 retry in DockhandFastCoordinator.
+# Without retries, one transient 401 (e.g. during a brief Dockhand restart or
+# a momentary connectivity hiccup) fires ConfigEntryAuthFailed immediately —
+# prompting the user to "re-authenticate" with a token that is still valid.
+# These delays give Dockhand time to recover before we surface a re-auth dialog
+# that would turn out to be unnecessary. Total maximum wait before giving up:
+# sum(_AUTH_RETRY_DELAYS) seconds = 30s across 2 retries.
+_AUTH_RETRY_DELAYS: tuple[int, ...] = (5, 25)
+
 
 def _safe_list(value: Any) -> list:
     return value if isinstance(value, list) else []
@@ -122,21 +131,63 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
 
     async def _async_update_data(self) -> dict[str, Any]:
-        try:
-            result = await self._fetch()
-        except DockhandAuthError as err:
-            # Token is invalid or revoked — surface immediately so HA prompts
-            # the user to re-authenticate. No retry is possible without a new token.
+        # Retry on 401 before surfacing ConfigEntryAuthFailed. A single transient
+        # 401 — e.g. during a brief Dockhand restart or Hawser connectivity hiccup —
+        # would otherwise immediately prompt the user to re-authenticate with a
+        # token that is still valid. Each entry in _AUTH_RETRY_DELAYS is how long
+        # to sleep before that retry attempt; only after all retries are exhausted
+        # do we conclude the token is genuinely invalid and surface the re-auth
+        # dialog. Non-auth exceptions (network errors, 5xx, ...) still propagate
+        # immediately as UpdateFailed — no retry needed there, they don't trigger
+        # re-auth anyway.
+        _total_attempts = len(_AUTH_RETRY_DELAYS) + 1
+        last_auth_err: DockhandAuthError | None = None
+        result: dict[str, Any] | None = None
+
+        for attempt, delay_before in enumerate((None, *_AUTH_RETRY_DELAYS), start=1):
+            if delay_before is not None:
+                _LOGGER.warning(
+                    "Dockhand: 401 on attempt %d of %d — waiting %ds before retry "
+                    "(may be a transient Dockhand restart rather than a revoked token)",
+                    attempt - 1,
+                    _total_attempts,
+                    delay_before,
+                )
+                await asyncio.sleep(delay_before)
+            try:
+                result = await self._fetch()
+                if last_auth_err is not None:
+                    _LOGGER.info(
+                        "Dockhand: authentication recovered on attempt %d of %d "
+                        "— token is still valid",
+                        attempt,
+                        _total_attempts,
+                    )
+                break
+            except DockhandAuthError as err:
+                last_auth_err = err
+            except Exception as err:
+                raise UpdateFailed(f"Fast data error: {err}") from err
+        else:
+            # Every attempt returned 401 — the token is genuinely invalid or
+            # revoked. Surface re-auth so the user can fix it.
+            _LOGGER.error(
+                "Dockhand: 401 persisted across all %d attempt(s) — surfacing "
+                "re-auth. If re-entering the same token immediately resolves it, "
+                "this was a transient auth issue; consider filing a report with "
+                "your Dockhand logs from around this time.",
+                _total_attempts,
+            )
             raise ConfigEntryAuthFailed(
                 "Dockhand API token is invalid or was revoked. "
                 "Go to Settings → Devices & Services → Dockhand → Re-authenticate."
-            ) from err
-        except Exception as err:
-            raise UpdateFailed(f"Fast data error: {err}") from err
+            ) from last_auth_err
+
         # stats_source is this coordinator's own result — unlike the slow
         # coordinator, which needs the fast coordinator's data to look up
         # environment names, the fast coordinator's own data already has
         # them.
+        assert result is not None  # loop always breaks or raises above
         _sync_fetch_issues(self.hass, self.config_entry, "fast", result, result)
         return result
 

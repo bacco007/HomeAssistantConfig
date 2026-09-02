@@ -69,6 +69,17 @@ class DockhandClient:
             method, url, headers=headers, timeout=timeout, **kwargs
         ) as resp:
             if resp.status == 401:
+                body_text = ""
+                try:
+                    body_text = await resp.text()
+                except Exception:
+                    pass
+                _LOGGER.warning(
+                    "Dockhand: 401 Unauthorized on %s %s%s",
+                    method,
+                    path,
+                    f" — response body: {body_text[:300]}" if body_text else "",
+                )
                 raise DockhandAuthError("Unauthorized — token invalid or revoked")
             if resp.status >= 400:
                 text = await resp.text()
