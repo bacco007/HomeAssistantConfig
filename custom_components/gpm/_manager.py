@@ -281,6 +281,10 @@ class RepositoryManager:
     @ensure_cloned
     async def checkout(self, ref: str) -> None:
         """Checkout the specified reference."""
+        if not ref:
+            # GitPython prunes empty arguments, which would turn this into
+            # a silently successful no-op
+            raise CheckoutError(ref, "no reference specified")
         _LOGGER.info("Checking out %s", ref)
         self._current_version_cache = None
         repo = await self._get_repo()

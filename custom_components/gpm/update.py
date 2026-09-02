@@ -89,6 +89,10 @@ class GPMUpdateEntity(UpdateEntity):
         self, version: str | None, backup: bool, **kwargs: Any
     ) -> None:
         """Install an update."""
+        if version is None:
+            # Home Assistant omits the version when it wants the latest one,
+            # e.g. when using the "Update all" button.
+            version = await self.manager.get_latest_version()
         try:
             await self.manager.update(version)
         except VersionAlreadyInstalledError as e:
