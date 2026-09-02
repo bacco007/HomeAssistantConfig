@@ -435,7 +435,7 @@ let ignorePlatforms  = new Set();
 
 function ignoreAdd() {
   const inp = document.getElementById('ignore-input');
-  const val = inp.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+  const val = inp.value.trim().toLowerCase().replace(/[^a-z0-9_.*?]/g, '');
   if (!val) return;
   if (ignorePlatforms.has(val)) { inp.value = ''; return; }
   ignorePlatforms.add(val);
