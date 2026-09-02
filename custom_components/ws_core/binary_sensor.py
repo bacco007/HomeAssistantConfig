@@ -11,13 +11,16 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import (
     CONF_ENABLE_DIAGNOSTICS,
     CONF_ENABLE_NOWCAST,
+    CONF_ENABLE_SNOW,
     CONF_PREFIX,
     DEFAULT_ENABLE_DIAGNOSTICS,
     DEFAULT_ENABLE_NOWCAST,
+    DEFAULT_ENABLE_SNOW,
     DEFAULT_PREFIX,
     DOMAIN,
     KEY_PACKAGE_OK,
     KEY_RAIN_EXPECTED_1H,
+    KEY_SNOW_FALLING,
 )
 
 
@@ -30,6 +33,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     opts = {**entry.data, **entry.options}
     if opts.get(CONF_ENABLE_NOWCAST, DEFAULT_ENABLE_NOWCAST):
         entities.append(WSRainExpected1h(coordinator, entry, prefix))
+    if opts.get(CONF_ENABLE_SNOW, DEFAULT_ENABLE_SNOW):
+        entities.append(WSSnowFalling(coordinator, entry, prefix))
 
     # v2.0: per-sensor problem binary sensors (gated by diagnostics toggle)
     if opts.get(CONF_ENABLE_DIAGNOSTICS, DEFAULT_ENABLE_DIAGNOSTICS):
@@ -102,6 +107,36 @@ class WSRainExpected1h(CoordinatorEntity, BinarySensorEntity):
     def is_on(self) -> bool | None:
         d = self.coordinator.data or {}
         v = d.get(KEY_RAIN_EXPECTED_1H)
+        if v is None:
+            return None
+        return bool(v)
+
+
+class WSSnowFalling(CoordinatorEntity, BinarySensorEntity):
+    """True when the estimated precipitation phase is snow.  (v2.7, opt-in)
+
+    Heuristic, not a measurement - see algorithms.py's classify_precip_phase.
+    """
+
+    _attr_has_entity_name = True
+    _attr_device_class = BinarySensorDeviceClass.COLD
+
+    def __init__(self, coordinator, entry: ConfigEntry, prefix: str):
+        super().__init__(coordinator)
+        self._entry = entry
+        self._attr_unique_id = f"{entry.entry_id}_{KEY_SNOW_FALLING}"
+        self.entity_id = f"binary_sensor.{prefix}_snow_falling"
+        self._attr_translation_key = "ws_snow_falling"
+        self._attr_icon = "mdi:snowflake"
+
+    @property
+    def device_info(self):
+        return {"identifiers": {(DOMAIN, self._entry.entry_id)}}
+
+    @property
+    def is_on(self) -> bool | None:
+        d = self.coordinator.data or {}
+        v = d.get(KEY_SNOW_FALLING)
         if v is None:
             return None
         return bool(v)

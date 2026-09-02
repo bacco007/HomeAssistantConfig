@@ -47,7 +47,9 @@ from .const import (
     CONF_ENABLE_ADVANCED_SENSORS,
     # v0.7.0
     CONF_ENABLE_AIR_QUALITY,
+    CONF_ENABLE_AUTO_CALIBRATION,
     CONF_ENABLE_AWEKAS,
+    CONF_ENABLE_CLIMATE_NORMALS,
     CONF_ENABLE_COMFORT_INDICES,
     CONF_ENABLE_CWOP,
     CONF_ENABLE_DEGREE_DAYS,
@@ -65,6 +67,7 @@ from .const import (
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
+    CONF_ENABLE_SNOW,
     CONF_ENABLE_SOIL,
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
@@ -145,7 +148,9 @@ from .const import (
     DEFAULT_ELEVATION_M,
     DEFAULT_ENABLE_ADVANCED_SENSORS,
     DEFAULT_ENABLE_AIR_QUALITY,
+    DEFAULT_ENABLE_AUTO_CALIBRATION,
     DEFAULT_ENABLE_AWEKAS,
+    DEFAULT_ENABLE_CLIMATE_NORMALS,
     DEFAULT_ENABLE_COMFORT_INDICES,
     DEFAULT_ENABLE_CWOP,
     DEFAULT_ENABLE_DEGREE_DAYS,
@@ -163,6 +168,7 @@ from .const import (
     DEFAULT_ENABLE_POLLEN,
     DEFAULT_ENABLE_PWSWEATHER,
     DEFAULT_ENABLE_SEA_TEMP,
+    DEFAULT_ENABLE_SNOW,
     DEFAULT_ENABLE_SOIL,
     DEFAULT_ENABLE_SOLAR_FORECAST,
     DEFAULT_ENABLE_THUNDERSTORM,
@@ -1047,6 +1053,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._data[CONF_ENABLE_LIGHTNING] = bool(user_input.get(CONF_ENABLE_LIGHTNING, DEFAULT_ENABLE_LIGHTNING))
             self._data[CONF_ENABLE_INDOOR] = bool(user_input.get(CONF_ENABLE_INDOOR, DEFAULT_ENABLE_INDOOR))
             self._data[CONF_ENABLE_SOIL] = bool(user_input.get(CONF_ENABLE_SOIL, DEFAULT_ENABLE_SOIL))
+            self._data[CONF_ENABLE_SNOW] = bool(user_input.get(CONF_ENABLE_SNOW, DEFAULT_ENABLE_SNOW))
             self._data[CONF_ENABLE_WEATHERCLOUD] = bool(
                 user_input.get(CONF_ENABLE_WEATHERCLOUD, DEFAULT_ENABLE_WEATHERCLOUD)
             )
@@ -1059,6 +1066,12 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             self._data[CONF_ENABLE_WINDY] = bool(user_input.get(CONF_ENABLE_WINDY, DEFAULT_ENABLE_WINDY))
             self._data[CONF_ENABLE_CWOP] = bool(user_input.get(CONF_ENABLE_CWOP, DEFAULT_ENABLE_CWOP))
+            self._data[CONF_ENABLE_AUTO_CALIBRATION] = bool(
+                user_input.get(CONF_ENABLE_AUTO_CALIBRATION, DEFAULT_ENABLE_AUTO_CALIBRATION)
+            )
+            self._data[CONF_ENABLE_CLIMATE_NORMALS] = bool(
+                user_input.get(CONF_ENABLE_CLIMATE_NORMALS, DEFAULT_ENABLE_CLIMATE_NORMALS)
+            )
             # Navigation chain
             if self._data[CONF_ENABLE_SEA_TEMP]:
                 return await self.async_step_sea_temp()
@@ -1140,6 +1153,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(CONF_ENABLE_LIGHTNING, default=DEFAULT_ENABLE_LIGHTNING): selector.BooleanSelector(),
                     vol.Optional(CONF_ENABLE_INDOOR, default=DEFAULT_ENABLE_INDOOR): selector.BooleanSelector(),
                     vol.Optional(CONF_ENABLE_SOIL, default=DEFAULT_ENABLE_SOIL): selector.BooleanSelector(),
+                    vol.Optional(CONF_ENABLE_SNOW, default=DEFAULT_ENABLE_SNOW): selector.BooleanSelector(),
                     vol.Optional(
                         CONF_ENABLE_WEATHERCLOUD, default=DEFAULT_ENABLE_WEATHERCLOUD
                     ): selector.BooleanSelector(),
@@ -1152,6 +1166,12 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(CONF_ENABLE_WINDY, default=DEFAULT_ENABLE_WINDY): selector.BooleanSelector(),
                     vol.Optional(CONF_ENABLE_CWOP, default=DEFAULT_ENABLE_CWOP): selector.BooleanSelector(),
                     vol.Optional(CONF_ENABLE_MQTT, default=DEFAULT_ENABLE_MQTT): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_AUTO_CALIBRATION, default=DEFAULT_ENABLE_AUTO_CALIBRATION
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_CLIMATE_NORMALS, default=DEFAULT_ENABLE_CLIMATE_NORMALS
+                    ): selector.BooleanSelector(),
                 }
             ),
             last_step=False,
@@ -2467,6 +2487,17 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                     ): selector.BooleanSelector(),
                     vol.Optional(
                         CONF_ENABLE_SOIL, default=g(CONF_ENABLE_SOIL, DEFAULT_ENABLE_SOIL)
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_SNOW, default=g(CONF_ENABLE_SNOW, DEFAULT_ENABLE_SNOW)
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_AUTO_CALIBRATION,
+                        default=g(CONF_ENABLE_AUTO_CALIBRATION, DEFAULT_ENABLE_AUTO_CALIBRATION),
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_CLIMATE_NORMALS,
+                        default=g(CONF_ENABLE_CLIMATE_NORMALS, DEFAULT_ENABLE_CLIMATE_NORMALS),
                     ): selector.BooleanSelector(),
                 }
             ),

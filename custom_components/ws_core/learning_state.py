@@ -77,6 +77,13 @@ class LearningState:
     fwi_dc: float = 15.0
     fwi_last_date: str = ""  # ISO date string of last FWI daily computation
 
+    # v2.7 - Adaptive calibration bias EMAs (local minus regional NWP reference)
+    cal_bias_temp_c: float | None = None
+    cal_bias_humidity: float | None = None
+    cal_bias_pressure_hpa: float | None = None
+    cal_bias_n: int = 0
+    cal_last_auto_apply_date: str = ""  # ISO date of the last auto-applied nudge
+
     # Internal: last time we pushed a 6h forecast outcome window
     _last_outcome_window: str = ""
 
@@ -364,3 +371,78 @@ def climatology_stats_by_window(state: LearningState, window_days: int) -> dict[
         "first_date": days[0].get("date"),
         "last_date": days[-1].get("date"),
     }
+
+
+# ---------------------------------------------------------------------------
+# Adaptive calibration bias (v2.7)
+# ---------------------------------------------------------------------------
+# Tracks a slow EMA of (local - regional NWP reference) per field, then - once
+# confident and past a noise deadband - proposes a small, bounded, sign-correct
+# nudge toward canceling that bias. Never computed here to be applied blindly:
+# the caller (coordinator) decides whether/when to actually write it, gated by
+# the enable_auto_calibration option and a once-per-day rate limit.
+
+AUTO_CAL_FIELDS = ("cal_temp_c", "cal_humidity", "cal_pressure_hpa")
+
+
+def update_calibration_bias(
+    state: LearningState,
+    local_temp_c: float | None,
+    nwp_temp_c: float | None,
+    local_humidity: float | None,
+    nwp_humidity: float | None,
+    local_pressure_hpa: float | None,
+    nwp_pressure_hpa: float | None,
+    alpha: float,
+) -> None:
+    """Fold one (local, reference) sample into the residual-bias EMAs.
+
+    Called once per hourly neighbor-QC fetch. `local_*` values are the
+    already-calibrated readings (post cal_temp_c/etc.), so the resulting bias
+    is the *remaining* offset - it naturally shrinks as corrections are
+    applied, with no need to reset the EMA after a nudge.
+    """
+    had_sample = False
+    if local_temp_c is not None and nwp_temp_c is not None:
+        state.cal_bias_temp_c = update_ema(state.cal_bias_temp_c, float(local_temp_c) - float(nwp_temp_c), alpha=alpha)
+        had_sample = True
+    if local_humidity is not None and nwp_humidity is not None:
+        state.cal_bias_humidity = update_ema(
+            state.cal_bias_humidity, float(local_humidity) - float(nwp_humidity), alpha=alpha
+        )
+        had_sample = True
+    if local_pressure_hpa is not None and nwp_pressure_hpa is not None:
+        state.cal_bias_pressure_hpa = update_ema(
+            state.cal_bias_pressure_hpa, float(local_pressure_hpa) - float(nwp_pressure_hpa), alpha=alpha
+        )
+        had_sample = True
+    if had_sample:
+        state.cal_bias_n += 1
+
+
+def compute_auto_calibration_step(
+    state: LearningState,
+    min_samples: int,
+    deadband: dict[str, float],
+    step: dict[str, float],
+) -> dict[str, float]:
+    """Return {field: delta} nudges toward canceling a confident, persistent bias.
+
+    Empty dict if there aren't enough samples yet, or every field's learned
+    bias is within its noise deadband. A field's delta is capped at `step[field]`
+    and never overshoots the bias itself (so it can't oscillate past zero).
+    """
+    if state.cal_bias_n < min_samples:
+        return {}
+    biases = {
+        "cal_temp_c": state.cal_bias_temp_c,
+        "cal_humidity": state.cal_bias_humidity,
+        "cal_pressure_hpa": state.cal_bias_pressure_hpa,
+    }
+    deltas: dict[str, float] = {}
+    for cal_field in AUTO_CAL_FIELDS:
+        bias = biases[cal_field]
+        if bias is None or abs(bias) <= deadband[cal_field]:
+            continue
+        deltas[cal_field] = -math.copysign(min(step[cal_field], abs(bias)), bias)
+    return deltas

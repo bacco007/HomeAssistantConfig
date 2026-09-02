@@ -2797,3 +2797,79 @@ def indoor_comfort_score(
         elif rh < 40 or rh > 60:
             score -= 10
     return max(0, min(100, score))
+
+
+# ---------------------------------------------------------------------------
+# v2.7 - Precipitation phase (rain / snow / sleet) and snow accumulation
+# ---------------------------------------------------------------------------
+# No station-agnostic snow gauge exists (most PWS have none), so - like the
+# fog/thunderstorm risk sensors elsewhere in this file - these are heuristic
+# estimates from temperature, humidity and the existing liquid-equivalent
+# rain rate, not a measurement. Treat as indicative, not authoritative.
+
+# Wet-bulb thresholds for phase classification, per the general shape of
+# operational precipitation-type guidance (e.g. Bourgouin, P. (2000). "A
+# Method to Determine Precipitation Types." Wea. Forecasting, 15, 583-592) -
+# simplified to a single-level (surface wet-bulb only) heuristic rather than
+# a full sounding-based method, since a PWS has no upper-air data.
+WET_BULB_SNOW_C = -0.5  # Tw at/below this: snow
+WET_BULB_RAIN_C = 1.5  # Tw at/above this: rain; between the two: sleet/mixed
+
+
+def classify_precip_phase(wet_bulb_c: float) -> str:
+    """Classify precipitation phase from surface wet-bulb temperature.
+
+    Returns "snow", "sleet", or "rain". A heuristic, not a measurement -
+    actual phase also depends on the vertical temperature profile, which a
+    single ground-level station cannot see. Most reliable well away from the
+    threshold; near freezing, treat "sleet" as genuinely uncertain.
+    """
+    if wet_bulb_c <= WET_BULB_SNOW_C:
+        return "snow"
+    if wet_bulb_c >= WET_BULB_RAIN_C:
+        return "rain"
+    return "sleet"
+
+
+# Approximate snow-to-liquid ratio (SLR) as a function of temperature - colder
+# air generally produces fluffier, less dense snow (a higher ratio). Loosely
+# follows the general shape of climatological SLR curves (e.g. Roebber, P.J.
+# et al. (2003). "Improving Snowfall Forecasting by Diagnosing Snow Density."
+# Wea. Forecasting, 18, 264-287) via simple piecewise-linear interpolation
+# between reference points - not a regionally-calibrated model. Actual SLR at
+# a given temperature varies widely with humidity, wind, and crystal habit.
+_SLR_POINTS: tuple[tuple[float, float], ...] = (
+    (2.0, 8.0),  # wet, dense snow near the melting point
+    (-1.0, 10.0),  # the traditional "ten to one" rule of thumb
+    (-9.0, 15.0),
+    (-18.0, 20.0),  # cold, dry "powder" snow
+)
+
+
+def snow_liquid_ratio(temp_c: float) -> float:
+    """Approximate snow-to-liquid ratio (SLR) for the given temperature.
+
+    E.g. 10.0 means 1mm of liquid-equivalent precipitation is estimated to
+    produce 10mm (1cm) of snow depth. Clamped to the coldest/warmest
+    reference points outside their range.
+    """
+    if temp_c >= _SLR_POINTS[0][0]:
+        return _SLR_POINTS[0][1]
+    if temp_c <= _SLR_POINTS[-1][0]:
+        return _SLR_POINTS[-1][1]
+    for (t_hi, r_hi), (t_lo, r_lo) in zip(_SLR_POINTS, _SLR_POINTS[1:], strict=False):
+        if t_lo <= temp_c <= t_hi:
+            frac = (temp_c - t_hi) / (t_lo - t_hi)  # 0 at t_hi, 1 at t_lo
+            return round(r_hi + frac * (r_lo - r_hi), 2)
+    return _SLR_POINTS[-1][1]  # unreachable given the bounds checks above
+
+
+def estimate_snowfall_cm(liquid_mm: float, temp_c: float) -> float:
+    """Estimate snow depth (cm) from liquid-equivalent precipitation (mm).
+
+    `liquid_mm` should already be phase-gated by the caller (only pass the
+    liquid-equivalent amount that fell as snow, not all precipitation).
+    """
+    if liquid_mm <= 0:
+        return 0.0
+    return round(liquid_mm * snow_liquid_ratio(temp_c) / 10.0, 2)

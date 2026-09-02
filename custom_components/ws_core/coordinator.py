@@ -85,6 +85,7 @@ from .algorithms import (
     calculate_wind_chill,
     calculate_wind_direction_variability,
     calculate_wind_gust_factor,
+    classify_precip_phase,
     clearness_to_cloud_cover,
     combine_rain_probability,
     compute_fwi,
@@ -92,6 +93,7 @@ from .algorithms import (
     derive_nowcast,
     determine_current_condition,
     direction_to_quadrant,
+    estimate_snowfall_cm,
     et0_hargreaves,
     et0_hourly_estimate,
     et0_penman_monteith,
@@ -137,7 +139,9 @@ from .const import (
     CONF_DISTANCE_UNIT,
     CONF_ELEVATION_M,
     CONF_ENABLE_AIR_QUALITY,
+    CONF_ENABLE_AUTO_CALIBRATION,
     CONF_ENABLE_AWEKAS,
+    CONF_ENABLE_CLIMATE_NORMALS,
     CONF_ENABLE_COMFORT_INDICES,
     CONF_ENABLE_CWOP,
     CONF_ENABLE_DEGREE_DAYS,
@@ -154,6 +158,7 @@ from .const import (
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
+    CONF_ENABLE_SNOW,
     CONF_ENABLE_SOIL,
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
@@ -235,7 +240,9 @@ from .const import (
     DEFAULT_CWOP_SERVER,
     DEFAULT_DISTANCE_UNIT,
     DEFAULT_ENABLE_AIR_QUALITY,
+    DEFAULT_ENABLE_AUTO_CALIBRATION,
     DEFAULT_ENABLE_AWEKAS,
+    DEFAULT_ENABLE_CLIMATE_NORMALS,
     DEFAULT_ENABLE_COMFORT_INDICES,
     DEFAULT_ENABLE_CWOP,
     DEFAULT_ENABLE_DEGREE_DAYS,
@@ -249,6 +256,7 @@ from .const import (
     DEFAULT_ENABLE_OWM_STATIONS,
     DEFAULT_ENABLE_POLLEN,
     DEFAULT_ENABLE_PWSWEATHER,
+    DEFAULT_ENABLE_SNOW,
     DEFAULT_ENABLE_SOIL,
     DEFAULT_ENABLE_SOLAR_FORECAST,
     DEFAULT_ENABLE_THUNDERSTORM,
@@ -310,6 +318,12 @@ from .const import (
     # v0.7.0
     KEY_AQI,
     KEY_AQI_LEVEL,
+    KEY_AUTO_CAL_BIAS_HUMIDITY,
+    KEY_AUTO_CAL_BIAS_PRESSURE_HPA,
+    KEY_AUTO_CAL_BIAS_TEMP_C,
+    KEY_AUTO_CAL_LAST_APPLIED,
+    KEY_AUTO_CAL_N_SAMPLES,
+    KEY_AUTO_CAL_STATUS,
     KEY_AWEKAS_STATUS,
     KEY_BATTERY_DISPLAY,
     KEY_BATTERY_PCT,
@@ -318,6 +332,8 @@ from .const import (
     KEY_CHILL_HOURS_SEASON,
     KEY_CHILL_HOURS_TODAY,
     KEY_CLEARNESS_INDEX,
+    KEY_CLIMATE_NORMALS_FETCHED,
+    KEY_CLIMATE_NORMALS_YEARS,
     KEY_CLIMATOLOGY_30D,
     KEY_CLIMATOLOGY_90D,
     KEY_CLOUD_BASE_M,
@@ -431,9 +447,11 @@ from .const import (
     KEY_RAIN_ACCUM_24H,
     KEY_RAIN_ANOMALY_30D,
     KEY_RAIN_ANOMALY_90D,
+    KEY_RAIN_ANOMALY_NORMAL,
     KEY_RAIN_DISPLAY,
     KEY_RAIN_EXPECTED_1H,
     KEY_RAIN_NEXT_60MIN,
+    KEY_RAIN_NORMAL_MM,
     KEY_RAIN_PROBABILITY,
     KEY_RAIN_PROBABILITY_COMBINED,
     KEY_RAIN_RATE_FILT,
@@ -448,6 +466,12 @@ from .const import (
     KEY_SENSOR_QUALITY_FLAGS,
     KEY_SENSOR_SPIKE,
     KEY_SENSOR_STUCK,
+    KEY_SNOW_FALLING,
+    KEY_SNOW_PHASE,
+    KEY_SNOW_RATE_CM_H,
+    KEY_SNOW_THIS_MONTH_CM,
+    KEY_SNOW_THIS_YEAR_CM,
+    KEY_SNOW_TODAY_CM,
     KEY_SOIL_MOISTURE,
     KEY_SOIL_MOISTURE_DEFICIT,
     KEY_SOIL_TEMP_C,
@@ -460,16 +484,19 @@ from .const import (
     KEY_SPECIFIC_HUMIDITY,
     KEY_TEMP_ANOMALY_30D,
     KEY_TEMP_ANOMALY_90D,
+    KEY_TEMP_ANOMALY_NORMAL,
     KEY_TEMP_AVG_24H,
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
     KEY_TEMP_HIGH_ALL_TIME,
     KEY_TEMP_HIGH_MONTH,
+    KEY_TEMP_HIGH_NORMAL,
     KEY_TEMP_HIGH_WEEK,
     KEY_TEMP_HIGH_YEAR,
     KEY_TEMP_LOW_24H,
     KEY_TEMP_LOW_ALL_TIME,
     KEY_TEMP_LOW_MONTH,
+    KEY_TEMP_LOW_NORMAL,
     KEY_TEMP_LOW_WEEK,
     KEY_TEMP_LOW_YEAR,
     KEY_TEMP_MONTH_REF,
@@ -639,7 +666,23 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     ):
         self.hass = hass
         self.entry_data = entry_data
-        self.entry_options = entry_options or {}
+        # entry_options is deliberately pre-merged (data as base, options
+        # overriding) rather than left as a bare copy of entry.options. The
+        # *initial* config flow writes every enable_* toggle into entry.data
+        # only (entry.options starts as {} until the user opens Configure and
+        # saves once - see OptionsFlow.async_create_entry), so a bare
+        # `entry_options or {}` here meant every per-cycle gate that reads
+        # `self.entry_options.get(CONF_ENABLE_X, DEFAULT)` directly (e.g.
+        # _compute_soil, _maybe_update_auto_calibration, the calibration/
+        # threshold reads below) silently fell back to DEFAULT (usually off)
+        # on a freshly created entry, even for a feature the user enabled in
+        # the wizard - until Configure was opened once. sensor.py's
+        # async_setup_entry already merges `{**entry.data, **entry.options}`
+        # for entity creation, so entities existed but sat unavailable. This
+        # merge makes self.entry_options behave the same way everywhere,
+        # matching the _get() closure below (which already did this merge
+        # manually, just not for direct self.entry_options.get(...) callers).
+        self.entry_options: dict[str, Any] = {**entry_data, **(entry_options or {})}
         self.runtime = WSStationRuntime()
 
         self.sources: dict[str, str] = dict((entry_options or {}).get(CONF_SOURCES) or entry_data.get(CONF_SOURCES, {}))
@@ -808,6 +851,18 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._rain_this_year_key: str = ""  # "YYYY"
         self._rain_this_year_last_total: float | None = None
 
+        # v2.7 - Snow (opt-in): estimated depth, integrated locally from the
+        # liquid rain rate (not a cumulative-sensor delta like rain above,
+        # since no snow gauge exists) so it never touches the rain accumulators.
+        self.snow_enabled = bool(_get(CONF_ENABLE_SNOW, DEFAULT_ENABLE_SNOW))
+        self._snow_last_calc_ts: Any = None
+        self._snow_today_cm: float = 0.0
+        self._snow_today_date: str = ""
+        self._snow_this_month_cm: float = 0.0
+        self._snow_this_month_key: str = ""  # "YYYY-MM"
+        self._snow_this_year_cm: float = 0.0
+        self._snow_this_year_key: str = ""  # "YYYY"
+
         # Yearly / all-time temperature extremes (issue #124). Yearly resets
         # when the current year no longer matches _temp_year_key; all-time
         # never resets automatically.
@@ -870,6 +925,13 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # Pollen (v0.3.0: now via Open-Meteo Air Quality API; piggybacks on AQI fetch)
         self.pollen_enabled = bool(_get(CONF_ENABLE_POLLEN, DEFAULT_ENABLE_POLLEN))
         self._pollen_cache: dict[str, Any] | None = None
+
+        # v2.7 - Historical climate normals (day-of-year; Open-Meteo archive API)
+        self.climate_normals_enabled = bool(_get(CONF_ENABLE_CLIMATE_NORMALS, DEFAULT_ENABLE_CLIMATE_NORMALS))
+        self._climate_normals: dict[str, dict[str, Any]] = {}
+        self._climate_normals_fetched_at: str = ""
+        self._climate_normals_years: int = 0
+        self._climate_normals_store: Any = None
 
         # Moon (calculated, no external API)
         self.moon_enabled = bool(_get(CONF_ENABLE_MOON, DEFAULT_ENABLE_MOON))
@@ -1067,6 +1129,16 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def altitude_unit(self) -> str:
         return self._resolve_unit(self._altitude_unit_conf, "m", "ft")
 
+    @property
+    def snow_unit(self) -> str:
+        """Snow depth follows the rain unit preference (mm/in) - no separate
+        setting - since both are the same metric/imperial choice."""
+        return "in" if self.rain_unit == "in" else "cm"
+
+    @property
+    def snow_rate_unit(self) -> str:
+        return "in/h" if self.rain_unit == "in" else "cm/h"
+
     # ------------------------------------------------------------------
     # Lifecycle
     # ------------------------------------------------------------------
@@ -1101,6 +1173,19 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 self._restore_history_state(hist)
         except Exception as err:  # noqa: BLE001
             _LOGGER.warning("ws_core: failed to restore history state (starting fresh): %s", err)
+
+        # v2.7 - Climate normals table (its own store: infrequently written,
+        # ~365 entries, kept separate from the frequently-saved learning blob)
+        if self.climate_normals_enabled:
+            self._climate_normals_store = Store(self.hass, 1, f"ws_core_{entry_id}_climate_normals")
+            try:
+                saved = await self._climate_normals_store.async_load()
+                if saved:
+                    self._climate_normals = saved.get("normals") or {}
+                    self._climate_normals_fetched_at = saved.get("fetched_at") or ""
+                    self._climate_normals_years = int(saved.get("years") or 0)
+            except Exception as err:  # noqa: BLE001
+                _LOGGER.warning("ws_core: failed to restore climate normals (starting fresh): %s", err)
 
         entity_ids = [eid for eid in self.sources.values() if eid]
         if entity_ids:
@@ -1327,6 +1412,22 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     _LOGGER.debug("ws_core: neighbor QC fetch failed: %s", err)
 
             self.hass.async_create_task(_deferred_neighbor_qc())
+
+        # v2.7 - Climate normals: fetch/refresh once, then check daily whether
+        # it's stale (CLIMATE_NORMALS_REFRESH_DAYS) rather than a fixed-interval
+        # re-fetch - normals barely change, so there's no value in polling hourly.
+        if self.climate_normals_enabled and self.forecast_lat is not None and self.forecast_lon is not None:
+
+            async def _climate_normals_loop() -> None:
+                await asyncio.sleep(120)  # let the first regular update land first
+                while True:
+                    await self._async_maybe_refresh_climate_normals()
+                    await asyncio.sleep(24 * 60 * 60)
+
+            _climate_normals_task = self.hass.async_create_background_task(
+                _climate_normals_loop(), "ws_core_climate_normals_fetch"
+            )
+            self._unsubs.append(_climate_normals_task.cancel)
 
         # v2.0: CWOP upload
         if self.cwop_enabled and self.cwop_callsign:
@@ -2539,6 +2640,70 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             need_label = "critical"
         data[KEY_IRRIGATION_NEED] = need_label
 
+    def _compute_snow(self, data: dict, now: Any) -> None:
+        """Estimate precipitation phase and snow accumulation.  (v2.7, opt-in)
+
+        Heuristic, not a measurement: no station-agnostic snow gauge exists.
+        See algorithms.py's classify_precip_phase / estimate_snowfall_cm for
+        the method (wet-bulb phase threshold + temperature-dependent
+        snow-to-liquid ratio) and its caveats. Snow depth is integrated
+        locally from the smoothed liquid rain rate over elapsed real time -
+        deliberately *not* a delta of the cumulative rain-total sensor like
+        the rain accumulators use, since there is no cumulative snow sensor
+        to delta against, and this keeps it fully isolated from (never
+        touches) the existing rain sensors' behaviour.
+        """
+        if not self.snow_enabled:
+            return
+        tc = data.get(KEY_NORM_TEMP_C)
+        rh = data.get(KEY_NORM_HUMIDITY)
+        rain_rate = float(data.get(KEY_RAIN_RATE_FILT) or 0.0)
+        if tc is None or rh is None:
+            return
+
+        wet_bulb = calculate_wet_bulb(float(tc), float(rh))
+        phase = classify_precip_phase(wet_bulb) if rain_rate > 0.1 else "none"
+        data[KEY_SNOW_PHASE] = phase
+        data[KEY_SNOW_FALLING] = phase == "snow"
+
+        # Elapsed time since the last cycle this ran, capped so a long gap
+        # (HA restart, a missed tick) can't attribute hours of accumulation
+        # to a single sample.
+        elapsed_h = 0.0
+        if self._snow_last_calc_ts is not None:
+            elapsed_h = max(0.0, (now - self._snow_last_calc_ts).total_seconds() / 3600.0)
+            elapsed_h = min(elapsed_h, 0.5)
+        self._snow_last_calc_ts = now
+
+        new_snow_cm = 0.0
+        if phase == "snow":
+            data[KEY_SNOW_RATE_CM_H] = round(estimate_snowfall_cm(rain_rate, float(tc)), 2)
+            if elapsed_h > 0:
+                new_snow_cm = estimate_snowfall_cm(rain_rate * elapsed_h, float(tc))
+        else:
+            data[KEY_SNOW_RATE_CM_H] = 0.0
+
+        date_str = dt_util.now().strftime("%Y-%m-%d")
+        if date_str != self._snow_today_date:
+            self._snow_today_cm = 0.0
+            self._snow_today_date = date_str
+        self._snow_today_cm += new_snow_cm
+        data[KEY_SNOW_TODAY_CM] = round(self._snow_today_cm, 1)
+
+        month_key = dt_util.now().strftime("%Y-%m")
+        if month_key != self._snow_this_month_key:
+            self._snow_this_month_cm = 0.0
+            self._snow_this_month_key = month_key
+        self._snow_this_month_cm += new_snow_cm
+        data[KEY_SNOW_THIS_MONTH_CM] = round(self._snow_this_month_cm, 1)
+
+        year_key = dt_util.now().strftime("%Y")
+        if year_key != self._snow_this_year_key:
+            self._snow_this_year_cm = 0.0
+            self._snow_this_year_key = year_key
+        self._snow_this_year_cm += new_snow_cm
+        data[KEY_SNOW_THIS_YEAR_CM] = round(self._snow_this_year_cm, 1)
+
     async def _async_fetch_neighbor_qc(self) -> None:
         """Fetch Open-Meteo current weather as a spatial QC reference.  (v2.0)
 
@@ -2569,8 +2734,85 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "pressure_hpa": current.get("surface_pressure"),
                 "fetched_at": dt_util.utcnow().isoformat(),
             }
+            await self._maybe_update_auto_calibration(self._neighbor_qc_cache)
         except Exception:  # noqa: BLE001
             pass  # QC is advisory; never block main flow
+
+    async def _maybe_update_auto_calibration(self, nwp: dict) -> None:
+        """Fold one neighbor-QC sample into the adaptive calibration bias EMA,
+        and - once confident - nudge cal_temp_c/cal_humidity/cal_pressure_hpa a
+        small bounded step toward canceling a persistent bias.  (v2.7)
+
+        Opt-in via enable_auto_calibration. Runs on the same hourly cadence as
+        the neighbor-QC fetch it reuses (~240 samples ≈ 10 days before the
+        first possible nudge), applies at most one nudge per calendar day, and
+        never overshoots the learned bias in a single step - see const.py
+        AUTO_CAL_* for the tuning constants and rationale.
+        """
+        if not self.entry_options.get(CONF_ENABLE_AUTO_CALIBRATION, DEFAULT_ENABLE_AUTO_CALIBRATION):
+            return
+        local = self.data or {}
+        from .const import AUTO_CAL_BIAS_ALPHA, AUTO_CAL_DEADBAND, AUTO_CAL_MIN_SAMPLES, AUTO_CAL_STEP
+        from .learning_state import compute_auto_calibration_step, update_calibration_bias
+
+        update_calibration_bias(
+            self._learning_state,
+            local.get(KEY_NORM_TEMP_C),
+            nwp.get("temp_c"),
+            local.get(KEY_NORM_HUMIDITY),
+            nwp.get("humidity"),
+            local.get(KEY_NORM_PRESSURE_HPA),
+            nwp.get("pressure_hpa"),
+            alpha=AUTO_CAL_BIAS_ALPHA,
+        )
+
+        today_str = dt_util.now().date().isoformat()
+        if self._learning_state.cal_last_auto_apply_date == today_str:
+            return  # already nudged today
+
+        deltas = compute_auto_calibration_step(
+            self._learning_state, AUTO_CAL_MIN_SAMPLES, AUTO_CAL_DEADBAND, AUTO_CAL_STEP
+        )
+        if not deltas:
+            return
+
+        # Bounds mirror number.py's WSNumberDesc native_min/native_max for these
+        # same options, so an auto-nudge can never push a field further than a
+        # user could push it manually.
+        bounds = {
+            "cal_temp_c": (-10.0, 10.0),
+            "cal_humidity": (-20.0, 20.0),
+            "cal_pressure_hpa": (-10.0, 10.0),
+        }
+        new_options = dict(self.config_entry.options)
+        applied: dict[str, float] = {}
+        for cal_field, delta in deltas.items():
+            lo, hi = bounds[cal_field]
+            current_val = float(new_options.get(cal_field, 0.0))
+            new_val = round(max(lo, min(hi, current_val + delta)), 2)
+            if abs(new_val - current_val) < 1e-9:
+                continue  # already at the bound; nothing to write
+            new_options[cal_field] = new_val
+            applied[cal_field] = new_val
+        if not applied:
+            return
+
+        self._learning_state.cal_last_auto_apply_date = today_str
+        _LOGGER.info(
+            "ws_core: auto-calibration nudged %s (learned bias vs regional reference, "
+            "%d samples) - review under Configure → Features if unexpected",
+            applied,
+            self._learning_state.cal_bias_n,
+        )
+        # Persist the learning state *before* triggering the reload below - the
+        # reload tears down this coordinator and a fresh one loads learning
+        # state from storage, so the save must land first or today's
+        # cal_last_auto_apply_date (and the nudged bias EMA) would be lost and
+        # tomorrow's fetch could double-nudge.
+        from .learning_state import async_save_learning
+
+        await async_save_learning(self._learning_store, self._learning_state)
+        self.hass.config_entries.async_update_entry(self.config_entry, options=new_options)
 
     def _compute_neighbor_qc(self, data: dict) -> None:
         """Compare local readings against cached NWP grid point; populate flags."""
@@ -2598,6 +2840,106 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         f"pressure: local {local_press:.1f} hPa vs NWP {nwp_press:.1f} hPa (Δ={delta_p:.1f} > 15 hPa)"
                     )
         data[KEY_NEIGHBOR_QC] = flags
+
+    async def _async_maybe_refresh_climate_normals(self) -> None:
+        """Fetch/rebuild the day-of-year climate normals table if stale.  (v2.7)
+
+        One Open-Meteo archive-api call spanning CLIMATE_NORMALS_LOOKBACK_YEARS
+        years, parsed and binned into 365 day-of-year buckets. Cheap to skip:
+        only runs if there's no cached table yet, or the cached one is older
+        than CLIMATE_NORMALS_REFRESH_DAYS - climate normals don't meaningfully
+        change day to day, so this is not on the hourly/60s cadence like the
+        other fetches.
+        """
+        from .const import CLIMATE_NORMALS_LOOKBACK_YEARS, CLIMATE_NORMALS_REFRESH_DAYS, CLIMATE_NORMALS_WINDOW_DAYS
+
+        if self._climate_normals and self._climate_normals_fetched_at:
+            try:
+                fetched = dt_util.parse_datetime(self._climate_normals_fetched_at)
+                if fetched and (dt_util.utcnow() - fetched).days < CLIMATE_NORMALS_REFRESH_DAYS:
+                    return  # still fresh
+            except (TypeError, ValueError):
+                pass
+
+        lat = self.forecast_lat
+        lon = self.forecast_lon
+        if lat is None or lon is None:
+            return
+        try:
+            from .climate_normals import compute_climate_normals, parse_archive_daily_response
+
+            end = dt_util.now().date() - timedelta(days=1)  # archive API lags a few days behind "today"
+            # timedelta rather than replace(year=...): avoids a Feb-29 ValueError
+            # if `end` happens to land on a leap day and year-N isn't a leap year.
+            start = end - timedelta(days=365 * CLIMATE_NORMALS_LOOKBACK_YEARS)
+            url = (
+                "https://archive-api.open-meteo.com/v1/archive"
+                f"?latitude={lat:.4f}&longitude={lon:.4f}"
+                f"&start_date={start.isoformat()}&end_date={end.isoformat()}"
+                "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum"
+                "&timezone=auto"
+            )
+            session = async_get_clientsession(self.hass)
+            async with session.get(url, timeout=60) as resp:
+                if resp.status != 200:
+                    _LOGGER.warning("ws_core: climate normals fetch HTTP %s", resp.status)
+                    return
+                payload = await resp.json()
+            records = parse_archive_daily_response(payload)
+            if not records:
+                _LOGGER.warning("ws_core: climate normals fetch returned no daily records")
+                return
+            normals = compute_climate_normals(records, window_days=CLIMATE_NORMALS_WINDOW_DAYS)
+            if not normals:
+                return
+            self._climate_normals = normals
+            self._climate_normals_fetched_at = dt_util.utcnow().isoformat()
+            self._climate_normals_years = CLIMATE_NORMALS_LOOKBACK_YEARS
+            if self._climate_normals_store is not None:
+                await self._climate_normals_store.async_save(
+                    {
+                        "normals": normals,
+                        "fetched_at": self._climate_normals_fetched_at,
+                        "years": self._climate_normals_years,
+                    }
+                )
+            _LOGGER.info(
+                "ws_core: climate normals refreshed (%d day-of-year buckets, %d years of history)",
+                len(normals),
+                CLIMATE_NORMALS_LOOKBACK_YEARS,
+            )
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.warning("ws_core: climate normals fetch failed (will retry tomorrow): %s", err)
+
+    def _compute_climate_normal_anomaly(self, data: dict, tc: float | None, rain_today_mm: float | None) -> None:
+        """Compare today against the historical day-of-year normal.  (v2.7)
+
+        Distinct from KEY_TEMP_ANOMALY_30D/90D (self-referential, vs. this
+        station's own recent rolling average): this is vs. the long-term
+        historical average for today's specific calendar date.
+        """
+        if not self.climate_normals_enabled or not self._climate_normals:
+            return
+        from .climate_normals import climate_normal_for_date
+
+        normal = climate_normal_for_date(self._climate_normals, dt_util.now().date())
+        data[KEY_CLIMATE_NORMALS_YEARS] = self._climate_normals_years
+        data[KEY_CLIMATE_NORMALS_FETCHED] = self._climate_normals_fetched_at or None
+        if not normal:
+            return
+
+        t_high = normal.get("t_high")
+        t_low = normal.get("t_low")
+        rain_normal = normal.get("rain")
+        data[KEY_TEMP_HIGH_NORMAL] = t_high
+        data[KEY_TEMP_LOW_NORMAL] = t_low
+        data[KEY_RAIN_NORMAL_MM] = rain_normal
+
+        if tc is not None and t_high is not None and t_low is not None:
+            normal_mean = round((float(t_high) + float(t_low)) / 2.0, 1)
+            data[KEY_TEMP_ANOMALY_NORMAL] = round(float(tc) - normal_mean, 1)
+        if rain_today_mm is not None and rain_normal is not None:
+            data[KEY_RAIN_ANOMALY_NORMAL] = round(float(rain_today_mm) - float(rain_normal), 1)
 
     def _compute_data_quality_score(self, data: dict) -> None:
         """Compute overall data quality score (0-100) and stuck-sensor flags.  (v2.0)"""
@@ -3407,6 +3749,23 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data[KEY_SOLAR_LUX_FACTOR] = self._learning_state.solar_lux_factor
         data["_solar_lux_factor_n_days"] = self._learning_state.solar_factor_n
 
+        # v2.7 - Adaptive calibration bias (opt-in via enable_auto_calibration)
+        if self.entry_options.get(CONF_ENABLE_AUTO_CALIBRATION, DEFAULT_ENABLE_AUTO_CALIBRATION):
+            from .const import AUTO_CAL_MIN_SAMPLES
+
+            ls = self._learning_state
+            data[KEY_AUTO_CAL_BIAS_TEMP_C] = ls.cal_bias_temp_c
+            data[KEY_AUTO_CAL_BIAS_HUMIDITY] = ls.cal_bias_humidity
+            data[KEY_AUTO_CAL_BIAS_PRESSURE_HPA] = ls.cal_bias_pressure_hpa
+            data[KEY_AUTO_CAL_N_SAMPLES] = ls.cal_bias_n
+            data[KEY_AUTO_CAL_LAST_APPLIED] = ls.cal_last_auto_apply_date or None
+            if ls.cal_bias_n < AUTO_CAL_MIN_SAMPLES:
+                data[KEY_AUTO_CAL_STATUS] = "learning"
+            elif ls.cal_last_auto_apply_date:
+                data[KEY_AUTO_CAL_STATUS] = "adjusted"
+            else:
+                data[KEY_AUTO_CAL_STATUS] = "stable"
+
     # ------------------------------------------------------------------
     # v1.2.0 - Learning state persistence (called from _compute)
     # ------------------------------------------------------------------
@@ -3548,6 +3907,13 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             # v2.0 solar energy accumulation (Wh/m², resets at midnight)
             "solar_energy_today_whm2": self._solar_energy_today_whm2,
             "solar_energy_date": self._solar_energy_date,
+            # v2.7 - snow accumulation (opt-in)
+            "snow_today_cm": self._snow_today_cm,
+            "snow_today_date": self._snow_today_date,
+            "snow_this_month_cm": self._snow_this_month_cm,
+            "snow_this_month_key": self._snow_this_month_key,
+            "snow_this_year_cm": self._snow_this_year_cm,
+            "snow_this_year_key": self._snow_this_year_key,
         }
 
     def _restore_history_state(self, data: dict[str, Any]) -> None:
@@ -3719,6 +4085,18 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self._solar_energy_today_whm2 = float(data.get("solar_energy_today_whm2") or 0.0)
             self._solar_energy_date = today
 
+        # v2.7 - snow accumulation: restore only within the same period,
+        # mirroring the rain day/month/year restore above.
+        if data.get("snow_today_date") == today:
+            self._snow_today_cm = float(data.get("snow_today_cm") or 0.0)
+            self._snow_today_date = today
+        if data.get("snow_this_month_key") == month_key:
+            self._snow_this_month_cm = float(data.get("snow_this_month_cm") or 0.0)
+            self._snow_this_month_key = month_key
+        if data.get("snow_this_year_key") == year_key:
+            self._snow_this_year_cm = float(data.get("snow_this_year_cm") or 0.0)
+            self._snow_this_year_key = year_key
+
     # ------------------------------------------------------------------
     # Main orchestrator
     # ------------------------------------------------------------------
@@ -3836,6 +4214,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._compute_lightning(data, now)
         self._compute_indoor(data)
         self._compute_soil(data)
+        self._compute_snow(data, now)
         self._compute_neighbor_qc(data)
         self._compute_data_quality_score(data)
         self._compute_health(data, now, missing, missing_entities)
@@ -3848,6 +4227,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # are independent of GDD).
         self._compute_streaks(data, now)
         self._compute_climatology(data)
+        self._compute_climate_normal_anomaly(data, tc, data.get("_rain_today_mm"))
         self._compute_drift_detection(data, now)
         self._compute_consistency_checks(data, now)
         self._compute_learning_sensors(data)

@@ -142,16 +142,22 @@
           "enable_lightning": "Lightning detection (accepts WH57, AS3935, or any lightning count + distance sensor)",
           "enable_indoor": "Indoor sensors (temperature, humidity, CO₂ differential)",
           "enable_soil": "Soil sensors (moisture, temperature, irrigation need)",
+          "enable_snow": "Snow (precipitation phase + estimated accumulation from your existing rain rate)",
           "enable_weathercloud": "Weathercloud upload",
           "enable_pwsweather": "PWSWeather upload",
           "enable_wow": "WOW (UK Met Office) upload",
           "enable_awekas": "AWEKAS upload",
           "enable_owm_stations": "OpenWeatherMap Stations upload",
           "enable_windy": "Windy.com upload",
-          "enable_mqtt": "MQTT Discovery republishing (publish all derived sensors to MQTT broker for Node-RED / external consumers)"
+          "enable_mqtt": "MQTT Discovery republishing (publish all derived sensors to MQTT broker for Node-RED / external consumers)",
+          "enable_auto_calibration": "Adaptive sensor calibration (learns a bias vs. the regional forecast reference and nudges calibration offsets automatically)",
+          "enable_climate_normals": "Historical climate normals (compares today against ~10 years of local history, Open-Meteo archive, no API key)"
         },
         "data_description": {
-          "enable_degree_days": "Calculation of Growing, Heating and Cooling Degree Days plus a leaf-wetness estimate, useful for agriculture and energy tracking."
+          "enable_degree_days": "Calculation of Growing, Heating and Cooling Degree Days plus a leaf-wetness estimate, useful for agriculture and energy tracking.",
+          "enable_auto_calibration": "Off by default. Nudges cal_temp_c/cal_humidity/cal_pressure_hpa by a small, bounded amount at most once per day, only once ~10 days of hourly samples show a persistent bias. Review sensor.ws_auto_calibration before enabling.",
+          "enable_climate_normals": "Off by default. One archive-api request (refreshed monthly) builds a table of the historical average high/low temperature and rainfall for each day of the year, so sensor.ws_temperature_anomaly_normal reflects today vs. history rather than vs. your station's own recent average.",
+          "enable_snow": "Heuristic, not a measurement: no station-agnostic snow gauge exists. Estimates precipitation phase from wet-bulb temperature and snow accumulation from your existing rain rate via a temperature-dependent snow-to-liquid ratio."
         }
       },
       "weathercloud": {
@@ -487,7 +493,10 @@
           "enable_degree_days": "Degree days (HDD, CDD, GDD) and leaf wetness",
           "enable_lightning": "Lightning detection sensors",
           "enable_indoor": "Indoor sensors (temperature, humidity, CO₂)",
-          "enable_soil": "Soil sensors (moisture, temperature, irrigation need)"
+          "enable_soil": "Soil sensors (moisture, temperature, irrigation need)",
+          "enable_snow": "Snow (precipitation phase + estimated accumulation)",
+          "enable_auto_calibration": "Adaptive sensor calibration (learns bias, nudges calibration automatically)",
+          "enable_climate_normals": "Historical climate normals (today vs. ~10 years of local history)"
         },
         "data_description": {
           "enable_display_sensors": "Display sensors (levels, trends, health)",
@@ -505,7 +514,10 @@
           "enable_diagnostics": "Sensor drift, cross-sensor consistency, quality flags, forecast skill/agreement, solar lux factor, 30-day climatology",
           "enable_fwi_components": "FWI intermediate codes (FFMC/DMC/DC/ISI/BUI). Requires Fire Risk enabled to produce data",
           "enable_advanced_sensors": "Zambretti number (numeric form), hourly ET₀, smoothed wind direction",
-          "enable_nowcast": "Open-Meteo 15-minute precipitation nowcast: minutes until rain starts/stops, next-hour total, intensity. No API key"
+          "enable_nowcast": "Open-Meteo 15-minute precipitation nowcast: minutes until rain starts/stops, next-hour total, intensity. No API key",
+          "enable_auto_calibration": "Off by default. Nudges cal_temp_c/cal_humidity/cal_pressure_hpa by a small, bounded amount at most once per day, only once ~10 days of hourly samples show a persistent bias vs. the regional forecast reference. Review sensor.ws_auto_calibration before enabling.",
+          "enable_climate_normals": "Off by default. One archive-api request (refreshed monthly) builds a table of the historical average high/low temperature and rainfall for each day of the year, so sensor.ws_temperature_anomaly_normal reflects today vs. history rather than vs. your station's own recent average.",
+          "enable_snow": "Heuristic, not a measurement: no station-agnostic snow gauge exists. Estimates precipitation phase from wet-bulb temperature and snow accumulation from your existing rain rate via a temperature-dependent snow-to-liquid ratio."
         }
       },
       "indoor_rooms_opt": {
@@ -1760,11 +1772,59 @@
       "rain_anomaly_90d": {
         "name": "Rain Anomaly (90-day)"
       },
+      "temp_high_normal": {
+        "name": "Temperature High (Normal)",
+        "state_attributes": {
+          "sample_years": {
+            "name": "Sample years"
+          },
+          "fetched_at": {
+            "name": "Fetched at"
+          }
+        }
+      },
+      "temp_low_normal": {
+        "name": "Temperature Low (Normal)"
+      },
+      "rain_normal": {
+        "name": "Rain (Normal)"
+      },
+      "temp_anomaly_normal": {
+        "name": "Temperature Anomaly (Normal)"
+      },
+      "rain_anomaly_normal": {
+        "name": "Rain Anomaly (Normal)"
+      },
       "solar_lux_factor": {
         "name": "Solar Lux Factor",
         "state_attributes": {
           "calibration_days": {
             "name": "Calibration days"
+          }
+        }
+      },
+      "auto_calibration": {
+        "name": "Auto Calibration",
+        "state": {
+          "learning": "Learning",
+          "stable": "Stable",
+          "adjusted": "Adjusted"
+        },
+        "state_attributes": {
+          "bias_temp_c": {
+            "name": "Learned temperature bias"
+          },
+          "bias_humidity": {
+            "name": "Learned humidity bias"
+          },
+          "bias_pressure_hpa": {
+            "name": "Learned pressure bias"
+          },
+          "samples": {
+            "name": "Samples"
+          },
+          "last_applied": {
+            "name": "Last applied"
           }
         }
       },
@@ -1933,6 +1993,27 @@
       },
       "rain_rate_max_24h": {
         "name": "Rain Rate Max (24h)"
+      },
+      "snow_phase": {
+        "name": "Precipitation Phase",
+        "state": {
+          "snow": "Snow",
+          "sleet": "Sleet",
+          "rain": "Rain",
+          "none": "None"
+        }
+      },
+      "snow_rate": {
+        "name": "Snow Rate"
+      },
+      "snow_today": {
+        "name": "Snow Today"
+      },
+      "snow_this_month": {
+        "name": "Snow This Month"
+      },
+      "snow_this_year": {
+        "name": "Snow This Year"
       },
       "hdd_today": {
         "name": "Heating Degree Day",
@@ -2512,6 +2593,15 @@
       },
       "ws_enable_windy": {
         "name": "Feature: Windy Upload"
+      },
+      "ws_enable_auto_calibration": {
+        "name": "Feature: Adaptive Sensor Calibration"
+      },
+      "ws_enable_climate_normals": {
+        "name": "Feature: Historical Climate Normals"
+      },
+      "ws_enable_snow": {
+        "name": "Feature: Snow"
       }
     },
     "event": {
@@ -2558,6 +2648,9 @@
       },
       "ws_rain_expected_1h": {
         "name": "Rain Expected (1h)"
+      },
+      "ws_snow_falling": {
+        "name": "Snow Falling"
       },
       "ws_temperature_stuck": {
         "name": "Temperature Sensor Stuck"

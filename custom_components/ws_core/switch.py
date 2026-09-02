@@ -22,7 +22,9 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from .const import (
     CONF_ENABLE_ADVANCED_SENSORS,
     CONF_ENABLE_AIR_QUALITY,
+    CONF_ENABLE_AUTO_CALIBRATION,
     CONF_ENABLE_AWEKAS,
+    CONF_ENABLE_CLIMATE_NORMALS,
     CONF_ENABLE_COMFORT_INDICES,
     CONF_ENABLE_CWOP,
     CONF_ENABLE_DEGREE_DAYS,
@@ -40,6 +42,7 @@ from .const import (
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
+    CONF_ENABLE_SNOW,
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
     CONF_ENABLE_VIGICRUES,
@@ -52,7 +55,9 @@ from .const import (
     CONF_SUPPRESS_NOTIFICATIONS,
     DEFAULT_ENABLE_ADVANCED_SENSORS,
     DEFAULT_ENABLE_AIR_QUALITY,
+    DEFAULT_ENABLE_AUTO_CALIBRATION,
     DEFAULT_ENABLE_AWEKAS,
+    DEFAULT_ENABLE_CLIMATE_NORMALS,
     DEFAULT_ENABLE_COMFORT_INDICES,
     DEFAULT_ENABLE_CWOP,
     DEFAULT_ENABLE_DEGREE_DAYS,
@@ -70,6 +75,7 @@ from .const import (
     DEFAULT_ENABLE_POLLEN,
     DEFAULT_ENABLE_PWSWEATHER,
     DEFAULT_ENABLE_SEA_TEMP,
+    DEFAULT_ENABLE_SNOW,
     DEFAULT_ENABLE_SOLAR_FORECAST,
     DEFAULT_ENABLE_THUNDERSTORM,
     DEFAULT_ENABLE_VIGICRUES,
@@ -280,6 +286,44 @@ FEATURE_SWITCHES: tuple[WSFeatureDesc, ...] = (
         default=DEFAULT_ENABLE_WINDY,
         name="Feature: Windy Upload",
         icon="mdi:cloud-upload-outline",
+    ),
+    # v2.7
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_AUTO_CALIBRATION,
+        default=DEFAULT_ENABLE_AUTO_CALIBRATION,
+        name="Feature: Adaptive Sensor Calibration",
+        icon="mdi:tune",
+        description=(
+            "Learns a slow bias estimate vs. the regional forecast reference point "
+            "already used for neighbor QC, and nudges the calibration offsets by a "
+            "small, bounded amount at most once per day once confident (~10 days of "
+            "samples). Never overshoots the learned bias. Off by default; review "
+            "sensor.ws_auto_calibration for what it has learned before enabling."
+        ),
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_CLIMATE_NORMALS,
+        default=DEFAULT_ENABLE_CLIMATE_NORMALS,
+        name="Feature: Historical Climate Normals",
+        icon="mdi:calendar-clock",
+        description=(
+            "Fetches ~10 years of historical daily data for your location "
+            "(Open-Meteo archive/ERA5, one request, refreshed monthly) and "
+            "compares today against the long-term normal for this specific "
+            "calendar day - not just your station's own recent average."
+        ),
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_SNOW,
+        default=DEFAULT_ENABLE_SNOW,
+        name="Feature: Snow",
+        icon="mdi:snowflake",
+        description=(
+            "Estimates precipitation phase (rain/sleet/snow) from wet-bulb "
+            "temperature and estimated snow accumulation from your existing "
+            "rain rate - no snow gauge required, and no station-agnostic one "
+            "exists. Heuristic, not a measurement."
+        ),
     ),
     # v1.8.4 (issue #20) — inverted: ON means notifications enabled (suppress=False)
     WSFeatureDesc(

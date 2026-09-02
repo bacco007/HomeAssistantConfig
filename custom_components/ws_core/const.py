@@ -538,6 +538,28 @@ KEY_TEMP_ANOMALY_90D = "temp_anomaly_90d"
 KEY_RAIN_ANOMALY_90D = "rain_anomaly_90d"
 
 # ---------------------------------------------------------------------------
+# v2.7 - Historical climate normals (day-of-year, distinct from the
+# self-referential 30d/90d anomaly above: this compares today against the
+# long-term historical average for *this specific day of the year* at this
+# location - the "X degrees above/below normal" a TV weather report gives -
+# rather than against the station's own recent rolling average).
+# ---------------------------------------------------------------------------
+CONF_ENABLE_CLIMATE_NORMALS = "enable_climate_normals"
+DEFAULT_ENABLE_CLIMATE_NORMALS = False
+
+CLIMATE_NORMALS_LOOKBACK_YEARS = 10  # years of Open-Meteo archive (ERA5) history to average
+CLIMATE_NORMALS_WINDOW_DAYS = 5  # +/- circular calendar days smoothed into each day-of-year bucket
+CLIMATE_NORMALS_REFRESH_DAYS = 30  # re-fetch cadence; normals don't meaningfully change day to day
+
+KEY_TEMP_HIGH_NORMAL = "temp_high_normal"
+KEY_TEMP_LOW_NORMAL = "temp_low_normal"
+KEY_RAIN_NORMAL_MM = "rain_normal_mm"
+KEY_TEMP_ANOMALY_NORMAL = "temp_anomaly_normal"
+KEY_RAIN_ANOMALY_NORMAL = "rain_anomaly_normal"
+KEY_CLIMATE_NORMALS_YEARS = "climate_normals_sample_years"
+KEY_CLIMATE_NORMALS_FETCHED = "climate_normals_fetched_at"
+
+# ---------------------------------------------------------------------------
 # v1.3.0 - Canadian FWI (Fire Weather Index) system
 # ---------------------------------------------------------------------------
 KEY_FWI_FFMC = "fwi_ffmc"
@@ -889,6 +911,22 @@ KEY_IRRIGATION_NEED = "irrigation_need"  # text: "None"/"Low"/"Moderate"/"High"/
 KEY_IRRIGATION_NEED_SCORE = "irrigation_need_score"  # 0-100 numeric
 
 # ---------------------------------------------------------------------------
+# v2.7 - Snow (opt-in): precipitation phase + estimated accumulation
+# ---------------------------------------------------------------------------
+# No station-agnostic snow gauge exists, so this is a heuristic estimate from
+# temperature, humidity, and the existing liquid-equivalent rain rate - not a
+# measurement. See algorithms.py's classify_precip_phase / estimate_snowfall_cm.
+CONF_ENABLE_SNOW = "enable_snow"
+DEFAULT_ENABLE_SNOW = False
+
+KEY_SNOW_PHASE = "snow_precip_phase"  # "snow" / "sleet" / "rain" / "none"
+KEY_SNOW_FALLING = "snow_falling"  # bool
+KEY_SNOW_RATE_CM_H = "snow_rate_cm_h"  # estimated current snowfall rate
+KEY_SNOW_TODAY_CM = "snow_today_cm"  # resets at local midnight
+KEY_SNOW_THIS_MONTH_CM = "snow_this_month_cm"
+KEY_SNOW_THIS_YEAR_CM = "snow_this_year_cm"
+
+# ---------------------------------------------------------------------------
 # v2.0 - Data quality expansion
 # ---------------------------------------------------------------------------
 
@@ -900,6 +938,44 @@ KEY_SENSOR_SPIKE = "sensor_spike_flags"  # list of σ-based step-change flags
 # Spike detection thresholds (sigma multiplier + minimum samples)
 SPIKE_SIGMA_THRESHOLD = 3.0  # flag a reading > 3σ from rolling mean
 SPIKE_MIN_SAMPLES = 12  # need at least this many samples to compute σ
+
+# ---------------------------------------------------------------------------
+# v2.7 - Adaptive (auto-apply) sensor calibration
+# ---------------------------------------------------------------------------
+# Opt-in. Reuses the hourly neighbor-QC fetch (Open-Meteo NWP grid point,
+# already used to flag large deviations above) as a slow-moving reference:
+# each hourly sample nudges an EMA of (local - reference) residual bias for
+# temperature/humidity/pressure. Once enough samples have accumulated and the
+# learned bias persistently exceeds a noise deadband, a small bounded step is
+# written into the existing cal_temp_c/cal_humidity/cal_pressure_hpa options
+# (the same options the `apply_calibration` service and the Calibration
+# number entities already read/write) at most once per day. Never overshoots
+# the learned bias, never jumps in one step, and is fully reversible by
+# turning the toggle off or by editing the calibration numbers manually.
+CONF_ENABLE_AUTO_CALIBRATION = "enable_auto_calibration"
+DEFAULT_ENABLE_AUTO_CALIBRATION = False
+
+AUTO_CAL_BIAS_ALPHA = 0.01  # slow EMA (~100 hourly samples ≈ 4 days to mostly converge)
+AUTO_CAL_MIN_SAMPLES = 240  # ≈10 days of hourly neighbor-QC fetches before trusting the bias
+AUTO_CAL_DEADBAND = {
+    # Below this, treat the learned bias as noise - never nudge.
+    "cal_temp_c": 0.3,
+    "cal_humidity": 2.0,
+    "cal_pressure_hpa": 1.0,
+}
+AUTO_CAL_STEP = {
+    # Maximum single-day nudge per field (never overshoots the bias itself).
+    "cal_temp_c": 0.1,
+    "cal_humidity": 0.5,
+    "cal_pressure_hpa": 0.2,
+}
+
+KEY_AUTO_CAL_BIAS_TEMP_C = "auto_cal_bias_temp_c"
+KEY_AUTO_CAL_BIAS_HUMIDITY = "auto_cal_bias_humidity"
+KEY_AUTO_CAL_BIAS_PRESSURE_HPA = "auto_cal_bias_pressure_hpa"
+KEY_AUTO_CAL_N_SAMPLES = "auto_cal_n_samples"
+KEY_AUTO_CAL_STATUS = "auto_cal_status"  # "learning" / "stable" / "adjusted"
+KEY_AUTO_CAL_LAST_APPLIED = "auto_cal_last_applied"  # ISO date of last nudge, or None
 
 # ---------------------------------------------------------------------------
 # v2.0 - CWOP (Citizen Weather Observer Program) upload

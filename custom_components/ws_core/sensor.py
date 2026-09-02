@@ -19,9 +19,12 @@ from .const import (
     CONF_ENABLE_ADVANCED_SENSORS,
     # v0.7.0
     CONF_ENABLE_AIR_QUALITY,
+    # v2.7
+    CONF_ENABLE_AUTO_CALIBRATION,
     # v2.0
     CONF_ENABLE_AWEKAS,
     # v1.5.0
+    CONF_ENABLE_CLIMATE_NORMALS,
     CONF_ENABLE_COMFORT_INDICES,
     CONF_ENABLE_CWOP,
     CONF_ENABLE_DEGREE_DAYS,
@@ -43,6 +46,8 @@ from .const import (
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
+    # v2.7
+    CONF_ENABLE_SNOW,
     # v2.1
     CONF_ENABLE_SOIL,
     # v0.9.0
@@ -71,6 +76,12 @@ from .const import (
     # v0.7.0
     KEY_AQI,
     KEY_AQI_LEVEL,
+    KEY_AUTO_CAL_BIAS_HUMIDITY,
+    KEY_AUTO_CAL_BIAS_PRESSURE_HPA,
+    KEY_AUTO_CAL_BIAS_TEMP_C,
+    KEY_AUTO_CAL_LAST_APPLIED,
+    KEY_AUTO_CAL_N_SAMPLES,
+    KEY_AUTO_CAL_STATUS,
     KEY_AWEKAS_STATUS,
     KEY_BATTERY_PCT,
     KEY_CDD_SEASON,
@@ -78,6 +89,8 @@ from .const import (
     KEY_CHILL_HOURS_SEASON,
     KEY_CHILL_HOURS_TODAY,
     KEY_CLEARNESS_INDEX,
+    KEY_CLIMATE_NORMALS_FETCHED,
+    KEY_CLIMATE_NORMALS_YEARS,
     KEY_CLIMATOLOGY_30D,
     KEY_CLOUD_BASE_M,
     KEY_CLOUD_COVER_PCT,
@@ -190,8 +203,10 @@ from .const import (
     KEY_RAIN_ACCUM_24H,
     KEY_RAIN_ANOMALY_30D,
     KEY_RAIN_ANOMALY_90D,
+    KEY_RAIN_ANOMALY_NORMAL,
     KEY_RAIN_DISPLAY,
     KEY_RAIN_NEXT_60MIN,
+    KEY_RAIN_NORMAL_MM,
     KEY_RAIN_PROBABILITY,
     KEY_RAIN_PROBABILITY_COMBINED,
     KEY_RAIN_RATE_FILT,
@@ -206,6 +221,11 @@ from .const import (
     KEY_SENSOR_QUALITY_FLAGS,
     KEY_SENSOR_SPIKE,
     KEY_SENSOR_STUCK,
+    KEY_SNOW_PHASE,
+    KEY_SNOW_RATE_CM_H,
+    KEY_SNOW_THIS_MONTH_CM,
+    KEY_SNOW_THIS_YEAR_CM,
+    KEY_SNOW_TODAY_CM,
     KEY_SOIL_MOISTURE,
     KEY_SOIL_MOISTURE_DEFICIT,
     KEY_SOIL_TEMP_C,
@@ -218,16 +238,19 @@ from .const import (
     KEY_SPECIFIC_HUMIDITY,
     KEY_TEMP_ANOMALY_30D,
     KEY_TEMP_ANOMALY_90D,
+    KEY_TEMP_ANOMALY_NORMAL,
     KEY_TEMP_AVG_24H,
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
     KEY_TEMP_HIGH_ALL_TIME,
     KEY_TEMP_HIGH_MONTH,
+    KEY_TEMP_HIGH_NORMAL,
     KEY_TEMP_HIGH_WEEK,
     KEY_TEMP_HIGH_YEAR,
     KEY_TEMP_LOW_24H,
     KEY_TEMP_LOW_ALL_TIME,
     KEY_TEMP_LOW_MONTH,
+    KEY_TEMP_LOW_NORMAL,
     KEY_TEMP_LOW_WEEK,
     KEY_TEMP_LOW_YEAR,
     KEY_TEMP_MONTH_REF,
@@ -1305,6 +1328,61 @@ SENSORS: list[WSSensorDescription] = [
         native_unit="mm/h",
         state_class=SensorStateClass.MEASUREMENT,
         unit_group="rain_rate",
+    ),
+    # v2.7 — Snow (opt-in): precipitation phase + estimated accumulation.
+    # Heuristic estimate, not a measurement - see algorithms.py.
+    WSSensorDescription(
+        key=KEY_SNOW_PHASE,
+        translation_key="snow_phase",
+        name="WS Precipitation Phase",
+        icon="mdi:weather-snowy-rainy",
+        device_class=SensorDeviceClass.ENUM,
+        options=["snow", "sleet", "rain", "none"],
+        native_unit=None,
+        state_class=None,
+    ),
+    WSSensorDescription(
+        key=KEY_SNOW_RATE_CM_H,
+        translation_key="snow_rate",
+        name="WS Snow Rate",
+        icon="mdi:snowflake",
+        native_unit="cm/h",
+        state_class=SensorStateClass.MEASUREMENT,
+        unit_group="snow_rate",
+        suggested_display_precision=1,
+    ),
+    WSSensorDescription(
+        key=KEY_SNOW_TODAY_CM,
+        translation_key="snow_today",
+        name="WS Snow Today",
+        icon="mdi:snowflake",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit="cm",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        unit_group="snow",
+        suggested_display_precision=1,
+    ),
+    WSSensorDescription(
+        key=KEY_SNOW_THIS_MONTH_CM,
+        translation_key="snow_this_month",
+        name="WS Snow This Month",
+        icon="mdi:calendar-month",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit="cm",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        unit_group="snow",
+        suggested_display_precision=1,
+    ),
+    WSSensorDescription(
+        key=KEY_SNOW_THIS_YEAR_CM,
+        translation_key="snow_this_year",
+        name="WS Snow This Year",
+        icon="mdi:calendar",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit="cm",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        unit_group="snow",
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_PRESSURE_TREND_DISPLAY,
@@ -2384,6 +2462,60 @@ SENSORS: list[WSSensorDescription] = [
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
+    # v2.7 — Historical climate normals (day-of-year, vs. long-term history —
+    # distinct from the self-referential 30d/90d anomalies above)
+    WSSensorDescription(
+        key=KEY_TEMP_HIGH_NORMAL,
+        translation_key="temp_high_normal",
+        name="WS Temperature High (Normal)",
+        icon="mdi:thermometer-lines",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {
+            "sample_years": d.get(KEY_CLIMATE_NORMALS_YEARS),
+            "fetched_at": d.get(KEY_CLIMATE_NORMALS_FETCHED),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_LOW_NORMAL,
+        translation_key="temp_low_normal",
+        name="WS Temperature Low (Normal)",
+        icon="mdi:thermometer-lines",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    WSSensorDescription(
+        key=KEY_RAIN_NORMAL_MM,
+        translation_key="rain_normal",
+        name="WS Rain (Normal)",
+        icon="mdi:weather-rainy",
+        native_unit=UNIT_RAIN_MM,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_ANOMALY_NORMAL,
+        translation_key="temp_anomaly_normal",
+        name="WS Temperature Anomaly (Normal)",
+        icon="mdi:thermometer-alert",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    WSSensorDescription(
+        key=KEY_RAIN_ANOMALY_NORMAL,
+        translation_key="rain_anomaly_normal",
+        name="WS Rain Anomaly (Normal)",
+        icon="mdi:weather-rainy",
+        native_unit=UNIT_RAIN_MM,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     # =========================================================================
     # v1.2.0 - SELF-LEARNING SENSORS (METAR-gated + always-on)
     # =========================================================================
@@ -2397,6 +2529,25 @@ SENSORS: list[WSSensorDescription] = [
         native_unit="lx/(W/m²)",
         state_class=SensorStateClass.MEASUREMENT,
         attrs_fn=lambda d: {"calibration_days": d.get("_solar_lux_factor_n_days", 0)},
+    ),
+    # v2.7 — Adaptive (auto-apply) calibration status
+    WSSensorDescription(
+        key=KEY_AUTO_CAL_STATUS,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        translation_key="auto_calibration",
+        name="WS Auto Calibration",
+        icon="mdi:tune",
+        device_class=SensorDeviceClass.ENUM,
+        options=["learning", "stable", "adjusted"],
+        native_unit=None,
+        state_class=None,
+        attrs_fn=lambda d: {
+            "bias_temp_c": d.get(KEY_AUTO_CAL_BIAS_TEMP_C),
+            "bias_humidity": d.get(KEY_AUTO_CAL_BIAS_HUMIDITY),
+            "bias_pressure_hpa": d.get(KEY_AUTO_CAL_BIAS_PRESSURE_HPA),
+            "samples": d.get(KEY_AUTO_CAL_N_SAMPLES, 0),
+            "last_applied": d.get(KEY_AUTO_CAL_LAST_APPLIED),
+        },
     ),
     # Forecast agreement: Zambretti vs Open-Meteo
     WSSensorDescription(
@@ -2567,6 +2718,12 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_INDOOR_HUMIDITY_DELTA: CONF_ENABLE_INDOOR,
     KEY_INDOOR_COMFORT: CONF_ENABLE_INDOOR,
     # v2.1 - soil sensor group
+    # v2.7 - snow (opt-in)
+    KEY_SNOW_PHASE: CONF_ENABLE_SNOW,
+    KEY_SNOW_RATE_CM_H: CONF_ENABLE_SNOW,
+    KEY_SNOW_TODAY_CM: CONF_ENABLE_SNOW,
+    KEY_SNOW_THIS_MONTH_CM: CONF_ENABLE_SNOW,
+    KEY_SNOW_THIS_YEAR_CM: CONF_ENABLE_SNOW,
     KEY_SOIL_MOISTURE: CONF_ENABLE_SOIL,
     KEY_SOIL_TEMP_C: CONF_ENABLE_SOIL,
     KEY_SOIL_MOISTURE_DEFICIT: CONF_ENABLE_SOIL,
@@ -2606,9 +2763,16 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_FORECAST_BLEND_WEIGHT_LOCAL: CONF_ENABLE_DIAGNOSTICS,
     KEY_FORECAST_AGREEMENT: CONF_ENABLE_DIAGNOSTICS,
     KEY_SOLAR_LUX_FACTOR: CONF_ENABLE_DIAGNOSTICS,
+    KEY_AUTO_CAL_STATUS: CONF_ENABLE_AUTO_CALIBRATION,
     KEY_CLIMATOLOGY_30D: CONF_ENABLE_DIAGNOSTICS,
     KEY_TEMP_ANOMALY_90D: CONF_ENABLE_DIAGNOSTICS,
     KEY_RAIN_ANOMALY_90D: CONF_ENABLE_DIAGNOSTICS,
+    # v2.7 - historical climate normals
+    KEY_TEMP_HIGH_NORMAL: CONF_ENABLE_CLIMATE_NORMALS,
+    KEY_TEMP_LOW_NORMAL: CONF_ENABLE_CLIMATE_NORMALS,
+    KEY_RAIN_NORMAL_MM: CONF_ENABLE_CLIMATE_NORMALS,
+    KEY_TEMP_ANOMALY_NORMAL: CONF_ENABLE_CLIMATE_NORMALS,
+    KEY_RAIN_ANOMALY_NORMAL: CONF_ENABLE_CLIMATE_NORMALS,
     # v1.6.2 - advanced / derived representations (opt-in)
     KEY_ZAMBRETTI_NUMBER: CONF_ENABLE_ADVANCED_SENSORS,
     KEY_ET0_HOURLY_MM: CONF_ENABLE_ADVANCED_SENSORS,
@@ -2851,6 +3015,8 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
                 "rain_rate": coordinator.rain_rate_unit,
                 "distance": coordinator.distance_unit,
                 "altitude": coordinator.altitude_unit,
+                "snow": coordinator.snow_unit,
+                "snow_rate": coordinator.snow_rate_unit,
             }.get(desc.unit_group, desc.native_unit)
         else:
             self._attr_native_unit_of_measurement = desc.native_unit
@@ -2989,12 +3155,18 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_RAIN_ANOMALY_30D: "rain_anomaly_30d",
             KEY_TEMP_ANOMALY_90D: "temp_anomaly_90d",
             KEY_RAIN_ANOMALY_90D: "rain_anomaly_90d",
+            KEY_TEMP_HIGH_NORMAL: "temp_high_normal",
+            KEY_TEMP_LOW_NORMAL: "temp_low_normal",
+            KEY_RAIN_NORMAL_MM: "rain_normal",
+            KEY_TEMP_ANOMALY_NORMAL: "temp_anomaly_normal",
+            KEY_RAIN_ANOMALY_NORMAL: "rain_anomaly_normal",
             KEY_FORECAST_AGREEMENT: "forecast_agreement",
             KEY_FORECAST_SKILL: "forecast_skill",
             KEY_FORECAST_BRIER_LOCAL: "forecast_brier_local",
             KEY_FORECAST_BRIER_API: "forecast_brier_api",
             KEY_FORECAST_BLEND_WEIGHT_LOCAL: "forecast_blend_weight_local",
             KEY_SOLAR_LUX_FACTOR: "solar_lux_factor",
+            KEY_AUTO_CAL_STATUS: "auto_calibration",
             # v1.3.0 - FWI components
             KEY_FWI_FFMC: "fwi_ffmc",
             KEY_FWI_DMC: "fwi_dmc",
@@ -3083,6 +3255,14 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_NET_RADIATION: "net_radiation",
             KEY_RAIN_TODAY_MM: "rain_today_mm",
             KEY_CONDITIONS_SUMMARY: "conditions_summary",
+            # v2.7 - snow (opt-in). Explicit overrides: the generic fallback
+            # below only strips a trailing "_c", not "_cm", which would mangle
+            # these into e.g. "snow_todaym".
+            KEY_SNOW_PHASE: "snow_phase",
+            KEY_SNOW_RATE_CM_H: "snow_rate",
+            KEY_SNOW_TODAY_CM: "snow_today",
+            KEY_SNOW_THIS_MONTH_CM: "snow_this_month",
+            KEY_SNOW_THIS_YEAR_CM: "snow_this_year",
         }
         if key in overrides:
             return overrides[key]
@@ -3104,6 +3284,10 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             return val * _DISTANCE_FACTORS.get(unit, 1.0)
         if group == "altitude":
             return val * _ALTITUDE_FACTORS.get(unit, 1.0)
+        if group == "snow":
+            return val / 2.54 if unit == "in" else val
+        if group == "snow_rate":
+            return val / 2.54 if unit == "in/h" else val
         return val
 
     @property
