@@ -234,7 +234,7 @@ radar:
 
 **Note:** For backwards compatibility, the old color property names (`primary-color`, `accent-color`, `feature-color`) are still supported but deprecated. They will be automatically migrated to the new names when using the visual editor.
 
-**Square map mode (`view: map`):** Instead of the circular radar screen, the radar area is rendered as a square map that fills the full width of the card (each side of the square equals the card's inner width). This works great in fullscreen and multi-column layouts where you want a large, unobstructed map. The `radar_size` setting is ignored in map mode. When no `background_map` is selected in map mode, the card automatically falls back to the `system` map type so a map is always shown. Radar grid rings and bearing lines are hidden in map mode by default; set `rings: true` to force them back on.
+**Square map mode (`view: map`):** Instead of the circular radar screen, the radar area is rendered as a square map that fills the full width of the card (each side of the square equals the card's inner width). This works great in fullscreen and multi-column layouts where you want a large, unobstructed map. The `radar_size` setting is ignored in map mode. When no `background_map` is configured in map mode, the card automatically falls back to the `system` map type so a map is always shown. Setting `background_map: none` skips the tiled background — the map area still renders with the radar background color, overlays, and flights on top. Radar grid rings and bearing lines are hidden in map mode by default; set `rings: true` to force them back on.
 
 ##### Radar Filter
 
@@ -380,12 +380,16 @@ radar:
 
 | Option                   | Description                                                                                                                | Values                                                                | Default |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------- |
-| `background_map`         | Type of map background. <br> - `system`: Auto-selects 'dark' or 'color' style to match Home Assistant or system Dark Mode. | `system`, `color`, `satellite`, `topo`, `light`, `dark`, `voyager`, `bw`, `outlines` | `none`  |
+| `background_map`         | Type of map background. <br> - `system`: Uses one map for light themes and one for dark themes (select each below).        | `system`, `none`, `color`, `satellite`, `topo`, `light`, `dark`, `voyager`, `bw`, `outlines` | `none`  |
+| `background_map_light`   | Map used in light theme when `background_map: system`.                                                                     | `color`, `satellite`, `topo`, `light`, `dark`, `voyager`, `bw`, `outlines` | `color` |
+| `background_map_dark`    | Map used in dark theme when `background_map: system`.                                                                      | `color`, `satellite`, `topo`, `light`, `dark`, `voyager`, `bw`, `outlines` | `dark`  |
+| `background_map_light_api_key` | API key for `background_map_light`, if that map requires one.                                                        | string (optional)                                                      | –       |
+| `background_map_dark_api_key`  | API key for `background_map_dark`, if that map requires one.                                                          | string (optional)                                                      | –       |
 | `background_map_opacity` | Opacity for background map (0=transparent, 1=opaque).                                                                      | 0–1 (float)                                                            | 0       |
 | `background_map_api_key` | API key for the selected tile provider. Required only for keyed map types (see below).                                     | string (optional)                                                      | –       |
 
 **Keyless maps** (no API key required — work out of the box):
--   **`system`**: Automatically uses a dark map (`dark`) in dark mode and a standard colored map (`color`) in light mode, matching your Home Assistant or operating system theme.
+-   **`system`**: Auto-follows your Home Assistant or operating system theme. In light mode it uses your `background_map_light` map and in dark mode your `background_map_dark` map (each can have its own API key). Defaults to `color` (light) and `dark` (dark), matching the previous fixed behaviour — existing `system` configurations keep working unchanged after upgrading.
 -   **`color`**: Standard OpenStreetMap (colored)
 -   **`satellite`**: Esri World Imagery (aerial/satellite)
 -   **`topo`**: OpenTopoMap (topographic)
@@ -405,6 +409,16 @@ Example:
 radar:
     background_map: color
     background_map_opacity: 0.5
+```
+
+Example with per-theme maps (auto dark/light, each with its own key):
+
+```yaml
+radar:
+    background_map: system
+    background_map_light: color
+    background_map_dark: voyager
+    background_map_dark_api_key: YOUR_CARTO_KEY
 ```
 
 If `background_map` is configured, the selected map is rendered beneath the radar graphics. Use transparency to blend the map with the radar background color.
