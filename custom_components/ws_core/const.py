@@ -925,6 +925,7 @@ KEY_SNOW_RATE_CM_H = "snow_rate_cm_h"  # estimated current snowfall rate
 KEY_SNOW_TODAY_CM = "snow_today_cm"  # resets at local midnight
 KEY_SNOW_THIS_MONTH_CM = "snow_this_month_cm"
 KEY_SNOW_THIS_YEAR_CM = "snow_this_year_cm"
+KEY_SNOW_RECORD_DAY_CM = "snow_record_day_cm"  # snowiest single day ever (issue #144); never resets
 
 # ---------------------------------------------------------------------------
 # v2.0 - Data quality expansion

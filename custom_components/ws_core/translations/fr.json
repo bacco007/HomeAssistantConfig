@@ -143,6 +143,7 @@
           "enable_lightning": "Capteurs de détection de foudre",
           "enable_indoor": "Prendre en compte les capteurs intérieurs",
           "enable_soil": "Capteurs de sol (humidité, température, besoin en irrigation)",
+          "enable_snow": "Neige (phase de précipitation + accumulation estimée à partir de votre intensité de pluie actuelle)",
           "enable_weathercloud": "Envoi vers Weathercloud",
           "enable_pwsweather": "Envoi vers PWSWeather",
           "enable_wow": "Envoi vers WOW (UK Met Office)",
@@ -150,7 +151,9 @@
           "enable_owm_stations": "Envoi vers OpenWeatherMap Stations",
           "enable_windy": "Envoi vers Windy.com",
           "enable_cwop": "Envoi vers CWOP / APRS",
-          "enable_mqtt": "MQTT (publier les capteurs sur un broker MQTT pour Node-RED / externes)"
+          "enable_mqtt": "MQTT (publier les capteurs sur un broker MQTT pour Node-RED / externes)",
+          "enable_auto_calibration": "Étalonnage adaptatif du capteur (apprend le biais par rapport à la référence de prévision régionale et ajuste automatiquement les décalages d'étalonnage)",
+          "enable_climate_normals": "Historique des normales climatiques (compare la journée d'aujourd'hui à environ 10 ans d'historiques locaux, archives Open-Meteo, sans clé API)"
         },
         "data_description": {
           "enable_display_sensors": "Génère des capteurs textuels d'état et de tendances (ex: conditions actuelles en clair).",
@@ -165,6 +168,7 @@
           "enable_comfort_indices": "Calcule le ressenti humain et les métriques agro-météorologiques (Humidex, DPV, heures de froid, etc.).",
           "enable_vigilance_meteo": "Récupère la couleur de vigilance et la nature des alertes départementales officielles.",
           "enable_vigicrues": "Remonte les hauteurs d'eau et débits des stations hydrologiques environnantes (Hub'Eau v2).",
+          "enable_auto_calibration": "Désactivé par défaut. Ajuste cal_temp_c/cal_humidity/cal_pressure_hpa d'une valeur faible et limitée au maximum une fois par jour, uniquement lorsqu'environ 10 jours de relevés horaires montrent un biais persistant. Vérifiez sensor.ws_auto_calibration avant d'activer.",
           "enable_diagnostics": "Analyse la cohérence des données, la dérive des capteurs, les normales saisonnières et la fiabilité des prévisions.",
           "enable_fwi_components": "Expose les codes intermédiaires de l'indice incendie (FFMC, DMC, DC, ISI, BUI). Requiert l'indice de risque d'incendie.",
           "enable_advanced_sensors": "Génère les prévisions barométriques Zambretti, l'évapotranspiration horaire (ET₀) et le lissage du vent.",
@@ -172,6 +176,8 @@
           "enable_degree_days": "Calcule les Degrés-Jours Unifiés (DJU/DJC) pour le chauffage/refroidissement et estime l'humidité foliaire.",
           "enable_lightning": "Calcule la distance estimée et la fréquence des impacts de foudre détectés à proximité.",
           "enable_indoor": "Permet de lier vos sondes intérieures pour affiner les calculs de confort thermique global.",
+          "enable_climate_normals": "Désactivé par défaut. Une requête à l'API d'archives (actualisée mensuellement) génère un tableau des moyennes historiques de températures minimales/maximales et de précipitations pour chaque jour de l'année, de sorte que sensor.ws_temperature_anomaly_normal reflète la journée d'aujourd'hui par rapport à l'historique plutôt que par rapport à la moyenne récente de votre propre station.",
+          "enable_snow": "Heuristique, pas une mesure : il n'existe aucun nivomètre indépendant de la station. Estime la phase de précipitation à partir de la température du thermomètre mouillé et l'accumulation de neige à partir de votre intensité de pluie actuelle via un rapport neige/eau liquide dépendant de la température.",
           "enable_soil": "Calcule le besoin en eau des plantes, l'évaporation et suit vos sondes d'humidité du sol."
         }
       },
@@ -517,7 +523,10 @@
           "enable_degree_days": "Calcul des Degrés-Jours et de l'humidité du feuillage",
           "enable_lightning": "Capteurs de détection de foudre",
           "enable_indoor": "Prendre en compte les capteurs intérieurs",
-          "enable_soil": "Capteurs de sol (humidité, température, besoin en irrigation)"
+          "enable_soil": "Capteurs de sol (humidité, température, besoin en irrigation)",
+          "enable_auto_calibration": "Étalonnage adaptatif du capteur (apprend le biais par rapport à la référence de prévision régionale et ajuste automatiquement les décalages d'étalonnage)",
+          "enable_climate_normals": "Historique des normales climatiques (compare la journée d'aujourd'hui à environ 10 ans d'historiques locaux, archives Open-Meteo, sans clé API)",
+          "enable_snow": "Neige (phase de précipitation + accumulation estimée à partir de votre intensité de pluie actuelle)"
         },
         "data_description": {
           "enable_display_sensors": "Génère des capteurs textuels d'état et de tendances (ex: conditions actuelles en clair).",
@@ -539,7 +548,10 @@
           "enable_degree_days": "Calcule les Degrés-Jours Unifiés (DJU/DJC) pour le chauffage/refroidissement et estime l'humidité foliaire.",
           "enable_lightning": "Calcule la distance estimée et la fréquence des impacts de foudre détectés à proximité.",
           "enable_indoor": "Permet de lier vos sondes intérieures pour affiner les calculs de confort thermique global.",
-          "enable_soil": "Calcule le besoin en eau des plantes, l'évaporation et suit vos sondes d'humidité du sol."
+          "enable_soil": "Calcule le besoin en eau des plantes, l'évaporation et suit vos sondes d'humidité du sol.",
+          "enable_climate_normals": "Désactivé par défaut. Une requête à l'API d'archives (actualisée mensuellement) génère un tableau des moyennes historiques de températures minimales/maximales et de précipitations pour chaque jour de l'année, de sorte que sensor.ws_temperature_anomaly_normal reflète la journée d'aujourd'hui par rapport à l'historique plutôt que par rapport à la moyenne récente de votre propre station.",
+          "enable_snow": "Heuristique, pas une mesure : il n'existe aucun nivomètre indépendant de la station. Estime la phase de précipitation à partir de la température du thermomètre mouillé et l'accumulation de neige à partir de votre intensité de pluie actuelle via un rapport neige/eau liquide dépendant de la température.",
+          "enable_auto_calibration": "Désactivé par défaut. Ajuste cal_temp_c/cal_humidity/cal_pressure_hpa d'une valeur faible et limitée au maximum une fois par jour, uniquement lorsqu'environ 10 jours de relevés horaires montrent un biais persistant. Vérifiez sensor.ws_auto_calibration avant d'activer."
         }
       },
       "indoor_rooms_opt": {
@@ -805,7 +817,7 @@
         "name": "Indicateurs de qualité des capteurs",
         "state_attributes": {
           "package_ok": {
-            "name": "Données Ok"
+            "name": "Données OK"
           },
           "data_quality": {
             "name": "Qualité des données"
@@ -1794,11 +1806,59 @@
       "rain_anomaly_90d": {
         "name": "Écart aux normales (pluie ; 90 j)"
       },
+      "temp_high_normal": {
+        "name": "Température max (normale)",
+        "state_attributes": {
+          "sample_years": {
+            "name": "Années d'échantillon"
+          },
+          "fetched_at": {
+            "name": "Récupéré le"
+          }
+        }
+      },
+      "temp_low_normal": {
+        "name": "Température min (normale)"
+      },
+      "rain_normal": {
+        "name": "Pluie (normale)"
+      },
+      "temp_anomaly_normal": {
+        "name": "Écart de température (normale)"
+      },
+      "rain_anomaly_normal": {
+        "name": "Écart de précipitation (normale)"
+      },
       "solar_lux_factor": {
         "name": "Facteur lux solaire",
         "state_attributes": {
           "calibration_days": {
             "name": "Jours d'étalonnage"
+          }
+        }
+      },
+      "auto_calibration": {
+        "name": "Auto Calibration",
+        "state": {
+          "learning": "Apprentissage",
+          "stable": "Stable",
+          "adjusted": "Ajusté"
+        },
+        "state_attributes": {
+          "bias_temp_c": {
+            "name": "Biais de température appris"
+          },
+          "bias_humidity": {
+            "name": "Biais d'humidité appris"
+          },
+          "bias_pressure_hpa": {
+            "name": "Biais de pression appris"
+          },
+          "samples": {
+            "name": "Échantillons"
+          },
+          "last_applied": {
+            "name": "Dernière application"
           }
         }
       },
@@ -1967,6 +2027,35 @@
       },
       "rain_rate_max_24h": {
         "name": "Intensité max de pluie (24h)"
+      },
+      "snow_phase": {
+        "name": "Phase de précipitation",
+        "state": {
+          "snow": "Snow",
+          "sleet": "Pluie et neige mêlées",
+          "rain": "Pluie",
+          "none": "Aucune"
+        }
+      },
+      "snow_rate": {
+        "name": "Intensité de neige"
+      },
+      "snow_today": {
+        "name": "Neige aujourd'hui"
+      },
+      "snow_this_month": {
+        "name": "Neige ce mois-ci"
+      },
+      "snow_this_year": {
+        "name": "Neige cette année"
+      },
+      "snow_record_day": {
+        "name": "Jour le plus neigeux",
+        "state_attributes": {
+          "date": {
+            "name": "Date"
+          }
+        }
       },
       "hdd_today": {
         "name": "Degrés-jours chauffage (jour)",
@@ -2546,6 +2635,15 @@
       },
       "ws_enable_windy": {
         "name": "Envoi vers Windy"
+      },
+      "ws_enable_auto_calibration": {
+        "name": "Calibration adaptative des capteurs"
+      },
+      "ws_enable_climate_normals": {
+        "name": "Normales climatiques historiques"
+      },
+      "ws_enable_snow": {
+        "name": "Neige"
       }
     },
     "event": {
@@ -2592,6 +2690,9 @@
       },
       "ws_rain_expected_1h": {
         "name": "Pluie dans l'heure"
+      },
+      "ws_snow_falling": {
+        "name": "Chute de neige"
       },
       "ws_temperature_stuck": {
         "name": "Statut du capteur de température"

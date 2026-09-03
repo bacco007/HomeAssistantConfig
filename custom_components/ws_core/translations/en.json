@@ -2015,6 +2015,14 @@
       "snow_this_year": {
         "name": "Snow This Year"
       },
+      "snow_record_day": {
+        "name": "Snowiest Day",
+        "state_attributes": {
+          "date": {
+            "name": "Date"
+          }
+        }
+      },
       "hdd_today": {
         "name": "Heating Degree Day",
         "state_attributes": {

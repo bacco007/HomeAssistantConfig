@@ -469,6 +469,7 @@ from .const import (
     KEY_SNOW_FALLING,
     KEY_SNOW_PHASE,
     KEY_SNOW_RATE_CM_H,
+    KEY_SNOW_RECORD_DAY_CM,
     KEY_SNOW_THIS_MONTH_CM,
     KEY_SNOW_THIS_YEAR_CM,
     KEY_SNOW_TODAY_CM,
@@ -862,6 +863,8 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._snow_this_month_key: str = ""  # "YYYY-MM"
         self._snow_this_year_cm: float = 0.0
         self._snow_this_year_key: str = ""  # "YYYY"
+        self._snowiest_day_cm: float = 0.0  # all-time snowiest single day (issue #144)
+        self._snowiest_day_date: str = ""  # "YYYY-MM-DD" of that record day
 
         # Yearly / all-time temperature extremes (issue #124). Yearly resets
         # when the current year no longer matches _temp_year_key; all-time
@@ -2690,6 +2693,14 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._snow_today_cm += new_snow_cm
         data[KEY_SNOW_TODAY_CM] = round(self._snow_today_cm, 1)
 
+        # All-time "snowiest day" record (issue #144). Compared every tick so
+        # the record updates live as today accumulates; never resets.
+        if self._snow_today_cm > self._snowiest_day_cm:
+            self._snowiest_day_cm = self._snow_today_cm
+            self._snowiest_day_date = self._snow_today_date
+        data[KEY_SNOW_RECORD_DAY_CM] = round(self._snowiest_day_cm, 1)
+        data["_snow_record_day_date"] = self._snowiest_day_date or None
+
         month_key = dt_util.now().strftime("%Y-%m")
         if month_key != self._snow_this_month_key:
             self._snow_this_month_cm = 0.0
@@ -3033,10 +3044,12 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         registry = er.async_get(self.hass)
         for entry in registry.entities.values():
             eid = entry.entity_id
-            uid = (entry.unique_id or "").lower()
             # Match by platform name OR entity_id prefix (covers renamed/forked installs)
             if entry.platform != "blitzortung" and not eid.startswith("sensor.blitzortung_"):
                 continue
+            # Coerce unique_id to str before .lower(): some integrations (e.g. nuki)
+            # store unique_id as an int, which would otherwise raise AttributeError.
+            uid = str(entry.unique_id or "").lower()
             if SRC_LIGHTNING_COUNT not in self._blitzortung_sources and (
                 "counter" in uid or "count" in uid or "counter" in eid or "count" in eid
             ):
@@ -3914,6 +3927,8 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "snow_this_month_key": self._snow_this_month_key,
             "snow_this_year_cm": self._snow_this_year_cm,
             "snow_this_year_key": self._snow_this_year_key,
+            "snowiest_day_cm": self._snowiest_day_cm,
+            "snowiest_day_date": self._snowiest_day_date,
         }
 
     def _restore_history_state(self, data: dict[str, Any]) -> None:
@@ -4096,6 +4111,10 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if data.get("snow_this_year_key") == year_key:
             self._snow_this_year_cm = float(data.get("snow_this_year_cm") or 0.0)
             self._snow_this_year_key = year_key
+        # All-time snowiest-day record (issue #144): restored unconditionally,
+        # never reset - mirrors the all-time temperature / gust extremes.
+        self._snowiest_day_cm = float(data.get("snowiest_day_cm") or 0.0)
+        self._snowiest_day_date = data.get("snowiest_day_date") or ""
 
     # ------------------------------------------------------------------
     # Main orchestrator

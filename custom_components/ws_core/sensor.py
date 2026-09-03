@@ -223,6 +223,7 @@ from .const import (
     KEY_SENSOR_STUCK,
     KEY_SNOW_PHASE,
     KEY_SNOW_RATE_CM_H,
+    KEY_SNOW_RECORD_DAY_CM,
     KEY_SNOW_THIS_MONTH_CM,
     KEY_SNOW_THIS_YEAR_CM,
     KEY_SNOW_TODAY_CM,
@@ -1018,8 +1019,12 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="rain_next_60min",
         name="WS Rain Next 60 min",
         icon="mdi:weather-pouring",
-        native_unit="mm",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
+        # Without this HA renders the raw mm->in converted float (issue #141):
+        # e.g. 0.03937007874015748 in. 2 dp keeps sub-mm nowcast amounts legible.
+        suggested_display_precision=2,
         unit_group="rain",
         attrs_fn=lambda d: {
             "peak_rate_mmph": d.get("_nowcast_peak_rate_mmph"),
@@ -1383,6 +1388,21 @@ SENSORS: list[WSSensorDescription] = [
         state_class=SensorStateClass.TOTAL_INCREASING,
         unit_group="snow",
         suggested_display_precision=1,
+    ),
+    # Snowiest single day ever recorded (issue #144). MEASUREMENT, not
+    # TOTAL_INCREASING: it is a standing record that only ever steps up, and
+    # the `date` attribute reports when it was set.
+    WSSensorDescription(
+        key=KEY_SNOW_RECORD_DAY_CM,
+        translation_key="snow_record_day",
+        name="WS Snowiest Day",
+        icon="mdi:snowflake-alert",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit="cm",
+        state_class=SensorStateClass.MEASUREMENT,
+        unit_group="snow",
+        suggested_display_precision=1,
+        attrs_fn=lambda d: {"date": d.get("_snow_record_day_date")},
     ),
     WSSensorDescription(
         key=KEY_PRESSURE_TREND_DISPLAY,
@@ -2724,6 +2744,7 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_SNOW_TODAY_CM: CONF_ENABLE_SNOW,
     KEY_SNOW_THIS_MONTH_CM: CONF_ENABLE_SNOW,
     KEY_SNOW_THIS_YEAR_CM: CONF_ENABLE_SNOW,
+    KEY_SNOW_RECORD_DAY_CM: CONF_ENABLE_SNOW,
     KEY_SOIL_MOISTURE: CONF_ENABLE_SOIL,
     KEY_SOIL_TEMP_C: CONF_ENABLE_SOIL,
     KEY_SOIL_MOISTURE_DEFICIT: CONF_ENABLE_SOIL,
@@ -3263,11 +3284,17 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_SNOW_TODAY_CM: "snow_today",
             KEY_SNOW_THIS_MONTH_CM: "snow_this_month",
             KEY_SNOW_THIS_YEAR_CM: "snow_this_year",
+            KEY_SNOW_RECORD_DAY_CM: "snow_record_day",
         }
         if key in overrides:
             return overrides[key]
-        # Fallback: strip common prefixes/suffixes for a clean slug
-        return key.replace("_mmph", "").replace("_ms", "").replace("_hpa", "").replace("_c", "")
+        # Fallback: strip a trailing unit suffix for a clean slug. Anchored to the
+        # end on purpose - a bare .replace() also ate mid-string matches, turning
+        # e.g. "nowcast_confidence" into "nowcastonfidence".
+        for suffix in ("_mmph", "_ms", "_hpa", "_c"):
+            if key.endswith(suffix):
+                return key[: -len(suffix)]
+        return key
 
     def _apply_unit_conversion(self, val: float) -> float:
         unit = self._attr_native_unit_of_measurement
