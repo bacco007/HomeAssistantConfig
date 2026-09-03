@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import UTC, datetime
 import logging
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -297,6 +297,30 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self.network_client.devices.restart,
             site_id,
             device_id,
+        )
+
+    async def async_set_outlet_state(
+        self,
+        site_id: str,
+        device_id: str,
+        outlet_index: int,
+        state: bool,
+        cycle_enabled: bool | None = None,
+    ) -> bool:
+        """Set outlet relay state and/or cycle_enabled on a PDU device."""
+        site_name = self._device_coordinator.get_legacy_site_name(site_id) or "default"
+        device_data = self.get_device(site_id, device_id) or {}
+        target_id = device_data.get("_id") or device_id
+
+        return await self._async_execute_api_action(
+            f"Unable to set outlet {outlet_index} state on device {device_id}",
+            self.network_client.devices.set_outlet_state,
+            site_name,
+            target_id,
+            outlet_index,
+            state,
+            cycle_enabled=cycle_enabled,
+            current_device=device_data,
         )
 
     async def async_set_firewall_rule_enabled(

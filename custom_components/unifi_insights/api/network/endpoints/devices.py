@@ -5,12 +5,59 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
-from ..models import Device, LegacyPortMetrics, PortBytesMetrics
+from ...exceptions import UniFiValidationError
+from ..models import (
+    Device,
+    LegacyOutletMetrics,
+    LegacyPortMetrics,
+    PortBytesMetrics,
+    parse_outlet_metrics,
+)
 
 if TYPE_CHECKING:
     from ..client import UniFiNetworkClient
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _seed_outlet_overrides(device_dict: dict[str, Any]) -> list[dict[str, Any]]:
+    """
+    Build a full outlet_overrides array from a device's sensed outlet_table.
+
+    The controller treats outlet_overrides as the complete desired state: any
+    outlet missing from the array reverts to its default. A device that has
+    never had an outlet changed reports an empty overrides array, so writing a
+    single-entry array would reset every other outlet. Seeding from the sensed
+    outlet_table preserves the current state of untouched outlets.
+    """
+    outlet_table = device_dict.get("outlet_table")
+    if not isinstance(outlet_table, list):
+        return []
+
+    overrides: list[dict[str, Any]] = []
+    for outlet in outlet_table:
+        if not isinstance(outlet, dict):
+            continue
+
+        index = outlet.get("index")
+        if index is None:
+            index = outlet.get("outlet_idx")
+        try:
+            index_int = int(index)  # type: ignore[arg-type]
+        except TypeError, ValueError:
+            continue
+
+        override: dict[str, Any] = {
+            "index": index_int,
+            "relay_state": bool(outlet.get("relay_state", False)),
+        }
+        if "name" in outlet:
+            override["name"] = outlet["name"]
+        if "cycle_enabled" in outlet:
+            override["cycle_enabled"] = bool(outlet["cycle_enabled"])
+        overrides.append(override)
+
+    return overrides
 
 
 class DevicesEndpoint:
@@ -342,13 +389,13 @@ class DevicesEndpoint:
         def _to_float(value: Any) -> float | None:
             try:
                 return float(value)
-            except (TypeError, ValueError):
+            except TypeError, ValueError:
                 return None
 
         def _to_int(value: Any) -> int | None:
             try:
                 return int(value)
-            except (TypeError, ValueError):
+            except TypeError, ValueError:
                 return None
 
         def _get_port_idx(port: dict[str, Any]) -> int | None:
@@ -436,4 +483,119 @@ class DevicesEndpoint:
             f"/sites/{site_id}/devices/{device_id}/{action}"
         )
         await self._client._post(path)
+        return True
+
+    async def get_outlet_metrics(
+        self,
+        site_name: str,
+        device_mac: str,
+    ) -> LegacyOutletMetrics:
+        """
+        Get normalized legacy outlet metrics for a device.
+
+        Args:
+            site_name: The UniFi site name, for example ``default``.
+            device_mac: The device MAC address used by the legacy endpoint.
+
+        Returns:
+            Normalized outlet metrics and device power totals.
+
+        """
+        legacy = await self.get_legacy_device_stats(site_name, device_mac)
+        return parse_outlet_metrics(legacy)
+
+    async def set_outlet_state(
+        self,
+        site_name: str,
+        device_id: str,
+        outlet_index: int,
+        state: bool,
+        cycle_enabled: bool | None = None,
+        current_device: dict[str, Any] | None = None,
+    ) -> bool:
+        """
+        Set the power relay state and/or cycle_enabled setting on a PDU outlet.
+
+        Performs a read-modify-write on outlet_overrides via the legacy
+        rest/device endpoint.
+
+        Args:
+            site_name: The UniFi site name, for example ``default``.
+            device_id: The legacy device MongoDB _id or device identifier.
+            outlet_index: 1-based outlet index.
+            state: True to turn the outlet ON (relay closed), False to turn
+                it OFF (relay open).
+            cycle_enabled: Optional boolean to enable or disable power
+                cycling on internet loss.
+            current_device: Required device snapshot (outlet_overrides /
+                outlet_table) to source the read side from. The singular
+                ``rest/device/{id}`` route is write-only on UniFi OS
+                controllers and 404s on GET, so the caller must supply the
+                snapshot from cached ``/stat/device`` data.
+
+        Returns:
+            True if successful.
+
+        Raises:
+            UniFiValidationError: If ``current_device`` carries neither an
+                existing ``outlet_overrides`` array nor an ``outlet_table`` to
+                seed one from. The controller treats ``outlet_overrides`` as
+                the complete desired state, so writing a partial array would
+                reset every sibling outlet on the device.
+
+        """
+        device_dict: dict[str, Any] = current_device or {}
+
+        target_id = device_dict.get("_id", device_id)
+        raw_overrides = device_dict.get("outlet_overrides")
+        outlet_overrides: list[dict[str, Any]] = []
+        if isinstance(raw_overrides, list):
+            outlet_overrides = [
+                dict(item) for item in raw_overrides if isinstance(item, dict)
+            ]
+
+        if not outlet_overrides:
+            outlet_overrides = _seed_outlet_overrides(device_dict)
+
+        if not outlet_overrides:
+            msg = (
+                f"Refusing to write outlet {outlet_index} on device {device_id}: "
+                "no outlet_overrides or outlet_table available to seed the full "
+                "override array from. Writing a partial array would reset the "
+                "device's other outlets."
+            )
+            raise UniFiValidationError(msg)
+
+        found = False
+        for override in outlet_overrides:
+            idx = override.get("index")
+            if idx is None:
+                idx = override.get("outlet_idx")
+            try:
+                idx_int = int(idx)  # type: ignore[arg-type]
+            except TypeError, ValueError:
+                continue
+
+            if idx_int == outlet_index:
+                override["relay_state"] = state
+                if cycle_enabled is not None:
+                    override["cycle_enabled"] = cycle_enabled
+                found = True
+                break
+
+        if not found:
+            new_override: dict[str, Any] = {
+                "index": outlet_index,
+                "relay_state": state,
+            }
+            if cycle_enabled is not None:
+                new_override["cycle_enabled"] = cycle_enabled
+            outlet_overrides.append(new_override)
+
+        put_path = self._client.build_legacy_api_path(
+            site_name, f"/rest/device/{target_id}"
+        )
+        await self._client._put(
+            put_path, json_data={"outlet_overrides": outlet_overrides}
+        )
         return True

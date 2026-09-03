@@ -26,8 +26,11 @@ from .device import (
     DeviceSwitchingFeature,
     DeviceType,
     DeviceUplink,
+    LegacyOutletMetrics,
     LegacyPortMetrics,
+    Outlet,
     PortBytesMetrics,
+    parse_outlet_metrics,
 )
 from .dns import DNSPolicy, DNSPolicyMetadata, DNSRecordType
 from .firewall import (
@@ -98,8 +101,11 @@ __all__ = [
     "DeviceSwitchingFeature",
     "DeviceType",
     "DeviceUplink",
+    "LegacyOutletMetrics",
     "LegacyPortMetrics",
+    "Outlet",
     "PortBytesMetrics",
+    "parse_outlet_metrics",
     # DNS
     "DNSPolicy",
     "DNSPolicyMetadata",

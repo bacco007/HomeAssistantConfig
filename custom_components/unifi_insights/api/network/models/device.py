@@ -179,3 +179,147 @@ class LegacyPortMetrics(BaseModel):
     port_bytes: dict[int, PortBytesMetrics] = Field(default_factory=dict)
 
     model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+class Outlet(BaseModel):
+    """Model representing an outlet on a UniFi PDU or smart strip."""
+
+    index: int
+    name: str | None = None
+    relay_state: bool = False
+    cycle_enabled: bool | None = None
+    outlet_caps: int | None = Field(default=None, alias="outletCaps")
+    outlet_voltage: float | None = Field(default=None, alias="outletVoltage")
+    outlet_current: float | None = Field(default=None, alias="outletCurrent")
+    outlet_power: float | None = Field(default=None, alias="outletPower")
+    outlet_power_factor: float | None = Field(default=None, alias="outletPowerFactor")
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+class LegacyOutletMetrics(BaseModel):
+    """Normalized outlet metrics from the legacy Network API."""
+
+    outlets: list[Outlet] = Field(default_factory=list)
+    ac_power_consumption: float | None = None
+    ac_power_budget: float | None = None
+
+    model_config = {"populate_by_name": True, "extra": "allow"}
+
+
+def parse_outlet_metrics(legacy_device: dict[str, Any]) -> LegacyOutletMetrics:
+    """
+    Parse outlet metrics and device-level power totals from legacy device data.
+
+    Args:
+        legacy_device: Raw device dictionary from /stat/device.
+
+    Returns:
+        LegacyOutletMetrics containing normalized outlets and device power totals.
+
+    """
+    if not isinstance(legacy_device, dict):
+        return LegacyOutletMetrics()
+
+    raw_table = legacy_device.get("outlet_table")
+    if not isinstance(raw_table, list):
+        raw_table = []
+
+    def _to_float(value: Any) -> float | None:
+        try:
+            return float(value)
+        except TypeError, ValueError:
+            return None
+
+    def _to_int(value: Any) -> int | None:
+        try:
+            return int(value)
+        except TypeError, ValueError:
+            return None
+
+    outlets: list[Outlet] = []
+    for item in raw_table:
+        if not isinstance(item, dict):
+            continue
+        idx = item.get("index")
+        if idx is None:
+            idx = item.get("outlet_idx") or item.get("outletIdx")
+        idx_int = _to_int(idx)
+        if idx_int is None:
+            continue
+
+        relay_val = item.get("relay_state")
+        if relay_val is None:
+            relay_val = item.get("relayState")
+        if relay_val is None:
+            relay_val = item.get("state")
+        relay_state = bool(relay_val) if relay_val is not None else False
+
+        cycle_val = item.get("cycle_enabled")
+        if cycle_val is None:
+            cycle_val = item.get("cycleEnabled")
+        cycle_enabled = bool(cycle_val) if cycle_val is not None else None
+
+        caps = item.get("outlet_caps")
+        if caps is None:
+            caps = item.get("outletCaps") or item.get("caps")
+
+        voltage = _to_float(
+            item.get("outlet_voltage")
+            if item.get("outlet_voltage") is not None
+            else item.get("outletVoltage", item.get("voltage"))
+        )
+        current = _to_float(
+            item.get("outlet_current")
+            if item.get("outlet_current") is not None
+            else item.get("outletCurrent", item.get("current"))
+        )
+        power = _to_float(
+            item.get("outlet_power")
+            if item.get("outlet_power") is not None
+            else item.get("outletPower", item.get("power"))
+        )
+        power_factor = _to_float(
+            item.get("outlet_power_factor")
+            if item.get("outlet_power_factor") is not None
+            else item.get("outletPowerFactor", item.get("power_factor"))
+        )
+
+        outlets.append(
+            Outlet(
+                index=idx_int,
+                name=item.get("name"),
+                relay_state=relay_state,
+                cycle_enabled=cycle_enabled,
+                outlet_caps=_to_int(caps),
+                outlet_voltage=voltage,
+                outlet_current=current,
+                outlet_power=power,
+                outlet_power_factor=power_factor,
+            )
+        )
+
+    ac_consumption = _to_float(
+        legacy_device.get("outlet_ac_power_consumption")
+        if legacy_device.get("outlet_ac_power_consumption") is not None
+        else legacy_device.get(
+            "outletAcPowerConsumption",
+            legacy_device.get(
+                "ac_power_consumption", legacy_device.get("acPowerConsumption")
+            ),
+        )
+    )
+    ac_budget = _to_float(
+        legacy_device.get("outlet_ac_power_budget")
+        if legacy_device.get("outlet_ac_power_budget") is not None
+        else legacy_device.get(
+            "outletAcPowerBudget",
+            legacy_device.get("ac_power_budget", legacy_device.get("acPowerBudget")),
+        )
+    )
+
+    return LegacyOutletMetrics(
+        outlets=outlets,
+        ac_power_consumption=ac_consumption,
+        ac_power_budget=ac_budget,
+    )

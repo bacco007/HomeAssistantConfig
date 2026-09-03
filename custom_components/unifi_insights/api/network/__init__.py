@@ -12,10 +12,12 @@ from .models import (
     DeviceType,
     FirewallRule,
     FirewallZone,
+    LegacyOutletMetrics,
     LegacyPortMetrics,
     Network,
     NetworkPurpose,
     NetworkType,
+    Outlet,
     PolicyBasedRoute,
     PortBytesMetrics,
     Site,
@@ -23,6 +25,7 @@ from .models import (
     VpnClient,
     WifiNetwork,
     WifiSecurity,
+    parse_outlet_metrics,
 )
 
 __all__ = [
@@ -34,10 +37,12 @@ __all__ = [
     "DeviceType",
     "FirewallRule",
     "FirewallZone",
+    "LegacyOutletMetrics",
     "LegacyPortMetrics",
     "Network",
     "NetworkPurpose",
     "NetworkType",
+    "Outlet",
     "PolicyBasedRoute",
     "PortBytesMetrics",
     "Site",
@@ -46,4 +51,5 @@ __all__ = [
     "VpnClient",
     "WifiNetwork",
     "WifiSecurity",
+    "parse_outlet_metrics",
 ]

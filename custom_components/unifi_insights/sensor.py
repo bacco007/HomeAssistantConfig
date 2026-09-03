@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.sensor import (
@@ -17,6 +17,8 @@ from homeassistant.const import (
     LIGHT_LUX,
     PERCENTAGE,
     UnitOfDataRate,
+    UnitOfElectricCurrent,
+    UnitOfElectricPotential,
     UnitOfInformation,
     UnitOfPower,
     UnitOfTemperature,
@@ -49,8 +51,10 @@ from .coordinators import UnifiFacadeCoordinator
 from .entity import (
     UnifiInsightsEntity,
     UnifiProtectEntity,
-    get_client_type as _get_client_type,
     get_field,
+)
+from .entity import (
+    get_client_type as _get_client_type,
 )
 
 if TYPE_CHECKING:
@@ -533,7 +537,125 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
             [c for c in stats.get("clients", []) if _get_client_type(c) == "WIRELESS"]
         ),
     ),
+    UnifiInsightsSensorEntityDescription(
+        key="ac_power_consumption",
+        translation_key="ac_power_consumption",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:flash",
+        value_fn=lambda device: get_field(
+            device,
+            "ac_power_consumption",
+            "acPowerConsumption",
+            "outlet_ac_power_consumption",
+            "outletAcPowerConsumption",
+        ),
+    ),
+    UnifiInsightsSensorEntityDescription(
+        key="ac_power_budget",
+        translation_key="ac_power_budget",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:flash-outline",
+        value_fn=lambda device: get_field(
+            device,
+            "ac_power_budget",
+            "acPowerBudget",
+            "outlet_ac_power_budget",
+            "outletAcPowerBudget",
+        ),
+    ),
 )
+
+# Outlet metering sensor descriptions for UniFi PDUs and smart power strips
+OUTLET_SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
+    # Outlet Power (W)
+    UnifiInsightsSensorEntityDescription(
+        key="power",
+        translation_key="outlet_power",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:flash",
+        value_fn=lambda outlet: (
+            outlet.get("outlet_power")
+            if outlet.get("outlet_power") is not None
+            else outlet.get("outletPower", outlet.get("power"))
+        ),
+    ),
+    # Outlet Voltage (V)
+    UnifiInsightsSensorEntityDescription(
+        key="voltage",
+        translation_key="outlet_voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:sine-wave",
+        value_fn=lambda outlet: (
+            outlet.get("outlet_voltage")
+            if outlet.get("outlet_voltage") is not None
+            else outlet.get("outletVoltage", outlet.get("voltage"))
+        ),
+    ),
+    # Outlet Current (A)
+    UnifiInsightsSensorEntityDescription(
+        key="current",
+        translation_key="outlet_current",
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:current-ac",
+        value_fn=lambda outlet: (
+            outlet.get("outlet_current")
+            if outlet.get("outlet_current") is not None
+            else outlet.get("outletCurrent", outlet.get("current"))
+        ),
+    ),
+    # Outlet Power Factor
+    UnifiInsightsSensorEntityDescription(
+        key="power_factor",
+        translation_key="outlet_power_factor",
+        device_class=SensorDeviceClass.POWER_FACTOR,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:angle-acute",
+        value_fn=lambda outlet: (
+            outlet.get("outlet_power_factor")
+            if outlet.get("outlet_power_factor") is not None
+            else outlet.get("outletPowerFactor", outlet.get("power_factor"))
+        ),
+    ),
+)
+
+
+def _outlet_has_metering(outlet: dict[str, Any]) -> bool:
+    """Return True when an outlet has metering capability or telemetry."""
+    caps = outlet.get("outlet_caps") or outlet.get("outletCaps")
+    if caps is not None:
+        try:
+            if int(caps) & 2:
+                return True
+        except TypeError, ValueError:
+            pass
+    for key in (
+        "outlet_power",
+        "outletPower",
+        "power",
+        "outlet_voltage",
+        "outletVoltage",
+        "voltage",
+        "outlet_current",
+        "outletCurrent",
+        "current",
+        "outlet_power_factor",
+        "outletPowerFactor",
+        "power_factor",
+    ):
+        if outlet.get(key) is not None:
+            return True
+    return False
+
 
 # Port sensor descriptions for UniFi switches
 # These are templates - actual sensors are created dynamically per port
@@ -768,7 +890,12 @@ def _migrate_sensor_units(
 
     # Build a lookup of current suggested units from sensor descriptions
     expected_units: dict[str, str | None] = {}
-    for desc in (*SENSOR_TYPES, *PORT_SENSOR_TYPES, *PORT_RATE_SENSOR_TYPES):
+    for desc in (
+        *SENSOR_TYPES,
+        *PORT_SENSOR_TYPES,
+        *PORT_RATE_SENSOR_TYPES,
+        *OUTLET_SENSOR_TYPES,
+    ):
         if desc.suggested_unit_of_measurement is not None:
             expected_units[desc.key] = str(desc.suggested_unit_of_measurement)
 
@@ -935,6 +1062,19 @@ async def async_setup_entry(
                     has_any_total = any(stats.get(k) is not None for k in poe_keys)
                     has_ports = isinstance(stats.get("poe_ports"), dict)
                     if not has_any_total and not has_ports:
+                        continue
+
+                # Only create AC power sensors if data is present on the device
+                if description.key in (
+                    "ac_power_consumption",
+                    "ac_power_budget",
+                ):
+                    val = (
+                        description.value_fn(device_data)
+                        if description.value_fn
+                        else None
+                    )
+                    if val is None:
                         continue
 
                 entities.append(
@@ -1212,6 +1352,49 @@ async def async_setup_entry(
                     for description in WAN_SENSOR_TYPES
                 )
 
+            # Add outlet sensors for PDUs and smart power strips with outlet_table
+            outlets = device_data.get("outlet_table", [])
+            if isinstance(outlets, list) and outlets:
+                _LOGGER.debug(
+                    "Device %s has %d outlets, creating outlet sensors",
+                    device_name,
+                    len(outlets),
+                )
+                for outlet in outlets:
+                    if not isinstance(outlet, dict):
+                        continue
+                    idx = outlet.get("index")
+                    if idx is None:
+                        idx = outlet.get("outlet_idx") or outlet.get("outletIdx")
+                    if idx is None:
+                        continue
+                    try:
+                        outlet_idx = int(idx)
+                    except TypeError, ValueError:
+                        continue
+
+                    # Only create metering sensors for outlets that meter
+                    if not _outlet_has_metering(outlet):
+                        _LOGGER.debug(
+                            "Skipping metering sensors for outlet %d on %s (unmetered)",
+                            outlet_idx,
+                            device_name,
+                        )
+                        continue
+
+                    outlet_label = outlet.get("name") or f"Outlet {outlet_idx}"
+                    entities.extend(
+                        UnifiOutletSensor(
+                            coordinator=coordinator,
+                            description=outlet_desc,
+                            site_id=site_id,
+                            device_id=device_id,
+                            outlet_index=outlet_idx,
+                            outlet_name=outlet_label,
+                        )
+                        for outlet_desc in OUTLET_SENSOR_TYPES
+                    )
+
     # Add site-level client count sensors
     for site_id in coordinator.data.get("clients", {}):
         _LOGGER.debug("Creating site-level client count sensors for site %s", site_id)
@@ -1348,6 +1531,8 @@ class UnifiInsightsSensor(UnifiInsightsEntity, SensorEntity):
             "firmware_version",
             "wan_ip",
             "general_temperature",
+            "ac_power_consumption",
+            "ac_power_budget",
         ]:
             device = (
                 self.coordinator.data["devices"]
@@ -1775,6 +1960,95 @@ class UnifiPortSensor(UnifiInsightsEntity, SensorEntity):
         if sfp_found is not None:
             attrs["sfp_module_present"] = sfp_found
         return attrs or None
+
+
+class UnifiOutletSensor(UnifiInsightsEntity, SensorEntity):
+    """Representation of a UniFi Outlet Metering Sensor."""
+
+    entity_description: UnifiInsightsSensorEntityDescription
+
+    def __init__(
+        self,
+        coordinator: UnifiFacadeCoordinator,
+        description: UnifiInsightsSensorEntityDescription,
+        site_id: str,
+        device_id: str,
+        *,
+        outlet_index: int,
+        outlet_name: str | None = None,
+    ) -> None:
+        """Initialize the outlet sensor."""
+        super().__init__(coordinator, description, site_id, device_id)
+        self._outlet_index = outlet_index
+        label = outlet_name or f"Outlet {outlet_index}"
+        self._attr_translation_placeholders = {"outlet_name": label}
+        self._attr_unique_id = (
+            f"{site_id}_{device_id}_outlet_{outlet_index}_{description.key}"
+        )
+
+        _LOGGER.debug(
+            "Initializing %s sensor for outlet %d on device %s in site %s",
+            description.key,
+            outlet_index,
+            device_id,
+            site_id,
+        )
+
+    def _find_outlet_data(self) -> dict[str, Any] | None:
+        """Find outlet data for this sensor's outlet index."""
+        device_data = (
+            self.coordinator.data.get("devices", {})
+            .get(self._site_id, {})
+            .get(self._device_id, {})
+        )
+        if not isinstance(device_data, dict):
+            return None
+        outlets = device_data.get("outlet_table", [])
+        if not isinstance(outlets, list):
+            return None
+        for outlet in outlets:
+            if not isinstance(outlet, dict):
+                continue
+            idx = outlet.get("index")
+            if idx is None:
+                idx = outlet.get("outlet_idx") or outlet.get("outletIdx")
+            if idx is not None:
+                try:
+                    if int(idx) == self._outlet_index:
+                        return outlet
+                except TypeError, ValueError:
+                    continue
+        return None
+
+    @property
+    def available(self) -> bool:
+        """Return True if entity is available."""
+        if not super().available:
+            return False
+        return self._find_outlet_data() is not None
+
+    @property
+    def native_value(self) -> StateType:
+        """Return the state of the sensor."""
+        outlet = self._find_outlet_data()
+        if not outlet:
+            return None
+        if self.entity_description.value_fn:
+            return self.entity_description.value_fn(outlet)
+        return None
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Return outlet metadata attributes."""
+        outlet = self._find_outlet_data()
+        if not outlet:
+            return None
+        attrs: dict[str, Any] = {"index": self._outlet_index}
+        if "name" in outlet and outlet["name"] is not None:
+            attrs["name"] = outlet["name"]
+        if "relay_state" in outlet and outlet["relay_state"] is not None:
+            attrs["relay_state"] = outlet["relay_state"]
+        return attrs
 
 
 class UnifiProtectSensor(UnifiProtectEntity, SensorEntity):

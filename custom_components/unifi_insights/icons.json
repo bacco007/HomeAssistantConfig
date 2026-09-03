@@ -54,6 +54,24 @@
       },
       "battery": {
         "default": "mdi:battery"
+      },
+      "ac_power_consumption": {
+        "default": "mdi:flash"
+      },
+      "ac_power_budget": {
+        "default": "mdi:flash-outline"
+      },
+      "outlet_power": {
+        "default": "mdi:flash"
+      },
+      "outlet_voltage": {
+        "default": "mdi:sine-wave"
+      },
+      "outlet_current": {
+        "default": "mdi:current-ac"
+      },
+      "outlet_power_factor": {
+        "default": "mdi:angle-acute"
       }
     },
     "binary_sensor": {
@@ -132,6 +150,9 @@
         "state": {
           "off": "mdi:microphone-off"
         }
+      },
+      "outlet": {
+        "default": "mdi:power-socket-us"
       }
     },
     "select": {
