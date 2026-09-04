@@ -1,0 +1,1186 @@
+---
+###############################################################################
+# Tamworth Airport FIDS
+#
+# Live source:
+# https://www.tamworthairport.com.au/fids/TMW_current.json
+#
+# leg:
+#   A = Arrival
+#   D = Departure
+###############################################################################
+
+###############################################################################
+# REST - RAW AIRPORT FIDS
+###############################################################################
+
+rest:
+  - resource: "https://www.tamworthairport.com.au/fids/TMW_current.json"
+    scan_interval: 300
+    timeout: 30
+
+    sensor:
+      - name: "Tamworth Airport FIDS"
+        unique_id: tamworth_airport_fids
+        icon: mdi:airport
+
+        value_template: >
+          {{ value_json.flight_set.date }}
+
+        json_attributes_path: "$.flight_set"
+        json_attributes:
+          - airport
+          - flights
+          - time_window
+          - version
+
+###############################################################################
+# LIVE FLIGHT LISTS
+#
+# These represent the flights currently included in the airport's rolling
+# FIDS window.
+###############################################################################
+
+template:
+  - sensor:
+      #########################################################################
+      # Current Arrivals
+      #########################################################################
+
+      - name: "Tamworth Airport Arrivals"
+        unique_id: tamworth_airport_arrivals
+        icon: mdi:airplane-landing
+
+        state: >
+          {% set data = state_attr('sensor.tamworth_airport_fids', 'flights') %}
+          {% set flights = data.get('flight', []) if data is mapping else [] %}
+
+          {{ flights
+              | selectattr('leg', 'eq', 'A')
+              | list
+              | count }}
+
+        attributes:
+          flights: >
+            {% set data = state_attr('sensor.tamworth_airport_fids', 'flights') %}
+            {% set flights = data.get('flight', []) if data is mapping else [] %}
+            {% set ns = namespace(items=[]) %}
+
+            {% for flight in flights
+                | selectattr('leg', 'eq', 'A')
+                | list %}
+
+              {% set scheduled =
+                strptime(
+                  flight.scheduled_time,
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {% set estimated_raw =
+                flight.estimated_time
+                | default(flight.scheduled_time, true)
+              %}
+
+              {% set estimated =
+                strptime(
+                  estimated_raw,
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {% set delay =
+                (
+                  (
+                    as_timestamp(estimated)
+                    - as_timestamp(scheduled)
+                  ) / 60
+                )
+                | round(0)
+                | int
+              %}
+
+              {% set item = {
+                'key':
+                  flight.operational_date
+                  ~ '_'
+                  ~ flight.flight_number
+                  ~ '_'
+                  ~ flight.leg,
+                'flight_number': flight.flight_number,
+                'airline': flight.airline,
+                'leg': flight.leg,
+                'origin': flight.locations | join(', '),
+                'scheduled': scheduled.isoformat(),
+                'estimated': estimated.isoformat(),
+                'delay': delay,
+                'gate': flight.gate | default(''),
+                'codeshare_airlines':
+                  flight.codeshare_airlines | default([]),
+                'codeshares':
+                  flight.codeshare_flights | default([]),
+                'operational_date':
+                  flight.operational_date | default(''),
+                'trip_number':
+                  flight.trip_number | default(0)
+              } %}
+
+              {% set ns.items = ns.items + [item] %}
+
+            {% endfor %}
+
+            {{ ns.items }}
+
+      #########################################################################
+      # Current Departures
+      #########################################################################
+
+      - name: "Tamworth Airport Departures"
+        unique_id: tamworth_airport_departures
+        icon: mdi:airplane-takeoff
+
+        state: >
+          {% set data = state_attr('sensor.tamworth_airport_fids', 'flights') %}
+          {% set flights = data.get('flight', []) if data is mapping else [] %}
+
+          {{ flights
+              | selectattr('leg', 'eq', 'D')
+              | list
+              | count }}
+
+        attributes:
+          flights: >
+            {% set data = state_attr('sensor.tamworth_airport_fids', 'flights') %}
+            {% set flights = data.get('flight', []) if data is mapping else [] %}
+            {% set ns = namespace(items=[]) %}
+
+            {% for flight in flights
+                | selectattr('leg', 'eq', 'D')
+                | list %}
+
+              {% set scheduled =
+                strptime(
+                  flight.scheduled_time,
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {% set estimated_raw =
+                flight.estimated_time
+                | default(flight.scheduled_time, true)
+              %}
+
+              {% set estimated =
+                strptime(
+                  estimated_raw,
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {% set boarding_raw =
+                flight.scheduled_boarding_time | default('', true)
+              %}
+
+              {% set boarding =
+                strptime(
+                  boarding_raw,
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+                if boarding_raw
+                else none
+              %}
+
+              {% set delay =
+                (
+                  (
+                    as_timestamp(estimated)
+                    - as_timestamp(scheduled)
+                  ) / 60
+                )
+                | round(0)
+                | int
+              %}
+
+              {% set item = {
+                'key':
+                  flight.operational_date
+                  ~ '_'
+                  ~ flight.flight_number
+                  ~ '_'
+                  ~ flight.leg,
+                'flight_number': flight.flight_number,
+                'airline': flight.airline,
+                'leg': flight.leg,
+                'destination': flight.locations | join(', '),
+                'scheduled': scheduled.isoformat(),
+                'estimated': estimated.isoformat(),
+                'boarding':
+                  boarding.isoformat()
+                  if boarding
+                  else none,
+                'delay': delay,
+                'gate': flight.gate | default(''),
+                'codeshare_airlines':
+                  flight.codeshare_airlines | default([]),
+                'codeshares':
+                  flight.codeshare_flights | default([]),
+                'operational_date':
+                  flight.operational_date | default(''),
+                'trip_number':
+                  flight.trip_number | default(0)
+              } %}
+
+              {% set ns.items = ns.items + [item] %}
+
+            {% endfor %}
+
+            {{ ns.items }}
+
+  ###############################################################################
+  # NEXT FLIGHT DATA
+  #
+  # Triggered by:
+  #   - any change to the airport FIDS sensor
+  #   - once per minute, so "next" rolls over without waiting for the next
+  #     five-minute REST update
+  #
+  # next_arrival, next_departure and next_flight are calculated once per update
+  # and then reused by all entities in this block.
+  ###############################################################################
+
+  - triggers:
+      - trigger: state
+        entity_id: sensor.tamworth_airport_fids
+
+      - trigger: time_pattern
+        minutes: "/1"
+
+    variables:
+      next_arrival: >
+        {% set data =
+          state_attr(
+            'sensor.tamworth_airport_fids',
+            'flights'
+          )
+        %}
+
+        {% set flights =
+          data.get('flight', [])
+          if data is mapping
+          else []
+        %}
+
+        {% set ns = namespace(
+          flight=none,
+          timestamp=99999999999
+        ) %}
+
+        {% for flight in flights
+            | selectattr('leg', 'eq', 'A')
+            | list %}
+
+          {% set estimated_raw =
+            flight.estimated_time
+            | default(flight.scheduled_time, true)
+          %}
+
+          {% set estimated =
+            strptime(
+              estimated_raw,
+              '%d/%m/%Y %H:%M:%S'
+            ).replace(tzinfo=now().tzinfo)
+          %}
+
+          {% set timestamp =
+            as_timestamp(estimated)
+          %}
+
+          {% if
+            timestamp >= as_timestamp(now())
+            and timestamp < ns.timestamp
+          %}
+
+            {% set ns.flight = flight %}
+            {% set ns.timestamp = timestamp %}
+
+          {% endif %}
+
+        {% endfor %}
+
+        {{ ns.flight }}
+
+      next_departure: >
+        {% set data =
+          state_attr(
+            'sensor.tamworth_airport_fids',
+            'flights'
+          )
+        %}
+
+        {% set flights =
+          data.get('flight', [])
+          if data is mapping
+          else []
+        %}
+
+        {% set ns = namespace(
+          flight=none,
+          timestamp=99999999999
+        ) %}
+
+        {% for flight in flights
+            | selectattr('leg', 'eq', 'D')
+            | list %}
+
+          {% set estimated_raw =
+            flight.estimated_time
+            | default(flight.scheduled_time, true)
+          %}
+
+          {% set estimated =
+            strptime(
+              estimated_raw,
+              '%d/%m/%Y %H:%M:%S'
+            ).replace(tzinfo=now().tzinfo)
+          %}
+
+          {% set timestamp =
+            as_timestamp(estimated)
+          %}
+
+          {% if
+            timestamp >= as_timestamp(now())
+            and timestamp < ns.timestamp
+          %}
+
+            {% set ns.flight = flight %}
+            {% set ns.timestamp = timestamp %}
+
+          {% endif %}
+
+        {% endfor %}
+
+        {{ ns.flight }}
+
+      next_flight: >
+        {% set data =
+          state_attr(
+            'sensor.tamworth_airport_fids',
+            'flights'
+          )
+        %}
+
+        {% set flights =
+          data.get('flight', [])
+          if data is mapping
+          else []
+        %}
+
+        {% set ns = namespace(
+          flight=none,
+          timestamp=99999999999
+        ) %}
+
+        {% for flight in flights %}
+
+          {% set estimated_raw =
+            flight.estimated_time
+            | default(flight.scheduled_time, true)
+          %}
+
+          {% set estimated =
+            strptime(
+              estimated_raw,
+              '%d/%m/%Y %H:%M:%S'
+            ).replace(tzinfo=now().tzinfo)
+          %}
+
+          {% set timestamp =
+            as_timestamp(estimated)
+          %}
+
+          {% if
+            timestamp >= as_timestamp(now())
+            and timestamp < ns.timestamp
+          %}
+
+            {% set ns.flight = flight %}
+            {% set ns.timestamp = timestamp %}
+
+          {% endif %}
+
+        {% endfor %}
+
+        {{ ns.flight }}
+
+    sensor:
+      #########################################################################
+      # Next Arrival - Complete Flight Object
+      #########################################################################
+
+      - name: "Tamworth Airport Next Arrival"
+        unique_id: tamworth_airport_next_arrival
+        icon: mdi:airplane-landing
+
+        state: >
+          {{ next_arrival.flight_number
+             if next_arrival
+             else none }}
+
+        attributes:
+          airline: >
+            {{ next_arrival.airline
+               if next_arrival
+               else none }}
+
+          origin: >
+            {{ next_arrival.locations | join(', ')
+               if next_arrival
+               else none }}
+
+          scheduled: >
+            {% if next_arrival %}
+
+              {{
+                strptime(
+                  next_arrival.scheduled_time,
+                  '%d/%m/%Y %H:%M:%S'
+                )
+                .replace(tzinfo=now().tzinfo)
+                .isoformat()
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          estimated: >
+            {% if next_arrival %}
+
+              {% set value =
+                next_arrival.estimated_time
+                | default(
+                    next_arrival.scheduled_time,
+                    true
+                  )
+              %}
+
+              {{
+                strptime(
+                  value,
+                  '%d/%m/%Y %H:%M:%S'
+                )
+                .replace(tzinfo=now().tzinfo)
+                .isoformat()
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          delay: >
+            {% if next_arrival %}
+
+              {% set scheduled =
+                strptime(
+                  next_arrival.scheduled_time,
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {% set estimated =
+                strptime(
+                  next_arrival.estimated_time
+                    | default(
+                        next_arrival.scheduled_time,
+                        true
+                      ),
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {{
+                (
+                  (
+                    as_timestamp(estimated)
+                    - as_timestamp(scheduled)
+                  ) / 60
+                )
+                | round(0)
+                | int
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          gate: >
+            {{ next_arrival.gate | default('')
+               if next_arrival
+               else none }}
+
+          codeshare_airlines: >
+            {{ next_arrival.codeshare_airlines | default([])
+               if next_arrival
+               else [] }}
+
+          codeshares: >
+            {{ next_arrival.codeshare_flights | default([])
+               if next_arrival
+               else [] }}
+
+          operational_date: >
+            {{ next_arrival.operational_date | default('')
+               if next_arrival
+               else none }}
+
+      #########################################################################
+      # Next Departure - Complete Flight Object
+      #########################################################################
+
+      - name: "Tamworth Airport Next Departure"
+        unique_id: tamworth_airport_next_departure
+        icon: mdi:airplane-takeoff
+
+        state: >
+          {{ next_departure.flight_number
+             if next_departure
+             else none }}
+
+        attributes:
+          airline: >
+            {{ next_departure.airline
+               if next_departure
+               else none }}
+
+          destination: >
+            {{ next_departure.locations | join(', ')
+               if next_departure
+               else none }}
+
+          scheduled: >
+            {% if next_departure %}
+
+              {{
+                strptime(
+                  next_departure.scheduled_time,
+                  '%d/%m/%Y %H:%M:%S'
+                )
+                .replace(tzinfo=now().tzinfo)
+                .isoformat()
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          estimated: >
+            {% if next_departure %}
+
+              {% set value =
+                next_departure.estimated_time
+                | default(
+                    next_departure.scheduled_time,
+                    true
+                  )
+              %}
+
+              {{
+                strptime(
+                  value,
+                  '%d/%m/%Y %H:%M:%S'
+                )
+                .replace(tzinfo=now().tzinfo)
+                .isoformat()
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          boarding: >
+            {% if
+              next_departure
+              and
+              next_departure.scheduled_boarding_time
+                is defined
+            %}
+
+              {{
+                strptime(
+                  next_departure.scheduled_boarding_time,
+                  '%d/%m/%Y %H:%M:%S'
+                )
+                .replace(tzinfo=now().tzinfo)
+                .isoformat()
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          delay: >
+            {% if next_departure %}
+
+              {% set scheduled =
+                strptime(
+                  next_departure.scheduled_time,
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {% set estimated =
+                strptime(
+                  next_departure.estimated_time
+                    | default(
+                        next_departure.scheduled_time,
+                        true
+                      ),
+                  '%d/%m/%Y %H:%M:%S'
+                ).replace(tzinfo=now().tzinfo)
+              %}
+
+              {{
+                (
+                  (
+                    as_timestamp(estimated)
+                    - as_timestamp(scheduled)
+                  ) / 60
+                )
+                | round(0)
+                | int
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          gate: >
+            {{ next_departure.gate | default('')
+               if next_departure
+               else none }}
+
+          codeshare_airlines: >
+            {{ next_departure.codeshare_airlines | default([])
+               if next_departure
+               else [] }}
+
+          codeshares: >
+            {{ next_departure.codeshare_flights | default([])
+               if next_departure
+               else [] }}
+
+          operational_date: >
+            {{ next_departure.operational_date | default('')
+               if next_departure
+               else none }}
+
+      #########################################################################
+      # Next Flight - Arrival or Departure
+      #########################################################################
+
+      - name: "Tamworth Airport Next Flight"
+        unique_id: tamworth_airport_next_flight
+
+        icon: >
+          {% if next_flight and next_flight.leg == 'A' %}
+            mdi:airplane-landing
+          {% elif next_flight and next_flight.leg == 'D' %}
+            mdi:airplane-takeoff
+          {% else %}
+            mdi:airplane
+          {% endif %}
+
+        state: >
+          {{ next_flight.flight_number
+             if next_flight
+             else none }}
+
+        attributes:
+          direction: >
+            {% if next_flight %}
+              {{
+                'Arrival'
+                if next_flight.leg == 'A'
+                else 'Departure'
+              }}
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          leg: >
+            {{ next_flight.leg
+               if next_flight
+               else none }}
+
+          airline: >
+            {{ next_flight.airline
+               if next_flight
+               else none }}
+
+          location: >
+            {{ next_flight.locations | join(', ')
+               if next_flight
+               else none }}
+
+          scheduled: >
+            {% if next_flight %}
+              {{
+                strptime(
+                  next_flight.scheduled_time,
+                  '%d/%m/%Y %H:%M:%S'
+                )
+                .replace(tzinfo=now().tzinfo)
+                .isoformat()
+              }}
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          estimated: >
+            {% if next_flight %}
+
+              {% set value =
+                next_flight.estimated_time
+                | default(
+                    next_flight.scheduled_time,
+                    true
+                  )
+              %}
+
+              {{
+                strptime(
+                  value,
+                  '%d/%m/%Y %H:%M:%S'
+                )
+                .replace(tzinfo=now().tzinfo)
+                .isoformat()
+              }}
+
+            {% else %}
+              {{ none }}
+            {% endif %}
+
+          gate: >
+            {{ next_flight.gate | default('')
+               if next_flight
+               else none }}
+
+  ###############################################################################
+  # DEDICATED NEXT-FLIGHT ENTITIES
+  #
+  # These make the data much easier to use in dashboards, automations and cards.
+  ###############################################################################
+
+  - sensor:
+      #########################################################################
+      # Next Arrival Time
+      #########################################################################
+
+      - name: "Tamworth Airport Next Arrival Time"
+        unique_id: tamworth_airport_next_arrival_time
+        icon: mdi:airplane-landing
+        device_class: timestamp
+
+        availability: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_arrival',
+              'estimated'
+            )
+            is not none
+          }}
+
+        state: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_arrival',
+              'estimated'
+            )
+          }}
+
+      #########################################################################
+      # Next Departure Time
+      #########################################################################
+
+      - name: "Tamworth Airport Next Departure Time"
+        unique_id: tamworth_airport_next_departure_time
+        icon: mdi:airplane-takeoff
+        device_class: timestamp
+
+        availability: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_departure',
+              'estimated'
+            )
+            is not none
+          }}
+
+        state: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_departure',
+              'estimated'
+            )
+          }}
+
+      #########################################################################
+      # Next Departure Boarding Time
+      #########################################################################
+
+      - name: "Tamworth Airport Next Departure Boarding"
+        unique_id: tamworth_airport_next_departure_boarding
+        icon: mdi:account-arrow-right
+        device_class: timestamp
+
+        availability: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_departure',
+              'boarding'
+            )
+            is not none
+          }}
+
+        state: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_departure',
+              'boarding'
+            )
+          }}
+
+      #########################################################################
+      # Next Arrival Delay
+      #########################################################################
+
+      - name: "Tamworth Airport Next Arrival Delay"
+        unique_id: tamworth_airport_next_arrival_delay
+        icon: mdi:timer-outline
+        unit_of_measurement: "min"
+        state_class: measurement
+
+        availability: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_arrival',
+              'delay'
+            )
+            is number
+          }}
+
+        state: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_arrival',
+              'delay'
+            )
+          }}
+
+      #########################################################################
+      # Next Departure Delay
+      #########################################################################
+
+      - name: "Tamworth Airport Next Departure Delay"
+        unique_id: tamworth_airport_next_departure_delay
+        icon: mdi:timer-outline
+        unit_of_measurement: "min"
+        state_class: measurement
+
+        availability: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_departure',
+              'delay'
+            )
+            is number
+          }}
+
+        state: >
+          {{
+            state_attr(
+              'sensor.tamworth_airport_next_departure',
+              'delay'
+            )
+          }}
+
+  ###############################################################################
+  # DAILY FLIGHT CACHE
+  #
+  # Keeps every flight observed during the current operational day.
+  #
+  # If a flight appears again later with a changed estimated time, gate, etc.,
+  # the newer version replaces the older cached version.
+  #
+  # The sensor resets at midnight.
+  #
+  # Trigger-based template sensor state and attributes are restored following
+  # a Home Assistant restart.
+  ###############################################################################
+
+  - triggers:
+      - trigger: state
+        entity_id: sensor.tamworth_airport_fids
+        id: fids
+
+      - trigger: time
+        at: "00:00:00"
+        id: midnight
+
+    sensor:
+      - name: "Tamworth Airport Daily Flights"
+        unique_id: tamworth_airport_daily_flights
+        icon: mdi:airplane-clock
+
+        state: >
+          {{ now().date().isoformat() }}
+
+        attributes:
+          flights: >-
+            {%- if trigger.id == 'midnight' -%}
+              {{ [] }}
+            {%- else -%}
+              {%- set previous = this.attributes.get('flights', []) -%}
+
+              {%- set data =
+                state_attr(
+                  'sensor.tamworth_airport_fids',
+                  'flights'
+                )
+              -%}
+
+              {%- set source =
+                data.get('flight', [])
+                if data is mapping
+                else []
+              -%}
+
+              {%- set today = now().strftime('%d/%m/%Y') -%}
+
+              {%- set current = namespace(items=[]) -%}
+
+              {%- for flight in source -%}
+
+                {%- if
+                  flight.operational_date
+                    | default('')
+                    == today
+                -%}
+
+                  {%- set scheduled =
+                    strptime(
+                      flight.scheduled_time,
+                      '%d/%m/%Y %H:%M:%S'
+                    ).replace(tzinfo=now().tzinfo)
+                  -%}
+
+                  {%- set estimated_raw =
+                    flight.estimated_time
+                    | default(
+                        flight.scheduled_time,
+                        true
+                      )
+                  -%}
+
+                  {%- set estimated =
+                    strptime(
+                      estimated_raw,
+                      '%d/%m/%Y %H:%M:%S'
+                    ).replace(tzinfo=now().tzinfo)
+                  -%}
+
+                  {%- set boarding_raw =
+                    flight.scheduled_boarding_time
+                    | default('', true)
+                  -%}
+
+                  {%- set boarding =
+                    strptime(
+                      boarding_raw,
+                      '%d/%m/%Y %H:%M:%S'
+                    ).replace(tzinfo=now().tzinfo)
+                    if boarding_raw
+                    else none
+                  -%}
+
+                  {%- set delay =
+                    (
+                      (
+                        as_timestamp(estimated)
+                        - as_timestamp(scheduled)
+                      ) / 60
+                    )
+                    | round(0)
+                    | int
+                  -%}
+
+                  {%- set item = {
+                    'key':
+                      flight.operational_date
+                      ~ '_'
+                      ~ flight.flight_number
+                      ~ '_'
+                      ~ flight.leg,
+                    'flight_number':
+                      flight.flight_number,
+                    'airline':
+                      flight.airline,
+                    'leg':
+                      flight.leg,
+                    'location':
+                      flight.locations | join(', '),
+                    'scheduled':
+                      scheduled.isoformat(),
+                    'estimated':
+                      estimated.isoformat(),
+                    'boarding':
+                      boarding.isoformat()
+                      if boarding
+                      else none,
+                    'delay':
+                      delay,
+                    'gate':
+                      flight.gate | default(''),
+                    'codeshare_airlines':
+                      flight.codeshare_airlines
+                      | default([]),
+                    'codeshares':
+                      flight.codeshare_flights
+                      | default([]),
+                    'operational_date':
+                      flight.operational_date
+                      | default(''),
+                    'trip_number':
+                      flight.trip_number
+                      | default(0)
+                  } -%}
+
+                  {%- set current.items =
+                    current.items + [item]
+                  -%}
+
+                {%- endif -%}
+
+              {%- endfor -%}
+
+              {%- set current_keys =
+                current.items
+                | map(attribute='key')
+                | list
+              -%}
+
+              {%- set merged = namespace(items=[]) -%}
+
+              {%- for flight in previous -%}
+
+                {%- if
+                  flight.key not in current_keys
+                  and
+                  flight.operational_date
+                    | default('')
+                    == today
+                -%}
+
+                  {%- set merged.items =
+                    merged.items + [flight]
+                  -%}
+
+                {%- endif -%}
+
+              {%- endfor -%}
+
+              {%- set merged.items =
+                merged.items + current.items
+              -%}
+
+              {{ merged.items | sort(attribute='scheduled') | list }}
+
+            {%- endif -%}
+
+  ###############################################################################
+  # DAILY FLIGHT SUMMARY
+  ###############################################################################
+
+  - sensor:
+      #########################################################################
+      # Today's Arrivals
+      #########################################################################
+
+      - name: "Tamworth Airport Today Arrivals"
+        unique_id: tamworth_airport_today_arrivals
+        icon: mdi:airplane-landing
+
+        state: >
+          {% set flights =
+            state_attr(
+              'sensor.tamworth_airport_daily_flights',
+              'flights'
+            )
+            | default([], true)
+          %}
+
+          {{
+            flights
+            | selectattr('leg', 'eq', 'A')
+            | list
+            | count
+          }}
+        unit_of_measurement: 'Flights'
+
+        attributes:
+          flights: >
+            {% set flights =
+              state_attr(
+                'sensor.tamworth_airport_daily_flights',
+                'flights'
+              )
+              | default([], true)
+            %}
+
+            {{
+              flights
+              | selectattr('leg', 'eq', 'A')
+              | list
+            }}
+
+      #########################################################################
+      # Today's Departures
+      #########################################################################
+
+      - name: "Tamworth Airport Today Departures"
+        unique_id: tamworth_airport_today_departures
+        icon: mdi:airplane-takeoff
+
+        state: >
+          {% set flights =
+            state_attr(
+              'sensor.tamworth_airport_daily_flights',
+              'flights'
+            )
+            | default([], true)
+          %}
+
+          {{
+            flights
+            | selectattr('leg', 'eq', 'D')
+            | list
+            | count
+          }}
+        unit_of_measurement: 'Flights'
+
+        attributes:
+          flights: >
+            {% set flights =
+              state_attr(
+                'sensor.tamworth_airport_daily_flights',
+                'flights'
+              )
+              | default([], true)
+            %}
+
+            {{
+              flights
+              | selectattr('leg', 'eq', 'D')
+              | list
+            }}

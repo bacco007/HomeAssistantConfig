@@ -1,0 +1,62 @@
+---
+resource: "https://data.airquality.nsw.gov.au/api/Data/get_Observations"
+method: POST
+headers:
+  Content-Type: application/json
+payload_template: >-
+  {% set site = '340' %}
+  {% set site_valid = site not in ['unknown', 'unavailable', ''] %}
+  {{
+    {
+      "Parameters": [],
+      "Sites": [site | int] if site_valid else [],
+      "StartDate": (now() - timedelta(days=1)).strftime('%Y-%m-%d'),
+      "EndDate": now().strftime('%Y-%m-%d'),
+      "Categories": ["Averages"],
+      "Subcategories": ["Hourly"],
+      "Frequency": ["Hourly average"]
+    } | tojson
+  }}
+scan_interval: 3600
+timeout: 30
+sensor:
+  - name: "nswaq_air_quality_raw"
+    unique_id: nswaq_air_quality_raw
+    value_template: >-
+      {# Rolling window returns rows from both days; rank ONLY within the
+          newest (Date, Hour) present, so a prior day's bad event can't
+          masquerade as current conditions. The API's Date is "yyyy-MM-dd"
+          (ISO, sorts chronologically) and Hour is int 1-24 AEST. #}
+      {% set rows = value_json if value_json is sequence and value_json is not string else [] %}
+      {% set ns = namespace(newest=none) %}
+      {% for obs in rows %}
+        {% set stamp = (obs.Date, obs.Hour) %}
+        {% if ns.newest is none or stamp > ns.newest %}
+          {% set ns.newest = stamp %}
+        {% endif %}
+      {% endfor %}
+      {% set newest = ns.newest %}
+      {% set rank = {'GOOD': 0, 'FAIR': 1, 'POOR': 2, 'VERY POOR': 3, 'EXTREMELY POOR': 4} %}
+      {% set ns = namespace(worst=none, worst_rank=-1) %}
+      {% for obs in rows %}
+        {% if (obs.Date, obs.Hour) == newest %}
+          {% set cat_raw = obs.AirQualityCategory | default(none, true) %}
+          {% set cat_key = (cat_raw | upper | trim) if cat_raw else none %}
+          {% if cat_key and cat_key in rank and rank[cat_key] > ns.worst_rank %}
+            {% set ns.worst_rank = rank[cat_key] %}
+            {% set ns.worst = obs %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if ns.worst %}
+        {{
+          {
+            'category': ns.worst.AirQualityCategory | title,
+            'pollutant': ns.worst.Parameter.ParameterDescription,
+            'value': ns.worst.Value,
+            'units': ns.worst.Parameter.Units
+          } | tojson
+        }}
+      {% else %}
+        no_data
+      {% endif %}

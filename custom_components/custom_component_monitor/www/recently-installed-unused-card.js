@@ -5,7 +5,7 @@
  * forgot to wire it up" view. It reads the same unused_* sensors as the main
  * Custom Component Monitor card and filters each unused list by days_installed.
  */
-var CARD_VERSION = "1.13.1";
+var CARD_VERSION = "1.14.0";
 
 var RIU_ALL_SECTIONS = ["integrations", "themes", "frontend"];
 var RIU_DEFAULT_WINDOW = 30;
@@ -13,6 +13,14 @@ var RIU_TITLE = "Recently installed but unused";
 // v1.12.0 and earlier baked this Title Case string into saved dashboards via
 // getStubConfig(), so it is dropped on load and the new default applies.
 var RIU_LEGACY_TITLE = "Recently Installed but Unused";
+
+// One source of truth for the card and its editor. The editor shows these as
+// the effective values but never stores them - see _riuPrune.
+var RIU_DEFAULTS = {
+  title: RIU_TITLE,
+  days_window: RIU_DEFAULT_WINDOW,
+  sections: RIU_ALL_SECTIONS.slice(),
+};
 
 // Strip the old baked-in default so those users pick up the new title. A title
 // the user typed themselves is left alone.
@@ -42,9 +50,10 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    // No title: the card's own default applies, so renaming it later doesn't
-    // leave the old string frozen in everyone's dashboard.
-    return { days_window: RIU_DEFAULT_WINDOW, sections: ["integrations", "themes", "frontend"] };
+    // Deliberately empty: setConfig applies every default at read time. This
+    // card already lost a rename to a baked-in stub value once - see
+    // RIU_LEGACY_TITLE above and DECISIONS.md.
+    return {};
   }
 
   setConfig(config) {
@@ -326,94 +335,136 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
   }
 }
 
-/* ---------- Config Editor ---------- */
-class RecentlyInstalledUnusedCardEditor extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-    this._config = {};
-  }
+/* ---------- Config Editor ----------
+ *
+ * Built on ha-form. See docs/specs/card-editor-ha-form.md for why, and the
+ * matching block in custom-component-monitor-card.js - the three cards are
+ * three separately cache-busted Lovelace resources, so the plumbing is
+ * deliberately repeated per file rather than shared through a fourth one.
+ */
 
+var RIU_EDITOR_LABELS = {
+  title: "Card title (optional)",
+  days_window: "Only show items installed in the last",
+  sections: "Sections to show",
+};
+
+var RIU_EDITOR_HELPERS = {
+  title: 'Leave blank to use "' + RIU_TITLE + '".',
+  days_window: "Anything installed longer ago than this drops off the card.",
+};
+
+var RIU_EDITOR_SCHEMA = [
+  { name: "title", selector: { text: {} } },
+  {
+    name: "days_window",
+    selector: { number: { min: 1, max: 365, step: 1, mode: "box", unit_of_measurement: "days" } },
+  },
+  {
+    // A list of the same three strings, not three booleans - three toggles
+    // would change the stored shape and break every existing dashboard.
+    name: "sections",
+    selector: { select: { multiple: true, mode: "list", options: [
+      { value: "integrations", label: "Integrations" },
+      { value: "themes", label: "Themes" },
+      { value: "frontend", label: "Frontend cards" },
+    ] } },
+  },
+];
+
+/**
+ * Force the frontend chunk that defines ha-form. `window.customElements` is
+ * re-read on every call rather than captured: Home Assistant swaps it for a
+ * scoped-registry polyfill while its core bundle boots, which is also why this
+ * must never be `customElements.whenDefined()` at module top level.
+ */
+function _riuLoadHaComponents() {
+  var registry = window.customElements;
+  if (registry && !registry.get("ha-form")) {
+    var tile = registry.get("hui-tile-card");
+    if (tile && tile.getConfigElement) { tile.getConfigElement(); }
+  }
+}
+
+function _riuSameValue(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.slice().sort().join(",") === b.slice().sort().join(",");
+  }
+  return a === b;
+}
+
+/** Drop anything the user did not actually choose. See _ccmPrune. */
+function _riuPrune(config) {
+  var out = Object.assign({}, config);
+  if (out.title === "" || out.title == null) { delete out.title; }
+  Object.keys(RIU_DEFAULTS).forEach(function (key) {
+    if (key in out && _riuSameValue(out[key], RIU_DEFAULTS[key])) { delete out[key]; }
+  });
+  return out;
+}
+
+class RecentlyInstalledUnusedCardEditor extends HTMLElement {
   setConfig(config) {
     this._config = _riu_migrateConfig(config);
     this._render();
   }
 
-  _fire() {
-    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config } }));
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  connectedCallback() {
+    _riuLoadHaComponents();
+  }
+
+  _formData() {
+    var data = Object.assign({}, RIU_DEFAULTS, this._config);
+    if (this._config.title == null) { data.title = ""; }
+    return data;
   }
 
   _render() {
-    var titleVal = _riu_escapeHtml(this._config.title || RIU_TITLE);
-    var windowVal = this._config.days_window != null ? this._config.days_window : RIU_DEFAULT_WINDOW;
-    var secs = this._config.sections || RIU_ALL_SECTIONS.slice();
+    if (!this._hass || !this._config) { return; }
 
-    var chkInteg = secs.indexOf("integrations") !== -1 ? " checked" : "";
-    var chkThemes = secs.indexOf("themes") !== -1 ? " checked" : "";
-    var chkFront = secs.indexOf("frontend") !== -1 ? " checked" : "";
-
-    this.shadowRoot.innerHTML = [
-      "<style>",
-      ".row { display:flex; align-items:center; gap:8px; margin:8px 0; }",
-      "label { flex:1; font-size:0.9em; }",
-      ".ctrl { flex:2; }",
-      'input[type="text"], input[type="number"], select { width:100%; padding:6px 8px; border:1px solid var(--divider-color,#ccc); border-radius:4px; font-size:0.9em; background:var(--card-background-color,#fff); color:var(--primary-text-color,#212121); box-sizing:border-box; }',
-      ".checks { display:flex; gap:12px; flex-wrap:wrap; }",
-      ".checks label { flex:unset; display:flex; align-items:center; gap:4px; cursor:pointer; }",
-      "</style>",
-      '<div class="row">',
-      "  <label>Title</label>",
-      '  <div class="ctrl"><input type="text" id="title" value="' + titleVal + '"></div>',
-      "</div>",
-      '<div class="row">',
-      "  <label>Window (days)</label>",
-      '  <div class="ctrl"><input type="number" id="days_window" min="1" max="365" value="' + windowVal + '"></div>',
-      "</div>",
-      '<div class="row">',
-      "  <label>Sections</label>",
-      '  <div class="ctrl checks">',
-      '    <label><input type="checkbox" id="sec_integrations"' + chkInteg + "> Integrations</label>",
-      '    <label><input type="checkbox" id="sec_themes"' + chkThemes + "> Themes</label>",
-      '    <label><input type="checkbox" id="sec_frontend"' + chkFront + "> Frontend</label>",
-      "  </div>",
-      "</div>"
-    ].join("\n");
-
-    var self = this;
-    this.shadowRoot.querySelector("#title").addEventListener("change", function(ev) {
-      self._config = Object.assign({}, self._config, { title: ev.target.value });
-      self._fire();
-    });
-    this.shadowRoot.querySelector("#days_window").addEventListener("change", function(ev) {
-      var v = parseInt(ev.target.value, 10);
-      if (isNaN(v) || v < 1) { v = RIU_DEFAULT_WINDOW; }
-      self._config = Object.assign({}, self._config, { days_window: v });
-      self._fire();
-    });
-
-    var secIds = ["sec_integrations", "sec_themes", "sec_frontend"];
-    var secKeys = ["integrations", "themes", "frontend"];
-    for (var i = 0; i < secIds.length; i++) {
-      (function(idx) {
-        self.shadowRoot.querySelector("#" + secIds[idx]).addEventListener("change", function() {
-          var current = (self._config.sections || RIU_ALL_SECTIONS.slice());
-          var key = secKeys[idx];
-          var pos = current.indexOf(key);
-          if (this.checked && pos === -1) {
-            current.push(key);
-          } else if (!this.checked && pos !== -1) {
-            current.splice(pos, 1);
-          }
-          self._config = Object.assign({}, self._config, { sections: current });
-          self._fire();
-        });
-      })(i);
+    if (!this._form) {
+      var form = document.createElement("ha-form");
+      form.computeLabel = function (schema) {
+        return RIU_EDITOR_LABELS[schema.name] || schema.name;
+      };
+      form.computeHelper = function (schema) {
+        return RIU_EDITOR_HELPERS[schema.name] || "";
+      };
+      form.addEventListener("value-changed", this._onValueChanged.bind(this));
+      this.appendChild(form);
+      this._form = form;
     }
+
+    this._form.hass = this._hass;
+    this._form.schema = RIU_EDITOR_SCHEMA;
+    this._form.data = this._formData();
+  }
+
+  _onValueChanged(event) {
+    event.stopPropagation();
+    // Still migrated on the way out: a config carrying the legacy title reaches
+    // the form untouched, so without this it would be written straight back.
+    var config = _riuPrune(_riu_migrateConfig(event.detail.value));
+    this._config = config;
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config: config },
+      bubbles: true,
+      composed: true,
+    }));
   }
 }
 
-customElements.define("recently-installed-unused-card-editor", RecentlyInstalledUnusedCardEditor);
-customElements.define("recently-installed-unused-card", RecentlyInstalledUnusedCard);
+if (!customElements.get("recently-installed-unused-card-editor")) {
+  customElements.define("recently-installed-unused-card-editor", RecentlyInstalledUnusedCardEditor);
+}
+if (!customElements.get("recently-installed-unused-card")) {
+  customElements.define("recently-installed-unused-card", RecentlyInstalledUnusedCard);
+}
 
 window.customCards = window.customCards || [];
 window.customCards.push({

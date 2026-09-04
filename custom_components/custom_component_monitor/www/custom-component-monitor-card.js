@@ -2,9 +2,19 @@
  * Custom Component Monitor Card
  * A Lovelace card that displays unused HACS components.
  */
-var CARD_VERSION = "1.13.1";
+var CARD_VERSION = "1.14.0";
 
 var ALL_SECTIONS = ["integrations", "themes", "frontend"];
+
+// One source of truth for the card and its editor. The editor shows these as
+// the effective values but never stores them - see _ccmPrune.
+var CCM_DEFAULTS = {
+  title: "Custom Component Monitor",
+  sort: "name",
+  show: "unused",
+  sections: ALL_SECTIONS.slice(),
+  collapsed_by_default: false,
+};
 
 function _ccm_escapeHtml(text) {
   var el = document.createElement("span");
@@ -28,12 +38,16 @@ class CustomComponentMonitorCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return { title: "Custom Component Monitor", sort: "name", show: "unused", sections: ["integrations", "themes", "frontend"], collapsed_by_default: false };
+    // Deliberately empty: setConfig applies every default at read time. Baking
+    // them in froze an old title in everyone's dashboard once already, which is
+    // why _riu_migrateConfig exists on the sibling card.
+    return {};
   }
 
   setConfig(config) {
     this._config = Object.assign(
-      { title: "Custom Component Monitor", sort: "name", show: "unused", sections: ALL_SECTIONS.slice(), collapsed_by_default: false },
+      { title: CCM_DEFAULTS.title, sort: CCM_DEFAULTS.sort, show: CCM_DEFAULTS.show,
+        sections: ALL_SECTIONS.slice(), collapsed_by_default: CCM_DEFAULTS.collapsed_by_default },
       config
     );
     this._sortMode = this._config.sort || "name";
@@ -399,106 +413,184 @@ class CustomComponentMonitorCard extends HTMLElement {
   }
 }
 
-/* ---------- Config Editor ---------- */
-class CustomComponentMonitorCardEditor extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-    this._config = {};
-  }
+/* ---------- Config Editor ----------
+ *
+ * Built on ha-form rather than hand-rolled DOM. Two reasons, one visual and
+ * one structural. The editor renders inside Home Assistant's card dialog
+ * surrounded by Material fields, and raw <select>/<input> match neither them
+ * nor the active theme. And the re-render fault this file used to carry -
+ * _render() replacing the whole subtree on every setConfig(), which the dialog
+ * calls back after each config-changed, destroying the control being operated
+ * - cannot happen here: the form element is created once and thereafter only
+ * .hass, .schema and .data are assigned, so Lit patches in place.
+ *
+ * See docs/specs/card-editor-ha-form.md.
+ */
 
+var CCM_EDITOR_LABELS = {
+  title: "Card title (optional)",
+  show: "Which components to list",
+  sort: "Sort by",
+  sections: "Sections to show",
+  collapsed_by_default: "Start with every section collapsed",
+};
+
+// ha-form renders the raw key name when it cannot find a label, so the labels
+// map is required rather than decorative.
+var CCM_EDITOR_HELPERS = {
+  title: 'Leave blank to use "' + CCM_DEFAULTS.title + '".',
+  show: "Unused means nothing on your dashboards or in your automations refers to it.",
+  collapsed_by_default: "Sections can still be expanded, and remember their state afterwards.",
+};
+
+var CCM_EDITOR_SCHEMA = [
+  { name: "title", selector: { text: {} } },
+  {
+    name: "show",
+    selector: { select: { mode: "dropdown", options: [
+      { value: "unused", label: "Only unused components" },
+      { value: "all", label: "Every component" },
+      { value: "used", label: "Only components in use" },
+    ] } },
+  },
+  {
+    name: "sort",
+    selector: { select: { mode: "dropdown", options: [
+      { value: "name", label: "Name" },
+      { value: "days", label: "Days since install" },
+    ] } },
+  },
+  {
+    // A list of the same three strings, not three booleans: three toggles would
+    // read better but would change the stored shape and break every existing
+    // dashboard. mode "list" shows all three at once, which also survives 380px
+    // better than a row of checkboxes did.
+    name: "sections",
+    selector: { select: { multiple: true, mode: "list", options: [
+      { value: "integrations", label: "Integrations" },
+      { value: "themes", label: "Themes" },
+      { value: "frontend", label: "Frontend cards" },
+    ] } },
+  },
+  { name: "collapsed_by_default", selector: { boolean: {} } },
+];
+
+/**
+ * Force the frontend chunk that defines ha-form.
+ *
+ * In practice the editor is only ever built from the card dialog, which has
+ * already loaded that chunk - but this is Mushroom's belt-and-braces and costs
+ * nothing. `window.customElements` is re-read on every call rather than
+ * captured: Home Assistant swaps it for a scoped-registry polyfill while its
+ * core bundle boots, which is also why this must never be
+ * `customElements.whenDefined()` at module top level - that would bind to the
+ * native registry's method and might never fire.
+ */
+function _ccmLoadHaComponents() {
+  var registry = window.customElements;
+  if (registry && !registry.get("ha-form")) {
+    var tile = registry.get("hui-tile-card");
+    if (tile && tile.getConfigElement) { tile.getConfigElement(); }
+  }
+}
+
+function _ccmSameValue(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.slice().sort().join(",") === b.slice().sort().join(",");
+  }
+  return a === b;
+}
+
+/**
+ * Drop anything the user did not actually choose.
+ *
+ * An empty title becomes an absent key, and so does any value equal to the
+ * card's own default. Keys the schema knows nothing about - `type`,
+ * `view_layout`, `grid_options` and friends - are passed through untouched.
+ * Storing a default is how "Recently Installed but Unused" ended up frozen in
+ * dashboards after the card was renamed; see DECISIONS.md.
+ */
+function _ccmPrune(config) {
+  var out = Object.assign({}, config);
+  if (out.title === "" || out.title == null) { delete out.title; }
+  Object.keys(CCM_DEFAULTS).forEach(function (key) {
+    if (key in out && _ccmSameValue(out[key], CCM_DEFAULTS[key])) { delete out[key]; }
+  });
+  return out;
+}
+
+class CustomComponentMonitorCardEditor extends HTMLElement {
   setConfig(config) {
     this._config = Object.assign({}, config);
     this._render();
   }
 
-  _fire() {
-    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config } }));
+  // Safe to render on every tick, unlike the hand-built version this replaced:
+  // nothing is destroyed, the form just receives new values.
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  connectedCallback() {
+    _ccmLoadHaComponents();
+  }
+
+  /**
+   * What the form displays: the effective values, so no dropdown opens blank -
+   * except the title, which stays empty when unset so its helper line can name
+   * the default instead of the box silently claiming a value that isn't stored.
+   */
+  _formData() {
+    var data = Object.assign({}, CCM_DEFAULTS, this._config);
+    if (this._config.title == null) { data.title = ""; }
+    return data;
   }
 
   _render() {
-    var titleVal = _ccm_escapeHtml(this._config.title || "Custom Component Monitor");
-    var sortVal = this._config.sort || "name";
-    var secs = this._config.sections || ALL_SECTIONS.slice();
+    // ha-form needs hass to resolve its selectors, so wait for it.
+    if (!this._hass || !this._config) { return; }
 
-    var chkInteg = secs.indexOf("integrations") !== -1 ? " checked" : "";
-    var chkThemes = secs.indexOf("themes") !== -1 ? " checked" : "";
-    var chkFront = secs.indexOf("frontend") !== -1 ? " checked" : "";
-    var chkCollapsed = this._config.collapsed_by_default ? " checked" : "";
-
-    this.shadowRoot.innerHTML = [
-      "<style>",
-      ".row { display:flex; align-items:center; gap:8px; margin:8px 0; }",
-      "label { flex:1; font-size:0.9em; }",
-      '.ctrl { flex:2; }',
-      'input[type="text"], select { width:100%; padding:6px 8px; border:1px solid var(--divider-color,#ccc); border-radius:4px; font-size:0.9em; background:var(--card-background-color,#fff); color:var(--primary-text-color,#212121); box-sizing:border-box; }',
-      ".checks { display:flex; gap:12px; flex-wrap:wrap; }",
-      ".checks label { flex:unset; display:flex; align-items:center; gap:4px; cursor:pointer; }",
-      "</style>",
-      '<div class="row">',
-      "  <label>Title</label>",
-      '  <div class="ctrl"><input type="text" id="title" value="' + titleVal + '"></div>',
-      "</div>",
-      '<div class="row">',
-      "  <label>Default sort</label>",
-      '  <div class="ctrl"><select id="sort">',
-      '    <option value="name"' + (sortVal === "name" ? " selected" : "") + ">Name</option>",
-      '    <option value="days"' + (sortVal === "days" ? " selected" : "") + ">Days installed</option>",
-      "  </select></div>",
-      "</div>",
-      '<div class="row">',
-      "  <label>Sections</label>",
-      '  <div class="ctrl checks">',
-      '    <label><input type="checkbox" id="sec_integrations"' + chkInteg + "> Integrations</label>",
-      '    <label><input type="checkbox" id="sec_themes"' + chkThemes + "> Themes</label>",
-      '    <label><input type="checkbox" id="sec_frontend"' + chkFront + "> Frontend</label>",
-      "  </div>",
-      "</div>",
-      '<div class="row">',
-      "  <label>Collapse sections by default</label>",
-      '  <div class="ctrl checks">',
-      '    <label><input type="checkbox" id="collapsed_by_default"' + chkCollapsed + "> Start collapsed</label>",
-      "  </div>",
-      "</div>"
-    ].join("\n");
-
-    var self = this;
-    this.shadowRoot.querySelector("#title").addEventListener("change", function(ev) {
-      self._config = Object.assign({}, self._config, { title: ev.target.value });
-      self._fire();
-    });
-    this.shadowRoot.querySelector("#sort").addEventListener("change", function(ev) {
-      self._config = Object.assign({}, self._config, { sort: ev.target.value });
-      self._fire();
-    });
-    this.shadowRoot.querySelector("#collapsed_by_default").addEventListener("change", function(ev) {
-      self._config = Object.assign({}, self._config, { collapsed_by_default: ev.target.checked });
-      self._fire();
-    });
-
-    var secIds = ["sec_integrations", "sec_themes", "sec_frontend"];
-    var secKeys = ["integrations", "themes", "frontend"];
-    for (var i = 0; i < secIds.length; i++) {
-      (function(idx) {
-        self.shadowRoot.querySelector("#" + secIds[idx]).addEventListener("change", function() {
-          var current = (self._config.sections || ALL_SECTIONS.slice());
-          var key = secKeys[idx];
-          var pos = current.indexOf(key);
-          if (this.checked && pos === -1) {
-            current.push(key);
-          } else if (!this.checked && pos !== -1) {
-            current.splice(pos, 1);
-          }
-          self._config = Object.assign({}, self._config, { sections: current });
-          self._fire();
-        });
-      })(i);
+    if (!this._form) {
+      var form = document.createElement("ha-form");
+      form.computeLabel = function (schema) {
+        return CCM_EDITOR_LABELS[schema.name] || schema.name;
+      };
+      form.computeHelper = function (schema) {
+        return CCM_EDITOR_HELPERS[schema.name] || "";
+      };
+      form.addEventListener("value-changed", this._onValueChanged.bind(this));
+      // Light DOM, matching the sibling laundry-weather and ha-jokes cards: the
+      // dialog styles the editor's own children, and the selectors read `hass`
+      // from a Lit context provider further up the tree.
+      this.appendChild(form);
+      this._form = form;
     }
+
+    this._form.hass = this._hass;
+    this._form.schema = CCM_EDITOR_SCHEMA;
+    this._form.data = this._formData();
+  }
+
+  _onValueChanged(event) {
+    // Stop the inner event so only our config-changed reaches the editor host.
+    event.stopPropagation();
+    var config = _ccmPrune(event.detail.value);
+    this._config = config;
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config: config },
+      bubbles: true,
+      composed: true,
+    }));
   }
 }
 
-customElements.define("custom-component-monitor-card-editor", CustomComponentMonitorCardEditor);
-customElements.define("custom-component-monitor-card", CustomComponentMonitorCard);
+if (!customElements.get("custom-component-monitor-card-editor")) {
+  customElements.define("custom-component-monitor-card-editor", CustomComponentMonitorCardEditor);
+}
+if (!customElements.get("custom-component-monitor-card")) {
+  customElements.define("custom-component-monitor-card", CustomComponentMonitorCard);
+}
 
 window.customCards = window.customCards || [];
 window.customCards.push({

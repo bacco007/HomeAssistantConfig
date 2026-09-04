@@ -13,18 +13,27 @@ cards:
   - type: conditional
     conditions:
       - condition: state
-        entity: binary_sensor.ha_connected_integration_offline_integrations
-        state: "on"
+        entity: sensor.integrations_with_issues
+        state_not: "0"
     card:
       type: custom:bubble-card
       card_type: button
       button_type: state
-      entity: binary_sensor.ha_connected_integration_offline_integrations
+      entity: sensor.integrations_with_issues
       name: Offline Integrations
       sub_button:
-        - entity: binary_sensor.ha_connected_integration_offline_integrations
-          show_attribute: true
-          attribute: count
-          show_icon: false
-      icon: mdi:api-off
+        main:
+          - entity: sensor.integrations_with_issues
+            show_attribute: false
+            attribute: count
+            show_icon: false
+            show_last_changed: false
+            show_state: true
+            show_name: false
+            state_background: true
+        bottom: []
+      icon: ""
       show_state: false
+      show_last_changed: true
+      show_attribute: false
+

@@ -29,6 +29,7 @@ recorder:
       - weblink
       - weather
       - zone
+      - image
     entities:
       - sensor.adsb_aircraft_tracked
       - sensor.adsb_fa_feeder
@@ -44,7 +45,6 @@ recorder:
       - sensor.lastfm_user_toptracks
       - sensor.lastfm_user_weeklytrackchart
       - sensor.plane_overhead
-      - sensor.radarr_movies
       - sensor.sonarr_commands
       - sensor.sungrowsolar_alldata
       - sensor.tautulli_activity
@@ -57,7 +57,6 @@ recorder:
       - sensor.z2m_office_airquality_humidity
       - sensor.z2m_office_airquality_temperature
       - sensor.z2m_office_airquality_voc
-      - sun.sun
       - weather.east_tamworth_hourly
       - sensor.z2m_office_airquality_last_seen
       - sensor.hb_00045437_signal_strength
@@ -74,12 +73,11 @@ recorder:
       - sensor.swap_use
       - sensor.swap_use_percent
       - sensor.energy_solar_tariff
-      - sensor.stats_watchman
-      - sensor.stats_docker
       - sensor.system_ha_global_health_score
       - sensor.unavailable_devices
       - sensor.summary_docker_containers
       - sensor.aircraft
+      - sensor.skyradar_fusion_current_in_area
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
@@ -215,6 +213,10 @@ recorder:
       - sensor.processor*
       - sensor.brisbane_st_wind*
       - sensor.dockersocketproxy*
+      - sensor.supercars*
+      - sensor.jetkvm*
+      - sensor.ws_wind*
+      - sensor.ws_sensor_drift
     event_types:
       - automation_triggered
       - call_service
@@ -259,11 +261,15 @@ recorder:
       - f1_sensor_race_control_event
       - recorder_hourly_statistics_generated
       - panels_updated
+      - whodunnit_trigger_detected
+      - skyradar_fusion_entry
+      - skyradar_fusion_exit
+      - adsb_station_aircraft_approaching
+      - adsb_station_aircraft_passage
+      - armadarr_history_event
   include:
     entities:
       - sensor.tamhospital_waitingtime
-      - sensor.unifi_networkstats_connected_devices
-      - sensor.unifi_networkstats_switchap
       - sensor.flightradar24_current_flights_in_area
       - sensor.starlink_download_daily
       - sensor.starlink_upload_daily

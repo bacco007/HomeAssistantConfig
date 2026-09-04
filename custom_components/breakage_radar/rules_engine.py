@@ -29,10 +29,11 @@ Ten matcher types cover every deprecation Breakage Radar currently ships:
 
 Every matcher may additionally be constrained with ``files`` (a list of exact
 basenames, e.g. ``["device_tracker.py"]``), ``attr`` matchers with
-``in_class_base`` (the enclosing class must derive from one of these names),
-and ``call`` matchers with ``not_awaited`` (skip awaited calls, for symbols
-Home Assistant defines with a plain ``def``). Those constraints are what keep
-the false-positive rate at zero on lookalike code -- see
+``in_class_base`` (the enclosing class must derive from one of these names,
+resolved through the file's import aliases and through one level of local
+subclassing), and ``call`` matchers with ``not_awaited`` (skip awaited calls,
+for symbols Home Assistant defines with a plain ``def``). Those constraints
+are what keep the false-positive rate at zero on lookalike code -- see
 ``tests/test_scanner.py``.
 
 Standard library only: this module is imported by the crawler and vendored
@@ -68,7 +69,7 @@ MATCHER_TYPES = frozenset(
 #: Bumped whenever matching semantics change. It is folded into the crawl's
 #: rules hash, so an engine change forces a rescan instead of leaving stale
 #: findings that the current engine would no longer produce.
-ENGINE_VERSION = 7
+ENGINE_VERSION = 8
 
 VERSION_RE = re.compile(r"^\d{4}\.\d+(?:\.\d+)?$")
 
@@ -145,6 +146,16 @@ class Finding:
         }
 
 
+def search_term(symbol: str) -> str:
+    """The searchable part of a rule symbol.
+
+    ``DeviceRegistry.async_get_device`` and
+    ``async_import_statistics(missing metadata)`` both reduce to the bare
+    function name, which is what someone would paste into an issue.
+    """
+    return symbol.split("(")[0].strip().split(".")[-1].strip()
+
+
 @dataclass
 class ScanStats:
     """Counters a caller can surface instead of silently swallowing problems."""
@@ -209,8 +220,13 @@ def _basename(path: str) -> str:
     return PurePosixPath(path).name
 
 
-def _base_names(node: ast.ClassDef) -> set[str]:
-    """Names in a class's base list, both ``Foo`` and ``mod.Foo`` forms."""
+def base_names(node: ast.ClassDef, imports: dict[str, str] | None = None) -> set[str]:
+    """Names in a class's base list, both ``Foo`` and ``mod.Foo`` forms.
+
+    ``imports`` adds the name a base was imported under upstream, so
+    ``from homeassistant.components.vacuum import StateVacuumEntity as Base``
+    followed by ``class MyVacuum(Base)`` still names ``StateVacuumEntity``.
+    """
     names: set[str] = set()
     for base in node.bases:
         if isinstance(base, ast.Name):
@@ -223,6 +239,13 @@ def _base_names(node: ast.ClassDef) -> set[str]:
                 names.add(inner.id)
             elif isinstance(inner, ast.Attribute):
                 names.add(inner.attr)
+    if imports:
+        for name in sorted(names):
+            dotted = imports.get(name)
+            # A relative import is the repository's own class, never core's,
+            # however suggestive the name it was bound to.
+            if dotted and not dotted.startswith("."):
+                names.add(dotted.rsplit(".", 1)[-1])
     return names
 
 
@@ -336,7 +359,7 @@ def _file_allowed(matcher: dict[str, Any], path: str) -> bool:
     return _basename(path) in set(allowed)
 
 
-def _decorated_as_property(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
+def decorated_as_property(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
     for decorator in node.decorator_list:
         target = decorator.func if isinstance(decorator, ast.Call) else decorator
         if isinstance(target, ast.Name) and target.id in (
@@ -368,9 +391,24 @@ def _match_classbase(
 ) -> Iterator[tuple[int, str]]:
     wanted = set(matcher.get("bases", ()))
     for node in _iter_classes(tree):
-        hit = _base_names(node) & wanted
+        hit = base_names(node, imports) & wanted
         if hit:
             yield node.lineno, sorted(hit)[0]
+
+
+def _inherited_bases(tree: ast.Module, imports: dict[str, str]) -> dict[str, set[str]]:
+    """Base names per class, following a base defined in the same file once.
+
+    ``class Middle(StateVacuumEntity)`` then ``class MyVacuum(Middle)`` puts
+    ``StateVacuumEntity`` on ``MyVacuum`` too. One level only: a chain that
+    leaves the file cannot be resolved from the file, and undercounting is the
+    side to be wrong on.
+    """
+    direct = {node.name: base_names(node, imports) for node in _iter_classes(tree)}
+    return {
+        name: bases | set().union(*(direct.get(b, set()) for b in bases if b != name))
+        for name, bases in direct.items()
+    }
 
 
 def _match_attr(
@@ -379,13 +417,14 @@ def _match_attr(
     names = set(matcher.get("names", ()))
     attr_names = {f"_attr_{name}" for name in names}
     required_bases = set(matcher.get("in_class_base", ()))
+    inherited = _inherited_bases(tree, imports) if required_bases else {}
 
     for node in _iter_classes(tree):
-        if required_bases and not (_base_names(node) & required_bases):
+        if required_bases and not (inherited.get(node.name, set()) & required_bases):
             continue
         for child in ast.walk(node):
             if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                if child.name in names and _decorated_as_property(child):
+                if child.name in names and decorated_as_property(child):
                     yield child.lineno, child.name
             elif isinstance(child, ast.Assign):
                 for target in child.targets:

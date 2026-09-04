@@ -1,0 +1,207 @@
+# Bubble Quick Launcher - License
+# Copyright (c) 2026 Clooos (https://www.patreon.com/Clooos)
+#
+# This module is a paid product. It is NOT open source and it is NOT covered
+# by the Bubble Card (MIT) license.
+#
+# Personal license:
+# - One license covers one household (all your own Home Assistant installations).
+# - Lifetime access through the dedicated Patreon post, or access while
+#   subscribed through my Patreon tiers.
+# - You may not share, resell or redistribute this module or this file.
+#
+# Professional use (installing this module for clients):
+# - One license is required per client installation.
+# - For multi-client needs, contact me on Patreon for a pro license.
+#
+# Thank you for supporting my work, this is what allows me to keep working on
+# Bubble Card and everything else around it. Cheers!
+
+bubble_quick_launcher:
+  name: Bubble Quick Launcher
+  version: v1.0.1
+  creator: Clooos
+  supported:
+    - sub-buttons
+  description: |
+    <p>Turn your sub-buttons into a clean and compact launcher grid.</p><br>
+    <p>This module is designed for dashboards, room shortcuts, scenes, navigation menus and quick actions.</p><br>
+    <p><strong>How to use this module?</strong></p>
+    <p>Create a "Sub-suttons only" card, in "Sub-buttons editor" set "Groups placement" to "Rows", then organize your buttons into groups. Each group becomes a row in the launcher.</p><br>
+    <p>The square layout always draws a perfect square. The regular layout follows the height of the card instead, so use the "Rows" setting of the card to give your launcher more room.</p><br>
+    <p><strong>YAML example - 3x3 sub-buttons grid:</strong></p>
+    <code-block><pre>
+    type: custom:bubble-card
+    card_type: sub-buttons
+    sub_button:
+      main: []
+      bottom:
+        - name: Top row
+          group:
+            - icon: mdi:palette
+            - icon: mdi:palette
+            - icon: mdi:palette
+        - name: Middle row
+          group:
+            - icon: mdi:palette
+            - icon: mdi:palette
+            - icon: mdi:palette
+        - name: Bottom row
+          group:
+            - icon: mdi:palette
+            - icon: mdi:palette
+            - icon: mdi:palette
+      bottom_layout: rows
+    modules:
+      - bubble_quick_launcher
+    bubble_quick_launcher:
+      card_layout: square
+      hide_card_background: false
+      hide_button_highlights: false
+      hide_button_names: true
+      button_shape: circle
+      button_gap: 6
+      card_padding: 6
+      text_space: 28
+      icon_size: 46
+    </pre></code-block>
+  editor:
+    - type: expandable
+      title: Layout and styling
+      icon: mdi:palette
+      schema:
+        - name: card_layout
+          label: Card layout
+          selector:
+            select:
+              options:
+                - label: Square card (Default)
+                  value: square
+                - label: Regular card
+                  value: regular
+        - name: hide_card_background
+          label: Hide card background
+          selector:
+            boolean: {}
+        - name: hide_button_highlights
+          label: Hide button highlights
+          selector:
+            boolean: {}
+        - name: hide_button_names
+          label: Hide button names
+          default: true
+          selector:
+            boolean: {}
+        - name: button_shape
+          label: Button shape
+          selector:
+            select:
+              options:
+                - label: Circle (Default)
+                  value: circle
+                - label: Rounded
+                  value: rounded
+                - label: Square
+                  value: square
+        - name: button_gap
+          label: Buttons gap (%)
+          selector:
+            number:
+              min: 0
+              max: 20
+              step: 1
+        - name: card_padding
+          label: Card margin/padding (%)
+          selector:
+            number:
+              min: 0
+              max: 20
+              step: 1
+        - name: text_space
+          label: Text space (px)
+          selector:
+            number:
+              min: 0
+              max: 60
+              step: 1
+        - name: icon_size
+          label: Icon size (%)
+          selector:
+            number:
+              min: 10
+              max: 80
+              step: 1
+  code: |-
+    .bubble-sub-button-bottom-container {
+    height: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: var(--bql-padding, 6%) var(--bql-padding, 6%) calc(var(--bql-padding, 6%) + var(--bql-name-space, 28px)) var(--bql-padding, 6%) !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    row-gap: calc(var(--bql-gap, 6%) + var(--bql-name-space, 28px)) !important;
+    column-gap: var(--bql-gap, 6%) !important;
+    }
+    .bubble-sub-button-group {
+    container-type: size;
+    height: 100% !important;
+    width: 100% !important;
+    gap: var(--bql-gap, 6%) !important;
+    display: flex !important;
+    flex: 1 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 0 !important;
+    }
+    .bubble-sub-button {
+    container-type: inline-size;
+    box-sizing: border-box !important;
+    aspect-ratio: 1 / 1 !important;
+    flex: 1 1 0 !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-width: 100cqh !important;
+    max-height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    border-radius: var(--bql-radius, 50%) !important;
+    margin: 0 !important;
+    padding: 2cqi !important;
+    position: relative !important;
+    overflow: visible !important;
+    }
+    .bubble-sub-button-icon {
+    --mdc-icon-size: var(--bql-icon-size, 46cqi) !important;
+    margin: 0 !important;
+    }
+    .bubble-sub-button::after {
+    content: '';
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: var(--bql-radius, 50%) !important;
+    pointer-events: none;
+    background: radial-gradient(circle at var(--bc-pos, 50% 0%), var(--bc-start) -200%, transparent 60%);
+    }
+    .bubble-sub-button-name-container {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    width: calc(100% + var(--bql-gap, 6%)) !important;
+    justify-content: center !important;
+    pointer-events: none !important;
+    line-height: 14px !important;
+    }
+    .bubble-sub-button .bubble-name,
+    .bubble-sub-button .bubble-state {
+    font-size: calc(var(--bql-icon-size, 46cqi) * 0.35) !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    }
+    ${(() => { if (!(window.__bqlRun && window.__bqlRun.buildId === '1786711700911')) { (()=>{"use strict";const n={circle:"50%",rounded:"var(--custom-border-radius, 16px)",square:"0px"};function e(n,e){if("string"==typeof n&&""===n.trim())return e;const r="string"==typeof n?Number(n):n;return"number"==typeof r&&Number.isFinite(r)?r:e}window.__bqlRun={buildId:"1786711700911",fn:function(r){return function(n){const e=n.hideNames?"0px":`${n.textSpace}px`;let r=`\n    .bubble-container {\n      --bql-unit: ${t=n.square,t?"1%":"calc(calc(var(--row-height, 56px) * var(--row-size, 1) + var(--row-gap, 8px) * (var(--row-size, 1) - 1)) / 100)"};\n      --bql-gap: calc(${n.buttonGap} * var(--bql-unit));\n      --bql-padding: calc(${n.cardPadding} * var(--bql-unit));\n      --bql-icon-size: ${n.iconSize}cqi;\n      --bql-radius: ${n.radius};\n      --bql-name-space: ${e};\n    }\n  `;var t;return n.square&&(r+="\n      .bubble-container {\n        aspect-ratio: 1 / 1 !important;\n        height: 100% !important;\n      }\n    "),n.hideCardBackground&&(r+="\n      .bubble-container,\n      .bubble-container::before,\n      .bubble-wrapper::after {\n        background: transparent !important;\n        box-shadow: none !important;\n        border: none !important;\n      }\n    "),n.hideHighlights&&(r+="\n      .bubble-sub-button::after {\n        display: none !important;\n      }\n    "),n.hideNames&&(r+="\n      .bubble-sub-button-name-container {\n        display: none !important;\n      }\n    "),r}(function(r){const t=function(n){const e=n?.bubble_quick_launcher;if(e)return e;const r=n?.modules;if(Array.isArray(r)){const n=r.find(n=>n&&"object"==typeof n&&n.bubble_quick_launcher);if(n)return n.bubble_quick_launcher}return{}}(r)||{};return{square:"regular"!==t.card_layout,hideCardBackground:!0===t.hide_card_background,hideHighlights:!0===t.hide_button_highlights,hideNames:!1!==t.hide_button_names,radius:n[t.button_shape]||n.circle,buttonGap:e(t.button_gap,6),cardPadding:e(t.card_padding,6),iconSize:e(t.icon_size,46),textSpace:e(t.text_space,28)}}(r?.config))}}})();; } try { return window.__bqlRun.fn(this); } catch (e) { console.error('Bubble Quick Launcher: style build failed', e); return ''; } })()}

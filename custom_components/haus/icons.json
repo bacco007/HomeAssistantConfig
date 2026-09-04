@@ -1,0 +1,18 @@
+{
+  "entity": {
+    "sensor": {
+      "score": {
+        "default": "mdi:home-analytics"
+      },
+      "usage": {
+        "default": "mdi:flash"
+      },
+      "diversity": {
+        "default": "mdi:shape-outline"
+      },
+      "users": {
+        "default": "mdi:account-group"
+      }
+    }
+  }
+}

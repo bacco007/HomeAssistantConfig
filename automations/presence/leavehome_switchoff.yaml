@@ -2,29 +2,30 @@
 id: c23a62bc-023c-4235-bf6d-bf768bd81006
 alias: "[Presence] Leave Home > Switch Off"
 description: ""
-trigger:
-  - platform: zone
-    entity_id: person.thomas_baxter
+mode: single
+triggers:
+  - entity_id: person.thomas_baxter
     zone: zone.home
     event: leave
-condition: []
-action:
-  - service: light.turn_off
-    metadata: {}
+    trigger: zone
+conditions: []
+actions:
+  - metadata: {}
     data:
       transition: 20
     target:
       device_id:
-        - 126e91428c97177372f5ef7398eb537e
-        - 6623c3d12a6637f37fab2c6e24c41afc
-  - service: media_player.media_stop
-    metadata: {}
+        - 0c04d9c50880394d109ed86d4c310ce8
+        - f52ffba24d8182f49f07691f01dfe4e3
+    action: light.turn_off
+  - metadata: {}
     data: {}
     target:
       device_id:
-        - 74e08bc2098b8b7eacd3efdba5af32f3
-        - 68de45dcbb7f4a3ea545c62e767c7c8b
+        - aa3be5ddca6830d6e2b6da0034e9dc26
+        - 0bb70e226c5f0cceb3dea367124ad9c4
+        - f3f0be3bd8988478f24e471734e5622e
       entity_id:
         - media_player.homepod_mini_bedroom_left
         - media_player.homepod_mini_bedroom_right
-mode: single
+    action: media_player.media_stop

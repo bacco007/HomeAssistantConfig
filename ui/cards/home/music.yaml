@@ -228,38 +228,34 @@ cards:
   - square: false
     type: grid
     cards:
-      - type: custom:mushroom-legacy-template-card
-        primary: Top Track (This Week)
-        secondary: |-
-          {{ state_attr('sensor.lastfm_user_weeklytrackchart','track')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name }}
-        icon: fab:lastfm
-        icon_color: red
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                # background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-              }
-      - type: custom:mushroom-legacy-template-card
-        primary: Top Track (This Month)
-        secondary: >-
-          {{ state_attr('sensor.lastfm_user_monthlytrackchart','track')[0].artist.name }} - {{state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].name }}
-        icon: fab:lastfm
-        icon_color: red
-        card_mod:
-          style:
-            .: |
-              ha-card {
-                # background-color: var(--background-color);
-                --icon-size: 40px;
-                --icon-symbol-size: 30px;
-                --card-secondary-font-size: 10px;
-                --card-primary-font-size: 12px;
-              }
+    - type: custom:bubble-card
+      card_type: button
+      button_type: state
+      entity: sensor.lastfm_user_weeklytrackchart
+      icon: fab:lastfm
+      name: Top Track (This Week)
+      styles: |-
+        .bubble-button-card-container {
+          background-color: rgba(240,49,39 ,0.15) !important;
+        }
+        .bubble-icon {
+          color: rgb(240,49,39) !important;
+          opacity: 1 !important;
+        }
+    - type: custom:bubble-card
+      card_type: button
+      button_type: state
+      entity: sensor.lastfm_user_monthlytrackchart
+      icon: fab:lastfm
+      name: Top Track (This Month)
+      styles: |-
+        .bubble-button-card-container {
+          background-color: rgba(240,49,39 ,0.15) !important;
+        }
+        .bubble-icon {
+          color: rgb(240,49,39) !important;
+          opacity: 1 !important;
+        }
     columns: 2
   - type: custom:decluttering-card
     template: bubble_entity_graph

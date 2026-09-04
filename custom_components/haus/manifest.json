@@ -1,0 +1,21 @@
+{
+  "domain": "haus",
+  "name": "HAUS - Home Assistant Usage Score",
+  "after_dependencies": [
+    "lovelace"
+  ],
+  "codeowners": [
+    "@merlijntishauser"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "http"
+  ],
+  "documentation": "https://github.com/merlijntishauser/ha-usage-score",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/merlijntishauser/ha-usage-score/issues",
+  "quality_scale": "gold",
+  "requirements": [],
+  "version": "0.5.1"
+}

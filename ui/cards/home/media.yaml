@@ -22,7 +22,7 @@ cards:
       - type: custom:bubble-card
         card_type: button
         button_type: state
-        entity: sensor.frontpage_sonarr_upcoming_count
+        entity: sensor.sonarr_upcoming_media
         show_state: true
         show_attribute: false
         name: Upcoming TV Shows
@@ -38,7 +38,7 @@ cards:
       - type: custom:bubble-card
         card_type: button
         button_type: state
-        entity: sensor.frontpage_radarr_upcoming_count
+        entity: sensor.radarr_upcoming_media_2
         show_state: true
         show_attribute: false
         name: Upcoming Movies

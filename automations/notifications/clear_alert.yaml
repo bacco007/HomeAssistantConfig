@@ -7,8 +7,8 @@ trigger:
   - platform: state
     id: mobile
     entity_id:
-      - alert.weatherflow_cloud
-      - alert.weatherflow_local
+      # - alert.weatherflow_cloud
+      # - alert.weatherflow_local
       - alert.zigbee_network
       - alert.test_alert
     to:

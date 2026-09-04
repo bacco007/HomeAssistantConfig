@@ -17,7 +17,7 @@ from .const import (
     MAX_DETAILS,
     SUPPORTED_SCHEMA,
 )
-from .rules_engine import is_future, parse_version
+from .rules_engine import is_future, parse_version, search_term
 
 # describe_when and release_estimated_date are re-exported: the repairs card
 # and the tests reach them through this module.
@@ -208,8 +208,9 @@ def build_report(
                         "repository": (entry or {}).get("full_name", ""),
                         "repo_url": (entry or {}).get("repo_url", ""),
                         # The deprecated symbol is the search term that finds an
-                        # existing report; a vague word like "deprecated" does not.
-                        "symbol": rule.get("symbol", ""),
+                        # existing report; a vague word like "deprecated" does not,
+                        # and neither does `StateVacuumEntity.battery_level` whole.
+                        "symbol": search_term(rule.get("symbol", "")),
                         # source_url is a real link; source can be a bare
                         # "file.py:418" reference for core-derived rules.
                         "learn_more": (

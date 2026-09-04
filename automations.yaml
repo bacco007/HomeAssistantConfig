@@ -68,8 +68,8 @@
         metadata: {}
         target:
           device_id:
-          - 6623c3d12a6637f37fab2c6e24c41afc
-          - 126e91428c97177372f5ef7398eb537e
+          - 0c04d9c50880394d109ed86d4c310ce8
+          - f52ffba24d8182f49f07691f01dfe4e3
         data: {}
       - action: media_player.media_stop
         metadata: {}
@@ -82,5 +82,26 @@
       - action: light.turn_on
         metadata: {}
         target:
-          device_id: 126e91428c97177372f5ef7398eb537e
+          device_id: f52ffba24d8182f49f07691f01dfe4e3
         data: {}
+- id: sonos_favourites_play_from_webhook
+  alias: '[Sonos Favourites] Play Favourite From Webhook'
+  description: ''
+  triggers:
+  - webhook_id: sonos_play_favourite
+    allowed_methods:
+    - POST
+    - PUT
+    local_only: true
+    trigger: webhook
+  actions:
+  - variables:
+      favourite: '{{ trigger.json.favourite | default(trigger.data.favourite, true)
+        }}'
+      player: '{{ trigger.json.player | default(trigger.data.player, true) | default(''media_player.office_sonos'',
+        true) }}'
+  - action: script.sonos_favourites_play_favourite
+    data:
+      favourite: '{{ favourite }}'
+      player: '{{ player }}'
+  mode: queued

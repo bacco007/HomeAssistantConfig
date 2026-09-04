@@ -4,5 +4,5 @@ migration:
     entity_count: 2
     yaml_count: 0
     written_count: 0
-  migrated_at: '2026-02-07T07:21:26.579Z'
+  migrated_at: '2026-08-01T09:08:41.917Z'
   version: 1

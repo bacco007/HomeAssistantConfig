@@ -1,0 +1,64 @@
+---
+trigger:
+  - trigger: state
+    entity_id: sensor.nswaq_air_quality_raw
+sensor:
+  - name: "nswaq_air_quality"
+    unique_id: nswaq_air_quality
+    state: >-
+      {% set raw = states('sensor.nswaq_air_quality_raw') %}
+      {% if raw not in ['no_data', 'unknown', 'unavailable', ''] %}
+        {% set data = raw | from_json %}
+        available
+      {% else %}
+        no_data
+      {% endif %}
+    attributes:
+      category: >-
+        {% set raw = states('sensor.nswaq_air_quality_raw') %}
+        {{ (raw | from_json).get('category') if raw not in ['no_data', 'unknown', 'unavailable', ''] else none }}
+      pollutant: >-
+        {% set raw = states('sensor.nswaq_air_quality_raw') %}
+        {% set desc = (raw | from_json).get('pollutant') if raw not in ['no_data', 'unknown', 'unavailable', ''] else none %}
+        {% if desc is none %}
+          {{ none }}
+        {% else %}
+          {% if '<10' in desc %}
+            PM10
+          {% elif '<2.5' in desc %}
+            PM2.5
+          {% elif 'Ozone' in desc %}
+            Ozone
+          {% elif 'Nitrogen Dioxide' in desc %}
+            NO2
+          {% elif 'Sulfur' in desc or 'Sulphur' in desc %}
+            SO2
+          {% elif 'Carbon Monoxide' in desc %}
+            CO
+          {% else %}
+            {{ desc }}
+          {% endif %}
+        {% endif %}
+      value: >-
+        {% set raw = states('sensor.nswaq_air_quality_raw') %}
+        {{ (raw | from_json).get('value') if raw not in ['no_data', 'unknown', 'unavailable', ''] else none }}
+      units: >-
+        {% set raw = states('sensor.nswaq_air_quality_raw') %}
+        {{ (raw | from_json).get('units') if raw not in ['no_data', 'unknown', 'unavailable', ''] else none }}
+
+  - name: "nswaq_air_quality_last_good_reading"
+    unique_id: nswaq_air_quality_last_good_reading
+    # Sticky timestamp: stamps now() whenever real category data is
+    # present, otherwise holds its previous value (same self-referencing
+    # this.state pattern as the free-window baseline trackers in
+    # packages/sensors_template.yaml). Starts 'unknown' until the first
+    # ever successful reading. Used only to detect a SUSTAINED (7+ day)
+    # outage in scripts.yaml's dash4_box3_tap - a short outage still
+    # shows "API Offline" via packages/dash4_weather_card.yaml's readings
+    # entry, it doesn't need this timestamp at all.
+    state: >-
+      {% if state_attr('sensor.nswaq_air_quality', 'category') is not none %}
+        {{ now().isoformat() }}
+      {% else %}
+        {{ this.state }}
+      {% endif %}

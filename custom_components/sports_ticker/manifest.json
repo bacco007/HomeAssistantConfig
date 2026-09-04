@@ -3,10 +3,11 @@
   "name": "Sports Ticker",
   "codeowners": ["@LiquidFXX"],
   "config_flow": true,
+  "dependencies": ["frontend", "http"],
   "documentation": "https://github.com/LiquidFXX/sports-ticker",
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/LiquidFXX/sports-ticker/issues",
   "requirements": [],
-  "version": "0.20.1"
+  "version": "0.20.3"
 }

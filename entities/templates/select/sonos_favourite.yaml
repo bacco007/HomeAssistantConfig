@@ -1,0 +1,16 @@
+---
+select:
+  - name: Sonos Favourite
+    unique_id: sonos_favourite
+    state: "{{ states('input_text.sonos_playlist_playing') }}"
+    options: >
+      {{
+        (state_attr('sensor.sonos_favorites', 'items') or {})
+        .values()
+        | list
+        | sort
+      }}
+    select_option:
+      - service: script.sonos_favourites_play_favourite
+        data:
+          favourite: "{{ option }}"

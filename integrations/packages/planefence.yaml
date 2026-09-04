@@ -1,0 +1,1701 @@
+---
+###############################################################################
+# PlaneFence / Plane-Alert Insights
+#
+# PlaneFence:
+#   Broad local airspace activity
+#
+# Plane-Alert:
+#   Aircraft matching Plane-Alert criteria
+#
+# API:
+#   /cgi/insights.sh?mode=planefence&date=today&days=14
+#   /cgi/insights.sh?mode=plane-alert&date=today&days=14
+###############################################################################
+
+###############################################################################
+# REST DATA
+#
+# The full useful API structures are retained here for dashboards and
+# additional template sensors.
+###############################################################################
+
+rest:
+  ###########################################################################
+  # PlaneFence Insights
+  ###########################################################################
+
+  - resource: "http://192.168.1.132:8083/cgi/insights.sh?mode=planefence&date=today&days=14"
+    scan_interval: 300
+    timeout: 30
+
+    sensor:
+      - name: "PlaneFence Insights Data"
+        unique_id: planefence_insights_data
+        icon: mdi:radar
+
+        value_template: >
+          {{ value_json.selected.total | default(0) }}
+
+        json_attributes:
+          - mode
+          - generated_utc
+          - history_days
+          - selected_date
+          - selected
+          - baselines
+          - anomalies
+          - enhancements
+          - dates_available
+          - series
+          - rollups
+          - time_context
+
+  ###########################################################################
+  # Plane-Alert Insights
+  ###########################################################################
+
+  - resource: "http://192.168.1.132:8083/cgi/insights.sh?mode=plane-alert&date=today&days=14"
+    scan_interval: 300
+    timeout: 30
+
+    sensor:
+      - name: "Plane-Alert Insights Data"
+        unique_id: plane_alert_insights_data
+        icon: mdi:airplane-alert
+
+        value_template: >
+          {{ value_json.selected.total | default(0) }}
+
+        json_attributes:
+          - mode
+          - generated_utc
+          - history_days
+          - selected_date
+          - selected
+          - baselines
+          - anomalies
+          - enhancements
+          - dates_available
+          - series
+          - rollups
+          - time_context
+
+###############################################################################
+# TEMPLATE SENSORS
+###############################################################################
+
+template:
+  ###########################################################################
+  # PLANEFENCE
+  ###########################################################################
+
+  - sensor:
+      #######################################################################
+      # Activity Today
+      #######################################################################
+
+      - name: "PlaneFence Activity Today"
+        unique_id: planefence_activity_today
+        icon: mdi:airplane-marker
+
+        state: >
+          {% set selected =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{ selected.get('total', 0) }}
+
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          partial_day: >
+            {% set baselines =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{ baselines.get('selected_is_today_partial', false) }}
+
+          cutoff: >
+            {% set baselines =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{ baselines.get('selected_cutoff_hms_tz') }}
+
+          selected_date: >
+            {{
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected_date'
+              )
+            }}
+
+          categories: >
+            {% set selected =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ selected.get('categories', {}) }}
+
+          shares: >
+            {% set selected =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ selected.get('shares', {}) }}
+
+      #######################################################################
+      # Expected Activity By Now
+      #
+      # Median historical total_cutoff, excluding selected date.
+      #######################################################################
+
+      - name: "PlaneFence Expected By Now"
+        unique_id: planefence_expected_by_now
+        icon: mdi:chart-bell-curve
+
+        state: >
+          {% set series =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'series'
+            )
+            | default([], true)
+          %}
+
+          {% set selected_date =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected_date'
+            )
+          %}
+
+          {% set ns = namespace(values=[]) %}
+
+          {% for day in series %}
+            {% if
+              day.date != selected_date
+              and day.total_cutoff is defined
+            %}
+              {% set ns.values =
+                ns.values + [day.total_cutoff | float(0)]
+              %}
+            {% endif %}
+          {% endfor %}
+
+          {{
+            ns.values
+            | median(default=0)
+            | round(1)
+          }}
+
+        attributes:
+          samples: >
+            {% set series =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'series'
+              )
+              | default([], true)
+            %}
+
+            {% set selected_date =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected_date'
+              )
+            %}
+
+            {{
+              series
+              | rejectattr('date', 'eq', selected_date)
+              | map(attribute='total_cutoff')
+              | list
+            }}
+
+      #######################################################################
+      # Activity vs Expected By Now
+      #######################################################################
+
+      - name: "PlaneFence Activity vs Expected"
+        unique_id: planefence_activity_vs_expected
+        icon: mdi:chart-line-variant
+        unit_of_measurement: "%"
+
+        state: >
+          {% set actual =
+            states('sensor.planefence_activity_today')
+            | float(0)
+          %}
+
+          {% set expected =
+            states('sensor.planefence_expected_by_now')
+            | float(0)
+          %}
+
+          {% if expected > 0 %}
+            {{
+              (
+                (
+                  actual - expected
+                ) / expected * 100
+              )
+              | round(1)
+            }}
+          {% else %}
+            0
+          {% endif %}
+
+      #######################################################################
+      # Full-Day Baselines
+      #######################################################################
+
+      - name: "PlaneFence 7 Day Baseline"
+        unique_id: planefence_7_day_baseline
+        icon: mdi:calendar-week
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'baselines'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('previous_7d_median_total', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+      - name: "PlaneFence 28 Day Baseline"
+        unique_id: planefence_28_day_baseline
+        icon: mdi:calendar-month
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'baselines'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('previous_28d_median_total', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+      #######################################################################
+      # Categories
+      #######################################################################
+
+      - name: "PlaneFence Military Today"
+        unique_id: planefence_military_today
+        icon: mdi:airplane-cog
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('categories', {}).get('military', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('shares', {}).get('military', 0) }}
+
+          baseline_share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('previous_7d_category_shares', {})
+              .get('military', 0)
+            }}
+
+      - name: "PlaneFence Airline Today"
+        unique_id: planefence_airline_today
+        icon: mdi:airplane
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('categories', {}).get('airline', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('shares', {}).get('airline', 0) }}
+
+          baseline_share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('previous_7d_category_shares', {})
+              .get('airline', 0)
+            }}
+
+      - name: "PlaneFence General Aviation Today"
+        unique_id: planefence_general_aviation_today
+        icon: mdi:airplane-plus
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('categories', {})
+            .get('general_aviation', 0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('shares', {})
+              .get('general_aviation', 0)
+            }}
+
+          baseline_share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('previous_7d_category_shares', {})
+              .get('general_aviation', 0)
+            }}
+
+      - name: "PlaneFence Private Jet Today"
+        unique_id: planefence_private_jet_today
+        icon: mdi:airplane-clock
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('categories', {})
+            .get('private_jet', 0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('shares', {})
+              .get('private_jet', 0)
+            }}
+
+      - name: "PlaneFence Government Today"
+        unique_id: planefence_government_today
+        icon: mdi:airplane-shield
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('categories', {})
+            .get('government', 0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+      - name: "PlaneFence Other Today"
+        unique_id: planefence_other_today
+        icon: mdi:airplane-question
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('categories', {}).get('other', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          share: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('shares', {}).get('other', 0) }}
+
+      #######################################################################
+      # Aircraft Family Mix
+      #######################################################################
+
+      - name: "PlaneFence Aircraft Mix"
+        unique_id: planefence_aircraft_mix
+        icon: mdi:airplane-search
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+
+          {{
+            data.get('type_families', {}).values()
+            | map('int')
+            | sum
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          jet: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('type_families', {}).get('jet', 0) }}
+
+          turboprop: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('type_families', {}).get('turboprop', 0) }}
+
+          piston: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('type_families', {}).get('piston', 0) }}
+
+          rotorcraft: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('type_families', {}).get('rotorcraft', 0) }}
+
+          uav: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('type_families', {}).get('uav', 0) }}
+
+          other: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('type_families', {}).get('other', 0) }}
+
+          baseline: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('family_trends', {})
+              .get('baseline_daily_median', {})
+            }}
+
+      #######################################################################
+      # Military Mix
+      #######################################################################
+
+      - name: "PlaneFence Military Mix"
+        unique_id: planefence_military_mix
+        icon: mdi:shield-airplane
+
+        state: >
+          {{ states('sensor.planefence_military_today') }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          types: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('military_types', {}) }}
+
+          shares: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('military_type_shares', {}) }}
+
+          baseline_types: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('previous_7d_military_types', {}) }}
+
+      #######################################################################
+      # Peak Hour
+      #######################################################################
+
+      - name: "PlaneFence Peak Hour"
+        unique_id: planefence_peak_hour
+        icon: mdi:clock-alert-outline
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+
+          {% set hour =
+            data
+            .get('outliers', {})
+            .get('peak_hour_tz')
+          %}
+
+          {% if hour is number %}
+            {{ '%02d:00' | format(hour | int) }}
+          {% else %}
+            unknown
+          {% endif %}
+
+        attributes:
+          count: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('outliers', {})
+              .get('peak_hour_count', 0)
+            }}
+
+          baseline: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('outliers', {})
+              .get('peak_hour_baseline_median', 0)
+            }}
+
+      - name: "PlaneFence Peak Hour Count"
+        unique_id: planefence_peak_hour_count
+        icon: mdi:airplane-clock
+
+        state: >
+          {{
+            state_attr(
+              'sensor.planefence_peak_hour',
+              'count'
+            )
+            | int(0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+      #######################################################################
+      # New Aircraft
+      #######################################################################
+
+      - name: "PlaneFence New Aircraft Today"
+        unique_id: planefence_new_aircraft_today
+        icon: mdi:airplane-plus
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('new_aircraft', {})
+            .get('count', 0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          percentage: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('new_aircraft', {})
+              .get('pct_of_daily_total', 0)
+            }}
+
+          aircraft: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('new_aircraft', {})
+              .get('list', [])
+            }}
+
+      - name: "PlaneFence Unique Aircraft Today"
+        unique_id: planefence_unique_aircraft_today
+        icon: mdi:airplane-check
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('new_aircraft', {})
+            .get('selected_unique_icao_count', 0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+      #######################################################################
+      # Classification Confidence
+      #######################################################################
+
+      - name: "PlaneFence Classification Confidence"
+        unique_id: planefence_classification_confidence
+        icon: mdi:check-decagram-outline
+        unit_of_measurement: "%"
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('confidence', {})
+            .get('score', 0)
+          }}
+
+        attributes:
+          band: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('confidence', {})
+              .get('band', 'unknown')
+            }}
+
+          counts: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('confidence', {})
+              .get('counts', {})
+            }}
+
+      #######################################################################
+      # Current Week
+      #######################################################################
+
+      - name: "PlaneFence Weekly Activity"
+        unique_id: planefence_weekly_activity
+        icon: mdi:calendar-week
+
+        state: >
+          {% set rollups =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'rollups'
+            )
+            | default({}, true)
+          %}
+
+          {% set weeks =
+            rollups.get('weekly', [])
+          %}
+
+          {% if weeks | count > 0 %}
+            {{ (weeks | last).total }}
+          {% else %}
+            0
+          {% endif %}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          period: >
+            {% set rollups =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'rollups'
+              )
+              | default({}, true)
+            %}
+            {% set weeks = rollups.get('weekly', []) %}
+            {{
+              (weeks | last).key
+              if weeks | count > 0
+              else none
+            }}
+
+          categories: >
+            {% set rollups =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'rollups'
+              )
+              | default({}, true)
+            %}
+            {% set weeks = rollups.get('weekly', []) %}
+            {{ (weeks | last) if weeks | count > 0 else {} }}
+
+      #######################################################################
+      # Current Month
+      #######################################################################
+
+      - name: "PlaneFence Monthly Activity"
+        unique_id: planefence_monthly_activity
+        icon: mdi:calendar-month
+
+        state: >
+          {% set rollups =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'rollups'
+            )
+            | default({}, true)
+          %}
+
+          {% set months =
+            rollups.get('monthly', [])
+          %}
+
+          {% if months | count > 0 %}
+            {{ (months | last).total }}
+          {% else %}
+            0
+          {% endif %}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          period: >
+            {% set rollups =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'rollups'
+              )
+              | default({}, true)
+            %}
+            {% set months = rollups.get('monthly', []) %}
+            {{
+              (months | last).key
+              if months | count > 0
+              else none
+            }}
+
+          categories: >
+            {% set rollups =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'rollups'
+              )
+              | default({}, true)
+            %}
+            {% set months = rollups.get('monthly', []) %}
+            {{ (months | last) if months | count > 0 else {} }}
+
+  ###########################################################################
+  # PLANEFENCE BINARY SENSORS
+  ###########################################################################
+
+  - binary_sensor:
+      - name: "PlaneFence Activity Anomaly"
+        unique_id: planefence_activity_anomaly
+        icon: mdi:chart-bell-curve-cumulative
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'anomalies'
+            )
+            | default({}, true)
+          %}
+
+          {% set severity =
+            data
+            .get('total', {})
+            .get('severity', '')
+            | lower
+          %}
+
+          {{ severity in ['medium', 'high', 'critical'] }}
+
+        attributes:
+          severity: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('total', {})
+              .get('severity')
+            }}
+
+          actual: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('actual') }}
+
+          baseline: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('baseline') }}
+
+          delta_pct: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('delta_pct') }}
+
+          z_robust: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('z_robust') }}
+
+      - name: "PlaneFence Active Alert"
+        unique_id: planefence_active_alert
+        icon: mdi:airplane-alert
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.planefence_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+
+          {{
+            data
+            .get('alerts', {})
+            .get('active', [])
+            | count > 0
+          }}
+
+        attributes:
+          alerts: >
+            {% set data =
+              state_attr(
+                'sensor.planefence_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+
+            {{
+              data
+              .get('alerts', {})
+              .get('active', [])
+            }}
+
+  ###########################################################################
+  # PLANE-ALERT
+  ###########################################################################
+
+  - sensor:
+      #######################################################################
+      # Alerts Today
+      #######################################################################
+
+      - name: "Plane-Alert Today"
+        unique_id: plane_alert_today
+        icon: mdi:airplane-alert
+
+        state: >
+          {% set selected =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{ selected.get('total', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          partial_day: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('selected_is_today_partial', false) }}
+
+          cutoff: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'baselines'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('selected_cutoff_hms_tz') }}
+
+          categories: >
+            {% set selected =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ selected.get('categories', {}) }}
+
+          shares: >
+            {% set selected =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'selected'
+              )
+              | default({}, true)
+            %}
+            {{ selected.get('shares', {}) }}
+
+      #######################################################################
+      # Expected Alerts By Now
+      #######################################################################
+
+      - name: "Plane-Alert Expected By Now"
+        unique_id: plane_alert_expected_by_now
+        icon: mdi:chart-bell-curve
+
+        state: >
+          {% set series =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'series'
+            )
+            | default([], true)
+          %}
+
+          {% set selected_date =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'selected_date'
+            )
+          %}
+
+          {% set ns = namespace(values=[]) %}
+
+          {% for day in series %}
+            {% if
+              day.date != selected_date
+              and day.total_cutoff is defined
+            %}
+              {% set ns.values =
+                ns.values + [day.total_cutoff | float(0)]
+              %}
+            {% endif %}
+          {% endfor %}
+
+          {{
+            ns.values
+            | median(default=0)
+            | round(1)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          samples: >
+            {% set series =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'series'
+              )
+              | default([], true)
+            %}
+
+            {% set selected_date =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'selected_date'
+              )
+            %}
+
+            {{
+              series
+              | rejectattr('date', 'eq', selected_date)
+              | map(attribute='total_cutoff')
+              | list
+            }}
+
+      #######################################################################
+      # Alert Activity vs Expected
+      #######################################################################
+
+      - name: "Plane-Alert Activity vs Expected"
+        unique_id: plane_alert_activity_vs_expected
+        icon: mdi:chart-line-variant
+        unit_of_measurement: "%"
+
+        state: >
+          {% set actual =
+            states('sensor.plane_alert_today')
+            | float(0)
+          %}
+
+          {% set expected =
+            states('sensor.plane_alert_expected_by_now')
+            | float(0)
+          %}
+
+          {% if expected > 0 %}
+            {{
+              (
+                (
+                  actual - expected
+                ) / expected * 100
+              )
+              | round(1)
+            }}
+          {% else %}
+            0
+          {% endif %}
+
+      #######################################################################
+      # Full Day Baselines
+      #######################################################################
+
+      - name: "Plane-Alert 7 Day Baseline"
+        unique_id: plane_alert_7_day_baseline
+        icon: mdi:calendar-week
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'baselines'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('previous_7d_median_total', 0) }}
+
+      - name: "Plane-Alert 28 Day Baseline"
+        unique_id: plane_alert_28_day_baseline
+        icon: mdi:calendar-month
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'baselines'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('previous_28d_median_total', 0) }}
+
+      #######################################################################
+      # Plane-Alert Categories
+      #######################################################################
+
+      - name: "Plane-Alert Military Today"
+        unique_id: plane_alert_military_today
+        icon: mdi:shield-airplane
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('categories', {}).get('military', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+      - name: "Plane-Alert Airline Today"
+        unique_id: plane_alert_airline_today
+        icon: mdi:airplane
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'selected'
+            )
+            | default({}, true)
+          %}
+          {{ data.get('categories', {}).get('airline', 0) }}
+        unit_of_measurement: 'Aircraft'
+
+      #######################################################################
+      # Plane-Alert New Aircraft
+      #######################################################################
+
+      - name: "Plane-Alert New Aircraft Today"
+        unique_id: plane_alert_new_aircraft_today
+        icon: mdi:airplane-plus
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('new_aircraft', {})
+            .get('count', 0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          percentage: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('new_aircraft', {})
+              .get('pct_of_daily_total', 0)
+            }}
+
+          aircraft: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('new_aircraft', {})
+              .get('list', [])
+            }}
+
+      - name: "Plane-Alert Unique Aircraft Today"
+        unique_id: plane_alert_unique_aircraft_today
+        icon: mdi:airplane-check
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('new_aircraft', {})
+            .get('selected_unique_icao_count', 0)
+          }}
+        unit_of_measurement: 'Aircraft'
+
+      #######################################################################
+      # Plane-Alert Peak Hour
+      #######################################################################
+
+      - name: "Plane-Alert Peak Hour"
+        unique_id: plane_alert_peak_hour
+        icon: mdi:clock-alert-outline
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+
+          {% set hour =
+            data
+            .get('outliers', {})
+            .get('peak_hour_tz')
+          %}
+
+          {% if hour is number %}
+            {{ '%02d:00' | format(hour | int) }}
+          {% else %}
+            unknown
+          {% endif %}
+
+        attributes:
+          count: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('outliers', {})
+              .get('peak_hour_count', 0)
+            }}
+
+          baseline: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('outliers', {})
+              .get('peak_hour_baseline_median', 0)
+            }}
+
+      - name: "Plane-Alert Peak Hour Count"
+        unique_id: plane_alert_peak_hour_count
+        icon: mdi:airplane-clock
+
+        state: >
+          {{
+            state_attr(
+              'sensor.plane_alert_peak_hour',
+              'count'
+            )
+            | int(0)
+          }}
+
+      #######################################################################
+      # Plane-Alert Confidence
+      #######################################################################
+
+      - name: "Plane-Alert Classification Confidence"
+        unique_id: plane_alert_classification_confidence
+        icon: mdi:check-decagram-outline
+        unit_of_measurement: "%"
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+          {{
+            data
+            .get('confidence', {})
+            .get('score', 0)
+          }}
+
+        attributes:
+          band: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('confidence', {})
+              .get('band', 'unknown')
+            }}
+
+          counts: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+            {{
+              data
+              .get('confidence', {})
+              .get('counts', {})
+            }}
+
+      #######################################################################
+      # Plane-Alert Weekly Activity
+      #######################################################################
+
+      - name: "Plane-Alert Weekly Activity"
+        unique_id: plane_alert_weekly_activity
+        icon: mdi:calendar-week
+
+        state: >
+          {% set rollups =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'rollups'
+            )
+            | default({}, true)
+          %}
+
+          {% set weeks =
+            rollups.get('weekly', [])
+          %}
+
+          {{
+            (weeks | last).total
+            if weeks | count > 0
+            else 0
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          period: >
+            {% set rollups =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'rollups'
+              )
+              | default({}, true)
+            %}
+            {% set weeks = rollups.get('weekly', []) %}
+            {{
+              (weeks | last).key
+              if weeks | count > 0
+              else none
+            }}
+
+      #######################################################################
+      # Plane-Alert Monthly Activity
+      #######################################################################
+
+      - name: "Plane-Alert Monthly Activity"
+        unique_id: plane_alert_monthly_activity
+        icon: mdi:calendar-month
+
+        state: >
+          {% set rollups =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'rollups'
+            )
+            | default({}, true)
+          %}
+
+          {% set months =
+            rollups.get('monthly', [])
+          %}
+
+          {{
+            (months | last).total
+            if months | count > 0
+            else 0
+          }}
+        unit_of_measurement: 'Aircraft'
+
+        attributes:
+          period: >
+            {% set rollups =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'rollups'
+              )
+              | default({}, true)
+            %}
+            {% set months = rollups.get('monthly', []) %}
+            {{
+              (months | last).key
+              if months | count > 0
+              else none
+            }}
+
+  ###########################################################################
+  # PLANE-ALERT BINARY SENSORS
+  ###########################################################################
+
+  - binary_sensor:
+      - name: "Plane-Alert Activity Anomaly"
+        unique_id: plane_alert_activity_anomaly
+        icon: mdi:chart-bell-curve-cumulative
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'anomalies'
+            )
+            | default({}, true)
+          %}
+
+          {% set severity =
+            data
+            .get('total', {})
+            .get('severity', '')
+            | lower
+          %}
+
+          {{ severity in ['medium', 'high', 'critical'] }}
+
+        attributes:
+          severity: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('severity') }}
+
+          actual: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('actual') }}
+
+          baseline: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('baseline') }}
+
+          delta_pct: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('delta_pct') }}
+
+          z_robust: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'anomalies'
+              )
+              | default({}, true)
+            %}
+            {{ data.get('total', {}).get('z_robust') }}
+
+      - name: "Plane-Alert Active Alert"
+        unique_id: plane_alert_active_alert
+        icon: mdi:airplane-alert
+
+        state: >
+          {% set data =
+            state_attr(
+              'sensor.plane_alert_insights_data',
+              'enhancements'
+            )
+            | default({}, true)
+          %}
+
+          {{
+            data
+            .get('alerts', {})
+            .get('active', [])
+            | count > 0
+          }}
+
+        attributes:
+          alerts: >
+            {% set data =
+              state_attr(
+                'sensor.plane_alert_insights_data',
+                'enhancements'
+              )
+              | default({}, true)
+            %}
+
+            {{
+              data
+              .get('alerts', {})
+              .get('active', [])
+            }}

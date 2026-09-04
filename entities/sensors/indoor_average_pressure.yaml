@@ -1,7 +1,0 @@
----
-platform: average
-name: indoor_average_pressure
-unique_id: indoor_average_pressure
-entities:
-  - sensor.z2m_bedroom_climate_pressure
-  - sensor.z2m_lounge_climate_pressure

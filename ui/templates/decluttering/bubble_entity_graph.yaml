@@ -35,27 +35,41 @@ bubble_entity_graph:
             color: rgb([[colour_rgb]]) !important;
             opacity: 1 !important;
           }
-      - type: custom:mini-graph-card
+      - type: custom:statistics-graph-chart-card
+        card_shadow: false
+        card_border: false
+        show_grid: false
+        show_y_axis: false
+        show_y2_axis: false
+        show_x_axis: false
+        hours_to_show: "[[hours_to_show]]"
+        points_per_hour: "[[points_per_hour]]"
+        height: 50
+        x_grid_style: dashed
+        y_grid_style: dashed
+        state_layout: horizontal
+        group_by: hour
         entities:
           - entity: "[[entity]]"
-            name: "[[title]]"
+            line_width: "[[line_width]]"
+            name: " "
             color: "[[colour_hex]]"
-        height: 50
-        hours_to_show: "[[hours_to_show]]"
-        line_width: "[[line_width]]"
-        points_per_hour: "[[points_per_hour]]"
-        animate: true
-        show:
-          name: false
-          icon: false
-          state: false
-          legend: false
-          fill: fade
+            aggregate_func: last
+            points_per_hour: "[[points_per_hour]]"
+            number_format: dot
+            value_transform: "return x > 0 ? x : first"
+            state_adaptive_color: true
+            show_extrema: never
+            show_state: false
+            break_on_null: false
+            show_trend_icon: false
+        annotations: []
         card_mod:
           style: |
             ha-card {
               # background-color: var(--background-color) !important;
               border-radius: 5px;
               box-shadow: none;
-              padding-top: 5px !important;
+              padding: 0 !important;
             }
+

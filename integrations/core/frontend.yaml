@@ -2,6 +2,6 @@
 # https://www.home-assistant.io/integrations/frontend/
 frontend:
   extra_module_url:
-    - /hacsfiles/lovelace-card-mod/card-mod.js
-    - /hacsfiles/custom-brand-icons/custom-brand-icons.js
+    - /hacsfiles/lovelace-card-mod/card-mod.js?hacstag=190927524421
+    - /hacsfiles/custom-brand-icons/custom-brand-icons.js?hacstag=3668620312026085
   themes: !include_dir_merge_named /config/themes/

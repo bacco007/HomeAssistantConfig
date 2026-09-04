@@ -1,0 +1,44 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "HAUS",
+        "description": "Score how much of Home Assistant this instance actually uses."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "HAUS is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "HAUS options",
+        "data": {
+          "expose_per_user_detail": "Allow per-user activity detail",
+          "haghs_entity_id": "HAGHS score entity"
+        },
+        "data_description": {
+          "expose_per_user_detail": "Off by default. When on, an administrator can open the household detail card and see activity counts per account. These counts are never published as entity attributes, and nothing leaves this instance either way.",
+          "haghs_entity_id": "Where to read the hygiene pillar from. Leave it at the default unless you have renamed the HAGHS score sensor. If HAGHS is not installed, HAUS drops the hygiene pillar and renormalises the other three rather than scoring it zero."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "score": {
+        "name": "Score"
+      },
+      "usage": {
+        "name": "Usage"
+      },
+      "diversity": {
+        "name": "Diversity"
+      },
+      "users": {
+        "name": "Users"
+      }
+    }
+  }
+}

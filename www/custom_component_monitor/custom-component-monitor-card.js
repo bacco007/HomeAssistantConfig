@@ -2,9 +2,19 @@
  * Custom Component Monitor Card
  * A Lovelace card that displays unused HACS components.
  */
-var CARD_VERSION = "1.0.0";
+var CARD_VERSION = "1.14.0";
 
 var ALL_SECTIONS = ["integrations", "themes", "frontend"];
+
+// One source of truth for the card and its editor. The editor shows these as
+// the effective values but never stores them - see _ccmPrune.
+var CCM_DEFAULTS = {
+  title: "Custom Component Monitor",
+  sort: "name",
+  show: "unused",
+  sections: ALL_SECTIONS.slice(),
+  collapsed_by_default: false,
+};
 
 function _ccm_escapeHtml(text) {
   var el = document.createElement("span");
@@ -28,15 +38,21 @@ class CustomComponentMonitorCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return { title: "Custom Component Monitor", sort: "name", sections: ["integrations", "themes", "frontend"] };
+    // Deliberately empty: setConfig applies every default at read time. Baking
+    // them in froze an old title in everyone's dashboard once already, which is
+    // why _riu_migrateConfig exists on the sibling card.
+    return {};
   }
 
   setConfig(config) {
     this._config = Object.assign(
-      { title: "Custom Component Monitor", sort: "name", sections: ALL_SECTIONS.slice() },
+      { title: CCM_DEFAULTS.title, sort: CCM_DEFAULTS.sort, show: CCM_DEFAULTS.show,
+        sections: ALL_SECTIONS.slice(), collapsed_by_default: CCM_DEFAULTS.collapsed_by_default },
       config
     );
     this._sortMode = this._config.sort || "name";
+    // #41: which components to list - "unused" | "all" | "used".
+    this._showMode = ["unused", "all", "used"].indexOf(this._config.show) !== -1 ? this._config.show : "unused";
     this._lastDataJSON = "";
     if (this._hass) { this._render(); }
   }
@@ -109,16 +125,17 @@ class CustomComponentMonitorCard extends HTMLElement {
     if (!this._hass) { return; }
 
     var allComponents = this._getSensor("sensor.hacs_installed_components");
-    var totalInstalled = allComponents ? (allComponents.attributes.total_components || 0) : 0;
     var lastScan = allComponents ? (allComponents.attributes.last_scan || "") : "";
 
     var sections = this._getVisibleSections();
 
+    var totalInstalled = 0;
     var totalUnused = 0;
     var totalUsed = 0;
     for (var i = 0; i < sections.length; i++) {
       var s = sections[i];
       if (s.sensor) {
+        totalInstalled += (s.sensor.attributes.total_components || 0);
         totalUnused += parseInt(s.sensor.state, 10) || 0;
         totalUsed += (s.sensor.attributes.used_components || 0);
       }
@@ -140,7 +157,14 @@ class CustomComponentMonitorCard extends HTMLElement {
 
     var unusedColor = totalUnused > 0 ? "var(--red)" : "var(--green)";
     var footerHtml = lastScan ? "Last scan: " + this._formatTime(lastScan) : "";
-    var sortLabel = this._sortMode === "days" ? "days installed" : "name";
+    var sortIcon = this._sortMode === "days" ? "mdi:sort-calendar-descending" : "mdi:sort-alphabetical-ascending";
+    var sortTooltip = this._sortMode === "days"
+      ? "Sorted by days installed - click to sort by name"
+      : "Sorted by name - click to sort by days installed";
+
+    var showLabels = { unused: "Unused", all: "All", used: "Used" };
+    var showIcons = { unused: "mdi:eye-off-outline", all: "mdi:eye-outline", used: "mdi:eye-check-outline" };
+    var showTip = "Showing: " + showLabels[this._showMode] + " - click to cycle (Unused / All / Used)";
 
     this.shadowRoot.innerHTML = [
       "<style>",
@@ -154,8 +178,9 @@ class CustomComponentMonitorCard extends HTMLElement {
       "  --orange: var(--label-badge-yellow, #ff9800);",
       "}",
       "ha-card { padding: 16px; }",
-      ".header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }",
-      ".header .title { font-size:1.1em; font-weight:500; color:var(--primary); }",
+      ".header { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }",
+      ".header .title { font-size:1.1em; font-weight:500; color:var(--primary); flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }",
+      ".header-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }",
       ".badge { font-size:0.8em; padding:2px 8px; border-radius:12px; font-weight:500; color:#fff; }",
       ".badge.clean { background:var(--green); }",
       ".badge.warn { background:var(--orange); }",
@@ -165,8 +190,15 @@ class CustomComponentMonitorCard extends HTMLElement {
       ".stat { flex:1; min-width:70px; text-align:center; padding:8px 4px; border-radius:8px; background:var(--divider); }",
       ".stat .num { font-size:1.6em; font-weight:600; color:var(--primary); line-height:1.2; }",
       ".stat .label { font-size:0.75em; color:var(--secondary); margin-top:2px; }",
-      ".sort-toggle { font-size:0.75em; color:var(--accent); cursor:pointer; padding:4px 8px; border-radius:4px; white-space:nowrap; user-select:none; }",
+      ".sort-toggle { display:inline-flex; align-items:center; justify-content:center; color:var(--accent); cursor:pointer; padding:4px; border:none; background:none; border-radius:4px; user-select:none; flex-shrink:0; }",
       ".sort-toggle:hover { background:var(--divider); }",
+      ".sort-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }",
+      ".sort-toggle ha-icon { --mdc-icon-size:20px; }",
+      ".show-toggle { display:inline-flex; align-items:center; gap:4px; color:var(--accent); cursor:pointer; padding:4px 6px; border:none; background:none; border-radius:4px; user-select:none; flex-shrink:0; font-family:inherit; font-size:0.8em; }",
+      ".show-toggle:hover { background:var(--divider); }",
+      ".show-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }",
+      ".show-toggle ha-icon { --mdc-icon-size:18px; }",
+      ".show-label { font-size:0.95em; }",
       ".section { margin-bottom:12px; }",
       ".section-header { display:flex; align-items:center; gap:6px; padding:6px 0; font-weight:500; font-size:0.95em; color:var(--primary); cursor:pointer; user-select:none; }",
       ".section-header ha-icon { --mdc-icon-size:18px; color:var(--secondary); }",
@@ -179,6 +211,7 @@ class CustomComponentMonitorCard extends HTMLElement {
       ".item:last-child { border-bottom:none; }",
       ".dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }",
       ".dot.unused { background:var(--red); }",
+      ".dot.used { background:var(--green); }",
       ".item-info { flex:1; min-width:0; }",
       ".item-name { font-size:0.9em; color:var(--primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }",
       ".item-detail { font-size:0.75em; color:var(--secondary); }",
@@ -190,7 +223,11 @@ class CustomComponentMonitorCard extends HTMLElement {
       "<ha-card>",
       '  <div class="header">',
       '    <span class="title">' + _ccm_escapeHtml(this._config.title) + "</span>",
-      "    " + badgeHtml,
+      '    <div class="header-right">',
+      '      <button type="button" class="show-toggle" title="' + showTip + '" aria-label="' + showTip + '"><ha-icon icon="' + showIcons[this._showMode] + '"></ha-icon><span class="show-label">' + showLabels[this._showMode] + "</span></button>",
+      '      <button type="button" class="sort-toggle" title="' + sortTooltip + '" aria-label="' + sortTooltip + '"><ha-icon icon="' + sortIcon + '"></ha-icon></button>',
+      "      " + badgeHtml,
+      "    </div>",
       "  </div>",
       '  <div class="toolbar">',
       '    <div class="summary">',
@@ -198,7 +235,6 @@ class CustomComponentMonitorCard extends HTMLElement {
       '      <div class="stat"><div class="num">' + totalUsed + '</div><div class="label">Used</div></div>',
       '      <div class="stat"><div class="num" style="color:' + unusedColor + '">' + totalUnused + '</div><div class="label">Unused</div></div>',
       "    </div>",
-      '    <span class="sort-toggle" title="Click to change sort order">Sort: ' + sortLabel + "</span>",
       "  </div>",
       sectionsHtml,
       '  <div class="footer">' + footerHtml + "</div>",
@@ -234,6 +270,46 @@ class CustomComponentMonitorCard extends HTMLElement {
         self._render();
       });
     }
+
+    var showBtn = this.shadowRoot.querySelector(".show-toggle");
+    if (showBtn) {
+      showBtn.addEventListener("click", function() {
+        var order = ["unused", "all", "used"];
+        self._showMode = order[(order.indexOf(self._showMode) + 1) % order.length];
+        self._lastDataJSON = "";
+        self._render();
+      });
+    }
+  }
+
+  _sectionItems(section) {
+    // Items to display for this section per _showMode, each tagged _unused (#41).
+    var sensor = section.sensor;
+    var unused = (sensor && sensor.attributes.unused_components) || [];
+    var unusedByName = {};
+    for (var u = 0; u < unused.length; u++) {
+      unusedByName[(unused[u].name || "").toLowerCase()] = unused[u];
+    }
+    if (this._showMode === "unused") {
+      return unused.map(function(it) { var c = Object.assign({}, it); c._unused = true; return c; });
+    }
+    // "all" / "used": source from the full installed-components sensor, by type.
+    var allSensor = this._getSensor("sensor.hacs_installed_components");
+    var allComps = (allSensor && allSensor.attributes.components) || [];
+    var typeFor = { integrations: "Integration", themes: "Theme", frontend: "Frontend / Card" }[section.key];
+    var items = [];
+    for (var i = 0; i < allComps.length; i++) {
+      var c = allComps[i];
+      if (c.type !== typeFor) { continue; }
+      var key = (c.name || "").toLowerCase();
+      var isUnused = unusedByName.hasOwnProperty(key);
+      if (this._showMode === "used" && isUnused) { continue; }
+      var item = Object.assign({}, c);
+      if (isUnused) { item = Object.assign(item, unusedByName[key]); }
+      item._unused = isUnused;
+      items.push(item);
+    }
+    return items;
   }
 
   _renderSection(section) {
@@ -251,27 +327,33 @@ class CustomComponentMonitorCard extends HTMLElement {
     }
 
     var attrs = sensor.attributes;
-    var unused = attrs.unused_components || [];
     var total = attrs.total_components || 0;
     var unusedCount = parseInt(sensor.state, 10) || 0;
+
+    var sorted = this._sortItems(this._sectionItems(section));
 
     var isOpen;
     if (this._collapsed.hasOwnProperty(section.key)) {
       isOpen = !this._collapsed[section.key];
+    } else if (this._config.collapsed_by_default) {
+      isOpen = false;
     } else {
-      isOpen = unusedCount > 0;
+      isOpen = (this._showMode === "unused") ? unusedCount > 0 : sorted.length > 0;
     }
     var openClass = isOpen ? " open" : "";
 
-    var sorted = this._sortItems(unused);
     var itemsHtml = "";
     if (sorted.length === 0) {
-      itemsHtml = '<div class="empty-msg">No unused items</div>';
+      itemsHtml = '<div class="empty-msg">' + (this._showMode === "unused" ? "No unused items" : "No items") + "</div>";
     } else {
       for (var i = 0; i < sorted.length; i++) {
         itemsHtml += this._renderItem(sorted[i], section.detailKey);
       }
     }
+
+    var counts = (this._showMode === "unused")
+      ? (unusedCount + " unused / " + total + " total")
+      : (sorted.length + " " + this._showMode + " / " + total + " total");
 
     return [
       '<div class="section">',
@@ -279,7 +361,7 @@ class CustomComponentMonitorCard extends HTMLElement {
       '    <span class="arrow' + openClass + '">&#9654;</span>',
       '    <ha-icon icon="' + section.icon + '"></ha-icon>',
       "    " + section.label,
-      '    <span class="counts">' + unusedCount + " unused / " + total + " total</span>",
+      '    <span class="counts">' + counts + "</span>",
       "  </div>",
       '  <div class="items' + openClass + '">',
       itemsHtml,
@@ -290,7 +372,11 @@ class CustomComponentMonitorCard extends HTMLElement {
 
   _renderItem(item, detailKey) {
     var days = item.days_installed;
-    var daysStr = (days != null && days >= 0) ? (days + "d installed") : "";
+    // "~" marks a date estimated from the files on disk rather than one the
+    // integration watched happen (components installed before v1.13.0).
+    var daysStr = (days != null && days >= 0)
+      ? ((item.install_date_estimated ? "~" : "") + days + "d installed")
+      : "";
     var detail = "";
     if (detailKey && item[detailKey] != null) {
       if (detailKey === "variants") {
@@ -307,7 +393,7 @@ class CustomComponentMonitorCard extends HTMLElement {
 
     return [
       '<div class="item">',
-      '  <span class="dot unused"></span>',
+      '  <span class="dot ' + (item._unused ? "unused" : "used") + '"></span>',
       '  <div class="item-info">',
       '    <div class="item-name">' + _ccm_escapeHtml(item.name || "Unknown") + "</div>",
       '    <div class="item-detail">' + _ccm_escapeHtml(detail) + sep1 + repoLink + versionStr + "</div>",
@@ -327,95 +413,184 @@ class CustomComponentMonitorCard extends HTMLElement {
   }
 }
 
-/* ---------- Config Editor ---------- */
-class CustomComponentMonitorCardEditor extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-    this._config = {};
-  }
+/* ---------- Config Editor ----------
+ *
+ * Built on ha-form rather than hand-rolled DOM. Two reasons, one visual and
+ * one structural. The editor renders inside Home Assistant's card dialog
+ * surrounded by Material fields, and raw <select>/<input> match neither them
+ * nor the active theme. And the re-render fault this file used to carry -
+ * _render() replacing the whole subtree on every setConfig(), which the dialog
+ * calls back after each config-changed, destroying the control being operated
+ * - cannot happen here: the form element is created once and thereafter only
+ * .hass, .schema and .data are assigned, so Lit patches in place.
+ *
+ * See docs/specs/card-editor-ha-form.md.
+ */
 
+var CCM_EDITOR_LABELS = {
+  title: "Card title (optional)",
+  show: "Which components to list",
+  sort: "Sort by",
+  sections: "Sections to show",
+  collapsed_by_default: "Start with every section collapsed",
+};
+
+// ha-form renders the raw key name when it cannot find a label, so the labels
+// map is required rather than decorative.
+var CCM_EDITOR_HELPERS = {
+  title: 'Leave blank to use "' + CCM_DEFAULTS.title + '".',
+  show: "Unused means nothing on your dashboards or in your automations refers to it.",
+  collapsed_by_default: "Sections can still be expanded, and remember their state afterwards.",
+};
+
+var CCM_EDITOR_SCHEMA = [
+  { name: "title", selector: { text: {} } },
+  {
+    name: "show",
+    selector: { select: { mode: "dropdown", options: [
+      { value: "unused", label: "Only unused components" },
+      { value: "all", label: "Every component" },
+      { value: "used", label: "Only components in use" },
+    ] } },
+  },
+  {
+    name: "sort",
+    selector: { select: { mode: "dropdown", options: [
+      { value: "name", label: "Name" },
+      { value: "days", label: "Days since install" },
+    ] } },
+  },
+  {
+    // A list of the same three strings, not three booleans: three toggles would
+    // read better but would change the stored shape and break every existing
+    // dashboard. mode "list" shows all three at once, which also survives 380px
+    // better than a row of checkboxes did.
+    name: "sections",
+    selector: { select: { multiple: true, mode: "list", options: [
+      { value: "integrations", label: "Integrations" },
+      { value: "themes", label: "Themes" },
+      { value: "frontend", label: "Frontend cards" },
+    ] } },
+  },
+  { name: "collapsed_by_default", selector: { boolean: {} } },
+];
+
+/**
+ * Force the frontend chunk that defines ha-form.
+ *
+ * In practice the editor is only ever built from the card dialog, which has
+ * already loaded that chunk - but this is Mushroom's belt-and-braces and costs
+ * nothing. `window.customElements` is re-read on every call rather than
+ * captured: Home Assistant swaps it for a scoped-registry polyfill while its
+ * core bundle boots, which is also why this must never be
+ * `customElements.whenDefined()` at module top level - that would bind to the
+ * native registry's method and might never fire.
+ */
+function _ccmLoadHaComponents() {
+  var registry = window.customElements;
+  if (registry && !registry.get("ha-form")) {
+    var tile = registry.get("hui-tile-card");
+    if (tile && tile.getConfigElement) { tile.getConfigElement(); }
+  }
+}
+
+function _ccmSameValue(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.slice().sort().join(",") === b.slice().sort().join(",");
+  }
+  return a === b;
+}
+
+/**
+ * Drop anything the user did not actually choose.
+ *
+ * An empty title becomes an absent key, and so does any value equal to the
+ * card's own default. Keys the schema knows nothing about - `type`,
+ * `view_layout`, `grid_options` and friends - are passed through untouched.
+ * Storing a default is how "Recently Installed but Unused" ended up frozen in
+ * dashboards after the card was renamed; see DECISIONS.md.
+ */
+function _ccmPrune(config) {
+  var out = Object.assign({}, config);
+  if (out.title === "" || out.title == null) { delete out.title; }
+  Object.keys(CCM_DEFAULTS).forEach(function (key) {
+    if (key in out && _ccmSameValue(out[key], CCM_DEFAULTS[key])) { delete out[key]; }
+  });
+  return out;
+}
+
+class CustomComponentMonitorCardEditor extends HTMLElement {
   setConfig(config) {
     this._config = Object.assign({}, config);
     this._render();
   }
 
-  _fire() {
-    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config } }));
+  // Safe to render on every tick, unlike the hand-built version this replaced:
+  // nothing is destroyed, the form just receives new values.
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  connectedCallback() {
+    _ccmLoadHaComponents();
+  }
+
+  /**
+   * What the form displays: the effective values, so no dropdown opens blank -
+   * except the title, which stays empty when unset so its helper line can name
+   * the default instead of the box silently claiming a value that isn't stored.
+   */
+  _formData() {
+    var data = Object.assign({}, CCM_DEFAULTS, this._config);
+    if (this._config.title == null) { data.title = ""; }
+    return data;
   }
 
   _render() {
-    var titleVal = _ccm_escapeHtml(this._config.title || "Custom Component Monitor");
-    var sortVal = this._config.sort || "name";
-    var secs = this._config.sections || ALL_SECTIONS.slice();
+    // ha-form needs hass to resolve its selectors, so wait for it.
+    if (!this._hass || !this._config) { return; }
 
-    var chkInteg = secs.indexOf("integrations") !== -1 ? " checked" : "";
-    var chkThemes = secs.indexOf("themes") !== -1 ? " checked" : "";
-    var chkFront = secs.indexOf("frontend") !== -1 ? " checked" : "";
-
-    this.shadowRoot.innerHTML = [
-      "<style>",
-      ".row { display:flex; align-items:center; gap:8px; margin:8px 0; }",
-      "label { flex:1; font-size:0.9em; }",
-      '.ctrl { flex:2; }',
-      'input[type="text"], select { width:100%; padding:6px 8px; border:1px solid var(--divider-color,#ccc); border-radius:4px; font-size:0.9em; background:var(--card-background-color,#fff); color:var(--primary-text-color,#212121); box-sizing:border-box; }',
-      ".checks { display:flex; gap:12px; flex-wrap:wrap; }",
-      ".checks label { flex:unset; display:flex; align-items:center; gap:4px; cursor:pointer; }",
-      "</style>",
-      '<div class="row">',
-      "  <label>Title</label>",
-      '  <div class="ctrl"><input type="text" id="title" value="' + titleVal + '"></div>',
-      "</div>",
-      '<div class="row">',
-      "  <label>Default sort</label>",
-      '  <div class="ctrl"><select id="sort">',
-      '    <option value="name"' + (sortVal === "name" ? " selected" : "") + ">Name</option>",
-      '    <option value="days"' + (sortVal === "days" ? " selected" : "") + ">Days installed</option>",
-      "  </select></div>",
-      "</div>",
-      '<div class="row">',
-      "  <label>Sections</label>",
-      '  <div class="ctrl checks">',
-      '    <label><input type="checkbox" id="sec_integrations"' + chkInteg + "> Integrations</label>",
-      '    <label><input type="checkbox" id="sec_themes"' + chkThemes + "> Themes</label>",
-      '    <label><input type="checkbox" id="sec_frontend"' + chkFront + "> Frontend</label>",
-      "  </div>",
-      "</div>"
-    ].join("\n");
-
-    var self = this;
-    this.shadowRoot.querySelector("#title").addEventListener("change", function(ev) {
-      self._config = Object.assign({}, self._config, { title: ev.target.value });
-      self._fire();
-    });
-    this.shadowRoot.querySelector("#sort").addEventListener("change", function(ev) {
-      self._config = Object.assign({}, self._config, { sort: ev.target.value });
-      self._fire();
-    });
-
-    var secIds = ["sec_integrations", "sec_themes", "sec_frontend"];
-    var secKeys = ["integrations", "themes", "frontend"];
-    for (var i = 0; i < secIds.length; i++) {
-      (function(idx) {
-        self.shadowRoot.querySelector("#" + secIds[idx]).addEventListener("change", function() {
-          var current = (self._config.sections || ALL_SECTIONS.slice());
-          var key = secKeys[idx];
-          var pos = current.indexOf(key);
-          if (this.checked && pos === -1) {
-            current.push(key);
-          } else if (!this.checked && pos !== -1) {
-            current.splice(pos, 1);
-          }
-          self._config = Object.assign({}, self._config, { sections: current });
-          self._fire();
-        });
-      })(i);
+    if (!this._form) {
+      var form = document.createElement("ha-form");
+      form.computeLabel = function (schema) {
+        return CCM_EDITOR_LABELS[schema.name] || schema.name;
+      };
+      form.computeHelper = function (schema) {
+        return CCM_EDITOR_HELPERS[schema.name] || "";
+      };
+      form.addEventListener("value-changed", this._onValueChanged.bind(this));
+      // Light DOM, matching the sibling laundry-weather and ha-jokes cards: the
+      // dialog styles the editor's own children, and the selectors read `hass`
+      // from a Lit context provider further up the tree.
+      this.appendChild(form);
+      this._form = form;
     }
+
+    this._form.hass = this._hass;
+    this._form.schema = CCM_EDITOR_SCHEMA;
+    this._form.data = this._formData();
+  }
+
+  _onValueChanged(event) {
+    // Stop the inner event so only our config-changed reaches the editor host.
+    event.stopPropagation();
+    var config = _ccmPrune(event.detail.value);
+    this._config = config;
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config: config },
+      bubbles: true,
+      composed: true,
+    }));
   }
 }
 
-customElements.define("custom-component-monitor-card-editor", CustomComponentMonitorCardEditor);
-customElements.define("custom-component-monitor-card", CustomComponentMonitorCard);
+if (!customElements.get("custom-component-monitor-card-editor")) {
+  customElements.define("custom-component-monitor-card-editor", CustomComponentMonitorCardEditor);
+}
+if (!customElements.get("custom-component-monitor-card")) {
+  customElements.define("custom-component-monitor-card", CustomComponentMonitorCard);
+}
 
 window.customCards = window.customCards || [];
 window.customCards.push({

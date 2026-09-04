@@ -1,0 +1,405 @@
+bubble_calendar_enhanced:
+  name: Bubble Calendar Enhanced
+  version: v1.1.0
+  creator: Clooos
+  supported:
+    - calendar
+    - button
+  description: Displays the current time and date at the bottom of any button or calendar card while bringing a refreshed, modern design to your calendar card (with many options including multiple layouts, custom sizing, colorful gradient backgrounds...).
+  code: |-
+    .bubble-event-color{position: absolute; width: 3px; opacity: 0.8; height: calc(100% - 12px); left: -8px; top: 4px; border-radius: 2px;}
+    .bubble-event-name-wrapper{width:100%}
+    .bubble-calendar-content{height:calc(100% - var(--bc-dt-height,80px));overflow:scroll}
+    .bubble-day-chip,.bc-dt .time,.bc-dt .date{background:transparent}
+    .bubble-event{flex-flow:column;gap:2px;width:100%; left: 8px}
+    .bubble-event-name{font-weight:300}
+    .bubble-event-time{font-weight:600}
+    .bubble-day-wrapper + .bubble-day-wrapper::before{opacity:0.1;height:1px;background-color:var(--text-primary-color);}
+    .bc-dt{position:absolute;left:0;right:0;bottom:0;pointer-events:none;z-index:1}
+    .bc-dt .inner{position:relative;box-sizing:border-box;width:100%;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;justify-content:space-between;padding:12px 16px;}
+    .bc-dt.left .inner{justify-content:flex-start}
+    .bc-dt.center .inner{justify-content:center}
+    .bc-dt.right .inner{justify-content:flex-end}
+    .bc-dt .time{font-size:var(--bc-dt-time-size,clamp(18px,6vw,36px));font-weight:700;line-height:1;letter-spacing:.02em}
+    .bc-dt .time .ampm{font-size:.45em;font-weight:500;opacity:.85;margin-left:-4px}
+    .bc-dt .date{font-size:var(--bc-dt-date-size,clamp(11px,2.2vw,14px));opacity:.92;line-height:1.1;white-space:nowrap;}
+    .bubble-container.bc-square-card{aspect-ratio:1/1!important;height:100%!important}
+    .bc-calendar-card.bc-calendar-dt-only .bubble-calendar-content{display:none!important}
+    .bc-calendar-card.bc-time-only .bc-dt .date{display:none!important}
+    .bc-calendar-card.bc-date-only .bc-dt .time{display:none!important}
+    .bc-calendar-card.bc-calendar-only .bc-dt{display:none!important}
+    .bc-calendar-card.bc-calendar-only .bubble-calendar-content{height:100%!important}
+    .bc-bg-overlay{position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;}
+
+    ${(() => {
+      // === HOT PATH: resolve config and locale first ===
+      const cfg = this.config?.bubble_calendar_enhanced || {};
+      const ha = this?.hass || (typeof hass !== 'undefined' ? hass : null);
+      const locale = ha?.locale?.language || navigator.language || 'en-US';
+      const dateFormatPref = cfg.date_format && cfg.date_format !== 'default' ? cfg.date_format : (ha?.locale?.date_format || 'language');
+      const timePref = (typeof cfg.hour12 === 'boolean') ? cfg.hour12 : (ha?.locale?.time_format === '12' ? true : undefined);
+      const host = this?.elements?.mainContainer || card;
+      if (!host) return;
+
+      // Find or create the .bc-dt root element
+      let root = host.querySelector('.bc-dt');
+      if (!root) {
+        root = Object.assign(document.createElement('div'), { className: 'bc-dt', innerHTML: '<div class="inner"><div class="time"></div><div class="date"></div></div>' });
+        host.appendChild(root);
+      }
+
+      // Bail out immediately if config+locale are unchanged and the timer is already running
+      const cfgSig = JSON.stringify(cfg) + '|' + locale + '|' + dateFormatPref + '|' + String(timePref);
+      if (root._cfgSig === cfgSig && root._dtTimer) return;
+      root._cfgSig = cfgSig;
+
+      // Config changed — cancel existing timer; it will be restarted below
+      if (root._dtTimer) { clearTimeout(root._dtTimer); root._dtTimer = null; }
+
+      // === ONE-TIME POSITION GUARD ===
+      if (!host._bcPosChecked) {
+        try { if (getComputedStyle(host).position === 'static') host.style.position = 'relative'; } catch {}
+        host._bcPosChecked = true;
+      }
+
+      const wrap = root.querySelector('.inner');
+      const timeEl = root.querySelector('.time');
+      const dateEl = root.querySelector('.date');
+
+      // Alignment (dirty check)
+      const newAlign = ['left','center','right'].includes(cfg.align) ? cfg.align : '';
+      if (root._lastAlign !== newAlign) {
+        root.classList.remove('left','center','right');
+        if (newAlign) root.classList.add(newAlign);
+        root._lastAlign = newAlign;
+      }
+
+      // CSS custom properties for size (dirty check)
+      const newTimeSize = cfg.time_size || '';
+      const newDateSize = cfg.date_size || '';
+      if (wrap._lastTimeSize !== newTimeSize) {
+        if (newTimeSize) wrap.style.setProperty('--bc-dt-time-size', newTimeSize);
+        else wrap.style.removeProperty('--bc-dt-time-size');
+        wrap._lastTimeSize = newTimeSize;
+      }
+      if (wrap._lastDateSize !== newDateSize) {
+        if (newDateSize) wrap.style.setProperty('--bc-dt-date-size', newDateSize);
+        else wrap.style.removeProperty('--bc-dt-date-size');
+        wrap._lastDateSize = newDateSize;
+      }
+
+      // Container layout classes (dirty check)
+      const cardLayout = cfg.card_layout || 'default';
+      const isSquare = cardLayout === 'square' || cardLayout.endsWith('_square');
+      const isDtOnly = ['dt_only','dt_only_square','dt_only_full','dt_only_full_square','date_time_only_full','date_time_only_full_square','time_only_full','time_only_full_square','date_only_full','date_only_full_square'].includes(cardLayout);
+      const isTimeOnly = ['time_only','time_only_square','time_only_full','time_only_full_square'].includes(cardLayout);
+      const isDateOnly = ['date_only','date_only_square','date_only_full','date_only_full_square'].includes(cardLayout);
+      const isCalendarOnly = cardLayout === 'calendar_only' || cardLayout === 'calendar_only_square';
+      const container = this?.elements?.cardContainer || host?.closest?.('.bubble-container') || host;
+      if (container) {
+        if (!container.classList.contains('bc-calendar-card')) container.classList.add('bc-calendar-card');
+        if (container.classList.contains('bc-square-card') !== isSquare) container.classList.toggle('bc-square-card', isSquare);
+        if (container.classList.contains('bc-calendar-dt-only') !== isDtOnly) container.classList.toggle('bc-calendar-dt-only', isDtOnly);
+        if (container.classList.contains('bc-time-only') !== isTimeOnly) container.classList.toggle('bc-time-only', isTimeOnly);
+        if (container.classList.contains('bc-date-only') !== isDateOnly) container.classList.toggle('bc-date-only', isDateOnly);
+        if (container.classList.contains('bc-calendar-only') !== isCalendarOnly) container.classList.toggle('bc-calendar-only', isCalendarOnly);
+      }
+
+      // Background overlay (dirty check by signature)
+      const legacyPresetGradient = (cfg.preset_gradient && cfg.preset_gradient !== 'none') ? cfg.preset_gradient : null;
+      const legacyBackgroundOverride = cfg.background_override || null;
+      const selectedBackground = cfg.background || legacyBackgroundOverride || legacyPresetGradient || null;
+      const bgValue = (selectedBackground && selectedBackground !== 'none') ? selectedBackground : null;
+      const bgOpacity = (cfg.background_opacity != null && cfg.background_opacity !== '') ? Math.max(0, Math.min(1, parseFloat(cfg.background_opacity))) : 1;
+      let bgOverlay = host.querySelector('.bc-bg-overlay');
+      if (!bgOverlay) {
+        bgOverlay = Object.assign(document.createElement('div'), { className: 'bc-bg-overlay' });
+        host.insertBefore(bgOverlay, host.firstChild);
+      }
+      const bgSig = (bgValue || '') + '|' + bgOpacity;
+      if (bgOverlay._bgSig !== bgSig) {
+        const mainContainer = this?.elements?.mainContainer || null;
+        if (bgValue) {
+          bgOverlay.style.setProperty('background', bgValue, 'important');
+          bgOverlay.style.opacity = isNaN(bgOpacity) ? 1 : bgOpacity;
+          if (mainContainer) mainContainer.style.setProperty('background', 'transparent', 'important');
+        } else {
+          bgOverlay.style.removeProperty('background');
+          bgOverlay.style.opacity = '';
+          if (mainContainer) mainContainer.style.removeProperty('background');
+        }
+        bgOverlay._bgSig = bgSig;
+      }
+
+      // Formatters — built once per config change, cached on root
+      const showSeconds = !!cfg.show_seconds;
+      const weekday = cfg.weekday === 'off' ? undefined : (cfg.weekday || 'short');
+      const month = cfg.month || 'short';
+      const year = (cfg.year && cfg.year !== 'none') ? cfg.year : undefined;
+      const upper = !!cfg.uppercase_date;
+      const dateOrder = ['DMY','MDY','YMD'].includes(dateFormatPref) ? dateFormatPref : null;
+      let dateFormatter;
+      try {
+        dateFormatter = new Intl.DateTimeFormat(dateFormatPref === 'system' ? undefined : locale, { weekday, day: '2-digit', month, year });
+      } catch {
+        dateFormatter = { format: (d) => d.toLocaleDateString(locale) };
+      }
+      let timeFormatter;
+      try {
+        const opts = Object.assign({ hour: '2-digit', minute: '2-digit' }, showSeconds ? { second: '2-digit' } : {}, (timePref != null) ? { hour12: timePref } : {});
+        timeFormatter = new Intl.DateTimeFormat(locale, opts);
+      } catch {
+        timeFormatter = { format: (d) => d.toLocaleTimeString(locale) };
+      }
+      root._dtFmt = { timeFormatter, dateFormatter, upper, showSeconds, dateOrder };
+
+      // === RENDER — only writes to DOM when the displayed value actually changes ===
+      const render = () => {
+        const fmt = root._dtFmt;
+        if (!fmt) return;
+        const now = new Date();
+        try {
+          if (typeof fmt.timeFormatter.formatToParts === 'function') {
+            const parts = fmt.timeFormatter.formatToParts(now);
+            const newTime = parts.map(p => p.type === 'dayPeriod' ? '<span class="ampm">'+p.value+'</span>' : p.value).join('');
+            if (timeEl.innerHTML !== newTime) timeEl.innerHTML = newTime;
+          } else {
+            const newTime = fmt.timeFormatter.format(now);
+            if (timeEl.textContent !== newTime) timeEl.textContent = newTime;
+          }
+          let ds;
+          if (fmt.dateOrder && typeof fmt.dateFormatter.formatToParts === 'function') {
+            const parts = fmt.dateFormatter.formatToParts(now);
+            const dateFields = ['day', 'month', 'year'];
+            const firstDateIndex = parts.findIndex((part) => dateFields.includes(part.type));
+            const lastDateIndex = [...parts].reverse().findIndex((part) => dateFields.includes(part.type));
+            const lastResolvedIndex = lastDateIndex === -1 ? -1 : parts.length - 1 - lastDateIndex;
+
+            if (firstDateIndex !== -1 && lastResolvedIndex !== -1) {
+              const prefix = parts.slice(0, firstDateIndex).map((part) => part.value).join('');
+              const suffix = parts.slice(lastResolvedIndex + 1).map((part) => part.value).join('');
+              const middle = parts.slice(firstDateIndex, lastResolvedIndex + 1);
+              const values = {};
+              const separators = [];
+
+              middle.forEach((part) => {
+                if (dateFields.includes(part.type)) values[part.type] = part.value;
+                else if (part.type === 'literal') separators.push(part.value);
+              });
+
+              const orderedFields = {
+                DMY: ['day', 'month', 'year'],
+                MDY: ['month', 'day', 'year'],
+                YMD: ['year', 'month', 'day'],
+              }[fmt.dateOrder].filter((field) => values[field] != null);
+
+              const orderedDate = orderedFields.map((field, index) => {
+                if (index === 0) return values[field];
+                return `${separators[Math.min(index - 1, separators.length - 1)] || ' '}${values[field]}`;
+              }).join('');
+
+              ds = `${prefix}${orderedDate}${suffix}`;
+            }
+          }
+          if (!ds) ds = fmt.dateFormatter.format(now);
+          if (fmt.upper) ds = ds.toUpperCase();
+          if (dateEl.textContent !== ds) dateEl.textContent = ds;
+        } catch (e) {
+          const fb = now.toLocaleTimeString();
+          if (timeEl.textContent !== fb) timeEl.textContent = fb;
+          const fd = now.toLocaleDateString();
+          if (dateEl.textContent !== fd) dateEl.textContent = fd;
+        }
+      };
+
+      // Self-rescheduling timer — aligned to second or minute boundary, never reset between runs
+      const schedule = () => {
+        const period = root._dtFmt?.showSeconds ? 1000 : 60000;
+        const drift = period - (Date.now() % period);
+        root._dtTimer = setTimeout(() => { render(); schedule(); }, Math.max(16, drift));
+      };
+
+      render();
+      schedule();
+
+      // Track .bc-dt height to keep .bubble-calendar-content height in sync
+      if (!root._ro) {
+        const ro = new ResizeObserver(() => { host.style.setProperty('--bc-dt-height', root.offsetHeight + 'px'); });
+        ro.observe(root);
+        root._ro = ro;
+      }
+    })()}
+  editor:
+    - type: expandable
+      title: Date and time
+      icon: mdi:clock-outline
+      schema:
+        - name: show_seconds
+          label: Show seconds
+          selector:
+            boolean: {}
+        - name: hour12
+          label: Force 12-hour clock
+          selector:
+            boolean: {}
+        - name: uppercase_date
+          label: Uppercase date
+          selector:
+            boolean: {}
+        - name: weekday
+          label: Weekday
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: Off
+                  value: off
+                - label: Short
+                  value: short
+                - label: Long
+                  value: long
+        - name: month
+          label: Month
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: Short
+                  value: short
+                - label: Long
+                  value: long
+                - label: Numeric
+                  value: numeric
+        - name: date_format
+          label: Date order
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: Default (Home Assistant)
+                  value: default
+                - label: Day / Month / Year
+                  value: DMY
+                - label: Month / Day / Year
+                  value: MDY
+                - label: Year / Month / Day
+                  value: YMD
+        - name: year
+          label: Year
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: None
+                  value: none
+                - label: 2-digit
+                  value: 2-digit
+                - label: Numeric
+                  value: numeric
+    - type: expandable
+      title: Layout and styling
+      icon: mdi:palette
+      schema:
+        - name: card_layout
+          label: Card layout
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: Default
+                  value: default
+                - label: Square
+                  value: square
+                - label: Date and time only (no card)
+                  value: date_time_only_full
+                - label: Date and time only (no card), square
+                  value: date_time_only_full_square
+                - label: Time only
+                  value: time_only
+                - label: Time only, square
+                  value: time_only_square
+                - label: Time only (no card)
+                  value: time_only_full
+                - label: Time only (no card), square
+                  value: time_only_full_square
+                - label: Date only
+                  value: date_only
+                - label: Date only, square
+                  value: date_only_square
+                - label: Date only (no card)
+                  value: date_only_full
+                - label: Date only (no card), square
+                  value: date_only_full_square
+                - label: Calendar only
+                  value: calendar_only
+                - label: Calendar only, square
+                  value: calendar_only_square
+        - name: align
+          label: Alignment
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: Default
+                  value: default
+                - label: Left
+                  value: left
+                - label: Center
+                  value: center
+                - label: Right
+                  value: right
+        - name: time_size
+          label: Time size (CSS)
+          selector:
+            text: {}
+        - name: date_size
+          label: Date size (CSS)
+          selector:
+            text: {}
+        - name: background
+          label: Background
+          selector:
+            select:
+              mode: dropdown
+              custom_value: true
+              options:
+                - label: Default
+                  value: none
+                - label: Transparent
+                  value: transparent
+                - label: Deep Ocean
+                  value: 'linear-gradient(135deg, #0f2027 0%, #203a43 40%, #2c5364 100%)'
+                - label: Golden Horizon
+                  value: 'linear-gradient(135deg, #3a1c71 0%, #d76d77 60%, #ffaf7b 100%)'
+                - label: Forest Mist
+                  value: 'linear-gradient(135deg, #093028 0%, #237a57 100%)'
+                - label: Warm Sand
+                  value: 'linear-gradient(135deg, #3d2314 0%, #a07850 50%, #c8a96e 100%)'
+                - label: Arctic Blur
+                  value: 'linear-gradient(135deg, #dfe9f3 0%, #c2cfe4 50%, #a8bedf 100%)'
+                - label: Dusk Bokeh
+                  value: 'radial-gradient(ellipse at 80% 15%, rgba(148,108,215,0.28) 0%, transparent 65%), radial-gradient(ellipse at 10% 85%, rgba(82,158,192,0.22) 0%, transparent 68%), radial-gradient(ellipse at 50% 50%, rgba(170,88,158,0.15) 0%, transparent 60%), #4d3a6e'
+                - label: Ember Bokeh
+                  value: 'radial-gradient(ellipse at 50% 10%, rgba(192,98,62,0.28) 0%, transparent 65%), radial-gradient(ellipse at 85% 80%, rgba(200,145,52,0.22) 0%, transparent 68%), radial-gradient(ellipse at 15% 55%, rgba(162,68,78,0.15) 0%, transparent 62%), #5c2f14'
+                - label: Lagoon Bokeh
+                  value: 'radial-gradient(ellipse at 60% 20%, rgba(48,172,130,0.28) 0%, transparent 65%), radial-gradient(ellipse at 15% 85%, rgba(32,128,165,0.22) 0%, transparent 68%), radial-gradient(ellipse at 88% 60%, rgba(185,128,45,0.15) 0%, transparent 62%), #1e5040'
+                - label: Blush Bokeh
+                  value: 'radial-gradient(ellipse at 15% 20%, rgba(208,108,135,0.28) 0%, transparent 65%), radial-gradient(ellipse at 55% 85%, rgba(160,108,190,0.22) 0%, transparent 68%), radial-gradient(ellipse at 88% 45%, rgba(55,158,168,0.15) 0%, transparent 60%), #502d42'
+                - label: Steel Bokeh
+                  value: 'radial-gradient(ellipse at 50% 50%, rgba(62,104,165,0.28) 0%, transparent 68%), radial-gradient(ellipse at 88% 12%, rgba(94,124,174,0.22) 0%, transparent 65%), radial-gradient(ellipse at 15% 88%, rgba(165,132,48,0.15) 0%, transparent 62%), #253e5a'
+                - label: Tokyo Bokeh
+                  value: 'radial-gradient(ellipse at 72% 18%, rgba(205,82,148,0.32) 0%, transparent 68%), radial-gradient(ellipse at 22% 78%, rgba(148,68,195,0.25) 0%, transparent 70%), radial-gradient(ellipse at 52% 52%, rgba(218,98,165,0.15) 0%, transparent 62%), #3a1830'
+                - label: Aurora Bokeh
+                  value: 'radial-gradient(ellipse at 25% 25%, rgba(32,178,198,0.32) 0%, transparent 68%), radial-gradient(ellipse at 78% 72%, rgba(28,162,145,0.25) 0%, transparent 70%), radial-gradient(ellipse at 54% 48%, rgba(118,68,198,0.15) 0%, transparent 62%), #0d2e35'
+                - label: Prism Bokeh
+                  value: 'radial-gradient(ellipse at 18% 25%, rgba(228,42,30,0.52) 0%, transparent 78%), radial-gradient(ellipse at 82% 22%, rgba(15,192,232,0.44) 0%, transparent 80%), radial-gradient(ellipse at 50% 72%, rgba(132,48,215,0.42) 0%, transparent 75%), #1c1838'
+                - label: Synthwave Bokeh
+                  value: 'radial-gradient(ellipse at 30% 15%, rgba(48,102,228,0.32) 0%, transparent 68%), radial-gradient(ellipse at 78% 72%, rgba(148,52,200,0.28) 0%, transparent 70%), radial-gradient(ellipse at 62% 88%, rgba(218,72,38,0.28) 0%, transparent 62%), #0e0818'
+        - name: background_opacity
+          label: Background opacity
+          selector:
+            number:
+              min: 0
+              max: 1
+              step: 0.05
+              mode: slider

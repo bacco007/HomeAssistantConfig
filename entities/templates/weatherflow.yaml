@@ -4,8 +4,8 @@ sensor:
     unique_id: weatherflow_precipitation_probability
     icon: mdi:weather-rainy
     unit_of_measurement: "%"
-    state: "{{ state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0]['precipitation_probability'] | int(-1) }}"
+    state: "{{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_hourly')[0]['precipitation_probability'] | int(-1) }}"
     availability: >
-      {{ state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0] is defined
-          and state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0].precipitation_probability is defined
-          and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_hourly')[0]['precipitation_probability']) }}
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_hourly')[0] is defined
+          and state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_hourly')[0].precipitation_probability is defined
+          and is_number(state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_hourly')[0]['precipitation_probability']) }}

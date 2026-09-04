@@ -16,29 +16,35 @@ cards:
     entity: sensor.untappd_bacco007_untappd_last_beer_bacco007
     name: Beer Stats
     show_state: true
-    icon: ""
+    icon: mdi:beer
     card_layout: large-2-rows
     sub_button:
-      - entity: sensor.untappd_bacco007_untappd_total_beers_bacco007
-        show_background: true
-        show_state: true
-        icon: mdi:beer
-        name: Unique
-        show_name: true
-      - entity: sensor.untappd_bacco007_untappd_total_checkins_bacco007
-        show_background: false
-        show_state: true
-        icon: mdi:beer
-        name: All
-        show_name: true
-      - entity: sensor.untappd_bacco007_untappd_total_badges_bacco007
-        show_background: false
-        show_state: true
-        icon: mdi:medal
-        name: Medals
-        show_name: true
+      main:
+        - entity: sensor.untappd_bacco007_untappd_total_beers_bacco007
+          show_background: true
+          show_state: true
+          icon: mdi:beer
+          name: Unique
+          show_name: true
+          force_icon: false
+          show_attribute: false
+          attribute: unit_of_measurement
+        - entity: sensor.untappd_bacco007_untappd_total_checkins_bacco007
+          show_background: false
+          show_state: true
+          icon: mdi:beer
+          name: All
+          show_name: true
+        - entity: sensor.untappd_bacco007_untappd_total_badges_bacco007
+          show_background: false
+          show_state: true
+          icon: mdi:medal
+          name: Medals
+          show_name: true
+      bottom: []
     show_icon: true
     show_attribute: false
+    rows: 1.125
   - type: custom:bubble-card
     card_type: button
     button_type: state
@@ -66,9 +72,11 @@ cards:
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_style']}},
       {{state_attr('sensor.untappd_recent_beers', 'data')[0]['beer_abv']}} %
 
-      Rating: {{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}} (Me) /
-      {{state_attr('sensor.untappd_recent_beers','data')[0]['beer_rating']|round(2)}} (Avg)
-    entity: sensor.untappd_last_check_in_bacco007
+      Rating: {{state_attr('sensor.untappd_recent_beers', 'data')[0]['rating']}}
+      (Me) /
+      {{state_attr('sensor.untappd_recent_beers','data')[0]['beer_rating']|round(2)}}
+      (Avg)
+    entity: sensor.untappd_bacco007_untappd_last_check_in_bacco007
     fill_container: true
     tap_action:
       action: none

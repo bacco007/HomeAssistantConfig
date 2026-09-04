@@ -31,88 +31,48 @@ cards:
       - entity: binary_sensor.livetrafficnsw_nearby_active_incident
         show_attribute: true
         attribute: count
-  - type: custom:plotly-graph
+  - type: custom:statistics-graph-chart-card
+    sparkline: true
+    hours_to_show: 168
+    points_per_hour: 1
+    height: 400
+    group_by: hour
     entities:
       - entity: sensor.stats_livetraffic
         attribute: alpine
         name: Alpine
-        legendgroup: 1
+        aggregate_func: max
+        decimals: 0
       - entity: sensor.stats_livetraffic
         attribute: fire
         name: Fire
-        legendgroup: 2
+        aggregate_func: max
+        decimals: 0
       - entity: sensor.stats_livetraffic
         attribute: flood
         name: Flood
-        legendgroup: 3
+        aggregate_func: max
+        decimals: 0
       - entity: sensor.stats_livetraffic
         attribute: incidents
         name: Incidents
-        legendgroup: 1
+        aggregate_func: max
+        decimals: 0
       - entity: sensor.stats_livetraffic
         attribute: incidents_lga
         name: Incidents (LGA)
-        legendgroup: 2
+        aggregate_func: max
+        decimals: 0
       - entity: sensor.stats_livetraffic
         attribute: majorevents
         name: Major Events
-        legendgroup: 3
+        aggregate_func: max
+        decimals: 0
       - entity: sensor.stats_livetraffic
         attribute: roadwork
         name: Roadwork
-        legendgroup: 1
-    hours_to_show: 1w
-    refresh_interval: auto
-    defaults:
-      entity:
-        connectgaps: true
-        legendgroup: 1
-        filters:
-          - force_numeric
-          - resample: 1h
-        texttemplate: <b>%{y:,.0f}</b>
-        show_value: true
-        line:
-          width: 3
-    layout:
-      paper_bgcolor: rgba(0,0,0,0)
-      plot_bgcolor: rgba(0,0,0,0)
-      showlegend: true
-      height: 300
-      margin:
-        autoexpand: true
-        l: 30
-        r: 30
-      xaxis:
-        autorange: true
-        showline: true
-        showgrid: false
-        tickformat: "%a"
-        showticklabels: true
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        autotick: false
-        ticks: outside
-        tickwidth: 2
-        ticklen: 5
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-      yaxis:
-        title: ""
-        autorange: true
-        zeroline: true
-        fixedrange: true
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-      dragmode: false
-    config:
-      scrollZoom: false
+        aggregate_func: max
+        decimals: 0
   - square: false
     type: grid
     columns: 2

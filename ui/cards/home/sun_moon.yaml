@@ -22,10 +22,10 @@ cards:
     scrolling_effect: false
     show_state: true
     sub_button:
-      - entity: sensor.nextsunrise
+      - entity: sensor.next_sunrise
         show_state: true
         icon: ios:sunrise-fill
-      - entity: sensor.nextsunset
+      - entity: sensor.next_sunset
         show_name: false
         show_state: true
         icon: ios:sunset-fill
@@ -83,33 +83,7 @@ cards:
       }
     card_layout: large-2-rows
 
-  - type: custom:mushroom-legacy-template-card
-    card_mod:
-      style:
-        .: |
-          ha-card {
-            --icon-size: 35px;
-            --icon-symbol-size: 25px;
-            #--card-secondary-font-size: 10px;
-            #--card-primary-font-size: 12px;
-          }
-    entity: sensor.dst_dates_local
-    primary: Daylight Saving
-    secondary: |-
-      {% if states(entity) == 'False' %}
-        DST Starts {{ as_timestamp(state_attr(entity, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
-      {% else %}
-        DST Ends {{ as_timestamp(state_attr(entity, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
-      {% endif %}
-    icon: mdi:clock
-    fill_container: true
-    tap_action:
-      action: none
-    hold_action:
-      action: none
-    double_tap_action:
-      action: none
-    badge_icon: '{{ "none" if states(entity) == "False" else "mdi:sun-clock" }}'
-    badge_color: '{{ "none" if states(entity) == "False" else "249,167,62" }}'
-    multiline_secondary: true
-    layout: horizontal
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.daylight_saving_status

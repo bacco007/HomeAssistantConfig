@@ -1,1 +1,39 @@
-{}
+sonos_favourites_play_favourite:
+  alias: '[Sonos Favourites] Play Favourite'
+  mode: single
+  icon: si:sonos
+  fields:
+    favourite:
+      name: Favourite
+      required: true
+      selector:
+        text:
+    player:
+      name: Sonos Player
+      required: false
+      default: media_player.office_sonos
+      selector:
+        entity:
+          domain: media_player
+  sequence:
+  - variables:
+      sonos_player: '{{ player | default(''media_player.office_sonos'') }}'
+      favourite_id: '{% set items = state_attr(''sensor.sonos_favorites'', ''items'')
+        or {} %} {% set match = items | dictsort | selectattr(''1'', ''eq'', favourite)
+        | list %} {{ match[0][0] if match | count > 0 else '''' }}
+
+        '
+  - condition: template
+    value_template: '{{ favourite_id != '''' }}'
+  - action: media_player.play_media
+    target:
+      entity_id: '{{ sonos_player }}'
+    data:
+      media_content_type: favorite_item_id
+      media_content_id: '{{ favourite_id }}'
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.sonos_playlist_playing
+    data:
+      value: '{{ favourite }}'
+  description: ''

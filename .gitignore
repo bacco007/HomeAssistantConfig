@@ -32,6 +32,7 @@ gtfs_static_cache
 haca_reports
 f1_replay_cache
 .cache
+real_horizon
 
 # Ignore File Extensions
 *.conf

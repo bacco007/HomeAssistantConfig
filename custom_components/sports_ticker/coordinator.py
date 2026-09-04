@@ -25,6 +25,22 @@ from .const import (
     STORAGE_VERSION,
 )
 
+from .nfl_team_leaders import (
+    NFL_SUMMARY_URL,
+    empty_team_leaders,
+    get_event_team_leaders,
+    merge_nfl_team_leaders,
+    team_leaders_have_data,
+)
+
+from .nfl_game_center import (
+    empty_game_center,
+    game_center_have_data,
+    get_event_game_center,
+    merge_game_center_fallback,
+    merge_nfl_game_center,
+)
+
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_LEAGUES = ["mlb", "nfl"]
@@ -162,6 +178,9 @@ class SportsTickerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 if not self._is_valid_scoreboard_payload(payload):
                     raise ValueError(f"Invalid ESPN payload for {league}")
 
+                if league == "nfl":
+                    await self._enrich_nfl_event_details(payload, previous)
+
                 now = dt_util.utcnow().isoformat()
 
                 payload["_sports_ticker_meta"] = {
@@ -250,6 +269,121 @@ class SportsTickerCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             raise ValueError("ESPN response was not a JSON object")
 
         return payload
+
+    async def _enrich_nfl_event_details(
+        self,
+        payload: dict[str, Any],
+        previous: dict[str, Any] | None = None,
+    ) -> None:
+        """Enrich NFL scoreboard events with leaders and live game-center data."""
+        events = payload.get("events")
+        if not isinstance(events, list):
+            return
+
+        previous_events: dict[str, dict[str, Any]] = {}
+        if isinstance(previous, dict):
+            cached_events = previous.get("events")
+            if isinstance(cached_events, list):
+                previous_events = {
+                    str(event.get("id")): event
+                    for event in cached_events
+                    if isinstance(event, dict) and event.get("id") is not None
+                }
+
+        for event in events:
+            if not isinstance(event, dict):
+                continue
+
+            competitions = event.get("competitions")
+            if not isinstance(competitions, list) or not competitions:
+                continue
+            competition = competitions[0]
+            if not isinstance(competition, dict):
+                continue
+
+            # Always expose predictable structures, including scheduled games.
+            competition["team_leaders"] = empty_team_leaders()
+            competition["game_center"] = empty_game_center()
+            # Normalize any live situation already present on the scoreboard.
+            # The summary response below adds win probability and drive detail.
+            merge_nfl_game_center(event, {})
+
+            event_id = str(event.get("id") or "").strip()
+            if not event_id:
+                continue
+
+            status = event.get("status")
+            if not isinstance(status, dict):
+                status = competition.get("status")
+            status_type = status.get("type") if isinstance(status, dict) else {}
+            state = (
+                str(status_type.get("state") or "").lower()
+                if isinstance(status_type, dict)
+                else ""
+            )
+
+            cached_event = previous_events.get(event_id)
+            cached = get_event_team_leaders(cached_event)
+            cached_game_center = get_event_game_center(cached_event)
+            cached_status = (
+                cached_event.get("status")
+                if isinstance(cached_event, dict)
+                else None
+            )
+            if not isinstance(cached_status, dict) and isinstance(cached_event, dict):
+                cached_competitions = cached_event.get("competitions")
+                if isinstance(cached_competitions, list) and cached_competitions:
+                    cached_competition = cached_competitions[0]
+                    if isinstance(cached_competition, dict):
+                        cached_status = cached_competition.get("status")
+            cached_status_type = (
+                cached_status.get("type")
+                if isinstance(cached_status, dict)
+                else {}
+            )
+            cached_state = (
+                str(cached_status_type.get("state") or "").lower()
+                if isinstance(cached_status_type, dict)
+                else ""
+            )
+
+            # Future games do not have meaningful box-score leaders yet.
+            if state == "pre":
+                continue
+
+            # Only reuse a final result that was itself fetched after the game
+            # was final. A cached live snapshot must get one final refresh.
+            if (
+                state == "post"
+                and cached_state == "post"
+                and team_leaders_have_data(cached)
+                and game_center_have_data(cached_game_center)
+            ):
+                competition["team_leaders"] = cached
+                competition["game_center"] = cached_game_center
+                continue
+
+            try:
+                summary = await self._fetch_json(
+                    NFL_SUMMARY_URL.format(event_id=event_id)
+                )
+                merge_nfl_team_leaders(event, summary)
+                merge_nfl_game_center(event, summary)
+            except Exception as err:
+                # A failed summary must never blank the whole NFL scoreboard.
+                if team_leaders_have_data(cached):
+                    competition["team_leaders"] = cached
+                current_game_center = get_event_game_center(event)
+                if game_center_have_data(cached_game_center):
+                    competition["game_center"] = merge_game_center_fallback(
+                        current_game_center,
+                        cached_game_center,
+                    )
+                _LOGGER.warning(
+                    "Failed to update NFL team leaders for event %s. Error: %s",
+                    event_id,
+                    err,
+                )
 
     async def _fetch_mlb_player_leaders(
         self,

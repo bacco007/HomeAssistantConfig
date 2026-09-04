@@ -10,24 +10,68 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-  - type: custom:heatmap-card
-    entity: sensor.sungrow_sg5kd_daily_generation
-    title: ""
-    data:
-      max: 5
-    days: 21
-    # scale:
-    #   type: absolute
-    #   steps:
-    #     - value: 0
-    #       color: rgba(43,55,78,1)
-    #     - value: 1
-    #       color: "#ffffb2"
-    #     - value: 2
-    #       color: "#fecc5c"
-    #     - value: 3
-    #       color: "#fd8d3c"
-    #     - value: 4
-    #       color: "#f03b20"
-    #     - value: 5
-    #       color: "#bd0026"
+  - type: custom:statistics-graph-chart-card
+    show_interval_picker: true
+    interval_options:
+      - 1H
+      - 2H
+      - 4H
+      - 8H
+      - 12H
+      - 24H
+      - 3D
+      - 7D
+      - 14D
+      - 30D
+      - 90D
+      - 6M
+      - 1Y
+    show_attribute_list: true
+    attribute_list_position: right
+    hours_to_show: 720
+    points_per_hour: 1
+    height: 350
+    show_full_period: true
+    show_date_picker: true
+    chart_mode: heatmap
+    entities:
+      - entity: sensor.sungrow_sg5kd_active_generation
+        statistic_id: null
+        name: null
+        color: "#ff4757"
+        show_state: false
+        show_in_legend: true
+        color_thresholds:
+          enabled: true
+          direction: vertical
+          values:
+            - value: 0
+              color: rgba(43,55,78,1)
+            - value: 1
+              color: "#ffffb2"
+            - value: 2
+              color: "#fecc5c"
+            - value: 3
+              color: "#fd8d3c"
+            - value: 4
+              color: "#f03b20"
+            - value: 5
+              color: "#bd0026"
+        decimals: 2
+        show_trend_icon: false
+        legend_stats:
+          - min
+          - avg
+          - max
+          - last
+        aggregate_func: first
+        value_transform: return x/1000;
+        unit: kW
+    annotations: []
+    card_mod:
+      style: |
+        ha-card {
+          # background-color: var(--background-color);
+          box-shadow: none !important;
+          padding-top: 0 !important;
+        }

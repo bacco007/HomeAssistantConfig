@@ -1,0 +1,15 @@
+---
+sensor:
+  name: Integrations With Issues
+  unique_id: integrations_with_issues
+  unit_of_measurement: "Integrations"
+  command: >
+    python3 /config/python_scripts/integrations_with_issues.py
+  scan_interval: 300
+  icon: >
+    {{ 'mdi:lan-connect' if states(this.entity_id) | int(0) == 0 else 'mdi:lan-disconnect' }}
+  command_timeout: 30
+  value_template: "{{ value_json.count }}"
+  json_attributes:
+    - items
+    - error

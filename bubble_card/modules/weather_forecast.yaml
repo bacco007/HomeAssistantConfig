@@ -1,6 +1,25 @@
+# Bubble Weather - License
+# Copyright (c) 2026 Clooos (https://www.patreon.com/Clooos)
+#
+# This module is a paid product. It is NOT open source and it is NOT covered
+# by the Bubble Card (MIT) license.
+#
+# Personal license:
+# - One license covers one household (all your own Home Assistant installations).
+# - Lifetime access through the dedicated Patreon post, or access while
+#   subscribed through my Patreon tiers.
+# - You may not share, resell or redistribute this module or this file.
+#
+# Professional use (installing this module for clients):
+# - One license is required per client installation.
+# - For multi-client needs, contact me on Patreon for a pro license.
+#
+# Thank you for supporting my work, this is what allows me to keep working on
+# Bubble Card and everything else around it. Cheers!
+
 weather_forecast:
   name: Bubble Weather
-  version: v1.1.0
+  version: v1.2.0
   creator: Clooos
   supported:
     - button
@@ -18,1554 +37,6 @@ weather_forecast:
         disable_dynamic_background: false
         disable_animations: false
     </pre></code-block>
-  code: |-
-    .bubble-container::before {
-      display: none;
-    }
-
-    .bubble-main-icon-container.bc-wx-hide-icon-bg {
-      background: transparent !important;
-    }
-
-    .bubble-container.bc-weather-card {
-      overflow: hidden;
-      scrollbar-gutter: stable both-edges;
-      isolation: isolate;
-      contain: layout style paint;
-    }
-
-    .bubble-container.bc-weather-card:not(.bc-wx-background-only) {
-      min-height: 180px;
-    }
-
-    .bc-weather-card:not(.bc-wx-background-only) .bubble-sub-button-container {
-      align-self: flex-start !important;
-    }
-
-    .bc-weather-card:not(.bc-wx-background-only) .bubble-sub-button-bottom-container {
-      bottom: 140px !important;
-    }
-
-    .bc-weather-card:not(.bc-wx-background-only).bc-wx-hidden .bubble-sub-button-bottom-container {
-      bottom: unset !important;
-    }
-
-    .bc-weather-card.bc-wx-background-only .bubble-sub-button-container {
-      margin-top: 0 !important;
-    }
-
-    .bc-weather-card.bc-wx-background-only.bc-wx-has-bottom-sub-buttons .bubble-sub-button-container {
-      margin-top: 10px !important;
-    }
-
-    .bc-weather-card.bc-wx-background-only-minimal .bubble-sub-button-container {
-      display: none !important;
-    }
-
-    .bc-weather-card.bc-wx-background-only-minimal .bubble-sub-button-bottom-container {
-      position: static !important;
-      top: auto !important;
-      bottom: auto !important;
-      width: calc(100% - 16px) !important;
-      margin: 0 8px 0 8px !important;
-      pointer-events: auto !important;
-    }
-
-    .bc-weather-card.bc-wx-weather-only .bubble-sub-button-container,
-    .bc-weather-card.bc-wx-weather-only .bubble-sub-button-bottom-container {
-      display: none !important;
-    }
-
-    .bubble-container.bc-weather-card.bc-square-card {
-      aspect-ratio: 1 / 1 !important;
-      height: 100% !important;
-    }
-
-    .bc-weather-card .bubble-wrapper {
-      inset: 0;
-      width: 100%;
-    }
-
-    .bc-weather-card .bubble-background {
-      inset: 0;
-      width: 100%;
-    }
-
-    .bc-weather-card .bubble-wrapper.fixed-top {
-      align-items: center;
-    }
-
-    .fixed-top .bubble-sub-button-container {
-      margin-top: 10px;
-    }
-
-    .bubble-wrapper.fixed-top .bubble-content-container {
-      display: flex;
-      align-items: center;
-      align-self: flex-start;
-      overflow: hidden;
-      flex-grow: 1;
-      margin-top: 1px;
-    }
-    .bc-wx-p-wrap {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      contain: strict;
-      transform: translateZ(0);
-    }
-
-    .bc-wx-p-wrap .row {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .bc-wx-p-wrap .row.back {
-      z-index: 1;
-      opacity: 0.85;
-      filter: blur(.2px);
-    }
-
-    .bc-wx-p-wrap.bc-stars .row {
-      z-index: 0;
-    }
-
-    .bc-wx-p {
-      position: absolute;
-      pointer-events: none;
-      will-change: transform;
-      animation-fill-mode: both;
-      --d: 1s;
-      --dl: 0s;
-    }
-
-    .bc-wx-p.rain {
-      bottom: 100%;
-      width: 15px;
-      height: 120px;
-      animation: bc-wx-drop var(--d) linear infinite;
-      animation-delay: var(--dl);
-      --rain-r: 255;
-      --rain-g: 255;
-      --rain-b: 255;
-      --rain-a: .28;
-      --rain-w: 1.2px;
-      --rain-h: 80%;
-    }
-
-    .bc-wx-p.rain::after {
-      content: "";
-      position: absolute;
-      left: 7px;
-      top: 0;
-      width: var(--rain-w, 1.2px);
-      height: var(--rain-h, 80%);
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(var(--rain-r),var(--rain-g),var(--rain-b),0),
-          rgba(var(--rain-r),var(--rain-g),var(--rain-b),var(--rain-a))
-        );
-      animation: bc-wx-stem var(--d) linear infinite;
-      animation-delay: var(--dl);
-    }
-
-    @keyframes bc-wx-drop {
-      0% { transform: translate3d(0, -120px, 0); }
-      100% { transform: translate3d(0, 110vh, 0); }
-    }
-
-    @keyframes bc-wx-stem {
-      0%, 90% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    .bc-wx-p.snow {
-      top: -16px;
-      border-radius: 50%;
-      background:
-        radial-gradient(
-          circle,
-          rgba(255,255,255,1) 0 52%,
-          rgba(255,255,255,.96) 65%,
-          rgba(255,255,255,0) 80%
-        );
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.9),
-        0 1px 2px rgba(0,0,0,.06);
-      animation: bc-wx-snow var(--d) linear infinite;
-      animation-delay: var(--dl);
-    }
-
-    @keyframes bc-wx-snow {
-      0% { transform: translate3d(0, -16px, 0); }
-      50% { transform: translate3d(var(--drift, 18px), 50vh, 0); }
-      100% { transform: translate3d(0, 110vh, 0); }
-    }
-
-    .bc-wx-p.hail {
-      top: -20px;
-      border-radius: 50%;
-      background: rgba(255,255,255,1);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.85),
-        0 1px 1px rgba(0,0,0,.08);
-      animation: bc-wx-hail var(--d) linear infinite;
-      animation-delay: var(--dl);
-    }
-
-    @keyframes bc-wx-hail {
-      0% { transform: translate3d(0, -20px, 0); }
-      100% { transform: translate3d(var(--drift, 4px), 110vh, 0); }
-    }
-
-    .bc-wx-p.star {
-      border-radius: 50%;
-      background: rgba(255,255,255,.95);
-      animation: bc-wx-twinkle var(--d) ease-in-out infinite;
-      animation-delay: var(--dl);
-    }
-
-    @keyframes bc-wx-twinkle {
-      0%, 100% { opacity: .15; }
-      50% { opacity: 1; }
-    }
-
-    .bc-wx-cloud-canvas {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .bc-wx-flash {
-      position: absolute;
-      inset: 0;
-      background: #fff;
-      opacity: 0;
-      animation: bc-wx-flash 5.2s linear infinite;
-      contain: strict;
-      transform: translateZ(0);
-    }
-
-    @keyframes bc-wx-flash {
-      0%, 92%, 100% { opacity: 0; }
-      93% { opacity: .25; }
-      94% { opacity: 0; }
-      96% { opacity: .45; }
-      97% { opacity: 0; }
-    }
-
-    .bc-weather {
-      position: absolute;
-      box-sizing: border-box;
-      padding: 16px;
-      bottom: 8px;
-      left: 0;
-      right: 0;
-      width: 100%;
-      pointer-events: none;
-      contain: layout style;
-    }
-
-    .bc-weather.bc-wx-top {
-      top: 8px;
-      bottom: auto;
-    }
-
-    .bc-weather-grid {
-      display: grid;
-      gap: 8px;
-      align-items: end;
-      width: 100%;
-    }
-
-    .bc-weather-day {
-      display: grid;
-      grid-template-rows: auto 28px auto;
-      justify-items: center;
-      text-align: center;
-      gap: 8px;
-    }
-
-    .bc-weather-day .day-label {
-      font-size: 12px;
-      opacity: .9;
-    }
-
-    .bc-weather-day ha-icon {
-      width: 26px;
-      height: 26px;
-      --mdc-icon-size: 26px;
-    }
-
-    .bc-weather-day .temps {
-      display: grid;
-      grid-auto-flow: row;
-      gap: 2px;
-      align-items: center;
-      justify-items: center;
-      font-size: 12px;
-      line-height: 1.05;
-    }
-
-    .bc-weather-day .hi {
-      font-weight: 600;
-    }
-
-    .bc-weather-day .lo {
-      opacity: .85;
-    }
-
-    ${(() => {
-      const cfg = this.config.weather_forecast || {};
-      const type = cfg.type || 'daily';
-      const max = Number.isFinite(cfg.max_days) ? cfg.max_days : 7;
-      const minW = Number.isFinite(cfg.min_day_width) ? cfg.min_day_width : 50;
-      const ttlDefaults = { hourly: 15, twice_daily: 180, daily: 60 };
-      const ttlMin = ttlDefaults[type] ?? 60;
-      const moduleMem = window.__bcWF = window.__bcWF || {};
-      const stateMem = moduleMem.state || (moduleMem.state = {});
-      const cacheMem = moduleMem.cache || (moduleMem.cache = {});
-      const requestMem = moduleMem.requests || (moduleMem.requests = {});
-      const hostStateMap =
-        moduleMem.hostStateMap || (moduleMem.hostStateMap = new WeakMap());
-      const cloudLayerMem =
-        moduleMem.cloudLayers || (moduleMem.cloudLayers = new WeakMap());
-      const getHostState = target => {
-        if (!target) return null;
-        let record = hostStateMap.get(target);
-        if (!record) {
-          record = {};
-          hostStateMap.set(target, record);
-        }
-        return record;
-      };
-      const pruneMemStore = (store, cap = 10) => {
-        if (!store) return;
-        const entries = Object.entries(store);
-        if (entries.length <= cap) return;
-        entries
-          .sort((a, b) => ((a[1]?.ts ?? 0) - (b[1]?.ts ?? 0)))
-          .slice(0, Math.max(0, entries.length - cap))
-          .forEach(([key]) => { delete store[key]; });
-      };
-      const prefersReducedMotion =
-        window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches || false;
-      const animOn = !cfg.disable_animations && !prefersReducedMotion;
-      const bgOn = !cfg.disable_dynamic_background;
-      const hideIconBg = cfg.hide_icon_background ?? false;
-      const cardLayout = cfg.card_layout || 'default';
-      const isWeatherOnlyMode = cardLayout === 'weather_only' || cardLayout === 'weather_only_bg';
-      const isWeatherOnlyMinimal = cardLayout === 'weather_only';
-      const isBackgroundOnly = cardLayout === 'background_only';
-      const isBackgroundOnlyMinimal = cardLayout === 'background_only_minimal';
-      const isWeatherHidden = isBackgroundOnly || isBackgroundOnlyMinimal;
-      const hideHeaderContent = isWeatherOnlyMode || isBackgroundOnlyMinimal;
-
-      const ha = (typeof hass !== 'undefined' && hass) ? hass : this?.hass;
-      if (!ha) return;
-      const entityId = typeof entity === 'string' ? entity : (this?.entity?.entity_id || '');
-      if (!entityId || !entityId.startsWith('weather.')) return;
-
-      // Performance Optimization: Cache check
-      const host = this?.elements?.cardWrapper || card;
-      const hostState = getHostState(host);
-      const last = stateMem[entityId];
-      const curState = ha.states[entityId];
-      const curSun = ha.states['sun.sun'];
-      const now = Date.now();
-      const renderedRoot = host?.querySelector?.('.bc-weather');
-      let root = renderedRoot;
-      const entityRev = curState
-        ? [
-            curState.state,
-            curState.last_updated,
-            curState.last_changed,
-            curState.attributes?.temperature,
-            curState.attributes?.humidity,
-            curState.attributes?.pressure,
-            curState.attributes?.wind_speed,
-            curState.attributes?.wind_bearing,
-            curState.attributes?.precipitation,
-            curState.attributes?.forecast?.[0]?.datetime,
-            curState.attributes?.forecast?.[0]?.condition
-          ].map(v => v ?? '').join('|')
-        : '';
-      const sunRev = curSun
-        ? [
-            curSun.state,
-            curSun.last_updated,
-            curSun.attributes?.next_rising,
-            curSun.attributes?.next_setting,
-            curSun.attributes?.elevation
-          ].map(v => v ?? '').join('|')
-        : '';
-      const isStale = !last 
-        || last.entity !== entityRev
-        || last.sun !== sunRev
-        || (now - last.ts > 60000); // Update at least every minute
-
-      const skipFullRedraw = !isStale && !!renderedRoot;
-      
-      if (curState || curSun) {
-        stateMem[entityId] = { entity: entityRev, sun: sunRev, ts: now };
-        pruneMemStore(stateMem, 12);
-      }
-      try {
-        host.classList.add('fixed-top');
-        const pos = getComputedStyle(host).position;
-        if (!pos || pos === 'static') host.style.position = 'relative';
-      } catch {}
-      const container =
-        this?.elements?.cardContainer ||
-        host?.closest?.('.bubble-container') ||
-        host;
-      container?.classList.add('bc-weather-card');
-      if (container?.classList) {
-        container.classList.toggle('bc-wx-background-only', isBackgroundOnly || isBackgroundOnlyMinimal);
-        container.classList.toggle('bc-wx-background-only-minimal', isBackgroundOnlyMinimal);
-        container.classList.toggle('bc-wx-weather-only', isWeatherOnlyMode);
-        const bottom = container.querySelector?.('.bubble-sub-button-bottom-container');
-        const bottomHasButtons = !!(bottom && bottom.childElementCount > 0);
-        container.classList.toggle('bc-wx-has-bottom-sub-buttons', bottomHasButtons);
-      }
-      if (cardLayout === 'square') {
-        container?.classList.add('bc-square-card');
-      }
-
-      // Set icon background class
-      const iconContainer = this?.elements?.iconContainer;
-      if (iconContainer) {
-        iconContainer.classList.toggle('bc-wx-hide-icon-bg', hideIconBg);
-      }
-
-      const cleanupHostResources = () => {
-        if (!hostState) return;
-        if (hostState.resizeFrame) {
-          cancelAnimationFrame(hostState.resizeFrame);
-          hostState.resizeFrame = null;
-        }
-        if (hostState.heightUpdateFrame) {
-          cancelAnimationFrame(hostState.heightUpdateFrame);
-          hostState.heightUpdateFrame = null;
-        }
-        if (hostState.resizeObserver) {
-          try { hostState.resizeObserver.disconnect(); } catch {}
-          hostState.resizeObserver = null;
-        }
-        if (root?._ro) {
-          try { root._ro.disconnect(); } catch {}
-          root._ro = null;
-        }
-        if (root?._heightRo) {
-          try { root._heightRo.disconnect(); } catch {}
-          root._heightRo = null;
-        }
-        if (hostState.parentObserver) {
-          hostState.parentObserver.disconnect();
-          hostState.parentObserver = null;
-        }
-        hostState.parentNode = null;
-        if (hostState.detachTimeout) {
-          clearTimeout(hostState.detachTimeout);
-          hostState.detachTimeout = null;
-        }
-      };
-
-      const scheduleDetachPoll = () => {
-        if (!hostState || hostState.detachTimeout) return;
-        hostState.detachTimeout = setTimeout(() => {
-          hostState.detachTimeout = null;
-          if (!host?.isConnected) {
-            cleanupHostResources();
-            return;
-          }
-          scheduleDetachPoll();
-        }, 60000);
-      };
-
-      const watchHostParent = () => {
-        if (!hostState || !host?.parentNode) return;
-        if (hostState.parentObserver && hostState.parentNode === host.parentNode) return;
-        if (hostState.parentObserver) {
-          hostState.parentObserver.disconnect();
-          hostState.parentObserver = null;
-        }
-        hostState.parentNode = host.parentNode;
-        const mo = new MutationObserver(records => {
-          if (!host?.isConnected) {
-            cleanupHostResources();
-            return;
-          }
-          for (const record of records) {
-            for (const removed of record.removedNodes) {
-              if (removed === host) {
-                cleanupHostResources();
-                return;
-              }
-            }
-          }
-        });
-        mo.observe(host.parentNode, { childList: true });
-        hostState.parentObserver = mo;
-      };
-
-      watchHostParent();
-      scheduleDetachPoll();
-
-      if (!root) {
-        root = Object.assign(document.createElement('div'), {
-          className: 'bc-weather',
-          innerHTML: '<div class="bc-weather-grid"></div>'
-        });
-        host.appendChild(root);
-      }
-      const grid = root.querySelector('.bc-weather-grid');
-      const hasTopContent = () => {
-        if (hideHeaderContent) return false;
-        const cfg = this?.config || {};
-        const defaultShowState = (cfg.button_type || 'state') === 'state';
-        const showIcon = cfg.show_icon ?? true;
-        const showName = cfg.show_name ?? true;
-        const showState = cfg.show_state ?? defaultShowState;
-        const showAttribute = cfg.show_attribute ?? defaultShowState;
-        const showLastChanged = cfg.show_last_changed ?? false;
-        const showLastUpdated = cfg.show_last_updated ?? false;
-        if (!(showIcon || showName || showState || showAttribute || showLastChanged || showLastUpdated)) {
-          return false;
-        }
-        const els = this?.elements || {};
-        const isVisible = el => !!el && !el.classList.contains('hidden');
-        return (
-          (showIcon && isVisible(els.iconContainer)) ||
-          (showName && isVisible(els.name)) ||
-          ((showState || showAttribute || showLastChanged || showLastUpdated) && isVisible(els.state))
-        );
-      };
-
-      const getWeatherMinHeight = () => {
-        const contentH = root?.scrollHeight || root?.offsetHeight || 0;
-        return Math.max(120, contentH + 16);
-      };
-
-      const updateWeatherPosition = (immediate = false) => {
-        const noTopContent = !hasTopContent();
-        const skipMinHeight = isWeatherHidden;
-        root.classList.toggle('bc-wx-top', noTopContent && !skipMinHeight);
-        
-        const applyHeight = () => {
-          if (container) {
-            if (noTopContent && !skipMinHeight) {
-              const height = getWeatherMinHeight();
-              container.style.minHeight = `${height}px`;
-            } else {
-              container.style.minHeight = '';
-            }
-          }
-        };
-
-        if (immediate) {
-          // Use single RAF for immediate mode to ensure layout is complete
-          requestAnimationFrame(applyHeight);
-        } else {
-          // Use double RAF for deferred mode to ensure DOM is fully laid out
-          requestAnimationFrame(() => {
-            requestAnimationFrame(applyHeight);
-          });
-        }
-      };
-
-      const applyWeatherOnly = () => {
-        const els = this?.elements || {};
-        const toggleDisplay = (el, on) => {
-          if (!el) return;
-          el.style.display = on ? '' : 'none';
-        };
-
-        const layoutKey = [
-          cardLayout,
-          hideHeaderContent ? 1 : 0,
-          isWeatherHidden ? 1 : 0,
-          isWeatherOnlyMinimal ? 1 : 0
-        ].join('|');
-        if (root?._wxLayoutKey === layoutKey) return;
-        if (root) root._wxLayoutKey = layoutKey;
-
-        // Hide card content; optionally strip backgrounds for the minimal mode
-        const hideContentContainers = isWeatherOnlyMode || isBackgroundOnlyMinimal;
-        toggleDisplay(els.contentContainer, !hideContentContainers);
-        toggleDisplay(els.buttonsContainer, !hideContentContainers);
-        const hideBackground = isWeatherOnlyMinimal;
-        toggleDisplay(els.background, !hideBackground);
-        toggleDisplay(root, !isWeatherHidden);
-        if (container) {
-          container.classList.toggle('bc-wx-hidden', isWeatherHidden);
-        }
-        if (hideHeaderContent) {
-          toggleDisplay(els.iconContainer, false);
-          toggleDisplay(els.name, false);
-          toggleDisplay(els.state, false);
-        } else {
-          toggleDisplay(els.iconContainer, true);
-          toggleDisplay(els.name, true);
-          toggleDisplay(els.state, true);
-        }
-        if (container) {
-          container.style.background = hideBackground ? 'transparent' : '';
-          container.style.boxShadow = hideBackground ? 'none' : '';
-          container.style.border = hideBackground ? 'none' : '';
-          container.style.minHeight = isWeatherHidden ? '0' : '';
-        }
-        if (host) {
-          host.style.background = hideBackground ? 'transparent' : '';
-        }
-      };
-
-      applyWeatherOnly();
-      updateWeatherPosition();
-
-      const el = (tag, cls, txt) => {
-        const n = document.createElement(tag);
-        if (cls) n.className = cls;
-        if (txt != null) n.textContent = txt;
-        return n;
-      };
-
-      const unit = ha?.config?.unit_system?.temperature || '°C';
-      const fmt = v =>
-        (v == null || Number.isNaN(+v))
-          ? ''
-          : `${Math.round(+v)}${unit.replace('°',' °')}`.replace('  ',' ');
-
-      const label = iso => {
-        try {
-          const d = new Date(iso);
-          if (type === 'hourly') {
-            return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-          }
-          const lang = ha?.locale?.language || navigator.language || 'en-US';
-          return d.toLocaleDateString(lang, { weekday:'short' });
-        } catch { return ''; }
-      };
-
-      const isNight = f => {
-        if (typeof f?.is_daytime === 'boolean') return !f.is_daytime;
-
-        const ent = ha?.states?.[entityId];
-        if (typeof ent?.attributes?.is_daytime === 'boolean') {
-          return !ent.attributes.is_daytime;
-        }
-
-        const sunState = ha?.states?.['sun.sun']?.state;
-        if (sunState === 'below_horizon') return true;
-        if (sunState === 'above_horizon') return false;
-
-        try {
-          const d = f?.datetime || f?.time || f?.date
-            ? new Date(f.datetime || f.time || f.date)
-            : new Date();
-          const h = d.getHours();
-          return h < 6 || h >= 20;
-        } catch { return false; }
-      };
-
-      let currentList = null;
-
-      const applyBackground = () => {
-        const bg = this?.elements?.background;
-        if (!bg) return;
-
-        // Custom attributes for animations
-        const ent = ha?.states?.[entityId];
-        const attrs = ent?.attributes || {};
-        const windSpeed = Number(attrs.wind_speed) || 0;
-        const windBearing = Number(attrs.wind_bearing);
-        const precip = Number(attrs.precipitation);
-
-        try {
-          const pos = getComputedStyle(bg).position;
-          if (!pos || pos === 'static') bg.style.position = 'absolute';
-          bg.style.left = '0';
-          bg.style.right = '0';
-          bg.style.top = '0';
-          bg.style.bottom = '0';
-          bg.style.width = '100%';
-          bg.style.height = '100%';
-        } catch {}
-
-        const hideCloudLayer = () => {
-          const layer = cloudLayerMem.get(bg);
-          if (!layer?.canvas) return;
-          if (layer.animId) {
-            cancelAnimationFrame(layer.animId);
-            layer.animId = null;
-          }
-          if (layer.observer) {
-            layer.observer.disconnect();
-            layer.observer = null;
-          }
-          if (layer.canvas.style.display !== 'none') {
-            layer.canvas.style.display = 'none';
-          }
-          layer.stateKey = null;
-        };
-
-        const showCloudLayer = () => {
-          const layer = cloudLayerMem.get(bg);
-          if (!layer?.canvas) return;
-          if (!layer.canvas.isConnected) {
-            bg.appendChild(layer.canvas);
-          }
-          if (layer.canvas.style.display === 'none') {
-            layer.canvas.style.display = '';
-          }
-        };
-
-        const clear = ({ keepClouds = false } = {}) => {
-          bg.querySelectorAll('.bc-wx-p-wrap,.bc-wx-flash').forEach(n => n.remove());
-          if (keepClouds) {
-            // Ensure cloud layer stays visible when keeping clouds
-            showCloudLayer();
-          } else {
-            hideCloudLayer();
-          }
-        };
-
-        if (!bgOn) {
-          clear();
-          bg._wxKey = null;
-          return;
-        }
-
-        const setGrad = css => {
-          bg.style.backgroundImage = css;
-          bg.style.backgroundSize = 'cover';
-          bg.style.backgroundPosition = 'center';
-        };
-
-        const addFlash = () => {
-          if (!animOn) return;
-          for (let i = 0; i < 2; i++) {
-            const f = document.createElement('div');
-            f.className = 'bc-wx-flash';
-            f.style.animationDelay = (Math.random()*3 + 1) + 's';
-            bg.appendChild(f);
-          }
-        };
-
-        const makeWrap = () => {
-          const wrap = document.createElement('div');
-          wrap.className = 'bc-wx-p-wrap';
-          wrap.innerHTML = '<div class="row front"></div><div class="row back"></div>';
-          return { wrap, front: wrap.firstElementChild, back: wrap.lastElementChild };
-        };
-
-        const addParticles = ({ kind='rain', intensity='normal', style='' } = {}) => {
-          if (!animOn) return;
-          const maps = {
-            rain: { light:16, normal:26, heavy:44 },
-            snow: { light:72, normal:120, heavy:180 },
-            hail: { light:14, normal:22, heavy:34 },
-            stars:{ light:14, normal:32, heavy:46 }
-          };
-
-          let count = (maps[kind] || maps.stars)[intensity] || (maps[kind] || maps.stars).normal;
-
-          // Adjust rain quantity based on precipitation if available
-          if (kind === 'rain' && !Number.isNaN(precip) && precip > 0) {
-             // Mapping: 0-10mm -> 10-100 particles (approx)
-             count = Math.min(200, Math.max(10, Math.floor(precip * 8 + 10)));
-          }
-
-          const { wrap, front, back } = makeWrap();
-          if (style) wrap.setAttribute('style', style);
-
-          if (kind === 'stars') wrap.classList.add('bc-stars');
-
-          if (kind === 'rain') {
-            const build = (row, invert=false) => {
-              const step = 100 / count;
-              let html = '';
-              for (let i = 0; i < count; i++) {
-                const pos = (i*step) + Math.random()*step*0.6;
-                const side = invert ? 'right' : 'left';
-                const base = 1.1 + Math.random()*0.7;
-                const delay = `-${(Math.random()*base).toFixed(2)}s`;
-                const dur = `${base.toFixed(2)}s`;
-                const bottom = `${100 + Math.floor(Math.random()*40)}%`;
-                html +=
-                  `<div class="bc-wx-p rain"
-                    style="${side}:${pos}%;
-                           bottom:${bottom};
-                           --d:${dur};
-                           --dl:${delay}"></div>`;
-              }
-              row.innerHTML = html;
-            };
-            build(front,false);
-            build(back,true);
-            bg.appendChild(wrap);
-            return;
-          }
-
-          if (kind === 'snow') {
-            const build = (row, scale=1, opacity=1) => {
-              let html = '';
-              for (let i = 0; i < count; i++) {
-                const left = (Math.random()*100).toFixed(2);
-                const top = -150 - Math.floor(Math.random()*200);
-                const base = 14 + Math.random()*12;
-                const dur = `${base.toFixed(2)}s`;
-                const delay = `-${(Math.random()*base).toFixed(2)}s`;
-                const drift = `${(Math.random()*36 - 18).toFixed(1)}px`;
-                const size = Math.min(4, (Math.random()*2.5 + 1.5) * scale).toFixed(1);
-                const op = Math.min(1, Math.max(0.9, opacity)).toFixed(2);
-                html +=
-                  `<div class="bc-wx-p snow"
-                    style="left:${left}%;
-                           top:${top}px;
-                           animation-delay:${delay};
-                           animation-duration:${dur};
-                           --drift:${drift};
-                           width:${size}px;
-                           height:${size}px;
-                           opacity:${op}"></div>`;
-              }
-              row.innerHTML = html;
-            };
-            build(front, 1, 1);
-            build(back, 0.8, 0.75);
-            bg.appendChild(wrap);
-            return;
-          }
-
-          if (kind === 'hail') {
-            const build = (row, scale=1) => {
-              let html = '';
-              for (let i = 0; i < count; i++) {
-                const left = (Math.random()*100).toFixed(2);
-                const top = -120 - Math.floor(Math.random()*160);
-                const base = 2.4 + Math.random()*1.8;
-                const dur = `${base.toFixed(2)}s`;
-                const delay = `-${(Math.random()*base).toFixed(2)}s`;
-                const drift = `${(Math.random()*8 - 4).toFixed(1)}px`;
-                const size = Math.min(4, Math.max(2, (Math.random()*2 + 2) * scale)).toFixed(1);
-                html +=
-                  `<div class="bc-wx-p hail"
-                    style="left:${left}%;
-                           top:${top}px;
-                           animation-delay:${delay};
-                           animation-duration:${dur};
-                           --drift:${drift};
-                           width:${size}px;
-                           height:${size}px;
-                           opacity:1"></div>`;
-              }
-              row.innerHTML = html;
-            };
-            build(front, 1);
-            build(back, 0.9);
-            bg.appendChild(wrap);
-            return;
-          }
-
-          if (kind === 'stars') {
-            const build = (row, scale=1, opacity=1) => {
-              let html = '';
-              for (let i = 0; i < count; i++) {
-                const left = (Math.random()*100).toFixed(2);
-                const top = (Math.random()*50).toFixed(2);
-                const base = 2 + Math.random()*3;
-                const dur = `${base.toFixed(2)}s`;
-                const delay = `-${(Math.random()*base).toFixed(2)}s`;
-                const size = ((Math.random()*1.8 + 0.6) * scale).toFixed(2);
-                const op = Math.min(1, Math.max(.35, opacity*Math.random())).toFixed(2);
-                html +=
-                  `<div class="bc-wx-p star"
-                    style="left:${left}%;
-                           top:${top}%;
-                           width:${size}px;
-                           height:${size}px;
-                           opacity:${op};
-                           --d:${dur};
-                           --dl:${delay}"></div>`;
-              }
-              row.innerHTML = html;
-            };
-            build(front, 1, 1);
-            build(back, 0.85, 0.7);
-            bg.appendChild(wrap);
-            return;
-          }
-        };
-
-        const baseUrl = 'https://raw.githubusercontent.com/Clooos/Bubble-Card/refs/heads/main/img/';
-        const cloudUrl = `${baseUrl}cloud.png`;
-        const MAX_CLOUDS = 18;
-
-        // Shared cloud image cache with pre-rendered night version
-        const cloudImgCache = window.__bcWF.cloudImg || (window.__bcWF.cloudImg = {
-          img: null,
-          imgNight: null,
-          loading: false,
-          loaded: false
-        });
-
-        const createNightCloud = (img) => {
-          // Pre-render night version using pixel manipulation for Safari compatibility
-          const w = img.naturalWidth || img.width;
-          const h = img.naturalHeight || img.height;
-          const offscreen = document.createElement('canvas');
-          offscreen.width = w;
-          offscreen.height = h;
-          const octx = offscreen.getContext('2d');
-          if (!octx) return null;
-
-          octx.drawImage(img, 0, 0);
-          const imageData = octx.getImageData(0, 0, w, h);
-          const data = imageData.data;
-
-          // Apply brightness(0.4), contrast(1.25), hue-rotate(215deg)
-          const hueShift = 215 * Math.PI / 180;
-          const cosH = Math.cos(hueShift);
-          const sinH = Math.sin(hueShift);
-
-          for (let i = 0; i < data.length; i += 4) {
-            let r = data[i];
-            let g = data[i + 1];
-            let b = data[i + 2];
-
-            // Brightness (0.4)
-            r *= 0.4;
-            g *= 0.4;
-            b *= 0.4;
-
-            // Contrast (1.25)
-            r = ((r / 255 - 0.5) * 1.25 + 0.5) * 255;
-            g = ((g / 255 - 0.5) * 1.25 + 0.5) * 255;
-            b = ((b / 255 - 0.5) * 1.25 + 0.5) * 255;
-
-            // Hue rotation (215deg) using rotation matrix
-            const rr = r, gg = g, bb = b;
-            r = rr * (0.213 + cosH * 0.787 - sinH * 0.213)
-              + gg * (0.715 - cosH * 0.715 - sinH * 0.715)
-              + bb * (0.072 - cosH * 0.072 + sinH * 0.928);
-            g = rr * (0.213 - cosH * 0.213 + sinH * 0.143)
-              + gg * (0.715 + cosH * 0.285 + sinH * 0.140)
-              + bb * (0.072 - cosH * 0.072 - sinH * 0.283);
-            b = rr * (0.213 - cosH * 0.213 - sinH * 0.787)
-              + gg * (0.715 - cosH * 0.715 + sinH * 0.715)
-              + bb * (0.072 + cosH * 0.928 + sinH * 0.072);
-
-            data[i] = Math.max(0, Math.min(255, r));
-            data[i + 1] = Math.max(0, Math.min(255, g));
-            data[i + 2] = Math.max(0, Math.min(255, b));
-          }
-
-          octx.putImageData(imageData, 0, 0);
-          return offscreen;
-        };
-
-        const loadCloudImage = () => {
-          if (cloudImgCache.loaded || cloudImgCache.loading) return;
-          cloudImgCache.loading = true;
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = () => {
-            cloudImgCache.img = img;
-            cloudImgCache.imgNight = createNightCloud(img);
-            cloudImgCache.loaded = true;
-            cloudImgCache.loading = false;
-          };
-          img.onerror = () => { cloudImgCache.loading = false; };
-          img.src = cloudUrl;
-        };
-
-        const getCloudLayer = () => {
-          if (!bg) return null;
-          let record = cloudLayerMem.get(bg);
-          if (record?.canvas && record.clouds?.length === MAX_CLOUDS) {
-            return record;
-          }
-
-          loadCloudImage();
-
-          const canvas = document.createElement('canvas');
-          canvas.className = 'bc-wx-cloud-canvas';
-          canvas.style.width = '100%';
-          canvas.style.height = '100%';
-
-          const clouds = [];
-          for (let i = 0; i < MAX_CLOUDS; i++) {
-            const width = Math.floor(Math.random() * 180) + 140;
-            const height = Math.floor(width * 0.6);
-            const topPercent = (Math.random() * 0.6) - 0.4;
-            const opacity = Math.random() * 0.35 + 0.5;
-            const speed = 0.012 + Math.random() * 0.028;
-            const offset = (i / MAX_CLOUDS) + Math.random() * 0.08;
-            clouds.push({ width, height, topPercent, opacity, speed, offset, x: 0 });
-          }
-
-          // Sort by opacity for depth effect (darker = further back)
-          clouds.sort((a, b) => a.opacity - b.opacity);
-
-          record = { canvas, clouds, stateKey: null, animId: null, ctx: null };
-          cloudLayerMem.set(bg, record);
-          return record;
-        };
-
-        const addClouds = ({ intensity = 'normal', isNight = false } = {}) => {
-          if (!animOn || !bg) return;
-
-          const layer = getCloudLayer();
-          if (!layer) return;
-          const { canvas, clouds } = layer;
-
-          if (!canvas.isConnected) {
-            bg.appendChild(canvas);
-          }
-          if (canvas.style.display === 'none') {
-            canvas.style.display = '';
-          }
-
-          const countMap = { light: 6, normal: 8, heavy: 12 };
-          const baseCount = countMap[intensity] || 10;
-          const targetCount = Math.min(MAX_CLOUDS, baseCount);
-
-          let direction = 1;
-          if (!Number.isNaN(windBearing) && windBearing >= 0 && windBearing <= 180) {
-            direction = -1;
-          }
-
-          const windFactor = Math.max(0, windSpeed);
-          const speedMultiplier = 1 + (windFactor * 0.02);
-
-          const stateKey = [intensity, isNight ? 1 : 0, direction].join('|');
-          const needsRestart = layer.stateKey !== stateKey || !layer.animId;
-          layer.stateKey = stateKey;
-
-          if (layer.animId && !needsRestart) return;
-
-          if (layer.animId) {
-            cancelAnimationFrame(layer.animId);
-            layer.animId = null;
-          }
-
-          const resizeCanvas = () => {
-            const rect = bg.getBoundingClientRect();
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            const w = Math.floor(rect.width);
-            const h = Math.floor(rect.height);
-            if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
-              canvas.width = w * dpr;
-              canvas.height = h * dpr;
-              canvas.style.width = w + 'px';
-              canvas.style.height = h + 'px';
-            }
-            return { w, h, dpr };
-          };
-
-          let lastTime = 0;
-          let isVisible = true;
-
-          // Pause animation when tab is hidden
-          const handleVisibility = () => {
-            if (document.hidden) {
-              isVisible = false;
-            } else {
-              isVisible = true;
-              lastTime = 0;
-              if (!layer.animId && canvas.isConnected && canvas.style.display !== 'none') {
-                layer.animId = requestAnimationFrame(animate);
-              }
-            }
-          };
-          document.addEventListener('visibilitychange', handleVisibility, { passive: true });
-
-          // Use IntersectionObserver to pause when off-screen
-          if ('IntersectionObserver' in window && !layer.observer) {
-            layer.observer = new IntersectionObserver((entries) => {
-              isVisible = entries[0]?.isIntersecting ?? true;
-              if (isVisible && !layer.animId && canvas.isConnected && canvas.style.display !== 'none') {
-                lastTime = 0;
-                layer.animId = requestAnimationFrame(animate);
-              }
-            }, { threshold: 0 });
-            layer.observer.observe(canvas);
-          }
-
-          const animate = (timestamp) => {
-            if (!canvas.isConnected || canvas.style.display === 'none') {
-              layer.animId = null;
-              return;
-            }
-
-            // Skip frame if not visible (tab hidden or off-screen)
-            if (!isVisible || document.hidden) {
-              layer.animId = null;
-              return;
-            }
-
-            const delta = lastTime ? Math.min((timestamp - lastTime) / 16.67, 3) : 1;
-            lastTime = timestamp;
-
-            const { w, h, dpr } = resizeCanvas();
-            if (w === 0 || h === 0) {
-              layer.animId = requestAnimationFrame(animate);
-              return;
-            }
-
-            const ctx = canvas.getContext('2d', { alpha: true });
-            if (!ctx) {
-              layer.animId = requestAnimationFrame(animate);
-              return;
-            }
-
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            ctx.clearRect(0, 0, w, h);
-
-            // Use pre-rendered night image for Safari compatibility
-            const img = isNight && cloudImgCache.imgNight
-              ? cloudImgCache.imgNight
-              : cloudImgCache.img;
-            if (!img) {
-              layer.animId = requestAnimationFrame(animate);
-              return;
-            }
-
-            const dayOpacityMap = { light: 0.65, normal: 0.5, heavy: 0.4 };
-            const dayOpacityFactor = dayOpacityMap[intensity] || 0.5;
-
-            for (let i = 0; i < targetCount; i++) {
-              const cloud = clouds[i];
-              cloud.offset += cloud.speed * speedMultiplier * direction * delta * 0.01;
-
-              if (direction > 0 && cloud.offset > 1.3) {
-                cloud.offset = -0.3 - (cloud.width / w);
-              } else if (direction < 0 && cloud.offset < -0.3 - (cloud.width / w)) {
-                cloud.offset = 1.3;
-              }
-
-              const x = cloud.offset * w;
-              const y = cloud.topPercent * h;
-              const cw = cloud.width;
-              const ch = cloud.height;
-
-              ctx.globalAlpha = isNight ? cloud.opacity * 0.5 : cloud.opacity * dayOpacityFactor;
-              ctx.drawImage(img, x, y, cw, ch);
-            }
-
-            ctx.globalAlpha = 1;
-
-            layer.animId = requestAnimationFrame(animate);
-          };
-
-          layer.animId = requestAnimationFrame(animate);
-        };
-
-        const condRaw = String(ha?.states?.[entityId]?.state || '').toLowerCase();
-        const condBase = condRaw.replace(/-night$/,'').replace(/-day$/,'');
-        const cond = condBase;
-        const nightForecast =
-          Array.isArray(currentList) && currentList.length
-            ? isNight(currentList[0])
-            : isNight();
-        const isNightMode = condRaw.endsWith('-night') || nightForecast;
-
-        const keyForNight = c => {
-          if (c === 'clear' || c === 'sunny') return 'clear-night';
-          return c ? `${c}-night` : 'default-night';
-        };
-
-        const FX = {
-          sunny: { bg: `
-            linear-gradient(rgba(255,255,255,.06) 0%, rgba(255,255,255,0) 30%),
-            radial-gradient(200% 150% at 50% 0%, rgb(255 238 230) 0%, rgba(255,245,204,0) 60%),
-            linear-gradient(rgb(0 127 255) 0%, rgb(0 149 255) 50%, rgb(0 139 255) 100%)
-          `},
-          'clear-night': { bg: `
-            radial-gradient(120% 100% at 50% 130%, hsla(260,80%,6%,.8) 0%, rgba(0,0,0,0) 60%),
-            linear-gradient(180deg, hsl(235,47%,17%) 0%, hsl(252,39%,22%) 55%, hsl(260,35%,18%) 100%)
-          `, precip:[{ kind:'stars', intensity:'normal' }]},
-
-          partlycloudy: { bg: `
-            radial-gradient(160% 120% at 85% -10%, hsla(48,95%,85%,.55) 0%, rgba(255,255,255,0) 55%),
-            linear-gradient(180deg, hsl(214,25%,78%) 0%, hsl(209,22%,70%) 50%, hsl(207,48%,57%) 100%)
-          `, clouds: { intensity: 'light', isNight: false }},
-          'partlycloudy-night': { bg: `
-            radial-gradient(160% 120% at 85% -10%, hsla(260,35%,20%,.6) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(235,32%,16%) 0%, hsl(242,28%,20%) 55%, hsl(250,26%,18%) 100%)
-          `, precip:[{ kind:'stars', intensity:'light' }], clouds: { intensity: 'light', isNight: true }},
-
-          cloudy: { bg: `
-            linear-gradient(180deg, hsl(210,16%,65%) 0%, hsl(210,12%,58%) 50%, hsl(210,10%,52%) 100%)
-          `, clouds: { intensity: 'heavy', isNight: false }},
-          'cloudy-night': { bg: `
-            linear-gradient(180deg, hsl(230,16%,24%) 0%, hsl(235,14%,22%) 55%, hsl(240,12%,20%) 100%)
-          `, clouds: { intensity: 'heavy', isNight: true }},
-
-          fog: { bg: `
-            linear-gradient(180deg, hsl(210,20%,85%) 0%, hsl(210,20%,80%) 45%, hsl(210,20%,76%) 100%)
-          `},
-          windy: { bg: `
-            linear-gradient(180deg, hsl(205,40%,78%) 0%, hsl(205,40%,72%) 50%, hsl(205,38%,66%) 100%)
-          `},
-          'windy-variant': { bg: `
-            linear-gradient(180deg, hsl(205,40%,78%) 0%, hsl(205,40%,72%) 50%, hsl(205,38%,66%) 100%)
-          `, clouds: { intensity: 'heavy', isNight: false }},
-          hail: { bg: `
-            linear-gradient(180deg, hsl(208,28%,62%) 0%, hsl(210,28%,56%) 55%, hsl(210,28%,52%) 100%)
-          `, precip:[{ kind:'hail', intensity:'normal' }]},
-          rainy: { bg: `
-            linear-gradient(180deg, hsl(208,32%,52%) 0%, hsl(210,30%,58%) 60%, hsl(210,28%,66%) 100%)
-          `, precip:[{ kind:'rain', intensity:'normal' }]},
-          pouring: { bg: `
-            linear-gradient(180deg, hsl(210,24%,32%) 0%, hsl(210,22%,40%) 55%, hsl(210,22%,48%) 100%)
-          `, precip:[{ kind:'rain', intensity:'heavy' }]},
-          lightning: { bg: `
-            linear-gradient(180deg, hsl(220,18%,18%) 0%, hsl(220,16%,28%) 55%, hsl(220,16%,36%) 100%)
-          `, flash:true},
-          'lightning-rainy': { bg: `
-            linear-gradient(180deg, hsl(220,18%,18%) 0%, hsl(220,16%,28%) 55%, hsl(220,16%,36%) 100%)
-          `, precip:[{ kind:'rain', intensity:'normal' }], flash:true},
-          snowy: { bg: `
-            linear-gradient(180deg, hsl(208 46% 74%) 0%, hsl(210,42%,96%) 55%, hsl(210,46%,98%) 100%)
-          `, precip:[{ kind:'snow', intensity:'normal' }]},
-          'snowy-rainy': { bg: `
-            linear-gradient(180deg, hsl(212 17% 53%) 0%, hsl(210,34%,92%) 55%, hsl(210,38%,96%) 100%)
-          `, precip:[
-            { kind:'snow', intensity:'light' },
-            { kind:'rain', intensity:'normal',
-              style:'--rain-r:20;--rain-g:20;--rain-b:20;--rain-a:.58;--rain-w:1.6px;--rain-h:90%' }
-          ]},
-          exceptional: { bg: `
-            linear-gradient(180deg, hsl(12,64%,38%) 0%, hsl(12,58%,44%) 55%, hsl(12,54%,50%) 100%)
-          `},
-          default: { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(42,92%,84%,.55) 0%, rgba(255,255,255,0) 55%),
-            linear-gradient(180deg, hsl(205,60%,78%) 0%, hsl(210,62%,70%) 55%, hsl(200,58%,64%) 100%)
-          `},
-          'default-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(260,60%,10%,.6) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(235,30%,16%) 0%, hsl(245,26%,18%) 55%, hsl(255,24%,16%) 100%)
-          `},
-          'rainy-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(220,44%,14%,.7) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(215,22%,22%) 0%, hsl(215,20%,26%) 55%, hsl(215,18%,30%) 100%)
-          `, precip:[{ kind:'rain', intensity:'normal' }]},
-          'pouring-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(220,44%,12%,.8) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(215,20%,16%) 0%, hsl(215,18%,22%) 55%, hsl(215,16%,28%) 100%)
-          `, precip:[{ kind:'rain', intensity:'heavy' }]},
-          'hail-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(210,36%,16%,.65) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(210,24%,22%) 0%, hsl(210,22%,28%) 55%, hsl(210,20%,32%) 100%)
-          `, precip:[{ kind:'hail', intensity:'normal' }]},
-          'snowy-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(220,28%,16%,.6) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(220,20%,22%) 0%, hsl(220,18%,30%) 55%, hsl(220,16%,34%) 100%)
-          `, precip:[{ kind:'snow', intensity:'normal' }]},
-          'snowy-rainy-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(215,28%,14%,.65) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(215,18%,22%) 0%, hsl(215,18%,28%) 55%, hsl(215,16%,32%) 100%)
-          `, precip:[
-            { kind:'snow', intensity:'light' },
-            { kind:'rain', intensity:'normal',
-              style:'--rain-r:200;--rain-g:200;--rain-b:200;--rain-a:.66;--rain-w:1.4px;--rain-h:82%' }
-          ]},
-          'lightning-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(230,32%,10%,.72) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(230,18%,16%) 0%, hsl(230,18%,22%) 55%, hsl(230,16%,28%) 100%)
-          `, flash:true},
-          'lightning-rainy-night': { bg: `
-            radial-gradient(120% 80% at 50% 120%, hsla(230,32%,10%,.72) 0%, rgba(0,0,0,0) 55%),
-            linear-gradient(180deg, hsl(230,18%,16%) 0%, hsl(230,18%,22%) 55%, hsl(230,16%,28%) 100%)
-          `, precip:[{ kind:'rain', intensity:'normal' }], flash:true},
-          'windy-variant-night': { bg: `
-            linear-gradient(180deg, hsl(230,16%,24%) 0%, hsl(235,14%,22%) 55%, hsl(240,12%,20%) 100%)
-          `, clouds: { intensity: 'heavy', isNight: true }}
-        };
-
-        const fxKey = isNightMode ? keyForNight(cond) : cond;
-        const fx = FX[fxKey] || (isNightMode ? FX['default-night'] : FX.default);
-
-        const stateKey = JSON.stringify({
-          c: fxKey,
-          p: fx.precip ? fx.precip.map(p => p.kind+':'+p.intensity).join('+') : '',
-          f: !!fx.flash,
-          cl: fx.clouds ? `${fx.clouds.intensity}:${fx.clouds.isNight}` : ''
-        });
-        const wantsClouds = !!fx.clouds;
-        const hadClouds = bg._wxHadClouds;
-        bg._wxHadClouds = wantsClouds;
-
-        // If state hasn't changed, just ensure clouds are properly displayed
-        if (bg._wxKey === stateKey) {
-          if (wantsClouds) addClouds(fx.clouds);
-          else if (hadClouds) hideCloudLayer();
-          return;
-        }
-
-        // State changed - update everything
-        // Only clear particles/flash, handle clouds separately to minimize DOM changes
-        bg.querySelectorAll('.bc-wx-p-wrap,.bc-wx-flash').forEach(n => n.remove());
-
-        setGrad(fx.bg);
-
-        if (wantsClouds) {
-          addClouds(fx.clouds);
-        } else {
-          hideCloudLayer();
-        }
-
-        if (fx.precip) fx.precip.forEach(addParticles);
-        if (fx.flash) addFlash();
-        bg._wxKey = stateKey;
-      };
-
-      if (skipFullRedraw) {
-        applyWeatherOnly();
-        updateWeatherPosition();
-        applyBackground();
-        return;
-      }
-
-      const render = items => {
-        const containerWidth = container?.clientWidth || container?.offsetWidth || 0;
-        const width = root.clientWidth || host.clientWidth || containerWidth || 0;
-        // When width is 0, show all requested items without column limit
-        const maxCols = width > 0 ? Math.max(1, Math.floor(width / minW)) : max;
-        // Fit the forecast on a single row by limiting the visible items to the available columns.
-        const visibleCount = Math.min(items.length, max, maxCols);
-        const cols = Math.max(visibleCount, 1);
-        const dataKey = items.map(f => [
-          f.datetime || f.time || f.date || '',
-          f.condition || '',
-          f.temperature ?? f.temphigh ?? f.high ?? '',
-          f.templow ?? f.low ?? f.apparent_temperature_min ?? ''
-        ].join('|')).join(';');
-        const renderKey = `${Math.round(width)}|${cols}|${dataKey}`;
-        if (grid._wxRenderKey === renderKey) {
-          updateWeatherPosition();
-          applyWeatherOnly();
-          return;
-        }
-        grid._wxRenderKey = renderKey;
-        grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-        while (grid.children.length < visibleCount) {
-          const wrap = el('div','bc-weather-day');
-          const labelEl = el('div','day-label');
-          const icon = el('ha-icon');
-          const temps = el('div','temps');
-          const hi = el('div','hi');
-          const lo = el('div','lo');
-          temps.append(hi, lo);
-          wrap.append(labelEl, icon, temps);
-          wrap._label = labelEl;
-          wrap._icon = icon;
-          wrap._hi = hi;
-          wrap._lo = lo;
-          grid.appendChild(wrap);
-        }
-
-        for (let i = 0; i < grid.children.length; i++) {
-          const wrap = grid.children[i];
-          const visible = i < visibleCount;
-          wrap.style.display = visible ? 'grid' : 'none';
-          if (!visible) continue;
-
-          const f = items[i] || {};
-          const dt = f.datetime || f.time || f.date || '';
-          wrap._label.textContent = label(dt);
-          wrap._icon.setAttribute(
-            'icon',
-            getWeatherIcon(String(f.condition||'').toLowerCase())
-          );
-          wrap._hi.textContent = fmt(f.temperature ?? f.temphigh ?? f.high);
-
-          if (type === 'hourly') {
-            wrap._lo.textContent = '';
-            wrap._lo.style.display = 'none';
-          } else {
-            wrap._lo.style.display = '';
-            wrap._lo.textContent =
-              fmt(f.templow ?? f.low ?? f.apparent_temperature_min) || '';
-          }
-        }
-        // Update position after render - use immediate mode for faster update
-        updateWeatherPosition(true);
-        applyWeatherOnly();
-      };
-
-      const observe = () => {
-        if (!host || !root || !hostState) return;
-        if (hostState.resizeObserver) return;
-        if (root._ro) {
-          try { root._ro.disconnect(); } catch {}
-          root._ro = null;
-        }
-        const handleResize = () => {
-          if (hostState.resizeFrame) {
-            cancelAnimationFrame(hostState.resizeFrame);
-          }
-          hostState.resizeFrame = requestAnimationFrame(() => {
-            hostState.resizeFrame = null;
-            render(currentList || []);
-          });
-        };
-        const ro = new ResizeObserver(handleResize);
-        try { ro.observe(host); } catch {}
-        try { ro.observe(root); } catch {}
-        if (container && container !== host) {
-          try { ro.observe(container); } catch {}
-        }
-        hostState.resizeObserver = ro;
-        
-        // Dedicated ResizeObserver for height updates in weather-only mode
-        if (!root._heightRo && isWeatherOnlyMode) {
-          const heightUpdateFrame = () => {
-            if (hostState.heightUpdateFrame) {
-              cancelAnimationFrame(hostState.heightUpdateFrame);
-            }
-            hostState.heightUpdateFrame = requestAnimationFrame(() => {
-              hostState.heightUpdateFrame = null;
-              updateWeatherPosition(true);
-            });
-          };
-          root._heightRo = new ResizeObserver(heightUpdateFrame);
-          try { root._heightRo.observe(root); } catch {}
-        }
-        
-        watchHostParent();
-        scheduleDetachPoll();
-      };
-
-      const ttlMs = ttlMin*60*1000;
-      const cacheKey = `bcwf|${entityId}|${type}|max:${max}`;
-      const requestKey = `${entityId}|${type}`;
-
-      const toTimestamp = f => {
-        const dt = f?.datetime || f?.time || f?.date;
-        const ts = dt ? new Date(dt).getTime() : NaN;
-        return Number.isNaN(ts) ? null : ts;
-      };
-
-      const normalizeForecast = raw => {
-        if (!Array.isArray(raw)) return [];
-
-        const sorted = [...raw].sort((a, b) => {
-          const ta = toTimestamp(a);
-          const tb = toTimestamp(b);
-          if (ta == null && tb == null) return 0;
-          if (ta == null) return 1;
-          if (tb == null) return -1;
-          return ta - tb;
-        });
-
-        const cutoff = now - 30*60*1000;
-        const trimmed =
-          type === 'hourly'
-            ? sorted.filter(f => {
-                const ts = toTimestamp(f);
-                if (ts == null) return true;
-                return ts >= cutoff;
-              })
-            : sorted;
-
-        const usable = trimmed.length ? trimmed : sorted;
-        return usable.slice(0, max);
-      };
-
-      const getCache = () => {
-        const m = cacheMem[cacheKey];
-        if (m && now - m.ts <= ttlMs) return m.data;
-        try {
-          const r = JSON.parse(localStorage.getItem(cacheKey) || 'null');
-          if (r && now - r.ts <= ttlMs) return r.data;
-        } catch {}
-        return null;
-      };
-
-      const setCache = d => {
-        cacheMem[cacheKey] = { ts: now, data: d };
-        pruneMemStore(cacheMem, 8);
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify({ ts: now, data: d }));
-        } catch {}
-      };
-
-      const extractForecast = (r) => {
-        if (!r) return [];
-        if (Array.isArray(r?.[entityId]?.forecast)) return r[entityId].forecast;
-        if (Array.isArray(r?.response?.[entityId]?.forecast)) return r.response[entityId].forecast;
-        if (Array.isArray(r?.forecast)) return r.forecast;
-        if (Array.isArray(r?.result?.forecast)) return r.result.forecast;
-        if (Array.isArray(r?.response?.forecast)) return r.response.forecast;
-        if (Array.isArray(r?.results)) {
-          const hit = r.results.find(x => [x?.entity_id, x?.entityId, x?.target]?.includes(entityId)) || r.results[0];
-          return extractForecast(hit);
-        }
-        if (Array.isArray(r)) {
-          const first = r.find(x => x?.entity_id === entityId) || r[0];
-          return extractForecast(first);
-        }
-        return [];
-      };
-
-      const cached = normalizeForecast(getCache());
-      if (Array.isArray(cached) && cached.length) {
-        currentList = cached;
-        render(cached);
-        observe();
-        applyBackground();
-        applyWeatherOnly();
-        return;
-      }
-
-      const fetchForecast = () => {
-        const existing = requestMem[requestKey];
-        if (existing?.promise && (Date.now() - existing.ts) < 10000) {
-          return existing.promise;
-        }
-        const promise = ha.callWS({
-          type:'call_service',
-          domain:'weather',
-          service:'get_forecasts',
-          service_data:{ entity_id: entityId, type },
-          return_response:true
-        }).finally(() => {
-          if (requestMem[requestKey]?.promise === promise) {
-            delete requestMem[requestKey];
-          }
-        });
-        requestMem[requestKey] = { promise, ts: Date.now() };
-        return promise;
-      };
-
-      fetchForecast()
-      .then(res => {
-        const list = normalizeForecast(extractForecast(res));
-        if (list.length) {
-          currentList = list;
-          setCache(list);
-          render(list);
-          observe();
-        }
-      })
-      .catch(e => console.warn('Weather Forecast: WS error', e))
-      .finally(() => {
-        applyBackground();
-        applyWeatherOnly();
-        if (!currentList) { render([]); observe(); }
-      });
-    })()}
   editor:
     - type: expandable
       title: Forecast
@@ -1604,6 +75,14 @@ weather_forecast:
           label: Hide icon background
           selector:
             boolean: {}
+        - name: scale
+          label: Forecast size
+          selector:
+            number:
+              min: 0.8
+              max: 2
+              step: 0.1
+              mode: slider
         - name: min_day_width
           label: Min column width in px
           selector:
@@ -1627,3 +106,505 @@ weather_forecast:
                   value: background_only
                 - label: Background only (hide weather and header)
                   value: background_only_minimal
+  suggestions:
+    - label: Default
+      domains:
+        - weather
+      config:
+        card_type: button
+        button_type: state
+        entity: ${entity}
+        show_state: true
+        show_last_changed: false
+        sub_button:
+          main:
+            - name: Temperature
+              css_class: highlight
+              attribute: temperature
+              show_attribute: true
+              show_icon: false
+              show_background: false
+              fill_width: false
+              hide_when_parent_unavailable: true
+        styles: |-
+          .highlight .bubble-sub-button-name-container,
+          .highlight .scrolling-container,
+          .highlight .scrolling-container span {
+            font-size: var(--bubble-sub-button-highlight-font-size, 20px) !important;
+            font-weight: var(--bubble-sub-button-highlight-font-weight, 300) !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+          }
+        grid_options:
+          columns: 6
+        weather_forecast:
+          card_layout: default
+    - label: Default (hourly)
+      domains:
+        - weather
+      config:
+        card_type: button
+        button_type: state
+        entity: ${entity}
+        show_state: true
+        show_last_changed: false
+        sub_button:
+          main:
+            - name: Temperature
+              css_class: highlight
+              attribute: temperature
+              show_attribute: true
+              show_icon: false
+              show_background: false
+              fill_width: false
+              hide_when_parent_unavailable: true
+        styles: |-
+          .highlight .bubble-sub-button-name-container,
+          .highlight .scrolling-container,
+          .highlight .scrolling-container span {
+            font-size: var(--bubble-sub-button-highlight-font-size, 20px) !important;
+            font-weight: var(--bubble-sub-button-highlight-font-weight, 300) !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+          }
+        grid_options:
+          columns: 6
+        weather_forecast:
+          card_layout: default
+          type: hourly
+    - label: Square card
+      domains:
+        - weather
+      config:
+        card_type: button
+        button_type: state
+        entity: ${entity}
+        show_state: true
+        show_last_changed: false
+        sub_button:
+          main:
+            - name: Temperature
+              css_class: highlight
+              attribute: temperature
+              show_attribute: true
+              show_icon: false
+              show_background: false
+              fill_width: false
+              hide_when_parent_unavailable: true
+        styles: |-
+          .highlight .bubble-sub-button-name-container,
+          .highlight .scrolling-container,
+          .highlight .scrolling-container span {
+            font-size: var(--bubble-sub-button-highlight-font-size, 20px) !important;
+            font-weight: var(--bubble-sub-button-highlight-font-weight, 300) !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+          }
+        grid_options:
+          columns: 6
+        weather_forecast:
+          card_layout: square
+    - label: Square card (hourly)
+      domains:
+        - weather
+      config:
+        card_type: button
+        button_type: state
+        entity: ${entity}
+        show_state: true
+        show_last_changed: false
+        sub_button:
+          main:
+            - name: Temperature
+              css_class: highlight
+              attribute: temperature
+              show_attribute: true
+              show_icon: false
+              show_background: false
+              fill_width: false
+              hide_when_parent_unavailable: true
+        styles: |-
+          .highlight .bubble-sub-button-name-container,
+          .highlight .scrolling-container,
+          .highlight .scrolling-container span {
+            font-size: var(--bubble-sub-button-highlight-font-size, 20px) !important;
+            font-weight: var(--bubble-sub-button-highlight-font-weight, 300) !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+          }
+        grid_options:
+          columns: 6
+        weather_forecast:
+          card_layout: square
+          type: hourly
+    - label: Weather only
+      domains:
+        - weather
+      config:
+        card_type: button
+        button_type: state
+        entity: ${entity}
+        show_state: true
+        show_last_changed: false
+        grid_options:
+          columns: 6
+        weather_forecast:
+          card_layout: weather_only_bg
+    - label: Weather only (hourly)
+      domains:
+        - weather
+      config:
+        card_type: button
+        button_type: state
+        entity: ${entity}
+        show_state: true
+        show_last_changed: false
+        grid_options:
+          columns: 6
+        weather_forecast:
+          card_layout: weather_only_bg
+          type: hourly
+    - extends: base
+      domains:
+        - weather
+      label: Weather only (hide header and background)
+      config:
+        weather_forecast:
+          card_layout: weather_only
+    - extends: base
+      domains:
+        - weather
+      label: Weather only (hourly, hide header and background)
+      config:
+        weather_forecast:
+          card_layout: weather_only
+          type: hourly
+    - extends: base
+      domains:
+        - weather
+      label: Background only (hide weather)
+      config:
+        weather_forecast:
+          card_layout: background_only
+    - extends: base
+      domains:
+        - weather
+      label: Background only (hide weather and header)
+      config:
+        weather_forecast:
+          card_layout: background_only_minimal
+  code: |-
+    .bubble-container::before {
+    display: none;
+    }
+    .bubble-main-icon-container.bc-wx-hide-icon-bg {
+    background: transparent !important;
+    }
+    .bubble-container.bc-weather-card {
+    overflow: hidden;
+    scrollbar-gutter: stable both-edges;
+    isolation: isolate;
+    contain: layout style paint;
+    }
+    .bubble-container.bc-weather-card:not(.bc-wx-background-only) {
+    min-height: 180px;
+    }
+    .bc-weather-card:not(.bc-wx-background-only) .bubble-sub-button-container {
+    align-self: flex-start !important;
+    }
+    .bc-weather-card:not(.bc-wx-background-only) .bubble-sub-button-bottom-container {
+    bottom: var(--bc-wx-bottom-offset, 0px) !important;
+    }
+    .bc-weather-card.bc-wx-no-bottom-room .bubble-sub-button-bottom-container {
+    display: none !important;
+    }
+    .bc-weather-card:not(.bc-wx-background-only).bc-wx-hidden .bubble-sub-button-bottom-container {
+    bottom: unset !important;
+    }
+    .bc-weather-card.bc-wx-background-only .bubble-sub-button-container {
+    margin-top: 0 !important;
+    }
+    .bc-weather-card.bc-wx-background-only.bc-wx-has-bottom-sub-buttons .bubble-sub-button-container {
+    margin-top: 10px !important;
+    }
+    .bc-weather-card.bc-wx-background-only-minimal .bubble-sub-button-container {
+    display: none !important;
+    }
+    .bc-weather-card.bc-wx-background-only-minimal .bubble-sub-button-bottom-container {
+    position: static !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: calc(100% - 16px) !important;
+    margin: 0 8px 0 8px !important;
+    pointer-events: auto !important;
+    }
+    .bc-weather-card.bc-wx-weather-only .bubble-sub-button-container,
+    .bc-weather-card.bc-wx-weather-only .bubble-sub-button-bottom-container {
+    display: none !important;
+    }
+    .bubble-container.bc-weather-card.bc-square-card {
+    aspect-ratio: 1 / 1 !important;
+    height: 100% !important;
+    }
+    .bubble-container.bc-weather-card.bc-square-card:not(.bc-wx-background-only) {
+    min-height: 0 !important;
+    }
+    .bc-weather-card .bubble-wrapper {
+    inset: 0;
+    width: 100%;
+    }
+    .bc-weather-card .bubble-background {
+    inset: 0;
+    width: 100%;
+    }
+    .bc-weather-card .bubble-wrapper.fixed-top {
+    align-items: center;
+    }
+    .fixed-top .bubble-sub-button-container {
+    margin-top: 10px;
+    }
+    .bubble-wrapper.fixed-top .bubble-content-container {
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    overflow: hidden;
+    flex-grow: 1;
+    margin-top: 1px;
+    }
+    .bc-wx-p-wrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+    transform: translateZ(0);
+    }
+    .bc-wx-p-wrap .row {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    }
+    .bc-wx-p-wrap .row.back {
+    z-index: 1;
+    opacity: 0.85;
+    filter: blur(.2px);
+    }
+    .bc-wx-p-wrap.bc-stars .row {
+    z-index: 0;
+    }
+    .bc-wx-p {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform;
+    animation-fill-mode: both;
+    --d: 1s;
+    --dl: 0s;
+    }
+    .bc-wx-p.rain {
+    bottom: 100%;
+    width: 15px;
+    height: 120px;
+    animation: bc-wx-drop var(--d) linear infinite;
+    animation-delay: var(--dl);
+    --rain-r: 255;
+    --rain-g: 255;
+    --rain-b: 255;
+    --rain-a: .28;
+    --rain-w: 1.2px;
+    --rain-h: 80%;
+    }
+    .bc-wx-p.rain::after {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 0;
+    width: var(--rain-w, 1.2px);
+    height: var(--rain-h, 80%);
+    background:
+    linear-gradient(
+    to bottom,
+    rgba(var(--rain-r),var(--rain-g),var(--rain-b),0),
+    rgba(var(--rain-r),var(--rain-g),var(--rain-b),var(--rain-a))
+    );
+    animation: bc-wx-stem var(--d) linear infinite;
+    animation-delay: var(--dl);
+    }
+    @keyframes bc-wx-drop {
+    0% { transform: translate3d(0, -120px, 0); }
+    100% { transform: translate3d(0, 110vh, 0); }
+    }
+    @keyframes bc-wx-stem {
+    0%, 90% { opacity: 1; }
+    100% { opacity: 0; }
+    }
+    .bc-wx-p.snow {
+    top: -16px;
+    border-radius: 50%;
+    background:
+    radial-gradient(
+    circle,
+    rgba(255,255,255,1) 0 52%,
+    rgba(255,255,255,.96) 65%,
+    rgba(255,255,255,0) 80%
+    );
+    box-shadow:
+    0 0 0 1px rgba(255,255,255,.9),
+    0 1px 2px rgba(0,0,0,.06);
+    animation: bc-wx-snow var(--d) linear infinite;
+    animation-delay: var(--dl);
+    }
+    @keyframes bc-wx-snow {
+    0% { transform: translate3d(0, -16px, 0); }
+    50% { transform: translate3d(var(--drift, 18px), 50vh, 0); }
+    100% { transform: translate3d(0, 110vh, 0); }
+    }
+    .bc-wx-p.hail {
+    top: -20px;
+    border-radius: 50%;
+    background: rgba(255,255,255,1);
+    box-shadow:
+    0 0 0 1px rgba(255,255,255,.85),
+    0 1px 1px rgba(0,0,0,.08);
+    animation: bc-wx-hail var(--d) linear infinite;
+    animation-delay: var(--dl);
+    }
+    @keyframes bc-wx-hail {
+    0% { transform: translate3d(0, -20px, 0); }
+    100% { transform: translate3d(var(--drift, 4px), 110vh, 0); }
+    }
+    .bc-wx-p.star {
+    border-radius: 50%;
+    background: rgba(255,255,255,.95);
+    animation: bc-wx-twinkle var(--d) ease-in-out infinite;
+    animation-delay: var(--dl);
+    }
+    @keyframes bc-wx-twinkle {
+    0%, 100% { opacity: .15; }
+    50% { opacity: 1; }
+    }
+    .bc-wx-cloud-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    }
+    .bc-wx-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    animation: bc-wx-flash 5.2s linear infinite;
+    contain: strict;
+    transform: translateZ(0);
+    }
+    @keyframes bc-wx-flash {
+    0%, 92%, 100% { opacity: 0; }
+    93% { opacity: .25; }
+    94% { opacity: 0; }
+    96% { opacity: .45; }
+    97% { opacity: 0; }
+    }
+    .bc-weather {
+    position: absolute;
+    box-sizing: border-box;
+    padding: 0 16px 16px !important;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    pointer-events: none;
+    contain: layout style;
+    }
+    .bc-weather.bc-wx-top {
+    top: 8px;
+    bottom: auto;
+    }
+    .bc-weather-card.bc-wx-weather-only .bc-weather.bc-wx-top {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    padding: 0 16px !important;
+    }
+    .bc-square-card .bc-weather {
+    overflow: hidden;
+    padding: 0 8px 8px;
+    }
+    .bc-square-card .bc-weather-grid {
+    align-items: center;
+    align-content: center;
+    }
+    .bc-square-card .bc-weather-day {
+    grid-template-rows:
+    auto var(--bc-wx-mid-gap, calc(4px * var(--bc-wx-scale)))
+    min-content
+    var(--bc-wx-mid-gap, calc(4px * var(--bc-wx-scale))) auto;
+    align-content: center;
+    gap: 0;
+    }
+    .bc-square-card .bc-weather-day .day-label {
+    grid-row: 1;
+    margin: 0;
+    }
+    .bc-square-card .bc-weather-day ha-icon {
+    grid-row: 3;
+    margin: 0;
+    align-self: center;
+    line-height: 0px;
+    }
+    .bc-square-card .bc-weather-day .temps {
+    grid-row: 5;
+    margin: 0;
+    }
+    .bc-weather {
+    --bc-wx-scale: 1;
+    --bc-wx-font: calc(12px * var(--bc-wx-scale));
+    --bc-wx-icon-size: calc(26px * var(--bc-wx-scale));
+    --bc-wx-icon-row: calc(28px * var(--bc-wx-scale));
+    --bc-wx-row-gap: calc(8px * var(--bc-wx-scale));
+    --bc-wx-col-gap: calc(8px * var(--bc-wx-scale));
+    }
+    .bc-weather-grid {
+    display: grid;
+    gap: var(--bc-wx-col-gap);
+    align-items: end;
+    width: 100%;
+    }
+    .bc-weather-day {
+    display: grid;
+    grid-template-rows: auto var(--bc-wx-icon-row) auto;
+    justify-items: center;
+    text-align: center;
+    gap: var(--bc-wx-row-gap);
+    }
+    .bc-weather-day .day-label {
+    font-size: var(--bc-wx-font);
+    line-height: 1.05;
+    opacity: .9;
+    }
+    .bc-weather-day ha-icon {
+    width: var(--bc-wx-icon-size);
+    height: var(--bc-wx-icon-size);
+    --mdc-icon-size: var(--bc-wx-icon-size);
+    align-self: center;
+    line-height: 0;
+    }
+    .bc-weather-day .temps {
+    display: grid;
+    grid-auto-flow: row;
+    gap: 2px;
+    align-items: center;
+    justify-items: center;
+    font-size: var(--bc-wx-font);
+    line-height: 1.05;
+    }
+    .bc-weather-day .hi {
+    font-weight: 600;
+    }
+    .bc-weather-day .lo {
+    opacity: .85;
+    min-height: 1.05em;
+    }
+    ${(() => { window.__bcwfCtx = { hass, entity, card, getWeatherIcon, self: this, onTeardown: typeof onTeardown === 'function' ? onTeardown : null }; if (window.__bcwfRun && window.__bcwfRun.buildId === '1786641719609') { try { window.__bcwfRun.fn(); } catch (e) { console.error('Bubble Weather: update failed', e); } } else { (()=>{"use strict";const e={hourly:15,twice_daily:180,daily:60},t=()=>window.__bcWF=window.__bcWF||{},n=()=>{const e=t();return e.cache||(e.cache={})},r=()=>{const e=t();return e.cloudLayers||(e.cloudLayers=new WeakMap)},a=(e,t,n)=>{const r=document.createElement(e);return t&&(r.className=t),null!=n&&(r.textContent=n),r},i="language",s=e=>{const t=e?.time_format;if(t===i||"system"===t){const n=t===i?e.language:void 0;try{return new Date("January 1, 2023 22:00:00").toLocaleString(n).includes("10")}catch{return!1}}return"12"===t};let o;try{o=Intl.DateTimeFormat().resolvedOptions().timeZone}catch{o=void 0}let l=null,d=null;const c={min:16,max:28},h={min:2,max:8},u={min:14,max:26},m={min:1,max:5},g={min:4,max:8},y={min:0,max:3},p=(e,t,n)=>Math.round((e.min+t*(e.max-e.min))*n),b=(e,t=1)=>e.iconRow-c.min*t+2*(e.rowGap-h.min*t),f=(e=1)=>({iconRow:Math.round(c.max*e),rowGap:Math.round(h.max*e)}),w=e=>e.container?.querySelector?.(".bubble-sub-button-bottom-container")||null,v=e=>{const t=w(e);return!!(t&&t.childElementCount>0)},x=(e,t)=>{const{container:n,root:r,hostState:a}=e;if(!n)return;if(n.classList.toggle("bc-wx-no-bottom-room",!!t),t||!r||!v(e))return a&&(a._bottomOffset=null),void n.style.removeProperty("--bc-wx-bottom-offset");let i;if(r.classList.contains("bc-wx-top")){const e=n.getBoundingClientRect(),t=r.getBoundingClientRect();if(!e.height||!t.height)return;i=Math.max(0,Math.round(e.bottom-t.top))}else{const e=r.offsetHeight||0;if(!e)return;i=8+e}a?._bottomOffset!==i&&(a&&(a._bottomOffset=i),n.style.setProperty("--bc-wx-bottom-offset",`${i}px`))},_=e=>{const{root:t,hostState:n}=e;n._rampKey=null,n._rampGeom=null,t.style.top="",t.style.maxHeight="",t.style.padding="",t.style.removeProperty("--bc-wx-icon-size"),t.style.removeProperty("--bc-wx-icon-row"),t.style.removeProperty("--bc-wx-row-gap"),t.style.removeProperty("--bc-wx-col-gap"),t.style.removeProperty("--bc-wx-mid-gap")},M=(e,t=!1)=>{const{root:n,container:r,hostState:a,isSquare:i,isWeatherHidden:s}=e,o=!(e=>{const{self:t,hideHeaderContent:n}=e;if(n)return!1;const r=t?.config||{},a="state"===(r.button_type||"state"),i=r.show_icon??!0,s=r.show_name??!0,o=r.show_state??a,l=r.show_attribute??a,d=r.show_last_changed??!1,c=r.show_last_updated??!1;if(!(i||s||o||l||d||c))return!1;const h=t?.elements||{},u=e=>!!e&&!e.classList.contains("hidden");return i&&u(h.iconContainer)||s&&u(h.name)||(o||l||d||c)&&u(h.state)})(e),l=s;n.classList.toggle("bc-wx-top",o&&!l);const d=()=>{if(!r)return;if(n.style.getPropertyValue("--bc-wx-scale")!==String(e.scale)&&n.style.setProperty("--bc-wx-scale",String(e.scale)),s||!i&&!v(e))return _(e),r.classList.remove("bc-wx-no-bottom-room"),r.style.removeProperty("--bc-wx-bottom-offset"),void(r.style.minHeight=o&&!l?`${(e=>{const t=e.root?.scrollHeight||e.root?.offsetHeight||0;return Math.max(120,t+16)})(e)}px`:"");if(e.autoHeight||(r.style.minHeight=""),(r.offsetHeight||r.clientHeight||0)<=0)return;const t=(e=>{const{container:t}=e,n=t?.offsetHeight||t?.clientHeight||0,r=((e,t)=>{const n=e.host?.querySelector?.(".bubble-content-container");return n?n.offsetTop+n.offsetHeight:e.isSquare?Math.round(.38*t):0})(e,n),a=Math.max(0,n-r-8),i=v(e)?(e=>{const t=w(e);if(!t)return 0;const n=t.offsetHeight||0;return n?(e.hostState&&(e.hostState._bottomRowH=n),n+8):(e.hostState?._bottomRowH||36)+8})(e):0;return{free:a,reserve:i,topBound:r,containerH:n}})(e),d=n.offsetHeight||0,M=a._rampGeom||f(e.scale),F=d+(b(f(e.scale),e.scale)-b(M,e.scale)),$=Math.max(0,d-b(M,e.scale));if(e.autoHeight&&t.reserve>0){const n=(({topBound:e,reserve:t},n)=>e+8+n+t)(t,F);return r.style.minHeight=`${n}px`,_(e),void x(e,!1)}const O=(({free:e,reserve:t},n)=>t<=0||n<=0||n<=e-t)(t,$),C=Math.max(32,O?t.free-t.reserve:t.free);((e,t)=>{const{root:n,hostState:r,scale:a}=e,i=((e,t=1)=>{const n=Math.max(0,Math.min(1,(e-50*t)/(120*t)));return{t:n,iconRow:p(c,n,t),rowGap:p(h,n,t),iconPx:p(u,n,t),midGap:p(m,n,t),colGap:p(g,n,t),topPad:p(y,n,t)}})(t,a),s=`${i.iconRow}|${i.rowGap}|${i.iconPx}|${i.midGap}|${i.colGap}|${i.topPad}`;r._rampKey!==s&&(r._rampKey=s,r._rampGeom={iconRow:i.iconRow,rowGap:i.rowGap},n.style.top="",n.style.maxHeight=`${t}px`,n.style.padding=`${i.topPad}px 8px 8px`,n.style.setProperty("--bc-wx-icon-size",`${i.iconPx}px`),n.style.setProperty("--bc-wx-icon-row",`${i.iconRow}px`),n.style.setProperty("--bc-wx-row-gap",`${i.rowGap}px`),n.style.setProperty("--bc-wx-col-gap",`${i.colGap}px`),n.style.setProperty("--bc-wx-mid-gap",`${i.midGap}px`))})(e,C),x(e,!O)};t?requestAnimationFrame(d):requestAnimationFrame(()=>{requestAnimationFrame(d)})},F=e=>{const{self:t,host:n,container:r,root:a,cardLayout:i,hideHeaderContent:s,isWeatherHidden:o,isWeatherOnlyMode:l,isWeatherOnlyMinimal:d,isBackgroundOnlyMinimal:c}=e,h=t?.elements||{},u=(e,t)=>{e&&(e.style.display=t?"":"none")},m=[i,s?1:0,o?1:0,d?1:0].join("|");if(a?._wxLayoutKey===m)return;a&&(a._wxLayoutKey=m);const g=l||c;u(h.contentContainer,!g),u(h.buttonsContainer,!g);const y=d;u(h.background,!y),u(a,!o),r&&r.classList.toggle("bc-wx-hidden",o),s?(u(h.iconContainer,!1),u(h.name,!1),u(h.state,!1)):(u(h.iconContainer,!0),u(h.name,!0),u(h.state,!0)),r&&(r.style.background=y?"transparent":"",r.style.boxShadow=y?"none":"",r.style.border=y?"none":"",r.style.minHeight=o?"0":""),n&&(n.style.background=y?"transparent":"")},$=({bg:e,animOn:t,windSpeed:n,windBearing:r,cloudLayerMem:a})=>{const i=window.__bcWF.cloudImg||(window.__bcWF.cloudImg={img:null,imgNight:null,loading:!1,loaded:!1});return{addClouds:({intensity:s="normal",isNight:o=!1}={})=>{if(!t||!e)return;const l=(()=>{if(!e)return null;let t=a.get(e);if(t?.canvas&&18===t.clouds?.length)return t;(()=>{if(i.loaded||i.loading)return;i.loading=!0;const e=new Image;e.crossOrigin="anonymous",e.onload=()=>{i.img=e,i.imgNight=(e=>{const t=e.naturalWidth||e.width,n=e.naturalHeight||e.height,r=document.createElement("canvas");r.width=t,r.height=n;const a=r.getContext("2d");if(!a)return null;a.drawImage(e,0,0);const i=a.getImageData(0,0,t,n),s=i.data,o=215*Math.PI/180,l=Math.cos(o),d=Math.sin(o);for(let e=0;e<s.length;e+=4){let t=s[e],n=s[e+1],r=s[e+2];t*=.4,n*=.4,r*=.4,t=255*(1.25*(t/255-.5)+.5),n=255*(1.25*(n/255-.5)+.5),r=255*(1.25*(r/255-.5)+.5);const a=t,i=n;t=a*(.213+.787*l-.213*d)+i*(.715-.715*l-.715*d)+r*(.072-.072*l+.928*d),n=a*(.213-.213*l+.143*d)+i*(.715+.285*l+.14*d)+r*(.072-.072*l-.283*d),r=a*(.213-.213*l-.787*d)+i*(.715-.715*l+.715*d)+r*(.072+.928*l+.072*d),s[e]=Math.max(0,Math.min(255,t)),s[e+1]=Math.max(0,Math.min(255,n)),s[e+2]=Math.max(0,Math.min(255,r))}return a.putImageData(i,0,0),r})(e),i.loaded=!0,i.loading=!1},e.onerror=()=>{i.loading=!1},e.src="https://raw.githubusercontent.com/Clooos/Bubble-Card/refs/heads/main/img/cloud.png"})();const n=document.createElement("canvas");n.className="bc-wx-cloud-canvas",n.style.width="100%",n.style.height="100%";const r=[];for(let e=0;e<18;e++){const t=Math.floor(180*Math.random())+140,n=Math.floor(.6*t),a=.6*Math.random()-.4,i=.35*Math.random()+.5,s=.012+.028*Math.random(),o=e/18+.08*Math.random();r.push({width:t,height:n,topPercent:a,opacity:i,speed:s,offset:o,x:0})}return r.sort((e,t)=>e.opacity-t.opacity),t={canvas:n,clouds:r,stateKey:null,animId:null,ctx:null},a.set(e,t),t})();if(!l)return;const{canvas:d,clouds:c}=l;d.isConnected||e.appendChild(d),"none"===d.style.display&&(d.style.display="");const h={light:6,normal:8,heavy:12}[s]||10,u=Math.min(18,h);let m=1;!Number.isNaN(r)&&r>=0&&r<=180&&(m=-1);const g=1+.02*Math.max(0,n),y=[s,o?1:0,m].join("|"),p=l.stateKey!==y||!l.animId;if(l.stateKey=y,l.animId&&!p)return;l.animId&&(cancelAnimationFrame(l.animId),l.animId=null),l.measured=null;const b=()=>{const t=e.getBoundingClientRect(),n=Math.min(window.devicePixelRatio||1,2),r=Math.floor(t.width),a=Math.floor(t.height);return d.width===r*n&&d.height===a*n||(d.width=r*n,d.height=a*n,d.style.width=r+"px",d.style.height=a+"px"),l.measured={w:r,h:a,dpr:n},l.measured};if(l.settleFrames=0,"ResizeObserver"in window&&(l.resizeObserver&&l.resizeObserver.disconnect(),l.resizeObserver=new ResizeObserver(()=>{l.measured=null,l.settleFrames=6}),l.resizeObserver.observe(e)),window.matchMedia&&!l.dprQuery){l.dprQuery=window.matchMedia("(resolution: "+(window.devicePixelRatio||1)+"dppx)"),l.dprHandler=()=>{l.measured=null};try{l.dprQuery.addEventListener("change",l.dprHandler,{passive:!0})}catch(e){}}let f=null,w=0,v=!0;const x=()=>{document.hidden?v=!1:(v=!0,w=0,!l.animId&&d.isConnected&&"none"!==d.style.display&&(l.animId=requestAnimationFrame(_)))};l.visibilityHandler&&document.removeEventListener("visibilitychange",l.visibilityHandler),l.visibilityHandler=x,document.addEventListener("visibilitychange",x,{passive:!0}),"IntersectionObserver"in window&&!l.observer&&(l.observer=new IntersectionObserver(e=>{v=e[0]?.isIntersecting??!0,v&&!l.animId&&d.isConnected&&"none"!==d.style.display&&(w=0,l.animId=requestAnimationFrame(_))},{threshold:0}),l.observer.observe(d));const _=e=>{if(!d.isConnected||"none"===d.style.display)return void(l.animId=null);if(!v||document.hidden)return void(l.animId=null);const t=w?Math.min((e-w)/16.67,3):1;w=e;const{w:n,h:r,dpr:a}=(()=>{if(!l.measured)return l.settleFrames=6,b();if(l.settleFrames>0){l.settleFrames-=1;const e=l.measured,t=b();return t.w===e.w&&t.h===e.h||(l.settleFrames=6),t}return l.measured})();if(0===n||0===r)return void(l.animId=requestAnimationFrame(_));const h=f||(f=d.getContext("2d",{alpha:!0}));if(!h)return void(l.animId=requestAnimationFrame(_));h.setTransform(a,0,0,a,0,0),h.clearRect(0,0,n,r);const y=o&&i.imgNight?i.imgNight:i.img;if(!y)return void(l.animId=requestAnimationFrame(_));const p={light:.65,normal:.5,heavy:.4}[s]||.5;for(let e=0;e<u;e++){const a=c[e];a.offset+=a.speed*g*m*t*.01,m>0&&a.offset>1.3?a.offset=-.3-a.width/n:m<0&&a.offset<-.3-a.width/n&&(a.offset=1.3);const i=a.offset*n,s=a.topPercent*r,l=a.width,d=a.height;h.globalAlpha=o?.5*a.opacity:a.opacity*p,h.drawImage(y,i,s,l,d)}h.globalAlpha=1,l.animId=requestAnimationFrame(_)};l.animId=requestAnimationFrame(_)},hideCloudLayer:()=>{const t=a.get(e);t?.canvas&&(t.animId&&(cancelAnimationFrame(t.animId),t.animId=null),t.observer&&(t.observer.disconnect(),t.observer=null),"none"!==t.canvas.style.display&&(t.canvas.style.display="none"),t.stateKey=null)},showCloudLayer:()=>{const t=a.get(e);t?.canvas&&(t.canvas.isConnected||e.appendChild(t.canvas),"none"===t.canvas.style.display&&(t.canvas.style.display=""))}}},O={sunny:{bg:"\n    linear-gradient(rgba(255,255,255,.06) 0%, rgba(255,255,255,0) 30%),\n    radial-gradient(200% 150% at 50% 0%, rgb(255 238 230) 0%, rgba(255,245,204,0) 60%),\n    linear-gradient(rgb(0 127 255) 0%, rgb(0 149 255) 50%, rgb(0 139 255) 100%)\n  "},"clear-night":{bg:"\n    radial-gradient(120% 100% at 50% 130%, hsla(260,80%,6%,.8) 0%, rgba(0,0,0,0) 60%),\n    linear-gradient(180deg, hsl(235,47%,17%) 0%, hsl(252,39%,22%) 55%, hsl(260,35%,18%) 100%)\n  ",precip:[{kind:"stars",intensity:"normal"}]},partlycloudy:{bg:"\n    radial-gradient(160% 120% at 85% -10%, hsla(48,95%,85%,.55) 0%, rgba(255,255,255,0) 55%),\n    linear-gradient(180deg, hsl(214,25%,78%) 0%, hsl(209,22%,70%) 50%, hsl(207,48%,57%) 100%)\n  ",clouds:{intensity:"light",isNight:!1}},"partlycloudy-night":{bg:"\n    radial-gradient(160% 120% at 85% -10%, hsla(260,35%,20%,.6) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(235,32%,16%) 0%, hsl(242,28%,20%) 55%, hsl(250,26%,18%) 100%)\n  ",precip:[{kind:"stars",intensity:"light"}],clouds:{intensity:"light",isNight:!0}},cloudy:{bg:"\n    linear-gradient(180deg, hsl(210,16%,65%) 0%, hsl(210,12%,58%) 50%, hsl(210,10%,52%) 100%)\n  ",clouds:{intensity:"heavy",isNight:!1}},"cloudy-night":{bg:"\n    linear-gradient(180deg, hsl(230,16%,24%) 0%, hsl(235,14%,22%) 55%, hsl(240,12%,20%) 100%)\n  ",clouds:{intensity:"heavy",isNight:!0}},fog:{bg:"\n    linear-gradient(180deg, hsl(210,20%,85%) 0%, hsl(210,20%,80%) 45%, hsl(210,20%,76%) 100%)\n  "},windy:{bg:"\n    linear-gradient(180deg, hsl(205,40%,78%) 0%, hsl(205,40%,72%) 50%, hsl(205,38%,66%) 100%)\n  "},"windy-variant":{bg:"\n    linear-gradient(180deg, hsl(205,40%,78%) 0%, hsl(205,40%,72%) 50%, hsl(205,38%,66%) 100%)\n  ",clouds:{intensity:"heavy",isNight:!1}},hail:{bg:"\n    linear-gradient(180deg, hsl(208,28%,62%) 0%, hsl(210,28%,56%) 55%, hsl(210,28%,52%) 100%)\n  ",precip:[{kind:"hail",intensity:"normal"}]},rainy:{bg:"\n    linear-gradient(180deg, hsl(208,32%,52%) 0%, hsl(210,30%,58%) 60%, hsl(210,28%,66%) 100%)\n  ",precip:[{kind:"rain",intensity:"normal"}]},pouring:{bg:"\n    linear-gradient(180deg, hsl(210,24%,32%) 0%, hsl(210,22%,40%) 55%, hsl(210,22%,48%) 100%)\n  ",precip:[{kind:"rain",intensity:"heavy"}]},lightning:{bg:"\n    linear-gradient(180deg, hsl(220,18%,18%) 0%, hsl(220,16%,28%) 55%, hsl(220,16%,36%) 100%)\n  ",flash:!0},"lightning-rainy":{bg:"\n    linear-gradient(180deg, hsl(220,18%,18%) 0%, hsl(220,16%,28%) 55%, hsl(220,16%,36%) 100%)\n  ",precip:[{kind:"rain",intensity:"normal"}],flash:!0},snowy:{bg:"\n    linear-gradient(180deg, hsl(208 46% 74%) 0%, hsl(210,42%,96%) 55%, hsl(210,46%,98%) 100%)\n  ",precip:[{kind:"snow",intensity:"normal"}]},"snowy-rainy":{bg:"\n    linear-gradient(180deg, hsl(212 17% 53%) 0%, hsl(210,34%,92%) 55%, hsl(210,38%,96%) 100%)\n  ",precip:[{kind:"snow",intensity:"light"},{kind:"rain",intensity:"normal",style:"--rain-r:20;--rain-g:20;--rain-b:20;--rain-a:.58;--rain-w:1.6px;--rain-h:90%"}]},exceptional:{bg:"\n    linear-gradient(180deg, hsl(12,64%,38%) 0%, hsl(12,58%,44%) 55%, hsl(12,54%,50%) 100%)\n  "},default:{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(42,92%,84%,.55) 0%, rgba(255,255,255,0) 55%),\n    linear-gradient(180deg, hsl(205,60%,78%) 0%, hsl(210,62%,70%) 55%, hsl(200,58%,64%) 100%)\n  "},"default-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(260,60%,10%,.6) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(235,30%,16%) 0%, hsl(245,26%,18%) 55%, hsl(255,24%,16%) 100%)\n  "},"rainy-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(220,44%,14%,.7) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(215,22%,22%) 0%, hsl(215,20%,26%) 55%, hsl(215,18%,30%) 100%)\n  ",precip:[{kind:"rain",intensity:"normal"}]},"pouring-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(220,44%,12%,.8) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(215,20%,16%) 0%, hsl(215,18%,22%) 55%, hsl(215,16%,28%) 100%)\n  ",precip:[{kind:"rain",intensity:"heavy"}]},"hail-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(210,36%,16%,.65) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(210,24%,22%) 0%, hsl(210,22%,28%) 55%, hsl(210,20%,32%) 100%)\n  ",precip:[{kind:"hail",intensity:"normal"}]},"snowy-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(220,28%,16%,.6) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(220,20%,22%) 0%, hsl(220,18%,30%) 55%, hsl(220,16%,34%) 100%)\n  ",precip:[{kind:"snow",intensity:"normal"}]},"snowy-rainy-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(215,28%,14%,.65) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(215,18%,22%) 0%, hsl(215,18%,28%) 55%, hsl(215,16%,32%) 100%)\n  ",precip:[{kind:"snow",intensity:"light"},{kind:"rain",intensity:"normal",style:"--rain-r:200;--rain-g:200;--rain-b:200;--rain-a:.66;--rain-w:1.4px;--rain-h:82%"}]},"lightning-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(230,32%,10%,.72) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(230,18%,16%) 0%, hsl(230,18%,22%) 55%, hsl(230,16%,28%) 100%)\n  ",flash:!0},"lightning-rainy-night":{bg:"\n    radial-gradient(120% 80% at 50% 120%, hsla(230,32%,10%,.72) 0%, rgba(0,0,0,0) 55%),\n    linear-gradient(180deg, hsl(230,18%,16%) 0%, hsl(230,18%,22%) 55%, hsl(230,16%,28%) 100%)\n  ",precip:[{kind:"rain",intensity:"normal"}],flash:!0},"windy-variant-night":{bg:"\n    linear-gradient(180deg, hsl(230,16%,24%) 0%, hsl(235,14%,22%) 55%, hsl(240,12%,20%) 100%)\n  ",clouds:{intensity:"heavy",isNight:!0}}},C=e=>{const{self:t,ha:n,entityId:a,animOn:i,bgOn:s,isNight:o}=e,l=t?.elements?.background;if(!l)return;const d=n?.states?.[a],c=d?.attributes||{},h=Number(c.wind_speed)||0,u=Number(c.wind_bearing),m=Number(c.precipitation);try{const e=getComputedStyle(l).position;e&&"static"!==e||(l.style.position="absolute"),l.style.left="0",l.style.right="0",l.style.top="0",l.style.bottom="0",l.style.width="100%",l.style.height="100%"}catch{}const{addClouds:g,hideCloudLayer:y,showCloudLayer:p}=$({bg:l,animOn:i,windSpeed:h,windBearing:u,cloudLayerMem:r()});if(!s)return(({keepClouds:e=!1}={})=>{l.querySelectorAll(".bc-wx-p-wrap,.bc-wx-flash").forEach(e=>e.remove()),e?p():y()})(),void(l._wxKey=null);const{addFlash:b,addParticles:f}=(({bg:e,animOn:t,precip:n})=>({addFlash:()=>{if(t)for(let t=0;t<2;t++){const t=document.createElement("div");t.className="bc-wx-flash",t.style.animationDelay=3*Math.random()+1+"s",e.appendChild(t)}},addParticles:({kind:r="rain",intensity:a="normal",style:i=""}={})=>{if(!t)return;const s={rain:{light:16,normal:26,heavy:44},snow:{light:72,normal:120,heavy:180},hail:{light:14,normal:22,heavy:34},stars:{light:14,normal:32,heavy:46}};let o=(s[r]||s.stars)[a]||(s[r]||s.stars).normal;"rain"===r&&!Number.isNaN(n)&&n>0&&(o=Math.min(200,Math.max(10,Math.floor(8*n+10))));const{wrap:l,front:d,back:c}=(()=>{const e=document.createElement("div");return e.className="bc-wx-p-wrap",e.innerHTML='<div class="row front"></div><div class="row back"></div>',{wrap:e,front:e.firstElementChild,back:e.lastElementChild}})();if(i&&l.setAttribute("style",i),"stars"===r&&l.classList.add("bc-stars"),"rain"===r){const t=(e,t=!1)=>{const n=100/o;let r="";for(let e=0;e<o;e++){const a=e*n+Math.random()*n*.6,i=t?"right":"left",s=1.1+.7*Math.random(),o=`-${(Math.random()*s).toFixed(2)}s`,l=`${s.toFixed(2)}s`;r+=`<div class="bc-wx-p rain"\n              style="${i}:${a}%;\n                     bottom:${100+Math.floor(40*Math.random())}%;\n                     --d:${l};\n                     --dl:${o}"></div>`}e.innerHTML=r};return t(d,!1),t(c,!0),void e.appendChild(l)}if("snow"===r){const t=(e,t=1,n=1)=>{let r="";for(let e=0;e<o;e++){const e=(100*Math.random()).toFixed(2),a=-150-Math.floor(200*Math.random()),i=14+12*Math.random(),s=`${i.toFixed(2)}s`,o=`-${(Math.random()*i).toFixed(2)}s`,l=`${(36*Math.random()-18).toFixed(1)}px`,d=Math.min(4,(2.5*Math.random()+1.5)*t).toFixed(1);r+=`<div class="bc-wx-p snow"\n              style="left:${e}%;\n                     top:${a}px;\n                     animation-delay:${o};\n                     animation-duration:${s};\n                     --drift:${l};\n                     width:${d}px;\n                     height:${d}px;\n                     opacity:${Math.min(1,Math.max(.9,n)).toFixed(2)}"></div>`}e.innerHTML=r};return t(d,1,1),t(c,.8,.75),void e.appendChild(l)}if("hail"===r){const t=(e,t=1)=>{let n="";for(let e=0;e<o;e++){const e=(100*Math.random()).toFixed(2),r=-120-Math.floor(160*Math.random()),a=2.4+1.8*Math.random(),i=`${a.toFixed(2)}s`,s=`-${(Math.random()*a).toFixed(2)}s`,o=`${(8*Math.random()-4).toFixed(1)}px`,l=Math.min(4,Math.max(2,(2*Math.random()+2)*t)).toFixed(1);n+=`<div class="bc-wx-p hail"\n              style="left:${e}%;\n                     top:${r}px;\n                     animation-delay:${s};\n                     animation-duration:${i};\n                     --drift:${o};\n                     width:${l}px;\n                     height:${l}px;\n                     opacity:1"></div>`}e.innerHTML=n};return t(d,1),t(c,.9),void e.appendChild(l)}if("stars"===r){const t=(e,t=1,n=1)=>{let r="";for(let e=0;e<o;e++){const e=(100*Math.random()).toFixed(2),a=(50*Math.random()).toFixed(2),i=2+3*Math.random(),s=`${i.toFixed(2)}s`,o=`-${(Math.random()*i).toFixed(2)}s`,l=((1.8*Math.random()+.6)*t).toFixed(2);r+=`<div class="bc-wx-p star"\n              style="left:${e}%;\n                     top:${a}%;\n                     width:${l}px;\n                     height:${l}px;\n                     opacity:${Math.min(1,Math.max(.35,n*Math.random())).toFixed(2)};\n                     --d:${s};\n                     --dl:${o}"></div>`}e.innerHTML=r};return t(d,1,1),t(c,.85,.7),void e.appendChild(l)}}}))({bg:l,animOn:i,precip:m}),w=String(n?.states?.[a]?.state||"").toLowerCase(),v=w.replace(/-night$/,"").replace(/-day$/,""),x=e.currentList,_=Array.isArray(x)&&x.length?o(x[0]):o(),M=w.endsWith("-night")||_,F=M?"clear"===(C=v)||"sunny"===C?"clear-night":C?`${C}-night`:"default-night":v;var C;const N=O[F]||(M?O["default-night"]:O.default),S=JSON.stringify({c:F,p:N.precip?N.precip.map(e=>e.kind+":"+e.intensity).join("+"):"",f:!!N.flash,cl:N.clouds?`${N.clouds.intensity}:${N.clouds.isNight}`:""}),L=!!N.clouds,H=l._wxHadClouds;var I;l._wxHadClouds=L,l._wxKey!==S?(l.querySelectorAll(".bc-wx-p-wrap,.bc-wx-flash").forEach(e=>e.remove()),I=N.bg,l.style.backgroundImage=I,l.style.backgroundSize="cover",l.style.backgroundPosition="center",L?g(N.clouds):y(),N.precip&&N.precip.forEach(f),N.flash&&b(),l._wxKey=S):L?g(N.clouds):H&&y()},N=(e,t)=>{const{container:n,root:r,host:i,grid:s,hostState:o,minW:l,max:d,type:c,getWeatherIcon:h,fmt:u,label:m}=e,g=n?.clientWidth||n?.offsetWidth||0,y=r.clientWidth||i.clientWidth||g||0;if(y<=0&&o){const n=(o._widthRetries||0)+1;if(n<=30)return o._widthRetries=n,void(o._widthFrame||(o._widthFrame=requestAnimationFrame(()=>{o._widthFrame=null,N(e,t)})))}o&&(o._widthRetries=0);const p=y>0?Math.max(1,Math.floor(y/l)):d,b=Math.min(t.length,d,p),f=Math.max(b,1),w=t.map(e=>[e.datetime||e.time||e.date||"",e.condition||"",e.temperature??e.temphigh??e.high??"",e.templow??e.low??e.apparent_temperature_min??""].join("|")).join(";"),v=`${Math.round(y)}|${f}|${w}`;if(s._wxRenderKey===v)return M(e),void F(e);for(s._wxRenderKey=v,s.style.gridTemplateColumns=`repeat(${f}, 1fr)`;s.children.length<b;){const e=a("div","bc-weather-day"),t=a("div","day-label"),n=a("ha-icon"),r=a("div","temps"),i=a("div","hi"),o=a("div","lo");r.append(i,o),e.append(t,n,r),e._label=t,e._icon=n,e._hi=i,e._lo=o,s.appendChild(e)}for(let e=0;e<s.children.length;e++){const n=s.children[e],r=e<b;if(n.style.display=r?"grid":"none",!r)continue;const a=t[e]||{},i=a.datetime||a.time||a.date||"";n._label.textContent=m(i),n._icon.setAttribute("icon",h(String(a.condition||"").toLowerCase())),n._hi.textContent=u(a.temperature??a.temphigh??a.high),"hourly"===c?(n._lo.textContent="",n._lo.style.display="none"):(n._lo.style.display="",n._lo.textContent=u(a.templow??a.low??a.apparent_temperature_min)||"")}M(e,!0),F(e)},S=e=>{const{hostState:t,root:n}=e;if(((e,t)=>{const n=e&&t?.get?.(e);if(n){if(n.animId&&(cancelAnimationFrame(n.animId),n.animId=null),n.observer){try{n.observer.disconnect()}catch(e){}n.observer=null}if(n.resizeObserver){try{n.resizeObserver.disconnect()}catch(e){}n.resizeObserver=null}if(n.visibilityHandler){try{document.removeEventListener("visibilitychange",n.visibilityHandler)}catch(e){}n.visibilityHandler=null}if(n.dprQuery&&n.dprHandler)try{n.dprQuery.removeEventListener("change",n.dprHandler)}catch(e){}n.dprQuery=null,n.dprHandler=null;try{t.delete(e)}catch(e){}}})(e.self?.elements?.background,r()),t){if(t.resizeFrame&&(cancelAnimationFrame(t.resizeFrame),t.resizeFrame=null),t.heightUpdateFrame&&(cancelAnimationFrame(t.heightUpdateFrame),t.heightUpdateFrame=null),t._widthFrame&&(cancelAnimationFrame(t._widthFrame),t._widthFrame=null),t.resizeObserver){try{t.resizeObserver.disconnect()}catch{}t.resizeObserver=null}if(n?._ro){try{n._ro.disconnect()}catch{}n._ro=null}if(n?._heightRo){try{n._heightRo.disconnect()}catch{}n._heightRo=null}t.parentObserver&&(t.parentObserver.disconnect(),t.parentObserver=null),t.childObserver&&(t.childObserver.disconnect(),t.childObserver=null),t._bottomObserved=null,t.parentNode=null,t.detachTimeout&&(clearTimeout(t.detachTimeout),t.detachTimeout=null)}},L=e=>{const{hostState:t,host:n}=e;!t||t.teardownRegistered||t.detachTimeout||(t.detachTimeout=setTimeout(()=>{t.detachTimeout=null,n?.isConnected?L(e):S(e)},6e4))},H=e=>{const{hostState:t,host:n}=e;if(!t||t.teardownRegistered||!n?.parentNode)return;if(t.parentObserver&&t.parentNode===n.parentNode)return;t.parentObserver&&(t.parentObserver.disconnect(),t.parentObserver=null),t.parentNode=n.parentNode;const r=new MutationObserver(t=>{if(n?.isConnected){for(const r of t)for(const t of r.removedNodes)if(t===n)return void S(e)}else S(e)});r.observe(n.parentNode,{childList:!0}),t.parentObserver=r},I=e=>{const{hostState:t,host:n}=e;if(!t||!n||t.childObserver)return;const r=new MutationObserver(()=>{A(e),M(e,!0)});try{r.observe(n,{childList:!0})}catch{return}t.childObserver=r},A=e=>{const{hostState:t,container:n}=e,r=t?.resizeObserver,a=n?.querySelector?.(".bubble-sub-button-bottom-container");if(r&&a&&t._bottomObserved!==a){try{r.observe(a)}catch{return}t._bottomObserved=a}},k=e=>{const{host:t,root:n,hostState:r,container:a,cardLayout:i,isWeatherOnlyMode:s}=e;if(!t||!n||!r)return;if(r.resizeObserver)return;if(n._ro){try{n._ro.disconnect()}catch{}n._ro=null}const o=new ResizeObserver(()=>{r.resizeFrame&&cancelAnimationFrame(r.resizeFrame),r.resizeFrame=requestAnimationFrame(()=>{r.resizeFrame=null,N(e,e.currentList||[])})});try{o.observe(t)}catch{}if("square"!==i)try{o.observe(n)}catch{}if(a&&a!==t)try{o.observe(a)}catch{}if(r.resizeObserver=o,!n._heightRo&&s){const t=()=>{r.heightUpdateFrame&&cancelAnimationFrame(r.heightUpdateFrame),r.heightUpdateFrame=requestAnimationFrame(()=>{r.heightUpdateFrame=null,M(e,!0)})};n._heightRo=new ResizeObserver(t);try{n._heightRo.observe(n)}catch{}}H(e),I(e),A(e),L(e)},R=e=>{const t=e?.datetime||e?.time||e?.date,n=t?new Date(t).getTime():NaN;return Number.isNaN(n)?null:n},z=()=>{const r=window.__bcwfCtx;if(!r)return;const{hass:a,entity:i,card:c,getWeatherIcon:h,self:u,onTeardown:m}=r,g=a||u?.hass;if(!g)return;const y="string"==typeof i?i:u?.entity?.entity_id||"";if(!y||!y.startsWith("weather."))return;const p=(t=>{const n=t?.weather_forecast||{},r=n.type||"daily",a=n.card_layout||"default",i="weather_only"===a||"weather_only_bg"===a,s="weather_only"===a,o="background_only"===a,l="background_only_minimal"===a,d=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||!1,c=t?.grid_options?.rows,h=null==c||"auto"===c,u=Number(n.scale),m=Number.isFinite(u)?Math.min(3,Math.max(.5,u)):1;return{cfg:n,type:r,max:Number.isFinite(n.max_days)?n.max_days:7,minW:Number.isFinite(n.min_day_width)?n.min_day_width:Math.round(50*m),scale:m,ttlMin:e[r]??60,animOn:!n.disable_animations&&!d,bgOn:!n.disable_dynamic_background,hideIconBg:n.hide_icon_background??!1,cardLayout:a,autoHeight:h,isSquare:"square"===a,isWeatherOnlyMode:i,isWeatherOnlyMinimal:s,isBackgroundOnly:o,isBackgroundOnlyMinimal:l,isWeatherHidden:o||l,hideHeaderContent:i||l}})(u?.config),b=u?.elements?.cardWrapper||c,f=(e=>{if(!e)return null;const n=(()=>{const e=t();return e.hostStateMap||(e.hostStateMap=new WeakMap)})();let r=n.get(e);return r||(r={},n.set(e,r)),r})(b),w=f?.lastDraw,v=g.states[y],x=g.states["sun.sun"],_=Date.now(),$=b?.querySelector?.(".bc-weather");let O=$;const A=v?[v.state,v.last_updated,v.last_changed,v.attributes?.temperature,v.attributes?.humidity,v.attributes?.pressure,v.attributes?.wind_speed,v.attributes?.wind_bearing,v.attributes?.precipitation,v.attributes?.forecast?.[0]?.datetime,v.attributes?.forecast?.[0]?.condition].map(e=>e??"").join("|"):"",z=x?[x.state,x.last_updated,x.attributes?.next_rising,x.attributes?.next_setting,x.attributes?.elevation].map(e=>e??"").join("|"):"",W=[JSON.stringify(p.cfg),u?.config?.button_type,u?.config?.show_icon,u?.config?.show_name,u?.config?.show_state,u?.config?.show_attribute,u?.config?.show_last_changed,u?.config?.show_last_updated].map(e=>e??"").join("|"),q=!(!w||w.entity!==A||w.sun!==z||w.cfg!==W||_-w.ts>6e4||!$);f&&(v||x)&&(f.lastDraw={entity:A,sun:z,cfg:W,ts:_});try{b.classList.add("fixed-top");const e=getComputedStyle(b).position;e&&"static"!==e||(b.style.position="relative")}catch{}const P=u?.elements?.cardContainer||b?.closest?.(".bubble-container")||b;if(P?.classList.add("bc-weather-card"),P?.classList){P.classList.toggle("bc-wx-background-only",p.isBackgroundOnly||p.isBackgroundOnlyMinimal),P.classList.toggle("bc-wx-background-only-minimal",p.isBackgroundOnlyMinimal),P.classList.toggle("bc-wx-weather-only",p.isWeatherOnlyMode);const e=P.querySelector?.(".bubble-sub-button-bottom-container"),t=!!(e&&e.childElementCount>0);P.classList.toggle("bc-wx-has-bottom-sub-buttons",t)}p.isSquare&&P?.classList.add("bc-square-card");const T=u?.elements?.iconContainer;T&&T.classList.toggle("bc-wx-hide-icon-bg",p.hideIconBg),O||(O=Object.assign(document.createElement("div"),{className:"bc-weather",innerHTML:'<div class="bc-weather-grid"></div>'}),b.appendChild(O));const E=O.querySelector(".bc-weather-grid"),B={...p,self:u,ha:g,card:c,getWeatherIcon:h,onTeardown:m,entityId:y,host:b,hostState:f,container:P,root:O,grid:E,now:_,currentList:null};if(Object.assign(B,(e=>{const{ha:t,entityId:n,type:r}=e,a=t?.config?.unit_system?.temperature||"°C";return{unit:a,fmt:e=>null==e||Number.isNaN(+e)?"":`${Math.round(+e)}${a.replace("°"," °")}`.replace("  "," "),label:e=>{try{const n=new Date(e);if(Number.isNaN(n.getTime()))return"";if("hourly"===r)try{return(e=>{const t=e?.locale||{},n=(r=t.time_zone,a=e?.config?.time_zone,"local"===r&&o?o:a);var r,a;const i=`${t.language}|${t.time_format}|${n}`;return i!==l&&(l=i,d=new Intl.DateTimeFormat(t.language||void 0,{hour:"numeric",minute:"2-digit",hourCycle:s(t)?"h12":"h23",...n?{timeZone:n}:{}})),d})(t).format(n)}catch{return`${String(n.getHours()).padStart(2,"0")}:${String(n.getMinutes()).padStart(2,"0")}`}const a=t?.locale?.language||navigator.language||"en-US";return n.toLocaleDateString(a,{weekday:"short"})}catch{return""}},isNight:e=>{if("boolean"==typeof e?.is_daytime)return!e.is_daytime;const r=t?.states?.[n];if("boolean"==typeof r?.attributes?.is_daytime)return!r.attributes.is_daytime;const a=t?.states?.["sun.sun"]?.state;if("below_horizon"===a)return!0;if("above_horizon"===a)return!1;try{const t=(e?.datetime||e?.time||e?.date?new Date(e.datetime||e.time||e.date):new Date).getHours();return t<6||t>=20}catch{return!1}}}})(B)),(e=>{const{hostState:t,onTeardown:n}=e;"function"!=typeof n||!t||(n(()=>S(e)),t.teardownRegistered=!0)})(B),H(B),I(B),L(B),F(B),M(B),q)return void C(B);const{normalizeForecast:D,getCache:G,setCache:K,extractForecast:j,fetchForecast:U}=(e=>{const{ha:r,entityId:a,type:i,max:s,ttlMin:o,now:l}=e,d=60*o*1e3,c=`bcwf|${a}|${i}|max:${s}`,h=`${a}|${i}`,u=e=>{if(!e)return[];if(Array.isArray(e?.[a]?.forecast))return e[a].forecast;if(Array.isArray(e?.response?.[a]?.forecast))return e.response[a].forecast;if(Array.isArray(e?.forecast))return e.forecast;if(Array.isArray(e?.result?.forecast))return e.result.forecast;if(Array.isArray(e?.response?.forecast))return e.response.forecast;if(Array.isArray(e?.results)){const t=e.results.find(e=>[e?.entity_id,e?.entityId,e?.target]?.includes(a))||e.results[0];return u(t)}if(Array.isArray(e)){const t=e.find(e=>e?.entity_id===a)||e[0];return u(t)}return[]};return{normalizeForecast:e=>{if(!Array.isArray(e))return[];const t=[...e].sort((e,t)=>{const n=R(e),r=R(t);return null==n&&null==r?0:null==n?1:null==r?-1:n-r}),n=l-18e5,r="hourly"===i?t.filter(e=>{const t=R(e);return null==t||t>=n}):t;return(r.length?r:t).slice(0,s)},getCache:()=>{const e=n()[c];if(e&&l-e.ts<=d)return e.data;try{const e=JSON.parse(localStorage.getItem(c)||"null");if(e&&l-e.ts<=d)return e.data}catch{}return null},setCache:e=>{const t=n();t[c]={ts:l,data:e},((e,t=10)=>{if(!e)return;const n=Object.entries(e);n.length<=t||n.sort((e,t)=>(e[1]?.ts??0)-(t[1]?.ts??0)).slice(0,Math.max(0,n.length-t)).forEach(([t])=>{delete e[t]})})(t,8);try{localStorage.setItem(c,JSON.stringify({ts:l,data:e}))}catch{}},extractForecast:u,fetchForecast:()=>{const e=(()=>{const e=t();return e.requests||(e.requests={})})(),n=e[h];if(n?.promise&&Date.now()-n.ts<1e4)return n.promise;const s=r.callWS({type:"call_service",domain:"weather",service:"get_forecasts",service_data:{entity_id:a,type:i},return_response:!0}).finally(()=>{e[h]?.promise===s&&delete e[h]});return e[h]={promise:s,ts:Date.now()},s}}})(B),Q=D(G());if(Array.isArray(Q)&&Q.length)return B.currentList=Q,N(B,Q),k(B),C(B),void F(B);U().then(e=>{const t=D(j(e));t.length&&(B.currentList=t,K(t),N(B,t),k(B))}).catch(e=>console.warn("Weather Forecast: WS error",e)).finally(()=>{C(B),F(B),B.currentList||(N(B,[]),k(B))})};window.__bcwfRun={buildId:"1786641719609",fn:z},z()})();; } window.__bcwfCtx = null; return ''; })()}

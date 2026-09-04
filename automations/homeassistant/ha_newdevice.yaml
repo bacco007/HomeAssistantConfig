@@ -8,7 +8,11 @@ trigger:
       action: create
 condition:
   - condition: template
-    value_template: "{{trigger.event.data.entity_id.split('.')[0] == 'device_tracker' }}"
+    value_template: >
+      {{
+        trigger.event.data.entity_id.split('.')[0] == 'device_tracker'
+        and not trigger.event.data.entity_id.startswith('device_tracker.skyradar_fusion')
+      }}
 action:
   - variables:
       entity: >

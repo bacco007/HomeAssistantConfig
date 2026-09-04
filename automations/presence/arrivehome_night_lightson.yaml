@@ -23,6 +23,6 @@ action:
       brightness_pct: 35
     target:
       device_id:
-        - 126e91428c97177372f5ef7398eb537e
-        - 6623c3d12a6637f37fab2c6e24c41afc
+        - f52ffba24d8182f49f07691f01dfe4e3
+        - 0c04d9c50880394d109ed86d4c310ce8
 mode: single

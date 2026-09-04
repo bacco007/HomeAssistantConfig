@@ -1,0 +1,14 @@
+---
+sensor:
+  - name: "Daylight Saving Status"
+    unique_id: daylight_saving_status
+    state: >
+      {%- set en = "sensor.dst_dates_local" %}
+      {%- if states(en) == 'False' %}
+        DST Starts {{ as_timestamp(state_attr(en, 'dstStart')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+      {%- else %}
+        DST Ends {{ as_timestamp(state_attr(en, 'dstEnd')) | timestamp_custom('%d/%m/%Y, %H:%M') }}
+      {%- endif %}
+    icon: "mdi:sun-clock"
+    attributes:
+      category: time

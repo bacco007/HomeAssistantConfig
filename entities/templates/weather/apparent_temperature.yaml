@@ -1,0 +1,56 @@
+---
+sensor:
+  - name: "[Weather] Apparent Temperature (BoM)"
+    unique_id: weather_apparent_temperature_bom
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    availability: >
+      {%- set t_ent = 'sensor.weather_temperature' %}
+      {%- set w_ent = 'sensor.weather_wind_speed' %}
+      {%- set h_ent = 'sensor.weather_humidity' %}
+      {{ states(t_ent) | is_number
+         and states(h_ent) | is_number
+         and state_attr(t_ent, 'unit_of_measurement') in ['°F', '°C', 'K']
+         and (w_ent is none
+              or (states(w_ent) | is_number
+                  and state_attr(w_ent, 'unit_of_measurement') in ['mph', 'km/h', 'm/s', 'kn', 'ft/s'])) }}
+    attributes:
+      category: weather
+    state: >
+      {%- set t_ent = 'sensor.weather_temperature' %}
+      {%- set w_ent = 'sensor.weather_wind_speed' %}
+      {%- set h_ent = 'sensor.weather_humidity' %}
+      {# temperature to °C #}
+      {%- set t_raw = states(t_ent) | float %}
+      {%- set t_unit = state_attr(t_ent, 'unit_of_measurement') %}
+      {%- if t_unit == '°F' %}
+        {%- set ta = (t_raw - 32) / 1.8 %}
+      {%- elif t_unit == 'K' %}
+        {%- set ta = t_raw - 273.15 %}
+      {%- else %}
+        {%- set ta = t_raw %}
+      {%- endif %}
+
+      {# wind to m/s; calm-air mode when no wind source is configured #}
+      {%- if w_ent is none %}
+        {%- set ws = 0 %}
+      {%- else %}
+        {%- set w_raw = states(w_ent) | float %}
+        {%- set w_unit = state_attr(w_ent, 'unit_of_measurement') %}
+        {%- set w_factor = {'mph': 0.44704, 'km/h': 0.2777778,
+                           'm/s': 1.0, 'kn': 0.514444,
+                           'ft/s': 0.3048}.get(w_unit) %}
+        {%- set ws = w_raw * w_factor %}
+      {%- endif %}
+
+      {# relative humidity, 0-100 % #}
+      {%- set rh = states(h_ent) | float %}
+
+      {# BoM apparent temperature, non-radiation (shaded) #}
+      {%- set e = (rh / 100) * 6.105 * 2.718281828 ** (17.27 * ta / (237.7 + ta)) %}
+      {%- set at_c = ta + 0.33 * e - 0.70 * ws - 4.00 %}
+
+      {# native output in °C; output unit is selected once,
+         in the entity's unit setting (see Output unit selection) #}
+      {{ at_c | round(1) }}

@@ -98,11 +98,3 @@ actions:
             | selectattr('state', 'eq', 'on')
             | map(attribute='entity_id') | list | sort }}
 
-  # Offline Integrations
-  - service: group.set
-    data:
-      object_id: monitor_offline_integrations
-      name: "[Group] Monitor - Offline Integrations"
-      entities: >
-        {{ expand('group.connectivity_monitors') | selectattr('state', 'eq', 'off')
-            | map(attribute='entity_id') | list | sort }}

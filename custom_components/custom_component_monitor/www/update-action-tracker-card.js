@@ -4,8 +4,11 @@
  * Skip, Update, and Update & Action buttons.
  */
 
-const CARD_VERSION = "1.13.1";
+const CARD_VERSION = "1.14.0";
 const UAT_DOMAIN = "custom_component_monitor";
+// #91: AI summaries and the ai_enabled flag live here, not on the update.*
+// entities. Both the card and its editor read it.
+const UAT_SENSOR = "sensor.hacs_updates";
 
 /* -- Helpers -------------------------------------------------- */
 
@@ -21,45 +24,185 @@ function uatAttr(escapedText) {
   return String(escapedText).replace(/"/g, "&quot;");
 }
 
-/* -- Editor Element ------------------------------------------- */
+/* -- Editor Element -------------------------------------------
+ *
+ * Built on ha-form. See docs/specs/card-editor-ha-form.md. The old editor was
+ * a single hand-built title box that re-rendered - and so replaced the <input>
+ * being typed into - on every keystroke, because it fired on `input` and the
+ * card dialog calls setConfig() back after each config-changed.
+ */
+
+// One source of truth for the card and its editor. The editor shows these as
+// the effective values but never stores them - see _uatPrune.
+const UAT_DEFAULTS = {
+  title: "HACS Update Tracker",
+  default_filter: "all",
+  default_category_filter: "all",
+};
+
+// Mirrors AI_CATEGORY_OPTIONS in const.py. Keep the two in step.
+const UAT_AI_CATEGORIES = [
+  "Bug fixes",
+  "New features",
+  "Documentation",
+  "Translations",
+  "Breaking changes",
+  "Dependencies",
+  "Other",
+];
+
+const UAT_EDITOR_LABELS = {
+  title: "Card title (optional)",
+  default_filter: "Open filtered to",
+  default_category_filter: "Open filtered to category",
+};
+
+const UAT_EDITOR_HELPERS = {
+  title: `Leave blank to use "${UAT_DEFAULTS.title}".`,
+  default_filter: "Which kinds of update the card shows first. You can still change it on the card.",
+  default_category_filter: "What each update is about, as summarised by AI.",
+};
+
+/**
+ * The category field only exists once AI categorisation is switched on in the
+ * integration - offering a control that silently does nothing is worse than
+ * not offering it. A value stored while it was visible is left alone.
+ */
+function _uatEditorSchema(aiEnabled) {
+  const schema = [
+    { name: "title", selector: { text: {} } },
+    {
+      name: "default_filter",
+      selector: { select: { mode: "dropdown", options: [
+        { value: "all", label: "All types" },
+        { value: "integration", label: "Integrations" },
+        { value: "card", label: "Cards" },
+        { value: "theme", label: "Themes" },
+        { value: "other", label: "Other" },
+      ] } },
+    },
+  ];
+  if (aiEnabled) {
+    schema.push({
+      name: "default_category_filter",
+      selector: { select: { mode: "dropdown", options: [
+        { value: "all", label: "All categories" },
+        ...UAT_AI_CATEGORIES.map((c) => ({ value: c, label: c })),
+      ] } },
+    });
+  }
+  return schema;
+}
+
+/**
+ * Force the frontend chunk that defines ha-form. `window.customElements` is
+ * re-read on every call rather than captured: Home Assistant swaps it for a
+ * scoped-registry polyfill while its core bundle boots, which is also why this
+ * must never be `customElements.whenDefined()` at module top level.
+ */
+function _uatLoadHaComponents() {
+  const registry = window.customElements;
+  if (registry && !registry.get("ha-form")) {
+    const tile = registry.get("hui-tile-card");
+    if (tile && tile.getConfigElement) { tile.getConfigElement(); }
+  }
+}
+
+/** Drop anything the user did not actually choose. See _ccmPrune. */
+function _uatPrune(config) {
+  const out = Object.assign({}, config);
+  if (out.title === "" || out.title == null) { delete out.title; }
+  Object.keys(UAT_DEFAULTS).forEach((key) => {
+    if (key in out && out[key] === UAT_DEFAULTS[key]) { delete out[key]; }
+  });
+  return out;
+}
 
 class UpdateActionTrackerCardEditor extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-    this._config = {};
-  }
-
   setConfig(config) {
     this._config = Object.assign({}, config);
     this._render();
   }
 
-  get _title() {
-    return this._config.title || "HACS Update Tracker";
+  // Safe to render on every tick, unlike the hand-built version this replaced:
+  // nothing is destroyed, the form just receives new values.
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  connectedCallback() {
+    _uatLoadHaComponents();
+  }
+
+  _aiEnabled() {
+    // The same flag the card itself reads to decide whether to offer AI at all.
+    const s = this._hass && this._hass.states[UAT_SENSOR];
+    return !!(s && s.attributes && s.attributes.ai_enabled);
+  }
+
+  _schema() {
+    // Rebuilt only when the flag actually flips, so ha-form is not handed a
+    // fresh array object on every state update.
+    const aiEnabled = this._aiEnabled();
+    if (!this._schemaCache || this._schemaAi !== aiEnabled) {
+      this._schemaAi = aiEnabled;
+      this._schemaCache = _uatEditorSchema(aiEnabled);
+    }
+    return this._schemaCache;
+  }
+
+  /**
+   * What the form displays: the effective values, so no dropdown opens blank -
+   * except the title, which stays empty when unset so its helper line can name
+   * the default instead of the box claiming a value that isn't stored.
+   */
+  _formData() {
+    const data = Object.assign({}, UAT_DEFAULTS, this._config);
+    if (this._config.title == null) { data.title = ""; }
+    return data;
   }
 
   _render() {
-    this.shadowRoot.innerHTML = `
-      <style>
-        .editor { padding: 16px; }
-        .editor label { display: block; font-weight: 500; margin-bottom: 4px; }
-        .editor input { width: 100%; padding: 8px; box-sizing: border-box;
-                        border: 1px solid var(--divider-color, #ccc); border-radius: 4px; }
-      </style>
-      <div class="editor">
-        <label>Title</label>
-        <input type="text" id="title" value="${uatEscapeHtml(this._title)}" />
-      </div>
-    `;
-    this.shadowRoot.querySelector("#title").addEventListener("input", (e) => {
-      this._config = Object.assign({}, this._config, { title: e.target.value });
-      const event = new CustomEvent("config-changed", { detail: { config: this._config } });
-      this.dispatchEvent(event);
-    });
+    // ha-form needs hass to resolve its selectors, so wait for it.
+    if (!this._hass || !this._config) { return; }
+
+    if (!this._form) {
+      const form = document.createElement("ha-form");
+      form.computeLabel = (schema) => UAT_EDITOR_LABELS[schema.name] || schema.name;
+      form.computeHelper = (schema) => UAT_EDITOR_HELPERS[schema.name] || "";
+      form.addEventListener("value-changed", (ev) => this._onValueChanged(ev));
+      // Light DOM, matching the sibling cards: the dialog styles the editor's
+      // own children, and the selectors read `hass` from a Lit context
+      // provider further up the tree.
+      this.appendChild(form);
+      this._form = form;
+    }
+
+    this._form.hass = this._hass;
+    this._form.schema = this._schema();
+    this._form.data = this._formData();
+  }
+
+  _onValueChanged(event) {
+    // Stop the inner event so only our config-changed reaches the editor host.
+    event.stopPropagation();
+    // ha-form only returns the keys it was given, so a category stored while
+    // the field was visible survives the field being hidden again.
+    const merged = Object.assign({}, this._config, event.detail.value);
+    const config = _uatPrune(merged);
+    this._config = config;
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config },
+      bubbles: true,
+      composed: true,
+    }));
   }
 }
-customElements.define("update-action-tracker-card-editor", UpdateActionTrackerCardEditor);
+
+if (!customElements.get("update-action-tracker-card-editor")) {
+  customElements.define("update-action-tracker-card-editor", UpdateActionTrackerCardEditor);
+}
 
 /* -- Main Card ------------------------------------------------ */
 
@@ -90,11 +233,14 @@ class UpdateActionTrackerCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return { title: "HACS Update Tracker" };
+    // Deliberately empty: setConfig applies the default at read time. Baking a
+    // title in freezes it in the dashboard, which is how the sibling card ended
+    // up needing _riu_migrateConfig. See DECISIONS.md.
+    return {};
   }
 
   setConfig(config) {
-    this._config = Object.assign({ title: "HACS Update Tracker" }, config);
+    this._config = Object.assign({ title: UAT_DEFAULTS.title }, config);
     this._lastStateHash = "";
     if (config && config.default_filter) this._typeFilter = config.default_filter;
     if (config && config.default_category_filter) this._categoryFilter = config.default_category_filter;
@@ -134,7 +280,7 @@ class UpdateActionTrackerCard extends HTMLElement {
     // entities. Without this the card never re-renders when a summary lands.
     // Hash the summary length (not last_scan) so an hourly no-op scan doesn't
     // force a pointless re-render but a new summary does.
-    const sensor = this._hass.states["sensor.hacs_updates"];
+    const sensor = this._hass.states[UAT_SENSOR];
     if (sensor) {
       const a = sensor.attributes || {};
       parts.push("ai=" + String(a.ai_enabled) + "|" + String(a.ai_pending) + "|" + String(a.ai_in_progress));
@@ -251,7 +397,7 @@ class UpdateActionTrackerCard extends HTMLElement {
   // since the HACS update.* entities themselves carry no type/category.
   _buildTypeMap() {
     const byEntity = {}, byRepo = {}, byName = {};
-    const s = this._hass.states["sensor.hacs_updates"];
+    const s = this._hass.states[UAT_SENSOR];
     const updates = (s && s.attributes && s.attributes.updates) || [];
     for (const u of updates) {
       const cat = this._catOf(u.type);
@@ -281,7 +427,7 @@ class UpdateActionTrackerCard extends HTMLElement {
   // which the integration enriches when AI categorisation is enabled.
   _buildAiMap() {
     const byEntity = {}, byRepo = {}, byName = {};
-    const s = this._hass.states["sensor.hacs_updates"];
+    const s = this._hass.states[UAT_SENSOR];
     const updates = (s && s.attributes && s.attributes.updates) || [];
     for (const u of updates) {
       const info = {
@@ -404,7 +550,7 @@ class UpdateActionTrackerCard extends HTMLElement {
   /* -- AI summaries (#91) -------------------------------------- */
 
   _aiRunning() {
-    const s = this._hass && this._hass.states["sensor.hacs_updates"];
+    const s = this._hass && this._hass.states[UAT_SENSOR];
     return this._aiBusy || !!(s && s.attributes && s.attributes.ai_in_progress);
   }
 
@@ -572,7 +718,7 @@ class UpdateActionTrackerCard extends HTMLElement {
        can leave gaps (a slow model, a transient provider error, a backed-off
        retry). Offer an explicit way to fill them in. Only ever targets updates
        that are actually missing a summary. */
-    const sensorAttrs = (this._hass.states["sensor.hacs_updates"] || {}).attributes || {};
+    const sensorAttrs = (this._hass.states[UAT_SENSOR] || {}).attributes || {};
     const missingSummaries = shown.filter((eid) => !this._aiOf(eid, aiMap).summary);
     const aiBusy = this._aiBusy || !!sensorAttrs.ai_in_progress;
     const aiBtnHtml =
@@ -914,7 +1060,9 @@ class UpdateActionTrackerCard extends HTMLElement {
   }
 }
 
-customElements.define("update-action-tracker-card", UpdateActionTrackerCard);
+if (!customElements.get("update-action-tracker-card")) {
+  customElements.define("update-action-tracker-card", UpdateActionTrackerCard);
+}
 
 console.info(
   "%c UPDATE-ACTION-TRACKER %c v" + CARD_VERSION + " ",

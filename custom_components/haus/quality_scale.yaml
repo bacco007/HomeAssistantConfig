@@ -1,0 +1,151 @@
+rules:
+  # Bronze
+  action-setup:
+    status: exempt
+    comment: HAUS registers no actions.
+  appropriate-polling: done
+  brands: done
+  common-modules: done
+  config-flow-test-coverage: done
+  config-flow: done
+  dependency-transparency:
+    status: done
+    comment: |
+      `requirements` is empty. HAUS depends on nothing outside Home Assistant.
+  docs-actions:
+    status: exempt
+    comment: No actions.
+  docs-conditions:
+    status: exempt
+    comment: No conditions.
+  docs-high-level-description: done
+  docs-installation-instructions: done
+  docs-removal-instructions:
+    status: done
+    comment: |
+      Including the two things removal does not clean up - the Lovelace
+      resource and the counter store - rather than implying it does.
+  docs-triggers:
+    status: exempt
+    comment: |
+      No trigger platform. HAUS fires `haus_tier_changed` on the bus, which is
+      documented under Events with its fields and an example automation.
+  entity-event-setup:
+    status: exempt
+    comment: |
+      No entity subscribes to anything. HAUS listens to EVENT_CALL_SERVICE and
+      EVENT_STATE_CHANGED once, during setup, for its own rolling tallies.
+  entity-unique-id: done
+  has-entity-name: done
+  runtime-data: done
+  test-before-configure:
+    status: exempt
+    comment: |
+      Nothing to connect to. Every signal is read from `hass` itself.
+  test-before-setup:
+    status: exempt
+    comment: |
+      Setup cannot fail on an unreachable dependency; there isn't one. A
+      missing HAGHS is an absent pillar, not a failed setup.
+  unique-config-entry:
+    status: done
+    comment: One instance scores one Home Assistant; the flow aborts on a second.
+
+  # Silver
+  action-exceptions:
+    status: exempt
+    comment: No actions.
+  config-entry-unloading: done
+  docs-configuration-parameters: done
+  docs-installation-parameters:
+    status: exempt
+    comment: |
+      The config flow takes no input - it is a confirmation step. The two
+      options that exist afterwards are documented under Configuration.
+  entity-unavailable:
+    status: done
+    comment: Availability follows the coordinator.
+  integration-owner: done
+  log-when-unavailable:
+    status: done
+    comment: Handled by the coordinator.
+  parallel-updates: done
+  reauthentication-flow:
+    status: exempt
+    comment: Nothing to authenticate against.
+  test-coverage:
+    status: done
+    comment: 100% across the component, gated at 95% in CI.
+
+  # Gold
+  devices:
+    status: done
+    comment: |
+      One service device per entry - the integration itself. HAUS scores an
+      instance, so there is nothing else for a device to represent.
+  diagnostics:
+    status: done
+    comment: |
+      Counts only from the store. Per-user tallies are measured and discarded,
+      never carried, and two tests assert no user id reaches the dump.
+  discovery-update-info:
+    status: exempt
+    comment: Nothing is discovered.
+  discovery:
+    status: exempt
+    comment: |
+      Nothing to discover. HAUS reads the instance it is installed in.
+  docs-data-update: done
+  docs-examples: done
+  docs-known-limitations: done
+  docs-supported-devices:
+    status: exempt
+    comment: No devices. The subject is the Home Assistant instance itself.
+  docs-supported-functions: done
+  docs-troubleshooting: done
+  docs-use-cases: done
+  dynamic-devices:
+    status: exempt
+    comment: |
+      The single service device is created with the entry and never changes.
+  entity-category:
+    status: exempt
+    comment: |
+      No entity is configuration, nor a diagnostic *of* a device. The pillar
+      sensors are the arguable case - they are secondary to the score, so
+      DIAGNOSTIC is tempting - but a diagnostic entity reports on the health of
+      the thing producing the data, and a pillar is the data. Marking them
+      diagnostic would file the breakdown away from the measurement it breaks
+      down.
+  entity-device-class:
+    status: exempt
+    comment: |
+      None of Home Assistant's device classes describes a composite 0-100
+      score. The nearest by name are power_factor, duration and
+      blood_glucose_concentration; claiming one would make the sensor lie about
+      what it measures to fill in a field.
+  entity-disabled-by-default:
+    status: exempt
+    comment: |
+      Nothing here is noisy or non-essential. The breakdown and spread cards
+      read the pillar sensors, so shipping them disabled would leave a fresh
+      install with cards rendering nothing.
+  entity-translations: done
+  exception-translations:
+    status: exempt
+    comment: HAUS defines no exceptions of its own.
+  icon-translations: done
+  reconfiguration-flow:
+    status: exempt
+    comment: |
+      There is no connection to reconfigure. Both settings are options, and
+      changing either takes effect on the next refresh without a reload.
+  repair-issues:
+    status: done
+    comment: |
+      A `haus:` block in YAML raises one, through
+      cv.config_entry_only_config_schema, rather than being ignored.
+  stale-devices:
+    status: exempt
+    comment: |
+      The one device lives and dies with the config entry.

@@ -1,5 +1,0 @@
----
-platform: untappd
-username: !secret untappd_username
-id: !secret untappd_id
-secret: !secret untappd_secret

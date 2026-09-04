@@ -16,110 +16,71 @@ cards:
         show_state: true
         show_background: true
         entity: sensor.tamhospital_waitingtime
-  - type: custom:plotly-graph
-    hours_to_show: 24
-    time_offset: |-
-      $fn () =>  {
-        now = new Date();
-        tomorrow = new Date(now);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(0,0,0,0);                                           // midnight
-        HoursLeftToday = (tomorrow.getTime() - now.getTime()) / 1000 / 3600;  // milliseconds to hours
-        return HoursLeftToday.toFixed(1) + "h";                               // only 1 decimal allowed for 'hours_to_show'
-      }
+  - type: custom:statistics-graph-chart-card
+    show_now_line: false
+    show_grid: false
+    show_y2_axis: false
+    animate_graph: true
+    points_per_hour: 4
+    height: 250
+    graph_start: day
+    show_full_period: true
+    x_grid_style: dashed
+    y_grid_style: dashed
+    align_header: center
+    state_layout: horizontal
+    group_by: hour
     entities:
       - entity: sensor.tamhospital_waitingtime
         name: Current
-        connectgaps: true
-        show_value: true
-        filters:
-          - force_numeric
-          - resample: 10m
-        texttemplate: <b>%{y:,.0f}</b>
-        fill: tozeroy
-        line:
-          width: 3
-          color: "#FF4400"
-          shape: spline
+        aggregate_func: max
+        decimals: 0
+        show_in_legend: true
+        show_state: false
+        show_trend_icon: false
+        legend_stats:
+          - min
+          - max
       - entity: sensor.tamhospital_waitingtime
         name: Yesterday
         time_offset: 1d
-        connectgaps: true
-        filters:
-          - force_numeric
-          - resample: 10m
-        texttemplate: <b>%{y:,.0f}</b>
-        line:
-          width: 1.5
-          color: lightgray
-          shape: spline
+        aggregate_func: max
+        decimals: 0
+        show_in_legend: true
+        show_state: false
+        show_trend_icon: false
+        legend_stats:
+          - min
+          - max
+        offset: "24"
+        show_fill: false
       - entity: sensor.tamhospital_waitingtime
         attribute: usual_patients
         name: Usual Waiting
-        connectgaps: true
-        filters:
-          - force_numeric
-        line:
-          width: 2.5
-          color: "#ffa600"
+        aggregate_func: max
+        decimals: 0
+        show_in_legend: true
+        show_state: false
+        show_trend_icon: false
+        legend_stats:
+          - min
+          - max
+        show_fill: false
       - entity: sensor.tamhospital_waitingtime
         attribute: capacity
         name: Capacity
-        time_offset: 1d
-        connectgaps: true
-        filters:
-          - force_numeric
-        line:
-          width: 2
-          dash: dash
-          color: "#039be5"
-      - entity: ""
-        name: now
-        yaxis: y9
-        showlegend: false
-        line:
-          width: 2
-          dash: dot
-          color: white
-        filters:
-          - force_numeric
-          - fn: () => { return {xs:[Date.now(),Date.now()], ys:[0,1]} }
-    refresh_interval: auto
-    layout:
-      paper_bgcolor: rgba(0,0,0,0)
-      plot_bgcolor: rgba(0,0,0,0)
-      showlegend: true
-      height: 250
-      margin:
-        autoexpand: true
-        l: 30
-        r: 20
-      xaxis:
-        showline: true
-        tickformat: "%H:%M"
-        showgrid: false
-        showticklabels: true
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        autotick: true
-        ticks: outside
-        tickwidth: 2
-        ticklen: 5
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-      yaxis:
-        title: ""
-        linecolor: rgb(204,204,204)
-        linewidth: 2
-        tickfont:
-          family: Roboto
-          size: 12
-          color: rgb(204,204,204)
-      dragmode: false
-    config:
-      scrollZoom: false
+        aggregate_func: max
+        decimals: 0
+        show_in_legend: true
+        show_state: false
+        show_trend_icon: false
+        legend_stats:
+          - min
+          - max
+        offset: "24"
+        show_fill: false
+    annotations: []
+
   - type: entities
     entities:
       - type: custom:fold-entity-row

@@ -1,8 +1,0 @@
----
-platform: average
-name: indoor_average_temperature
-unique_id: indoor_average_temperature
-entities:
-  - sensor.z2m_bedroom_climate_temperature
-  - sensor.z2m_lounge_climate_temperature
-  - sensor.z2m_office_airquality_temperature_filtered

@@ -1,0 +1,704 @@
+blueprint:
+  name: Sensor Watchdog
+  description: "# Sensor Watchdog\n\n*Power-cycles a device when its entities go offline
+    or stop reporting fresh values.*\n\nA free blueprint from **The Thinking Home**
+    at [xeazy.com](https://xeazy.com).\n\n- \U0001F4D6 [Read the article](https://xeazy.com/sensor-watchdog-blueprint/)
+    - the design and worked examples.\n- \U0001F4AC [Discuss in the community](https://xeazy.com/logbook/)
+    - the forum thread for this blueprint.\n- ⭐ [More blueprints](https://github.com/TheThinkingHome/Automations)
+    - on GitHub.\n\n---\n\nWatches one or more entities that share a single smart
+    plug and automatically power-cycles the device behind that plug when any monitored
+    entity goes offline or stops reporting fresh values. Multiple entities from the
+    same physical device often have complementary activity patterns, and pairing them
+    gives better heartbeat coverage than either alone.\n\nTwo detection modes let
+    you choose how much event traffic the freshness detector creates: responsive (catches
+    state changes only) or light (skip freshness detection entirely and rely on the
+    unavailable detector plus the optional scheduled cycle). An optional active time
+    window prevents quiet empty rooms from being mistaken for frozen devices. An optional
+    uptime-sensor-based block prevents recovery while HA is still loading after start;
+    requires the built-in HA Uptime integration.\n\nRequires Home Assistant 2026.6
+    or later. That is the version the blueprint is verified on. If using responsive
+    mode, you must also create a Timer helper and pass its entity id via the Heartbeat
+    Timer input; light mode does not need a timer.\n\nOriginally built to recover
+    Aqara FP2 presence sensors that wedge every few days, then generalized for any
+    flaky device whose only reliable fix is a power cycle: Zigbee router plugs, WiFi
+    cameras, smart-home gateways, finicky sensors of any kind.\n\nFeedback is welcome
+    on the [forum](https://xeazy.com/logbook/).\n\n**Version: 1.0.0**\n\nLicense:
+    GPL-3.0-or-later. Copyright (C) 2026 James Lander, The Thinking Home ([xeazy.com](https://xeazy.com)).\n"
+  author: James Lander (xeazy.com)
+  domain: automation
+  source_url: https://github.com/TheThinkingHome/Automations/blob/main/blueprints/automation/sensor_watchdog.yaml
+  homeassistant:
+    min_version: 2026.6.0
+  input:
+    monitored_section:
+      name: "\U0001F4E1 Monitored Sensors"
+      icon: mdi:radar
+      description: The sensors to monitor and the switch to cycle on recovery.
+      input:
+        monitored_entities:
+          name: Monitored Entities
+          description: The entities watched by the blueprint. All must live on the
+            same recovery switch below, since one plug cycle is the recovery action
+            for the whole group. Pairing multiple entities from the same physical
+            device often improves detection because their activity patterns complement
+            each other. A sensor whose value changes mostly during the day paired
+            with one that changes mostly in the evening will together produce heartbeats
+            across the full day; either one alone would have quiet stretches that
+            look like a freeze.
+          selector:
+            entity:
+              multiple: true
+              reorder: false
+        recovery_switch:
+          name: Recovery Switch
+          description: The switch that powers the upstream device. Cycled (off, wait,
+            on) to recover the device. Typically a smart plug.
+          selector:
+            entity:
+              domain:
+              - switch
+              multiple: false
+              reorder: false
+    timing_section:
+      name: ⚙️ Timing
+      icon: mdi:timer-cog-outline
+      description: Basic timing tunables.
+      input:
+        recovery_off_seconds:
+          name: Recovery Off Duration
+          description: How long to hold the recovery switch off between off and on.
+            Long enough that the device fully power-cycles.
+          default: 10
+          selector:
+            number:
+              min: 1.0
+              max: 60.0
+              unit_of_measurement: seconds
+              mode: box
+              step: 1.0
+        unavailable_timeout_seconds:
+          name: Offline Timeout
+          description: How long a monitored entity must be in an offline state before
+            recovery fires. By default 'offline' means unavailable or unknown; enable
+            'Treat Off as Offline' in advanced settings to also include the 'off'
+            state, which is useful for ping sensors. Set this to a value longer than
+            typical transient outages.
+          default: 30
+          selector:
+            number:
+              min: 5.0
+              max: 600.0
+              unit_of_measurement: seconds
+              mode: box
+              step: 1.0
+    failure_notification_section:
+      name: "\U0001F514 Failure Notification"
+      icon: mdi:bell-alert-outline
+      description: 'Optional: send a notification if the recovery cycle fails to bring
+        the device back online. Disabled by default.'
+      collapsed: true
+      input:
+        failure_notification_enabled:
+          name: Enable Failure Notification
+          description: When enabled, after every recovery cycle the blueprint waits
+            for the device to settle, then checks whether any monitored entity is
+            still in a failure state. If yes, it runs the 'On Failure Action' you
+            configure below. When disabled, no check is performed and the recovery
+            cycle exits silently after the switch turns back on.
+          default: false
+          selector:
+            boolean: {}
+        recovery_settle_seconds:
+          name: Recovery Settle Time
+          description: How long to wait after the recovery switch turns back on before
+            checking whether the device recovered. Long enough for the device to boot,
+            reconnect to its mesh or WiFi, and start reporting again. 60 seconds works
+            for most Zigbee sensors and smart plugs; 90 to 120 seconds may be needed
+            for WiFi routers, NAS units, or anything with a longer boot. Ignored when
+            failure notification is disabled.
+          default: 60
+          selector:
+            number:
+              min: 5.0
+              max: 600.0
+              unit_of_measurement: seconds
+              mode: box
+              step: 1.0
+        on_failure_action:
+          name: On Failure Action
+          description: 'The action sequence to run when the recovery cycle fails to
+            bring the device back online. Typically a notify call, a persistent_notification.create,
+            or a script call. The following variables are available inside this action:
+            recovery_reason (one of ''unavailable'', ''stale'', ''scheduled'', ''post_restart'')
+            and failed_entities (a list of monitored entities still in a failure state).
+            The recovery_switch and other inputs are also accessible by name.'
+          default: []
+          selector:
+            action: {}
+    advanced_section:
+      name: "\U0001F6E0 Advanced"
+      icon: mdi:cog-outline
+      description: Detection modes, scheduled reboot, active window, and guards.
+      collapsed: true
+      input:
+        detection_mode:
+          name: Detection Mode
+          description: Light does no freshness detection at all and relies on the
+            unavailable detector and (optionally) the scheduled cycle. This is the
+            default because it works without a heartbeat timer helper and has the
+            lowest event-bus footprint. Responsive adds a freshness detector that
+            catches frozen- but-still-online devices via a heartbeat timer (catches
+            state changes only). Responsive requires the Heartbeat Timer input below.
+          default: light
+          selector:
+            select:
+              options:
+              - label: Light (unavailable + scheduled reboot only)
+                value: light
+              - label: Responsive (state changes only)
+                value: responsive
+              multiple: false
+              sort: false
+              custom_value: false
+        stale_threshold_minutes:
+          name: Stale Threshold
+          description: How long without a value change before staleness is declared.
+            Ignored in light mode. Set this longer than the natural quiet stretches
+            of your device under normal conditions.
+          default: 5
+          selector:
+            number:
+              min: 1.0
+              max: 1440.0
+              unit_of_measurement: minutes
+              mode: box
+              step: 1.0
+        heartbeat_timer:
+          name: Heartbeat Timer
+          description: A timer helper used to track when monitored entities last changed
+            state. Required in responsive mode. Create via Settings, Devices & Services,
+            Helpers, Create Helper, Timer. Leave the timer duration blank; this blueprint
+            sets it dynamically. In light mode this input is ignored.
+          default:
+          selector:
+            entity:
+              domain:
+              - timer
+              multiple: false
+              reorder: false
+        active_window_enabled:
+          name: Restrict Staleness to Active Window
+          description: When enabled, the staleness branch only fires within the active
+            time window below. Useful for presence-style or motion-style sensors that
+            naturally fall silent overnight in empty rooms, where the silence is normal
+            rather than a failure. Unavailable detection and scheduled reboot are
+            not affected by this window.
+          default: false
+          selector:
+            boolean: {}
+        active_after:
+          name: Active Window Start
+          description: Start of the active window (24-hour format). Window must not
+            cross midnight; active_after must be earlier than active_before. Ignored
+            when window is disabled.
+          default: 06:00:00
+          selector:
+            time: {}
+        active_before:
+          name: Active Window End
+          description: End of the active window. Ignored when window is disabled.
+          default: '23:00:00'
+          selector:
+            time: {}
+        scheduled_reboot_enabled:
+          name: Enable Scheduled Reboot
+          description: When enabled, the recovery cycle fires once per day at the
+            scheduled time as preventive maintenance. Independent of detection mode;
+            works in all modes.
+          default: false
+          selector:
+            boolean: {}
+        scheduled_reboot_time:
+          name: Scheduled Reboot Time
+          description: Time of day to fire the daily preventive reboot. Ignored when
+            scheduled reboot is disabled.
+          default: 04:30:00
+          selector:
+            time: {}
+        treat_off_as_offline:
+          name: Treat 'off' as Offline
+          description: 'When enabled, a monitored entity transitioning to the ''off''
+            state is treated the same as one transitioning to ''unavailable'' or ''unknown'',
+            and triggers recovery after the offline timeout. Enable only for entities
+            whose ''off'' state means failure, the clearest example being binary_sensors
+            from HA''s ping integration (they report ''off'' when the target is unreachable).
+            Leave disabled for entities whose ''off'' state is normal operation: presence
+            sensors, motion sensors, door contacts, switches, etc. The setting is
+            per- instance and applies to every monitored entity in this instance,
+            so do not mix ping-style entities with normal binary_sensors in one instance.
+            Use a separate watchdog instance for each device class.'
+          default: false
+          selector:
+            boolean: {}
+        use_uptime_sensor:
+          name: Block Recovery During HA Startup (Uptime Integration)
+          description: Check this box if you have the Home Assistant Uptime integration
+            installed. When enabled, the stale, unavailable, and scheduled recovery
+            branches are blocked while uptime is below the Block After HA Start value
+            below. The Uptime integration is a built-in HA core integration; add it
+            via Settings > Devices & Services > Add Integration > Uptime if you don't
+            already have it. The post-restart evaluation branch always uses Block
+            After HA Start as its initial delay regardless of this setting (the delay
+            does the same job for that branch).
+          default: false
+          selector:
+            boolean: {}
+        uptime_sensor:
+          name: Uptime Sensor
+          description: The Uptime integration's sensor entity. Only consulted when
+            the box above is checked. Default is sensor.uptime, which is the conventional
+            name. The blueprint expects the modern config-flow Uptime integration's
+            timestamp mode (an ISO8601 datetime) and computes elapsed seconds via
+            (now() - sensor_value).total_seconds().
+          default: sensor.uptime
+          selector:
+            entity:
+              filter:
+              - domain:
+                - sensor
+              multiple: false
+              reorder: false
+        ha_start_block_seconds:
+          name: Block After HA Start
+          description: How long after Home Assistant loads before recovery is allowed.
+            Always used as the initial wait inside the post- restart evaluation branch.
+            For the stale, unavailable, and scheduled branches to also be blocked
+            during this window, enable the Uptime Sensor above; otherwise those branches
+            rely on their per-trigger 'for:' delays to ride out brief boot-window
+            flicker. Two to five minutes is appropriate for most setups. Set to 0
+            to disable both the post-restart delay and (when enabled) the uptime-based
+            block.
+          default: 120
+          selector:
+            number:
+              min: 0.0
+              max: 900.0
+              unit_of_measurement: seconds
+              mode: box
+              step: 1.0
+        debug_enabled:
+          name: Debug Logging
+          description: When enabled, the automation writes a log line for each branch
+            it enters. Turn on during setup to verify behaviour, then turn off in
+            normal operation.
+          default: false
+          selector:
+            boolean: {}
+mode: single
+max_exceeded: silent
+trigger_variables:
+  _detection_mode: !input detection_mode
+  _recovery_off_seconds: !input recovery_off_seconds
+variables:
+  _version: 1.0.0
+  _caller_prefix: '[Sensor Watchdog v1.0.0]'
+  monitored_entities_var: !input monitored_entities
+  treat_off_as_offline_var: !input treat_off_as_offline
+  failure_notification_enabled_var: !input failure_notification_enabled
+  recovery_settle_seconds_var: !input recovery_settle_seconds
+  ha_start_block_seconds_var: !input ha_start_block_seconds
+  heartbeat_timer_var: !input heartbeat_timer
+  use_uptime_sensor: !input use_uptime_sensor
+  uptime_sensor: !input uptime_sensor
+  stale_threshold_minutes_var: !input stale_threshold_minutes
+  active_window_enabled_var: !input active_window_enabled
+  active_after_var: !input active_after
+  active_before_var: !input active_before
+  debug_enabled_var: !input debug_enabled
+triggers:
+- trigger: state
+  entity_id: !input monitored_entities
+  to:
+  - unavailable
+  - unknown
+  for:
+    seconds: !input unavailable_timeout_seconds
+  id: unavailable
+- trigger: state
+  entity_id: !input monitored_entities
+  to: 'off'
+  for:
+    seconds: !input unavailable_timeout_seconds
+  enabled: !input treat_off_as_offline
+  id: unavailable
+- trigger: state
+  entity_id: !input monitored_entities
+  enabled: '{{ _detection_mode == ''responsive'' }}'
+  id: heartbeat_responsive
+- trigger: event
+  event_type: timer.finished
+  enabled: '{{ _detection_mode != ''light'' }}'
+  id: stale
+- trigger: time
+  at: !input scheduled_reboot_time
+  enabled: !input scheduled_reboot_enabled
+  id: scheduled
+- trigger: state
+  entity_id: !input recovery_switch
+  to: 'off'
+  for:
+    seconds: '{{ _recovery_off_seconds + 30 }}'
+  id: switch_off
+- trigger: homeassistant
+  event: start
+  id: ha_start
+actions:
+- choose:
+  - alias: Heartbeat reset (responsive)
+    conditions:
+    - condition: trigger
+      id: heartbeat_responsive
+    sequence:
+    - action: timer.start
+      target:
+        entity_id: !input heartbeat_timer
+      data:
+        duration: '{{ stale_threshold_minutes_var * 60 }}'
+  - alias: Stale recovery
+    conditions:
+    - condition: trigger
+      id: stale
+    - alias: Filter to the configured heartbeat timer
+      condition: template
+      value_template: '{{ trigger.event.data.entity_id == heartbeat_timer_var }}'
+    - condition: state
+      entity_id: !input recovery_switch
+      state: 'on'
+    - alias: Block recovery during HA start window (uptime-sensor gate)
+      condition: template
+      value_template: "{% set dt = states(uptime_sensor) | as_datetime(default=none)
+        %} {{ not (\n     use_uptime_sensor\n     and uptime_sensor not in ['', none]\n
+        \    and dt is not none\n     and (now() - dt).total_seconds() < (ha_start_block_seconds_var
+        | int(0))\n   ) }}"
+    - condition: template
+      value_template: "{% if not active_window_enabled_var %}\n  true\n{% else %}\n
+        \ {% set t_now = now().strftime('%H:%M:%S') %}\n  {{ t_now >= active_after_var
+        and t_now < active_before_var }}\n{% endif %}"
+    sequence:
+    - alias: Debug Log Stale Recovery
+      if:
+      - condition: template
+        value_template: '{{ debug_enabled_var }}'
+      then:
+      - action: system_log.write
+        continue_on_error: true
+        data:
+          level: info
+          message: '{{ _caller_prefix }} Stale detected. Cycling recovery switch.'
+    - action: switch.turn_off
+      target:
+        entity_id: !input recovery_switch
+    - delay:
+        seconds: !input recovery_off_seconds
+    - action: switch.turn_on
+      target:
+        entity_id: !input recovery_switch
+    - alias: Settle and check for failure (stale)
+      if:
+      - condition: template
+        value_template: '{{ failure_notification_enabled_var }}'
+      then:
+      - delay:
+          seconds: '{{ recovery_settle_seconds_var }}'
+      - variables:
+          recovery_reason: stale
+          failed_entities: '{% set bad = [''unavailable'', ''unknown''] + ([''off'']
+            if treat_off_as_offline_var else []) %} {{ expand(monitored_entities_var)
+            | selectattr(''state'', ''in'', bad) | map(attribute=''entity_id'') |
+            list }}'
+      - alias: Run On Failure Action if any entity still failed
+        choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ failed_entities | length > 0 }}'
+          sequence:
+          - alias: Debug Log Failure
+            if:
+            - condition: template
+              value_template: '{{ debug_enabled_var }}'
+            then:
+            - action: system_log.write
+              continue_on_error: true
+              data:
+                level: info
+                message: '{{ _caller_prefix }} Recovery failed after stale cycle.
+                  Still failed: {{ failed_entities | join('', '') }}.'
+          - choose:
+            - conditions: []
+              sequence: !input on_failure_action
+  - alias: Unavailable recovery
+    conditions:
+    - condition: trigger
+      id: unavailable
+    - condition: state
+      entity_id: !input recovery_switch
+      state: 'on'
+    - alias: Block recovery during HA start window (uptime-sensor gate)
+      condition: template
+      value_template: "{% set dt = states(uptime_sensor) | as_datetime(default=none)
+        %} {{ not (\n     use_uptime_sensor\n     and uptime_sensor not in ['', none]\n
+        \    and dt is not none\n     and (now() - dt).total_seconds() < (ha_start_block_seconds_var
+        | int(0))\n   ) }}"
+    sequence:
+    - alias: Debug Log Unavailable Recovery
+      if:
+      - condition: template
+        value_template: '{{ debug_enabled_var }}'
+      then:
+      - action: system_log.write
+        continue_on_error: true
+        data:
+          level: info
+          message: '{{ _caller_prefix }} Unavailable detected on {{ trigger.entity_id
+            }}. Cycling recovery switch.'
+    - if:
+      - condition: template
+        value_template: '{{ _detection_mode != ''light'' }}'
+      then:
+      - action: timer.cancel
+        target:
+          entity_id: !input heartbeat_timer
+    - action: switch.turn_off
+      target:
+        entity_id: !input recovery_switch
+    - delay:
+        seconds: !input recovery_off_seconds
+    - action: switch.turn_on
+      target:
+        entity_id: !input recovery_switch
+    - alias: Settle and check for failure (unavailable)
+      if:
+      - condition: template
+        value_template: '{{ failure_notification_enabled_var }}'
+      then:
+      - delay:
+          seconds: '{{ recovery_settle_seconds_var }}'
+      - variables:
+          recovery_reason: unavailable
+          failed_entities: '{% set bad = [''unavailable'', ''unknown''] + ([''off'']
+            if treat_off_as_offline_var else []) %} {{ expand(monitored_entities_var)
+            | selectattr(''state'', ''in'', bad) | map(attribute=''entity_id'') |
+            list }}'
+      - alias: Run On Failure Action if any entity still failed
+        choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ failed_entities | length > 0 }}'
+          sequence:
+          - alias: Debug Log Failure
+            if:
+            - condition: template
+              value_template: '{{ debug_enabled_var }}'
+            then:
+            - action: system_log.write
+              continue_on_error: true
+              data:
+                level: info
+                message: '{{ _caller_prefix }} Recovery failed after unavailable cycle.
+                  Still failed: {{ failed_entities | join('', '') }}.'
+          - choose:
+            - conditions: []
+              sequence: !input on_failure_action
+  - alias: Scheduled recovery
+    conditions:
+    - condition: trigger
+      id: scheduled
+    - condition: state
+      entity_id: !input recovery_switch
+      state: 'on'
+    - alias: Block recovery during HA start window (uptime-sensor gate)
+      condition: template
+      value_template: "{% set dt = states(uptime_sensor) | as_datetime(default=none)
+        %} {{ not (\n     use_uptime_sensor\n     and uptime_sensor not in ['', none]\n
+        \    and dt is not none\n     and (now() - dt).total_seconds() < (ha_start_block_seconds_var
+        | int(0))\n   ) }}"
+    sequence:
+    - alias: Debug Log Scheduled Recovery
+      if:
+      - condition: template
+        value_template: '{{ debug_enabled_var }}'
+      then:
+      - action: system_log.write
+        continue_on_error: true
+        data:
+          level: info
+          message: '{{ _caller_prefix }} Scheduled reboot. Cycling recovery switch.'
+    - if:
+      - condition: template
+        value_template: '{{ _detection_mode != ''light'' }}'
+      then:
+      - action: timer.cancel
+        target:
+          entity_id: !input heartbeat_timer
+    - action: switch.turn_off
+      target:
+        entity_id: !input recovery_switch
+    - delay:
+        seconds: !input recovery_off_seconds
+    - action: switch.turn_on
+      target:
+        entity_id: !input recovery_switch
+    - alias: Settle and check for failure (scheduled)
+      if:
+      - condition: template
+        value_template: '{{ failure_notification_enabled_var }}'
+      then:
+      - delay:
+          seconds: '{{ recovery_settle_seconds_var }}'
+      - variables:
+          recovery_reason: scheduled
+          failed_entities: '{% set bad = [''unavailable'', ''unknown''] + ([''off'']
+            if treat_off_as_offline_var else []) %} {{ expand(monitored_entities_var)
+            | selectattr(''state'', ''in'', bad) | map(attribute=''entity_id'') |
+            list }}'
+      - alias: Run On Failure Action if any entity still failed
+        choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ failed_entities | length > 0 }}'
+          sequence:
+          - alias: Debug Log Failure
+            if:
+            - condition: template
+              value_template: '{{ debug_enabled_var }}'
+            then:
+            - action: system_log.write
+              continue_on_error: true
+              data:
+                level: info
+                message: '{{ _caller_prefix }} Recovery failed after scheduled cycle.
+                  Still failed: {{ failed_entities | join('', '') }}.'
+          - choose:
+            - conditions: []
+              sequence: !input on_failure_action
+  - alias: Post-restart evaluation
+    conditions:
+    - condition: trigger
+      id: ha_start
+    sequence:
+    - alias: Debug Log Post-Restart Begin
+      if:
+      - condition: template
+        value_template: '{{ debug_enabled_var }}'
+      then:
+      - action: system_log.write
+        continue_on_error: true
+        data:
+          level: info
+          message: '{{ _caller_prefix }} HA start detected. Waiting {{ ha_start_block_seconds_var
+            }}s for integrations to load.'
+    - delay:
+        seconds: '{{ ha_start_block_seconds_var }}'
+    - variables:
+        post_restart_failed_entities: '{% set bad = [''unavailable'', ''unknown'']
+          + ([''off''] if treat_off_as_offline_var else []) %} {{ expand(monitored_entities_var)
+          | selectattr(''state'', ''in'', bad) | map(attribute=''entity_id'') | list
+          }}'
+    - alias: Debug Log Post-Restart Eval
+      if:
+      - condition: template
+        value_template: '{{ debug_enabled_var }}'
+      then:
+      - action: system_log.write
+        continue_on_error: true
+        data:
+          level: info
+          message: '{{ _caller_prefix }} Post-restart evaluation complete. Failed
+            entities: {{ post_restart_failed_entities }}.'
+    - alias: Fire recovery if any entity is already failed
+      choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ post_restart_failed_entities | length > 0 }}'
+        - condition: state
+          entity_id: !input recovery_switch
+          state: 'on'
+        sequence:
+        - alias: Debug Log Post-Restart Cycle
+          if:
+          - condition: template
+            value_template: '{{ debug_enabled_var }}'
+          then:
+          - action: system_log.write
+            continue_on_error: true
+            data:
+              level: info
+              message: '{{ _caller_prefix }} Cycling recovery switch after restart.
+                Failed: {{ post_restart_failed_entities | join('', '') }}.'
+        - if:
+          - condition: template
+            value_template: '{{ _detection_mode != ''light'' }}'
+          then:
+          - action: timer.cancel
+            target:
+              entity_id: !input heartbeat_timer
+        - action: switch.turn_off
+          target:
+            entity_id: !input recovery_switch
+        - delay:
+            seconds: !input recovery_off_seconds
+        - action: switch.turn_on
+          target:
+            entity_id: !input recovery_switch
+        - alias: Settle and check for failure (post-restart)
+          if:
+          - condition: template
+            value_template: '{{ failure_notification_enabled_var }}'
+          then:
+          - delay:
+              seconds: '{{ recovery_settle_seconds_var }}'
+          - variables:
+              recovery_reason: post_restart
+              failed_entities: '{% set bad = [''unavailable'', ''unknown''] + ([''off'']
+                if treat_off_as_offline_var else []) %} {{ expand(monitored_entities_var)
+                | selectattr(''state'', ''in'', bad) | map(attribute=''entity_id'')
+                | list }}'
+          - alias: Run On Failure Action if any entity still failed
+            choose:
+            - conditions:
+              - condition: template
+                value_template: '{{ failed_entities | length > 0 }}'
+              sequence:
+              - alias: Debug Log Failure
+                if:
+                - condition: template
+                  value_template: '{{ debug_enabled_var }}'
+                then:
+                - action: system_log.write
+                  continue_on_error: true
+                  data:
+                    level: info
+                    message: '{{ _caller_prefix }} Recovery failed after post-restart
+                      cycle. Still failed: {{ failed_entities | join('', '') }}.'
+              - choose:
+                - conditions: []
+                  sequence: !input on_failure_action
+  - alias: Self-recovery
+    conditions:
+    - condition: trigger
+      id: switch_off
+    sequence:
+    - alias: Debug Log Self-Recovery
+      if:
+      - condition: template
+        value_template: '{{ debug_enabled_var }}'
+      then:
+      - action: system_log.write
+        continue_on_error: true
+        data:
+          level: info
+          message: '{{ _caller_prefix }} Recovery switch went off unexpectedly. Turning
+            back on.'
+    - action: switch.turn_on
+      target:
+        entity_id: !input recovery_switch
