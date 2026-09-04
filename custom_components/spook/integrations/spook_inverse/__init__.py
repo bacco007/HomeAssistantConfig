@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING
 from homeassistant.const import CONF_ENTITY_ID
 from homeassistant.core import callback
 from homeassistant.helpers import entity_registry as er
-from homeassistant.helpers.helper_integration import async_remove_helper_devices
+from homeassistant.helpers.helper_integration import (
+    async_remove_helper_config_entry_from_source_device,
+)
 
 from .config_flow import SpookInverseConfigFlowHandler
 from .const import CONF_HIDE_SOURCE
@@ -86,7 +88,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
             )
         ):
             # Remove the spook_inverse config entry from the source device
-            async_remove_helper_devices(
+            async_remove_helper_config_entry_from_source_device(
                 hass,
                 helper_config_entry_id=config_entry.entry_id,
                 source_device_id=source_device_id,

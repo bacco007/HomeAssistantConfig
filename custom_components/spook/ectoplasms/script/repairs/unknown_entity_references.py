@@ -7,13 +7,14 @@ from typing import TYPE_CHECKING, Any
 from homeassistant.components import script
 from homeassistant.const import EVENT_COMPONENT_LOADED
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.entity_component import DATA_INSTANCES, EntityComponent
 
-from ....entity_filtering import async_get_all_entity_ids
-from ....repairs import AbstractSpookEntityComponentUnknownReferencesRepair
-from ....template_extraction import (
+from ....entity_filtering import (
     async_extract_entities_from_config,
     async_filter_known_entity_ids_with_templates,
+    async_get_all_entity_ids,
 )
+from ....repairs import AbstractSpookRepair
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -85,7 +86,7 @@ async def extract_template_entities_from_script_entity(
     return await async_extract_entities_from_config(hass, config)
 
 
-class SpookRepair(AbstractSpookEntityComponentUnknownReferencesRepair):
+class SpookRepair(AbstractSpookRepair):
     """Spook repair tries to find unknown referenced entity in scripts."""
 
     domain = script.DOMAIN
@@ -97,13 +98,7 @@ class SpookRepair(AbstractSpookEntityComponentUnknownReferencesRepair):
     inspect_config_entry_changed = True
     inspect_on_reload = True
 
-    unavailable_entity_class = script.UnavailableScriptEntity
-    entity_label = "script"
-    reference_label = "entities"
-    references_are_entities = True
-    edit_url_pattern = "/config/script/edit/{unique_id}"
-
-    _known_entity_ids: set[str]
+    automatically_clean_up_issues = True
 
     def _get_blueprint_trigger_entities(self, entity: script.ScriptEntity) -> set[str]:
         """Extract entity references from blueprint trigger inputs."""
@@ -133,27 +128,49 @@ class SpookRepair(AbstractSpookEntityComponentUnknownReferencesRepair):
 
         return entities
 
-    async def _async_setup_inspection(self) -> None:
-        """Cache known entity IDs (including ALL/NONE) for this inspection cycle."""
-        self._known_entity_ids = async_get_all_entity_ids(
-            self.hass, include_all_none=True
-        )
+    async def async_inspect(self) -> None:
+        """Trigger a inspection."""
+        if self.domain not in self.hass.data[DATA_INSTANCES]:
+            return
 
-    async def _async_compute_unknown_references(self, entity: Any) -> set[str]:
-        """Return unknown entity IDs referenced by ``entity`` (incl. templates)."""
-        # Get all referenced entities from the script
-        all_entities = extract_referenced_entities_from_script(entity)
+        entity_component: EntityComponent[script.ScriptEntity] = self.hass.data[
+            DATA_INSTANCES
+        ][self.domain]
 
-        # Check for blueprint trigger inputs
-        all_entities.update(self._get_blueprint_trigger_entities(entity))
+        known_entity_ids = async_get_all_entity_ids(self.hass, include_all_none=True)
 
-        # Extract entities from Template objects within the script entity
-        all_entities.update(
-            await extract_template_entities_from_script_entity(self.hass, entity)
-        )
+        for entity in entity_component.entities:
+            self.possible_issue_ids.add(entity.entity_id)
+            if isinstance(entity, script.UnavailableScriptEntity):
+                continue
 
-        return await async_filter_known_entity_ids_with_templates(
-            self.hass,
-            entity_ids=all_entities,
-            known_entity_ids=self._known_entity_ids,
-        )
+            # Get all referenced entities from the script
+            all_entities = extract_referenced_entities_from_script(entity)
+
+            # Check for blueprint trigger inputs
+            blueprint_entities = self._get_blueprint_trigger_entities(entity)
+            all_entities.update(blueprint_entities)
+
+            # Extract entities from Template objects within the script entity
+            template_entities = await extract_template_entities_from_script_entity(
+                self.hass, entity
+            )
+            all_entities.update(template_entities)
+
+            # Check for unknown entities
+            if unknown_entities := await async_filter_known_entity_ids_with_templates(
+                self.hass,
+                entity_ids=all_entities,
+                known_entity_ids=known_entity_ids,
+            ):
+                self.async_create_issue(
+                    issue_id=entity.entity_id,
+                    translation_placeholders={
+                        "entities": "\n".join(
+                            f"- `{entity_id}`" for entity_id in unknown_entities
+                        ),
+                        "script": entity.name,
+                        "edit": f"/config/script/edit/{entity.unique_id}",
+                        "entity_id": entity.entity_id,
+                    },
+                )

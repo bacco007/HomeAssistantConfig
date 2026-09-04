@@ -2,20 +2,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from homeassistant.components import script
 from homeassistant.helpers import area_registry as ar
+from homeassistant.helpers.entity_component import DATA_INSTANCES, EntityComponent
 
+from ....const import LOGGER
 from ....entity_filtering import async_filter_known_area_ids, async_get_all_area_ids
-from ....reference_extraction import extract_targets_from_config
-from ....repairs import AbstractSpookEntityComponentUnknownReferencesRepair
-
-if TYPE_CHECKING:
-    from typing import Any
+from ....repairs import AbstractSpookRepair
 
 
-class SpookRepair(AbstractSpookEntityComponentUnknownReferencesRepair):
+class SpookRepair(AbstractSpookRepair):
     """Spook repair tries to find unknown referenced areas in scripts."""
 
     domain = script.DOMAIN
@@ -23,28 +19,44 @@ class SpookRepair(AbstractSpookEntityComponentUnknownReferencesRepair):
     inspect_events = {ar.EVENT_AREA_REGISTRY_UPDATED}
     inspect_on_reload = True
 
-    unavailable_entity_class = script.UnavailableScriptEntity
-    entity_label = "script"
-    reference_label = "areas"
-    edit_url_pattern = "/config/script/edit/{unique_id}"
+    automatically_clean_up_issues = True
 
-    _known_area_ids: set[str]
+    async def async_inspect(self) -> None:
+        """Trigger a inspection."""
+        if self.domain not in self.hass.data[DATA_INSTANCES]:
+            return
 
-    async def _async_setup_inspection(self) -> None:
-        """Cache known area IDs for this inspection cycle."""
-        self._known_area_ids = async_get_all_area_ids(self.hass)
+        entity_component: EntityComponent[script.ScriptEntity] = self.hass.data[
+            DATA_INSTANCES
+        ][self.domain]
 
-    async def _async_compute_unknown_references(self, entity: Any) -> set[str]:
-        """Return unknown area IDs referenced by ``entity``."""
-        area_ids = set(entity.script.referenced_areas)
+        LOGGER.debug("Spook is inspecting: %s", self.repair)
 
-        # Also walk the raw configuration; the built-in extraction misses
-        # references nested in some step types, like repeat sequences.
-        if raw_config := getattr(entity, "raw_config", None):
-            area_ids.update(extract_targets_from_config(raw_config).area_ids)
+        known_area_ids = async_get_all_area_ids(self.hass)
 
-        return async_filter_known_area_ids(
-            self.hass,
-            area_ids=area_ids,
-            known_area_ids=self._known_area_ids,
-        )
+        for entity in entity_component.entities:
+            self.possible_issue_ids.add(entity.entity_id)
+            if not isinstance(entity, script.UnavailableScriptEntity) and (
+                unknown_areas := async_filter_known_area_ids(
+                    self.hass,
+                    area_ids=entity.script.referenced_areas,
+                    known_area_ids=known_area_ids,
+                )
+            ):
+                self.async_create_issue(
+                    issue_id=entity.entity_id,
+                    translation_placeholders={
+                        "areas": "\n".join(f"- `{area}`" for area in unknown_areas),
+                        "script": entity.name,
+                        "edit": f"/config/script/edit/{entity.unique_id}",
+                        "entity_id": entity.entity_id,
+                    },
+                )
+                LOGGER.debug(
+                    (
+                        "Spook found unknown areas in %s "
+                        "and created an issue for it; Areas: %s"
+                    ),
+                    entity.entity_id,
+                    ", ".join(unknown_areas),
+                )

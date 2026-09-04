@@ -108,7 +108,7 @@ async def async_setup_entry(
 
 
 class HomeAssistantCloudSpookSwitchEntity(HomeAssistantCloudSpookEntity, SwitchEntity):
-    """Spook switch providing Home Assistant Cloud controls."""
+    """Spook switch providig Home Asistant Cloud controls."""
 
     entity_description: HomeAssistantCloudSpookSwitchEntityDescription
 
