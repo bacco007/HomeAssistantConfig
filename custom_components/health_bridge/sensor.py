@@ -114,6 +114,24 @@ async def async_setup_entry(
     ):
         """Update an existing sensor entity if present."""
         ent = entity_index.get(user_id, {}).get(metric_name)
+        if ent is not None and ent.hass is None:
+            # Zombie entity: it was detached from Home Assistant (e.g. a config-
+            # entry reload during an upgrade) but is still cached in entity_objs,
+            # which persists across reloads. Calling update_state on it raises
+            # "Attribute hass is None" and fails the whole webhook request. Evict
+            # the stale object and recreate a live one so the value actually
+            # lands instead of crashing (this was dropping every workout sync).
+            _LOGGER.warning(
+                "Health Bridge: recreating detached sensor %s/%s (hass was None)",
+                user_id,
+                metric_name,
+            )
+            entity_index.get(user_id, {}).pop(metric_name, None)
+            attrs = METRIC_ATTRIBUTES_MAP.get(metric_name, {}).copy()
+            if "native_unit_of_measurement" not in attrs and "unit_of_measurement" in attrs:
+                attrs["native_unit_of_measurement"] = attrs["unit_of_measurement"]
+            async_add_sensor(user_id, metric_name, attrs, value, recorded_at, extra_attributes)
+            return
         if ent:
             ent.update_state(value, recorded_at, extra_attributes)
         else:
@@ -308,6 +326,16 @@ class HealthBridgeSensor(RestoreSensor):
 
         self._value = value
         self._set_state_metadata(recorded_at)
+        # Backstop: never write state on an entity that isn't currently added to
+        # Home Assistant (hass is None) — it raises RuntimeError and fails the
+        # webhook. update_sensor evicts/recreates detached entities; this guards
+        # any other path that might hold a stale reference.
+        if self.hass is None:
+            _LOGGER.debug(
+                "Health Bridge: skipped state write for detached %s (hass is None)",
+                self._metric_name,
+            )
+            return
         self.async_write_ha_state()
 
     def _set_state_metadata(self, recorded_at: str | None) -> None:
