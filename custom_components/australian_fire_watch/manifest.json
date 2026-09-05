@@ -1,0 +1,13 @@
+{
+  "domain": "australian_fire_watch",
+  "name": "Australian Fire Watch",
+  "codeowners": ["@hallyaus"],
+  "config_flow": true,
+  "dependencies": ["frontend", "geo_location", "http"],
+  "documentation": "https://github.com/hallyaus/australian-fire-watch",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/hallyaus/australian-fire-watch/issues",
+  "requirements": [],
+  "version": "1.0.1"
+}

@@ -1,0 +1,58 @@
+acknowledge:
+  name: Acknowledge incident
+  description: Suppress non-escalating updates for an active incident. A later escalation clears the acknowledgement.
+  fields:
+    entry_id:
+      name: Config entry ID
+      description: The Australian Fire Watch config entry shown on the status sensor.
+      required: true
+      selector:
+        text:
+    incident_id:
+      name: Incident ID
+      description: The official incident ID shown in the incident attributes.
+      required: true
+      selector:
+        text:
+
+snooze:
+  name: Snooze incident
+  description: Temporarily suppress non-emergency updates. Watch and Act is capped at 30 minutes; Emergency Warning cannot be snoozed.
+  fields:
+    entry_id:
+      name: Config entry ID
+      required: true
+      selector:
+        text:
+    incident_id:
+      name: Incident ID
+      required: true
+      selector:
+        text:
+    duration_minutes:
+      name: Duration
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 120
+          unit_of_measurement: min
+
+test_alert:
+  name: Test alert path
+  description: Sends a clearly labelled, non-critical test. It never represents a real incident.
+  fields:
+    entry_id:
+      name: Config entry ID
+      required: true
+      selector:
+        text:
+    level:
+      name: Warning level simulation
+      required: true
+      selector:
+        select:
+          options:
+            - Advice
+            - Watch and Act
+            - Emergency Warning

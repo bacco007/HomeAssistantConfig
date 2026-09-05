@@ -1,0 +1,60 @@
+{
+  "title": "Australian Fire Watch",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Monitor an Australian location",
+        "description": "Select the state or territory containing this zone. Uses anonymous official emergency-service feeds and remains supplementary to official warning channels.",
+        "data": {
+          "name": "Location name",
+          "zone": "Home Assistant zone",
+          "jurisdiction": "State or territory",
+          "fire_danger_district": "NSW fire weather district (NSW only)",
+          "weather_entity": "Weather entity (optional context only)",
+          "readiness_entities": "Household readiness checkboxes (optional)",
+          "notify_services": "Notify services (optional, one notify.* service per line)",
+          "monitor_radius_km": "Dashboard monitoring radius",
+          "emergency_radius_km": "Emergency Warning alert radius",
+          "watch_radius_km": "Watch and Act alert radius",
+          "advice_radius_km": "Advice alert radius",
+          "unclassified_fire_radius_km": "Unclassified active-fire alert radius",
+          "stale_after_minutes": "Mark incident feed stale after",
+          "enable_bom_enrichment": "Enable NSW BOM FBI and land-warning enrichment"
+        }
+      }
+    },
+    "error": {
+      "invalid_settings": "Use fully-qualified notify.* services and make the monitoring radius at least as large as every alert radius."
+    },
+    "abort": {
+      "already_configured": "This state or territory and zone are already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Australian Fire Watch options",
+        "description": "Emergency Warning cannot be snoozed; escalation always overrides acknowledgement or snooze.",
+        "data": {
+          "name": "Location name",
+          "zone": "Home Assistant zone",
+          "jurisdiction": "State or territory",
+          "fire_danger_district": "NSW fire weather district (NSW only)",
+          "weather_entity": "Weather entity (optional context only)",
+          "readiness_entities": "Household readiness checkboxes (optional)",
+          "notify_services": "Notify services (optional, one notify.* service per line)",
+          "monitor_radius_km": "Dashboard monitoring radius",
+          "emergency_radius_km": "Emergency Warning alert radius",
+          "watch_radius_km": "Watch and Act alert radius",
+          "advice_radius_km": "Advice alert radius",
+          "unclassified_fire_radius_km": "Unclassified active-fire alert radius",
+          "stale_after_minutes": "Mark incident feed stale after",
+          "enable_bom_enrichment": "Enable NSW BOM FBI and land-warning enrichment"
+        }
+      }
+    },
+    "error": {
+      "invalid_settings": "Use fully-qualified notify.* services and make the monitoring radius at least as large as every alert radius."
+    }
+  }
+}
