@@ -45,7 +45,13 @@ async def async_check_config_entries(hass):
         _LOGGER.info(f"Found {len(entries)} Health Bridge configuration entries")
         for entry in entries:
             _LOGGER.info(f"Entry ID: {entry.entry_id}, Title: {entry.title}, State: {entry.state}")
-            _LOGGER.info(f"Data: {entry.data}")
+            # Config entry data contains the shared authentication token.
+            # Never include it in logs or diagnostics output.
+            safe_data = {
+                key: ("**REDACTED**" if key == "token" else value)
+                for key, value in entry.data.items()
+            }
+            _LOGGER.info("Data: %s", safe_data)
 
         return True
     except Exception as e:

@@ -1,10 +1,12 @@
 """The Health Bridge integration."""
 from __future__ import annotations
 
+import hmac
 import logging
 import math
 import os
 import re
+import time
 from datetime import datetime, timezone
 import voluptuous as vol
 
@@ -73,6 +75,107 @@ class HealthBridgeCardView(HomeAssistantView):
 _LAST_SYNC_MIN_INTERVAL_SECONDS = 10
 _LIVE_PROTOCOL_VERSION = 1
 _LIVE_REQUEST_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+_AUTH_FAILURE_LIMIT = 12
+_AUTH_FAILURE_WINDOW_SECONDS = 60.0
+_PLATFORMS = [
+    Platform.SENSOR,
+    Platform.SWITCH,
+    Platform.NUMBER,
+    Platform.BINARY_SENSOR,
+]
+_HAL_PLATFORMS = [Platform.SENSOR]
+_PAL_PLATFORMS = [
+    Platform.SENSOR,
+    Platform.SWITCH,
+    Platform.NUMBER,
+    Platform.BINARY_SENSOR,
+]
+
+
+def _entry_id_for_app(hass: HomeAssistant, app_type: str) -> str | None:
+    """Return the config entry owned by one app, never whichever loaded last."""
+    domain_data = hass.data.get(DOMAIN, {})
+    entry_id = domain_data.get("entry_ids", {}).get(app_type)
+    if entry_id:
+        return entry_id
+    # Preserve the original single-entry/YAML path for existing HAL installs.
+    if app_type == "health_assistant_link":
+        return domain_data.get("entry_id")
+    return None
+
+
+def _repair_health_device_ownership(
+    hass: HomeAssistant, health_entry_id: str
+) -> None:
+    """Move HAL entities off a PAL-owned duplicate created by the old global id."""
+    device_registry = dr.async_get(hass)
+    entity_registry = er.async_get(hass)
+    devices = list(device_registry.devices.values())
+
+    identifiers = {
+        identifier
+        for device in devices
+        for identifier in device.identifiers
+        if identifier[0] == DOMAIN
+        and identifier[1].startswith("health_bridge_")
+    }
+    for identifier in identifiers:
+        matching = [device for device in devices if identifier in device.identifiers]
+        canonical = next(
+            (
+                device
+                for device in matching
+                if device.config_entry_id == health_entry_id
+            ),
+            None,
+        )
+        if canonical is None:
+            user_id = identifier[1].removeprefix("health_bridge_")
+            canonical = device_registry.async_get_or_create(
+                config_entry_id=health_entry_id,
+                identifiers={identifier},
+                name=f"Health Bridge ({user_id})",
+                manufacturer="Health Bridge",
+                model="Health Tracker",
+                sw_version="1.0",
+            )
+
+        for wrong_device in matching:
+            if (
+                wrong_device.id == canonical.id
+                or wrong_device.config_entry_id == health_entry_id
+            ):
+                continue
+            moved = 0
+            for entity in list(entity_registry.entities.values()):
+                if (
+                    entity.device_id == wrong_device.id
+                    and entity.platform == DOMAIN
+                    and entity.config_entry_id == health_entry_id
+                ):
+                    entity_registry.async_update_entity(
+                        entity.entity_id, device_id=canonical.id
+                    )
+                    moved += 1
+
+            if moved and not any(
+                entity.device_id == wrong_device.id
+                for entity in entity_registry.entities.values()
+            ):
+                device_registry.async_remove_device(wrong_device.id)
+            if moved:
+                _LOGGER.warning(
+                    "Health Bridge: repaired %d HAL entities incorrectly owned "
+                    "by another Assistant Link entry",
+                    moved,
+                )
+
+
+def _platforms_for_entry(entry: ConfigEntry) -> list[Platform]:
+    """Load only the platforms owned by the selected Assistant Link app."""
+    if entry.data.get("app_type") == "phone_assistant_link":
+        return _PAL_PLATFORMS
+    return _HAL_PLATFORMS
 def _normalize_sleep_to_hours(v):
     """Assume input is seconds; return float hours rounded to 2 decimals."""
     try:
@@ -319,26 +422,68 @@ async def async_setup(hass: HomeAssistant, config) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.debug("Health Bridge: Setting up config entry %s", entry.entry_id)
+    app_type = entry.data.get("app_type", "health_assistant_link")
+    # Older versions used the shared secret itself as the config-entry unique
+    # ID. Migrate it to a stable, non-sensitive identifier without changing
+    # the entry, entities, device ownership, or either app's protocol.
+    desired_unique_id = f"{DOMAIN}:{app_type}"
+    unique_id_in_use = any(
+        candidate.entry_id != entry.entry_id
+        and candidate.unique_id == desired_unique_id
+        for candidate in hass.config_entries.async_entries(DOMAIN)
+    )
+    if entry.unique_id != desired_unique_id and not unique_id_in_use:
+        hass.config_entries.async_update_entry(entry, unique_id=desired_unique_id)
+    desired_title = (
+        "Phone Bridge" if app_type == "phone_assistant_link" else "Health Bridge"
+    )
+    # Entries created before Phone Bridge had its own title were both named
+    # Health Bridge. Rename only integration-owned default titles so a user's
+    # custom entry name is never overwritten.
+    if entry.title in {"Health Bridge", "Phone Bridge"} and entry.title != desired_title:
+        hass.config_entries.async_update_entry(entry, title=desired_title)
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN]["token"] = entry.data[CONF_TOKEN]
-    hass.data[DOMAIN]["entry_id"] = entry.entry_id
+    hass.data[DOMAIN].setdefault("entry_tokens", {})[entry.entry_id] = {
+        "app_type": app_type,
+        "token": entry.data[CONF_TOKEN],
+    }
+    hass.data[DOMAIN].setdefault("entry_ids", {})[app_type] = entry.entry_id
+    # Keep the legacy key HAL-only. Phone Bridge must never overwrite it.
+    if app_type == "health_assistant_link":
+        hass.data[DOMAIN]["entry_id"] = entry.entry_id
     hass.data[DOMAIN].setdefault("entities", {})
     await _load_integration_version(hass)
 
-    # Ensure the sensor platform is loaded so add_sensor/update_sensor are available
-    await hass.config_entries.async_forward_entry_setups(entry, [Platform.SENSOR])
+    # Register the dashboard module before restoring the sensor platform. A
+    # large entity registry must not delay custom-element availability while
+    # browsers reconnect during Home Assistant startup.
+    await _register_frontend(hass)
+
+    # Sensor remains the HAL platform. Switch is additive and serves PAL groups.
+    await hass.config_entries.async_forward_entry_setups(
+        entry, _platforms_for_entry(entry)
+    )
+
+    if app_type == "health_assistant_link":
+        _repair_health_device_ownership(hass, entry.entry_id)
+
+    if entry.data.get("app_type") == "phone_assistant_link":
+        from .phone_assistant import async_setup_pal_services
+
+        async_setup_pal_services(hass)
 
     _setup_webhook(hass)
-    await _register_frontend(hass)
     return True
 
 
 async def _register_frontend(hass: HomeAssistant) -> None:
     """Serve and auto-load the built-in Lovelace cards (no HACS resource needed).
 
-    Registration is process-lifetime (a static path + a global extra-JS URL), so
-    it's guarded to run once and is intentionally best-effort: the cards are a
-    convenience and must never block the integration from setting up.
+    The static route and extra-JS URL cover the current process. A persistent
+    Lovelace module resource is also maintained so reconnecting dashboards know
+    about the custom elements during their initial bootstrap after an HA restart.
+    Registration remains best-effort: cards must never block integration setup.
     """
     data = hass.data.setdefault(DOMAIN, {})
     if data.get("frontend_registered"):
@@ -354,7 +499,9 @@ async def _register_frontend(hass: HomeAssistant) -> None:
             token = f"{CARD_VERSION}.{int(os.path.getmtime(card_file))}"
         except OSError:
             token = CARD_VERSION
-        frontend.add_extra_js_url(hass, f"{_CARD_URL}?v={token}")
+        resource_url = f"{_CARD_URL}?v={token}"
+        frontend.add_extra_js_url(hass, resource_url)
+        await _upsert_lovelace_resource(hass, resource_url)
         data["frontend_registered"] = True
         _LOGGER.info(
             "Health Bridge: registered built-in dashboard cards v%s", CARD_VERSION
@@ -365,27 +512,124 @@ async def _register_frontend(hass: HomeAssistant) -> None:
         )
 
 
+async def _upsert_lovelace_resource(
+    hass: HomeAssistant, resource_url: str
+) -> None:
+    """Persist the cards module in Lovelace's resource collection.
+
+    `frontend.add_extra_js_url` is process-local and may be registered after an
+    already-connected browser has rebuilt its dashboard during an HA restart.
+    A storage-backed Lovelace resource is present in the next bootstrap payload,
+    which removes that race. YAML-mode dashboards keep the extra-JS fallback.
+    """
+    lovelace_data = hass.data.get("lovelace")
+    resources = getattr(lovelace_data, "resources", None)
+    if resources is None and isinstance(lovelace_data, dict):
+        resources = lovelace_data.get("resources")
+    if resources is None:
+        _LOGGER.debug(
+            "Health Bridge: Lovelace resources unavailable; using extra-JS fallback"
+        )
+        return
+
+    if not getattr(resources, "loaded", False):
+        await resources.async_load()
+
+    for item in resources.async_items():
+        existing_url = item.get("url", "")
+        if not existing_url.startswith(_CARD_URL):
+            continue
+        if existing_url != resource_url:
+            update_item = getattr(resources, "async_update_item", None)
+            if update_item is not None:
+                await update_item(
+                    item["id"],
+                    {"res_type": "module", "url": resource_url},
+                )
+                _LOGGER.info(
+                    "Health Bridge: updated persistent dashboard resource to %s",
+                    resource_url,
+                )
+        return
+
+    create_item = getattr(resources, "async_create_item", None)
+    if create_item is None:
+        _LOGGER.debug(
+            "Health Bridge: dashboard resources are not storage-backed; using extra-JS fallback"
+        )
+        return
+
+    await create_item({"res_type": "module", "url": resource_url})
+    _LOGGER.info(
+        "Health Bridge: added persistent dashboard resource %s", resource_url
+    )
+
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Unload the platform we forwarded in setup — without this, reloading the
     # entry forwards Platform.SENSOR a second time and HA raises
     # "Config entry ... has already been set up!".
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, [Platform.SENSOR])
+    unload_ok = await hass.config_entries.async_unload_platforms(
+        entry, _platforms_for_entry(entry)
+    )
 
     if unload_ok:
         domain_data = hass.data.get(DOMAIN, {})
+        is_pal_entry = entry.data.get("app_type") == "phone_assistant_link"
 
-        # Unregister the webhook so setup re-registers cleanly on reload.
-        if domain_data.get("webhook_registered"):
+        if is_pal_entry:
+            from .phone_assistant import async_unload_pal_services
+
+            async_unload_pal_services(hass)
+
+        entry_tokens = domain_data.setdefault("entry_tokens", {})
+        entry_tokens.pop(entry.entry_id, None)
+        app_type = entry.data.get("app_type", "health_assistant_link")
+        entry_ids = domain_data.setdefault("entry_ids", {})
+        if entry_ids.get(app_type) == entry.entry_id:
+            entry_ids.pop(app_type, None)
+        if (
+            app_type == "health_assistant_link"
+            and domain_data.get("entry_id") == entry.entry_id
+        ):
+            domain_data.pop("entry_id", None)
+
+        # Keep the shared webhook alive while the other app entry is loaded.
+        if not entry_tokens and domain_data.get("webhook_registered"):
             try:
                 webhook.async_unregister(hass, "health_bridge")
             except (ValueError, KeyError):
                 pass
             domain_data["webhook_registered"] = False
 
-        # Drop per-entry runtime state so a subsequent setup rebuilds it and
-        # the sensor platform recreates entities from the registry.
-        for key in ("token", "add_sensor", "update_sensor", "entity_objs", "entities"):
+        # Drop only the callbacks owned by this entry. The other Assistant Link
+        # app must continue working when one entry is reloaded or removed.
+        owned_keys = (
+            (
+                "pal_policies",
+                "ensure_pal_switch",
+                "remove_missing_pal_switches",
+                "ensure_pal_number",
+                "remove_missing_pal_numbers",
+                "ensure_pal_binary_sensor",
+                "remove_missing_pal_binary_sensors",
+                "ensure_pal_status_sensor",
+                "remove_missing_pal_status_sensors",
+                "pal_push_relay",
+            )
+            if is_pal_entry
+            else (
+                "add_sensor",
+                "update_sensor",
+                "entity_objs",
+                "entities",
+            )
+        )
+        for key in owned_keys:
             domain_data.pop(key, None)
+
+        if not entry_tokens:
+            domain_data.pop("token", None)
 
     return unload_ok
 
@@ -414,30 +658,81 @@ def _setup_webhook(hass: HomeAssistant) -> None:
                 {"ok": False, "error": "invalid_payload"}, status=400
             )
 
-        stored_token = hass.data.get(DOMAIN, {}).get("token")
+        domain_data = hass.data.get(DOMAIN, {})
         received_token = data.get("token")
         user_id = data.get("user_id", "unknown")
 
         # Normalize: an accidental trailing space (in the app field OR the
         # integration config) must not silently reject every sync.
-        stored_norm = stored_token.strip() if isinstance(stored_token, str) else ""
         received_norm = received_token.strip() if isinstance(received_token, str) else ""
+        request_type = data.get("request_type") or "live"
+        required_app_type = (
+            "phone_assistant_link"
+            if request_type == "phone_assistant_link"
+            else "health_assistant_link"
+        )
+        configured_tokens = domain_data.get("entry_tokens", {})
+        accepted_tokens = {
+            item.get("token", "").strip()
+            for item in configured_tokens.values()
+            if item.get("app_type", "health_assistant_link") == required_app_type
+            and isinstance(item.get("token"), str)
+        }
+        # Preserve the legacy single-entry/YAML path.
+        if not configured_tokens:
+            legacy_token = domain_data.get("token")
+            if isinstance(legacy_token, str):
+                accepted_tokens.add(legacy_token.strip())
 
         # Authenticate BEFORE touching any state. Reject if no token is
         # configured (can't authenticate) or the token doesn't match, and
         # return HTTP 401 so the client sees a real failure instead of a 200.
-        if not stored_norm or received_norm != stored_norm:
+        authenticated = bool(received_norm) and any(
+            hmac.compare_digest(received_norm, candidate)
+            for candidate in accepted_tokens
+        )
+        if not authenticated:
+            remote = request.remote or "unknown"
+            now = time.monotonic()
+            failures = domain_data.setdefault("auth_failures", {})
+            window_started, count = failures.get(remote, (now, 0))
+            if now - window_started >= _AUTH_FAILURE_WINDOW_SECONDS:
+                window_started, count = now, 0
+            count += 1
+            failures[remote] = (window_started, count)
+            # Bound this process-local cache even under distributed probing.
+            if len(failures) > 1024:
+                cutoff = now - _AUTH_FAILURE_WINDOW_SECONDS
+                for address, (started, _) in list(failures.items()):
+                    if started < cutoff:
+                        failures.pop(address, None)
+            rate_limited = count > _AUTH_FAILURE_LIMIT
             # Privacy-safe diagnostics (never log the secret itself):
             #  stored_present=False -> integration didn't load a token at setup
             #  differing lengths    -> whitespace/typo in one side
-            _LOGGER.warning(
-                "Health Bridge: rejecting payload — token mismatch "
-                "(stored_present=%s stored_len=%d received_len=%d)",
-                bool(stored_norm), len(stored_norm), len(received_norm),
+            if not rate_limited:
+                _LOGGER.warning(
+                    "Health Bridge: rejecting payload — token mismatch "
+                    "(stored_present=%s stored_len=%d received_len=%d)",
+                    bool(accepted_tokens),
+                    max((len(token) for token in accepted_tokens), default=0),
+                    len(received_norm),
+                )
+            return web.Response(
+                status=429 if rate_limited else 401,
+                text="too many authentication failures" if rate_limited else "invalid token",
             )
-            return web.Response(status=401, text="invalid token")
 
-        request_type = data.get("request_type") or "live"
+        # A successful request clears stale failures for that source.
+        domain_data.get("auth_failures", {}).pop(request.remote or "unknown", None)
+
+        if request_type == "phone_assistant_link":
+            # PAL is an additive protocol on the shared authenticated webhook.
+            # HAL live/backfill requests continue below without any changes.
+            from .phone_assistant import async_handle_phone_assistant_request
+
+            return await async_handle_phone_assistant_request(hass, data, user_id)
+
         if request_type == "backfill":
             return await _handle_backfill_webhook(hass, data, user_id)
         if request_type != "live":
@@ -494,7 +789,7 @@ def _setup_webhook(hass: HomeAssistant) -> None:
         # Ensure device exists
         device_registry = dr.async_get(hass)
         device = device_registry.async_get_or_create(
-            config_entry_id=hass.data.get(DOMAIN, {}).get("entry_id"),
+            config_entry_id=_entry_id_for_app(hass, "health_assistant_link"),
             identifiers={(DOMAIN, f"health_bridge_{user_id}")},
             name=f"Health Bridge ({user_id})",
             manufacturer="Health Bridge",
@@ -778,7 +1073,7 @@ def _update_last_sync_time_entity(hass: HomeAssistant, user_id: str) -> bool:
 
         # Ensure device exists
         device = dev_reg.async_get_or_create(
-            config_entry_id=hass.data.get(DOMAIN, {}).get("entry_id"),
+            config_entry_id=_entry_id_for_app(hass, "health_assistant_link"),
             identifiers={(DOMAIN, f"health_bridge_{user_id}")},
             name=f"Health Bridge ({user_id})",
             manufacturer="Health Bridge",

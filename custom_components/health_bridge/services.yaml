@@ -1,0 +1,41 @@
+temporarily_allow_phone_group:
+  name: Temporarily allow Phone Assistant group
+  description: Allow a Phone Assistant Link app group after the phone's next manual sync, with expiry enforced locally.
+  fields:
+    device_id:
+      name: App group
+      required: true
+      selector:
+        device:
+          integration: health_bridge
+    duration_minutes:
+      name: Duration
+      required: true
+      default: 15
+      selector:
+        number:
+          min: 15
+          max: 1440
+          step: 15
+          unit_of_measurement: minutes
+
+temporarily_block_phone_group:
+  name: Temporarily block Phone Assistant group
+  description: Block a Phone Assistant Link app group after the phone's next manual sync, with expiry enforced locally.
+  fields:
+    device_id:
+      name: App group
+      required: true
+      selector:
+        device:
+          integration: health_bridge
+    duration_minutes:
+      name: Duration
+      required: true
+      default: 60
+      selector:
+        number:
+          min: 15
+          max: 1440
+          step: 15
+          unit_of_measurement: minutes

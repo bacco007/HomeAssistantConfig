@@ -2,16 +2,31 @@
   "config": {
     "step": {
       "user": {
-        "title": "Health Bridge Connection",
-        "description": "Set up your Health Bridge integration to receive health data",
+        "title": "Choose Your Assistant Link App",
+        "description": "Life Assistant Bridge supports both apps. For security, each app uses its own bridge entry and its own token.",
+        "menu_options": {
+          "health_assistant_link": "Health Assistant Link",
+          "phone_assistant_link": "Phone Assistant Link"
+        }
+      },
+      "health_assistant_link": {
+        "title": "Add Health Assistant Link",
+        "description": "Use the generated token in Health Assistant Link. Keep this token private and do not reuse it for Phone Assistant Link.",
         "data": {
-          "name": "Name",
+          "token": "Security Token"
+        }
+      },
+      "phone_assistant_link": {
+        "title": "Add Phone Assistant Link",
+        "description": "Use the generated token in Phone Assistant Link. Keep this token private and do not reuse it for Health Assistant Link.",
+        "data": {
           "token": "Security Token"
         }
       }
     },
     "error": {
       "invalid_token": "Invalid security token",
+      "weak_token": "Use a security token containing at least 32 characters",
       "unknown": "Unexpected error occurred"
     },
     "abort": {
@@ -33,14 +48,14 @@
           "edit_delete": "Edit/Delete"
         },
         "menu_option_descriptions": {
-          "token": "Update the secret token shared with the Health Assistant Link app.",
+          "token": "Update the security token shared with Health Assistant Link and Phone Assistant Link.",
           "units": "Open the unit selectors for nutrition and water.",
           "edit_delete": "Choose a Health Bridge device to delete."
         }
       },
       "token": {
         "title": "Change Secret Token",
-        "description": "Enter the new secret token. It must match the token set in the Health Assistant Link app.",
+        "description": "Enter the new security token. It must match the token used by your Assistant Link apps.",
         "data": {
           "token": "Security Token"
         }
@@ -70,6 +85,9 @@
     }
   },
   "reconfigure": {
+    "error": {
+      "weak_token": "Use a security token containing at least 32 characters"
+    },
     "step": {
       "reconfigure": {
         "title": "Health Bridge Connection",

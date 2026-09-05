@@ -1,6 +1,8 @@
 """Config flow for Health Bridge integration."""
 from __future__ import annotations
 
+import secrets
+
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -14,11 +16,37 @@ from . import async_delete_device_for_entry
 from .const import DOMAIN
 
 CONF_DEVICE_ID = "device_id"
+CONF_APP_TYPE = "app_type"
 CONF_NUTRIENT_MASS_UNIT = "nutrient_mass_unit"
 CONF_WATER_VOLUME_UNIT = "water_volume_unit"
 
+APP_TYPE_HEALTH_ASSISTANT_LINK = "health_assistant_link"
+APP_TYPE_PHONE_ASSISTANT_LINK = "phone_assistant_link"
+
+ENTRY_TITLE_HEALTH_BRIDGE = "Health Bridge"
+ENTRY_TITLE_PHONE_BRIDGE = "Phone Bridge"
+
 DEFAULT_NUTRIENT_MASS_UNIT = "g"
 DEFAULT_WATER_VOLUME_UNIT = "mL"
+MINIMUM_TOKEN_LENGTH = 32
+
+
+def _entry_unique_id(app_type: str) -> str:
+    """Return a stable identifier that never contains authentication material."""
+    return f"{DOMAIN}:{app_type}"
+
+
+def _new_token() -> str:
+    """Create a copy-friendly token with 256 bits of randomness."""
+    return secrets.token_urlsafe(32)
+
+
+def _normalized_strong_token(value: object) -> str | None:
+    """Validate a user-supplied shared token without logging it."""
+    if not isinstance(value, str):
+        return None
+    token = value.strip()
+    return token if len(token) >= MINIMUM_TOKEN_LENGTH else None
 
 
 def _build_options_schema(
@@ -46,27 +74,67 @@ class HealthBridgeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
+        """Choose which Assistant Link app is initiating shared setup."""
+        return self.async_show_menu(
+            step_id="user",
+            menu_options=[
+                APP_TYPE_HEALTH_ASSISTANT_LINK,
+                APP_TYPE_PHONE_ASSISTANT_LINK,
+            ],
+        )
+
+    async def async_step_health_assistant_link(
+        self, user_input: dict | None = None
+    ) -> FlowResult:
+        """Set up Health Bridge from Health Assistant Link."""
+        return await self._async_step_app(
+            APP_TYPE_HEALTH_ASSISTANT_LINK, user_input
+        )
+
+    async def async_step_phone_assistant_link(
+        self, user_input: dict | None = None
+    ) -> FlowResult:
+        """Set up Health Bridge from Phone Assistant Link."""
+        return await self._async_step_app(
+            APP_TYPE_PHONE_ASSISTANT_LINK, user_input
+        )
+
+    async def _async_step_app(
+        self, app_type: str, user_input: dict | None
+    ) -> FlowResult:
+        """Create the single shared integration entry for either app."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            token = user_input[CONF_TOKEN]
+            token = _normalized_strong_token(user_input.get(CONF_TOKEN))
+            if token is None:
+                errors[CONF_TOKEN] = "weak_token"
+            else:
+                await self.async_set_unique_id(_entry_unique_id(app_type))
+                self._abort_if_unique_id_configured()
 
-            await self.async_set_unique_id(token)
-            self._abort_if_unique_id_configured(updates={CONF_TOKEN: token})
-
-            # Create the config entry; options can be set/changed later
-            return self.async_create_entry(
-                title="Health Bridge",
-                data={CONF_TOKEN: token},
-                options={
-                    CONF_NUTRIENT_MASS_UNIT: DEFAULT_NUTRIENT_MASS_UNIT,
-                    CONF_WATER_VOLUME_UNIT: DEFAULT_WATER_VOLUME_UNIT,
-                },
-            )
+                # Create the config entry; options can be set/changed later
+                return self.async_create_entry(
+                    title=(
+                        ENTRY_TITLE_PHONE_BRIDGE
+                        if app_type == APP_TYPE_PHONE_ASSISTANT_LINK
+                        else ENTRY_TITLE_HEALTH_BRIDGE
+                    ),
+                    data={
+                        CONF_TOKEN: token,
+                        CONF_APP_TYPE: app_type,
+                    },
+                    options={
+                        CONF_NUTRIENT_MASS_UNIT: DEFAULT_NUTRIENT_MASS_UNIT,
+                        CONF_WATER_VOLUME_UNIT: DEFAULT_WATER_VOLUME_UNIT,
+                    },
+                )
 
         return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema({vol.Required(CONF_TOKEN): str}),
+            step_id=app_type,
+            data_schema=vol.Schema(
+                {vol.Required(CONF_TOKEN, default=_new_token()): str}
+            ),
             errors=errors,
         )
 
@@ -77,20 +145,23 @@ class HealthBridgeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         entry = self._get_reconfigure_entry()
 
         if user_input is not None:
-            token = user_input[CONF_TOKEN]
-            await self.async_set_unique_id(token)
-            self._abort_if_unique_id_mismatch(reason="already_configured")
-
-            return self.async_update_reload_and_abort(
-                entry,
-                data_updates={CONF_TOKEN: token},
-            )
+            token = _normalized_strong_token(user_input.get(CONF_TOKEN))
+            if token is None:
+                errors = {CONF_TOKEN: "weak_token"}
+            else:
+                return self.async_update_reload_and_abort(
+                    entry,
+                    data_updates={CONF_TOKEN: token},
+                )
+        else:
+            errors = {}
 
         return self.async_show_form(
             step_id="reconfigure",
             data_schema=vol.Schema(
                 {vol.Required(CONF_TOKEN, default=entry.data.get(CONF_TOKEN, "")): str}
             ),
+            errors=errors,
         )
 
     @staticmethod
