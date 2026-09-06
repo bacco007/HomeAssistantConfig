@@ -1,1 +1,0 @@
-DOMAIN = "wud_getupdates"

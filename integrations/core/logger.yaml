@@ -59,6 +59,14 @@ logger:
       - "Response is not JSON"
     custom_components.config_auditor.dashboard_analyzer:
       - "[HACA Dashboard]"
+    custom_components.config_auditor.proactive_agent:
+      - "[HACA ProactiveAgent]"
+    custom_components.sports_ticker.next_game:
+      - "Failed to update next"
+    custom_components.pyscript.apps.influxdb2_query_to_entity.influxdb2_query_to_entity:
+      - "InfluxDB query returned no records; setting state"
+    custom_components.haghs.coordinator:
+      - "HAGHS: Detected unregistered zombie entity"
 
   logs:
     aioharmony.harmonyclient: fatal

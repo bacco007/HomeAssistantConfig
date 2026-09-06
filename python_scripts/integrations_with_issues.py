@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 
 import json
+import os
 import re
 import urllib.request
 
 BAD_STATES = {"unavailable", "offline"}
 ENTITY_DOMAINS = {"sensor", "binary_sensor"}
 
-ENTITY_REGISTRY = "/config/.storage/core.entity_registry"
-LABEL_REGISTRY = "/config/.storage/label_registry"
+# Home Assistant label IDs to ignore
+EXCLUDED_LABELS = {"monitor_exclude"}
 
+ENTITY_REGISTRY = "/config/.storage/core.entity_registry"
 SECRETS_FILE = "/config/secrets.yaml"
 SECRET_NAME = "ha_llat"
 HA_URL = "http://127.0.0.1:8123/api"
-
-# Label names/slugs to exclude
-EXCLUDED_LABELS = {"monitor_exclude"}
 
 
 def output(count=0, items=None, error=""):
@@ -45,45 +44,18 @@ def load_secret(name):
         return None
 
 
-def load_excluded_label_ids():
-    try:
-        with open(LABEL_REGISTRY, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        excluded = set()
-
-        for label in data.get("data", {}).get("labels", []):
-            label_id = label.get("label_id")
-            name = label.get("name")
-            slug = label.get("slug")
-
-            if name in EXCLUDED_LABELS or slug in EXCLUDED_LABELS:
-                excluded.add(label_id)
-
-        return excluded
-
-    except FileNotFoundError:
-        return set()
-
-
 def load_entity_info():
     with open(ENTITY_REGISTRY, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    entities = {}
-
-    for entity in data.get("data", {}).get("entities", []):
-        entity_id = entity.get("entity_id")
-
-        if not entity_id:
-            continue
-
-        entities[entity_id] = {
-            "platform": entity.get("platform", "unknown"),
-            "labels": set(entity.get("labels", [])),
+    return {
+        e["entity_id"]: {
+            "platform": e.get("platform", "unknown"),
+            "labels": set(e.get("labels") or []),
         }
-
-    return entities
+        for e in data.get("data", {}).get("entities", [])
+        if e.get("entity_id")
+    }
 
 
 def get_states(token):
@@ -107,13 +79,12 @@ def main():
             output(error=f"Could not load secret '{SECRET_NAME}' from {SECRETS_FILE}")
             return
 
-        excluded_label_ids = load_excluded_label_ids()
-        entities = load_entity_info()
+        entity_info = load_entity_info()
         integrations = set()
 
-        for state_obj in get_states(token):
-            entity_id = state_obj.get("entity_id", "")
-            state = state_obj.get("state")
+        for entity in get_states(token):
+            entity_id = entity.get("entity_id", "")
+            state = entity.get("state")
 
             domain = entity_id.split(".", 1)[0]
 
@@ -123,12 +94,13 @@ def main():
             if state not in BAD_STATES:
                 continue
 
-            info = entities.get(entity_id)
+            info = entity_info.get(entity_id)
 
             if not info:
                 continue
 
-            if info["labels"] & excluded_label_ids:
+            # Ignore unavailable/offline entities carrying an excluded label
+            if info["labels"] & EXCLUDED_LABELS:
                 continue
 
             integration = info.get("platform")

@@ -1,9 +1,0 @@
-restart:
-  fields:
-    name:
-      required: true
-      selector:
-        text:
-    server:
-      selector:
-        text:

@@ -3,5 +3,5 @@
 platform: group
 name: thomas_all
 services:
-  - service: mobile_app_tbipadpro
+  - service: mobile_app_tbipadprom4
   - service: mobile_app_tbiphone17promax

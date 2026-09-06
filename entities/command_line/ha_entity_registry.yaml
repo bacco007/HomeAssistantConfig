@@ -1,0 +1,44 @@
+---
+sensor:
+  name: Home Assistant Entity Registry
+  unique_id: ha_entity_registry
+  command: >
+    python3 /config/python_scripts/integration_entity_counts.py
+  scan_interval: 300
+  command_timeout: 30
+  value_template: "{{ value_json.state }}"
+  unit_of_measurement: "Integrations"
+  icon: mdi:database-search
+  json_attributes:
+    - total_integrations
+
+    - total_entities
+    - enabled_entities
+    - disabled_entities
+    - hidden_entities
+
+    - unavailable_entities
+    - unknown_entities
+
+    - total_devices
+    - disabled_devices
+
+    - total_areas
+    - total_labels
+    - labelled_entities
+
+    - entities_without_device
+    - entities_without_unique_id
+    - entities_without_area
+
+    - integration_counts
+    - enabled_counts
+    - disabled_counts
+    - hidden_counts
+
+    - unavailable_counts
+    - unknown_counts
+
+    - domain_counts
+
+    - error

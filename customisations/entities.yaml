@@ -1,85 +1,85 @@
 ---
-alert.adguard_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.air_quality:
-  category: weather
-  icon: mdi:smog
-alert.apple_tv_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.backup_alert:
-  category: homeassistant
-  icon: mdi:backup-restore
-alert.bureau_of_meteorology_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.docker_containersoff_alert:
-  category: docker
-  icon: mdi:alert-decagram
-alert.eufy_security_connected:
-  category: camera
-  icon: mdi:alert-decagram
-alert.forecast_solar_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.gdacs_connected:
-  category: weather
-  icon: mdi:home-flood
-alert.hdhomerun_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.lg_smartthinq_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.pirateweather_connected:
-  category: weather
-  icon: mdi:weather-partly-rainy
-alert.presence_mode:
-  category: presence
-  icon: mdi:alert-decagram
-alert.proxmox_nodesoff_alert:
-  category: proxmox
-  icon: si:proxmox
-alert.solcast_solar_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.speedtest_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.spotify_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.sungather:
-  category: homeassistant
-  icon: mdi:docker
-alert.synology_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.unifi_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.uptime_kuma_connected:
-  category: homeassistant
-  icon: mdi:alert-decagram
-alert.uv_risk:
-  category: weather
-  icon: mdi:weather-sunny-alert
-alert.weather_high_temperature:
-  category: weather
-  icon: mdi:thermometer-alert
-alert.weather_low_temperature:
-  category: weather
-  icon: mdi:snowflake-alert
-alert.weather_storm_approaching:
-  category: weather
-  icon: mdi:weather-partly-lightning
-alert.weatherflow_cloud:
-  category: weather
-  icon: mdi:weather-partly-rainy
-alert.weatherflow_local:
-  category: weather
-  icon: mdi:weather-partly-rainy
+# alert.adguard_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.air_quality:
+#   category: weather
+#   icon: mdi:smog
+# alert.apple_tv_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.backup_alert:
+#   category: homeassistant
+#   icon: mdi:backup-restore
+# alert.bureau_of_meteorology_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.docker_containersoff_alert:
+#   category: docker
+#   icon: mdi:alert-decagram
+# alert.eufy_security_connected:
+#   category: camera
+#   icon: mdi:alert-decagram
+# alert.forecast_solar_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.gdacs_connected:
+#   category: weather
+#   icon: mdi:home-flood
+# alert.hdhomerun_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.lg_smartthinq_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.pirateweather_connected:
+#   category: weather
+#   icon: mdi:weather-partly-rainy
+# alert.presence_mode:
+#   category: presence
+#   icon: mdi:alert-decagram
+# alert.proxmox_nodesoff_alert:
+#   category: proxmox
+#   icon: si:proxmox
+# alert.solcast_solar_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.speedtest_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.spotify_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.sungather:
+#   category: homeassistant
+#   icon: mdi:docker
+# alert.synology_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.unifi_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.uptime_kuma_connected:
+#   category: homeassistant
+#   icon: mdi:alert-decagram
+# alert.uv_risk:
+#   category: weather
+#   icon: mdi:weather-sunny-alert
+# alert.weather_high_temperature:
+#   category: weather
+#   icon: mdi:thermometer-alert
+# alert.weather_low_temperature:
+#   category: weather
+#   icon: mdi:snowflake-alert
+# alert.weather_storm_approaching:
+#   category: weather
+#   icon: mdi:weather-partly-lightning
+# alert.weatherflow_cloud:
+#   category: weather
+#   icon: mdi:weather-partly-rainy
+# alert.weatherflow_local:
+#   category: weather
+#   icon: mdi:weather-partly-rainy
 sensor.rssfeed_bbc:
   icon: si:bbc
   category: rssfeed
@@ -101,9 +101,9 @@ sensor.rssfeed_northern_daily_leader:
 sensor.rssfeed_sky_news_uk:
   icon: si:sky
   category: rssfeed
-sensor.rssfeed_sky_sports_uk:
-  icon: si:sky
-  category: rssfeed
+# sensor.rssfeed_sky_sports_uk:
+#   icon: si:sky
+#   category: rssfeed
 sensor.rssfeed_sydney_morning_herald:
   icon: mdi:newspaper
   category: rssfeed
@@ -113,38 +113,6 @@ sensor.rssfeed_the_guardian_au:
 sensor.rssfeed_the_guardian_uk:
   icon: mdi:newspaper
   category: rssfeed
-sensor.yahoofinance_amx_ax:
-  friendly_name: Aerometrex
-sensor.yahoofinance_aord:
-  friendly_name: Aus - All Ords
-sensor.yahoofinance_axjo:
-  friendly_name: Aus - ASX200
-sensor.yahoofinance_dji:
-  friendly_name: US - DJIA
-sensor.yahoofinance_ftse:
-  friendly_name: UK - FTSE100
-sensor.yahoofinance_goog:
-  friendly_name: Alphabet Inc (Google)
-sensor.yahoofinance_ixic:
-  friendly_name: US - NASDAQ
-sensor.yahoofinance_jbh_ax:
-  friendly_name: JB Hi-Fi
-sensor.yahoofinance_manu:
-  friendly_name: Manchester United plc
-sensor.yahoofinance_nec_ax:
-  friendly_name: Nine Entertainment
-sensor.yahoofinance_rex_ax:
-  friendly_name: Regional Express Airlines
-sensor.yahoofinance_rio_ax:
-  friendly_name: Rio Tinto
-sensor.yahoofinance_swm_ax:
-  friendly_name: Seven West Media
-sensor.yahoofinance_sxl_ax:
-  friendly_name: Southern Cross Austereo
-sensor.yahoofinance_tls_ax:
-  friendly_name: Telstra
-sensor.yahoofinance_tne_ax:
-  friendly_name: TechnologyOne
 sensor.date:
   friendly_name: Current Date
 sensor.time:
